@@ -1,6 +1,27 @@
 # README for Mapcode REST API Web Services 
  
-This application provide a REST API for mapcodes. It is currently under construction.
+This application provide a REST API for mapcodes. 
+Available methods:
+
+  GET /mapcode/to/{lat}/{lon}[?type=[all|shortest]&precision=[0|1|2]&territory={code}
+       Convert a latitude/longitude pair to a mapcode.
+       lat       : latitude, range [-90, 90]
+       lon       : longitude, range [-180, 180]
+       type      : all      = return all possible mapcodes
+                   shortest = return shortest mapcode only (default)
+       precision : precision, range [0, 2] (default=0)
+       territory : numeric or alpha territory code
+
+  GET /mapcode/from/{mapcode}[?territory={code}]
+       Convert a mapcode into a latitude/longitude pair
+       territory : numeric or alpha territory code
+
+  GET /mapcode/territory
+       Return a list of all valid numeric and alpha territory codes.
+
+  GET /mapcode/territory/{code}
+       Return information for a specific territory code.
+       territory : numeric or alpha territory code
 
 To build and run the REST API, type:
 

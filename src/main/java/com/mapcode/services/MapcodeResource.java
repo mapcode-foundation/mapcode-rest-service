@@ -21,26 +21,52 @@ import org.jboss.resteasy.annotations.Suspend;
 import org.jboss.resteasy.spi.AsynchronousResponse;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 @Path("/mapcode")
 public interface MapcodeResource {
 
-    public static final String PARAM_API_KEY = "apiKey";
-    public static final String PARAM_LAT = "latDeg";
-    public static final String PARAM_LON = "lonDeg";
+    public static final String PARAM_LAT_DEG = "lat";
+    public static final String PARAM_LON_DEG = "lon";
     public static final String PARAM_PRECISION = "precision";
-
+    public static final String PARAM_TERRITORY = "territory";
+    public static final String PARAM_TYPE = "type";
+    public static final String PARAM_MAPCODE = "mapcode";
 
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path(PARAM_API_KEY + "/from" + PARAM_LAT + '/' + PARAM_LON + '/' + PARAM_PRECISION)
-    void getMapcodeFrom(
-            @Nonnull @PathParam(PARAM_API_KEY) final String apiKey,
-            @Nonnull @PathParam(PARAM_LAT) final String latDeg,
-            @Nonnull @PathParam(PARAM_LON) final String lonDeg,
-            @Nonnull @PathParam(PARAM_PRECISION) final String precision,
+    @Path("to/{" + PARAM_LAT_DEG + "}/{" + PARAM_LON_DEG + '}')
+    void convertLatLonToMapcode(
+            @Nonnull @PathParam(PARAM_LAT_DEG) final String latDeg,
+            @Nonnull @PathParam(PARAM_LON_DEG) final String lonDeg,
+            @Nonnull @QueryParam(PARAM_PRECISION) @DefaultValue("0") final String precision,
+            @Nullable @QueryParam(PARAM_TERRITORY) final String territory,
+            @Nonnull @QueryParam(PARAM_TYPE) @DefaultValue("shortest") final String type,
+            @Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response) throws ApiException;
+
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("from/{" + PARAM_MAPCODE + '}')
+    void convertMapcodeToLatLon(
+            @Nonnull @PathParam(PARAM_MAPCODE) final String mapcode,
+            @Nullable @QueryParam(PARAM_TERRITORY) final String territory,
+            @Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response) throws ApiException;
+
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("territory")
+    void getTerritories(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response) throws ApiException;
+
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("territory/{" + PARAM_TERRITORY + '}')
+    void getTerritory(
+            @Nonnull @PathParam(PARAM_TERRITORY) final String territory,
             @Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response) throws ApiException;
 }

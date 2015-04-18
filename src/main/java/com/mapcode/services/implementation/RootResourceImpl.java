@@ -17,10 +17,10 @@
 package com.mapcode.services.implementation;
 
 import com.google.common.io.BaseEncoding;
-import com.tomtom.speedtools.maven.MavenProperties;
 import com.mapcode.services.ApiConstants;
 import com.mapcode.services.RootResource;
-import com.mapcode.services.domain.VersionBinder;
+import com.mapcode.services.binders.VersionBinder;
+import com.tomtom.speedtools.maven.MavenProperties;
 import org.jboss.resteasy.annotations.Suspend;
 import org.jboss.resteasy.spi.AsynchronousResponse;
 import org.slf4j.Logger;
@@ -42,8 +42,25 @@ public class RootResourceImpl implements RootResource {
 
             "Available methods:\n\n" +
 
-            "  GET /mapcode/{apiKey|0}/to/{lat}/{lon}/{precision}\n" +
-            "  GET /mapcode/{apiKey|0}/from/{mapcode}\n";
+            "  GET /mapcode/to/{lat}/{lon}[?type=[all|shortest]&precision=[0|1|2]&territory={code}\n" +
+            "       Convert a latitude/longitude pair to a mapcode.\n" +
+            "       lat       : latitude, range [-90, 90]\n" +
+            "       lon       : longitude, range [-180, 180]\n" +
+            "       type      : all      = return all possible mapcodes\n" +
+            "                   shortest = return shortest mapcode only (default)\n" +
+            "       precision : precision, range [0, 2] (default=0)\n" +
+            "       territory : numeric or alpha territory code\n\n" +
+
+            "  GET /mapcode/from/{mapcode}[?territory={code}]\n" +
+            "       Convert a mapcode into a latitude/longitude pair\n" +
+            "       territory : numeric or alpha territory code\n\n" +
+
+            "  GET /mapcode/territory\n" +
+            "       Return a list of all valid numeric and alpha territory codes.\n\n" +
+
+            "  GET /mapcode/territory/{code}\n" +
+            "       Return information for a specific territory code.\n" +
+            "       territory : numeric or alpha territory code\n";
 
     @Nonnull
     private final MavenProperties mavenProperties;

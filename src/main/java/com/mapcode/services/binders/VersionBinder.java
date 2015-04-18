@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package com.mapcode.services.domain;
+package com.mapcode.services.binders;
 
-import com.tomtom.speedtools.apivalidation.ApiDataBinder;
 import com.mapcode.services.ApiConstants;
-import com.tomtom.speedtools.objects.Objects;
+import com.tomtom.speedtools.apivalidation.ApiDataBinder;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode"})
 public final class VersionBinder extends ApiDataBinder {
@@ -59,32 +57,5 @@ public final class VersionBinder extends ApiDataBinder {
         beforeSet();
         assert version != null;
         this.version = version;
-    }
-
-    @Override
-    public boolean canEqual(@Nonnull final Object obj) {
-        assert obj != null;
-        return obj instanceof VersionBinder;
-    }
-
-    @Override
-    public boolean equals(@Nullable final Object obj) {
-        boolean eq;
-        if (this == obj) {
-            eq = true;
-        } else if ((obj != null) && (obj instanceof VersionBinder)) {
-            final VersionBinder that = (VersionBinder) obj;
-            eq = that.canEqual(this);
-            eq = eq && (this.version.equals(that.version));
-        } else {
-            eq = false;
-        }
-
-        return eq;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(version);
     }
 }

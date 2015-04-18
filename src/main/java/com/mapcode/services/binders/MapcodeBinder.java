@@ -14,77 +14,67 @@
  * limitations under the License.
  */
 
-package com.mapcode.services.domain;
+package com.mapcode.services.binders;
 
-import com.tomtom.speedtools.apivalidation.ApiDataBinder;
+import com.mapcode.Territory;
 import com.mapcode.services.ApiConstants;
-import com.tomtom.speedtools.objects.Objects;
+import com.tomtom.speedtools.apivalidation.ApiDataBinder;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode"})
-public final class MapcodeResultBinder extends ApiDataBinder {
+public final class MapcodeBinder extends ApiDataBinder {
 
     @Nonnull
     private String mapcode;
+    @Nonnull
+    private Territory territory;
 
     @Override
     public void validate() {
         validator().start();
         validator().checkString(true, "mapcode", mapcode,
-                ApiConstants.API_NAME_LEN_MIN,
-                ApiConstants.API_NAME_LEN_MAX);
+                ApiConstants.API_MAPCODE_LEN_MIN,
+                ApiConstants.API_MAPCODE_LEN_MAX);
+        validator().checkNotNullAndValidateEnum(true, "territory", territory);
         validator().done();
     }
 
-    public MapcodeResultBinder(@Nonnull final String mapcode) {
+    public MapcodeBinder(
+            @Nonnull final String mapcode,
+            @Nonnull final Territory territory) {
         this.mapcode = mapcode;
+        this.territory= territory;
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @Deprecated
-    private MapcodeResultBinder() {
+    private MapcodeBinder() {
         // Default constructor required by JAX-B.
         super();
     }
 
     @Nonnull
-    public String getVersion() {
+    public String getMapcode() {
         beforeGet();
         return mapcode;
     }
 
-    public void setVersion(@Nonnull final String mapcode) {
+    public void setMapcode(@Nonnull final String mapcode) {
         beforeSet();
         assert mapcode != null;
         this.mapcode = mapcode;
     }
 
-    @Override
-    public boolean canEqual(@Nonnull final Object obj) {
-        assert obj != null;
-        return obj instanceof MapcodeResultBinder;
+    @Nonnull
+    public Territory getTerritory() {
+        beforeGet();
+        return territory;
     }
 
-    @Override
-    public boolean equals(@Nullable final Object obj) {
-        boolean eq;
-        if (this == obj) {
-            eq = true;
-        } else if ((obj != null) && (obj instanceof MapcodeResultBinder)) {
-            final MapcodeResultBinder that = (MapcodeResultBinder) obj;
-            eq = that.canEqual(this);
-            eq = eq && (this.mapcode.equals(that.mapcode));
-        } else {
-            eq = false;
-        }
-
-        return eq;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(mapcode);
+    public void setTerritory(@Nonnull final String territory) {
+        beforeSet();
+        assert territory != null;
+        this.mapcode = territory;
     }
 }
