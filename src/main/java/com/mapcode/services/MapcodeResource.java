@@ -32,7 +32,7 @@ public interface MapcodeResource {
     public static final String PARAM_LON_DEG = "lon";
     public static final String PARAM_PRECISION = "precision";
     public static final String PARAM_TERRITORY = "territory";
-    public static final String PARAM_TYPE = "type";
+    public static final String PARAM_INCLUDE = "include";
     public static final String PARAM_MAPCODE = "mapcode";
 
     @GET
@@ -40,11 +40,11 @@ public interface MapcodeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("to/{" + PARAM_LAT_DEG + "}/{" + PARAM_LON_DEG + '}')
     void convertLatLonToMapcode(
-            @Nonnull @PathParam(PARAM_LAT_DEG) final String latDeg,
-            @Nonnull @PathParam(PARAM_LON_DEG) final String lonDeg,
-            @Nonnull @QueryParam(PARAM_PRECISION) @DefaultValue("0") final String precision,
-            @Nullable @QueryParam(PARAM_TERRITORY) final String territory,
-            @Nonnull @QueryParam(PARAM_TYPE) @DefaultValue("shortest") final String type,
+            @Nonnull @PathParam(PARAM_LAT_DEG) final String paramLatDeg,
+            @Nonnull @PathParam(PARAM_LON_DEG) final String paramLonDeg,
+            @Nonnull @QueryParam(PARAM_PRECISION) @DefaultValue("0") final String paramPrecision,
+            @Nullable @QueryParam(PARAM_TERRITORY) final String paramTerritory,
+            @Nonnull @QueryParam(PARAM_INCLUDE) @DefaultValue("shortest") final String paramInclude,
             @Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response) throws ApiException;
 
     @GET
@@ -52,8 +52,8 @@ public interface MapcodeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("from/{" + PARAM_MAPCODE + '}')
     void convertMapcodeToLatLon(
-            @Nonnull @PathParam(PARAM_MAPCODE) final String mapcode,
-            @Nullable @QueryParam(PARAM_TERRITORY) final String territory,
+            @Nonnull @PathParam(PARAM_MAPCODE) final String paramMapcode,
+            @Nullable @QueryParam(PARAM_TERRITORY) final String paramTerritory,
             @Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response) throws ApiException;
 
     @GET
@@ -67,6 +67,6 @@ public interface MapcodeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("territory/{" + PARAM_TERRITORY + '}')
     void getTerritory(
-            @Nonnull @PathParam(PARAM_TERRITORY) final String territory,
+            @Nonnull @PathParam(PARAM_TERRITORY) final String paramTerritory,
             @Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response) throws ApiException;
 }

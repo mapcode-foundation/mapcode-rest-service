@@ -45,9 +45,10 @@ import java.util.List;
 public class MapcodeResourceImpl implements MapcodeResource {
     private static final Logger LOG = LoggerFactory.getLogger(MapcodeResourceImpl.class);
 
-    private enum FilterType {
+    private enum IncludeType {
         ALL,
-        SHORTEST
+        LOCAL,
+        INTERNATIONAL
     }
 
     @Nonnull
@@ -74,8 +75,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
         TERRITORIES = sb1.toString();
 
         final StringBuilder sb2 = new StringBuilder();
-        for (final FilterType filterType : FilterType.values()) {
-            sb2.append(filterType.toString().toLowerCase());
+        for (final IncludeType includeType : IncludeType.values()) {
+            sb2.append(includeType.toString().toLowerCase());
             sb2.append('|');
         }
         TYPES = sb2.toString();
@@ -83,97 +84,119 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Override
     public void convertLatLonToMapcode(
-            @Nonnull final String latDeg,
-            @Nonnull final String lonDeg,
-            @Nonnull final String precision,
-            @Nullable final String territory,
-            @Nonnull final String type,
+            @Nonnull final String paramLatDeg,
+            @Nonnull final String paramLonDeg,
+            @Nonnull final String paramPrecision,
+            @Nullable final String paramTerritory,
+            @Nonnull final String paramInclude,
             @Nonnull final AsynchronousResponse response) throws ApiException {
-        assert latDeg != null;
-        assert lonDeg != null;
-        assert precision != null;
+        assert paramLatDeg != null;
+        assert paramLonDeg != null;
+        assert paramPrecision != null;
         assert response != null;
 
         processor.process("convertLatLonToMapcode", LOG, response, () -> {
-            LOG.debug("convertLatLonToMapcode: lat={}, lon={}, precision={}, territory={}", latDeg, lonDeg, precision, territory);
+            LOG.debug("convertLatLonToMapcode: lat={}, lon={}, precision={}, territory={}", paramLatDeg, paramLonDeg, paramPrecision, paramTerritory);
 
-            final double latValue;
+            // Check lat.
+            final double latDeg;
             try {
-                latValue = Double.valueOf(latDeg);
-                if (!MathUtils.isBetween(latValue, ApiConstants.API_LAT_MIN, ApiConstants.API_LAT_MAX)) {
+                latDeg = Double.valueOf(paramLatDeg);
+                if (!MathUtils.isBetween(latDeg, ApiConstants.API_LAT_MIN, ApiConstants.API_LAT_MAX)) {
                     throw new NumberFormatException();
                 }
             } catch (final NumberFormatException ignored) {
-                throw new ApiInvalidFormatException("lat", latDeg, "[" + ApiConstants.API_LAT_MIN + ", " + ApiConstants.API_LAT_MAX + ']');
+                throw new ApiInvalidFormatException("lat", paramLatDeg, "[" + ApiConstants.API_LAT_MIN + ", " + ApiConstants.API_LAT_MAX + ']');
             }
 
+            // Check lon.
             final double lonValue;
             try {
-                lonValue = Double.valueOf(lonDeg);
+                lonValue = Double.valueOf(paramLonDeg);
                 if (!MathUtils.isBetween(lonValue, ApiConstants.API_LON_MIN, ApiConstants.API_LON_MAX)) {
                     throw new NumberFormatException();
                 }
             } catch (final NumberFormatException ignored) {
-                throw new ApiInvalidFormatException("lon", lonDeg, "[" + ApiConstants.API_LON_MIN + ", " + ApiConstants.API_LON_MAX + ']');
+                throw new ApiInvalidFormatException("lon", paramLonDeg, "[" + ApiConstants.API_LON_MIN + ", " + ApiConstants.API_LON_MAX + ']');
             }
 
-            final int precisionValue;
+            // Check precision.
+            final int precision;
             try {
-                precisionValue = Integer.valueOf(precision);
-                if (!MathUtils.isBetween(precisionValue, 0, 2)) {
+                precision = Integer.valueOf(paramPrecision);
+                if (!MathUtils.isBetween(precision, 0, 2)) {
                     throw new NumberFormatException();
                 }
             } catch (final NumberFormatException ignored) {
-                throw new ApiInvalidFormatException("precision", precision, "[0, 2]");
+                throw new ApiInvalidFormatException("precision", paramPrecision, "[0, 2]");
             }
 
-            Territory territoryValue = null;
-            if (territory != null) {
+            // Check territory.
+            Territory territory = null;
+            if (paramTerritory != null) {
                 try {
-                    final int territoryCode = Integer.valueOf(territory);
-                    territoryValue = Territory.fromTerritoryCode(territoryCode);
+                    final int territoryCode = Integer.valueOf(paramTerritory);
+                    territory = Territory.fromTerritoryCode(territoryCode);
                 } catch (final IllegalArgumentException ignored) {
                     try {
-                        territoryValue = Territory.fromString(territory);
+                        territory = Territory.fromString(paramTerritory);
                     } catch (final UnknownTerritoryException ignored2) {
-                        throw new ApiInvalidFormatException("territory", territory, TERRITORIES);
+                        throw new ApiInvalidFormatException("territory", paramTerritory, TERRITORIES);
                     }
                 }
             }
-            assert ((territory == null) && (territoryValue == null)) || ((territory != null) && (territoryValue != null));
+            assert ((paramTerritory == null) && (territory == null)) || ((paramTerritory != null) && (territory != null));
 
-            FilterType typeValue;
+            // Check include.
+            IncludeType include;
             try {
-                typeValue = FilterType.valueOf(type.toUpperCase());
+                include = IncludeType.valueOf(paramInclude.toUpperCase());
             } catch (final IllegalArgumentException ignored) {
-                throw new ApiInvalidFormatException("type", type, TYPES);
+                throw new ApiInvalidFormatException("include", paramInclude, TYPES);
             }
 
+            // Create result body.
             ApiDataBinder binder;
-            switch (typeValue) {
-                case ALL:
+            switch (include) {
+                case ALL: {
                     final List<MapcodeBinder> list = new ArrayList<>();
                     final List<Mapcode> mapcodes;
                     if (territory == null) {
-                        mapcodes = MapcodeCodec.encode(latValue, lonValue);
+                        mapcodes = MapcodeCodec.encode(latDeg, lonValue);
                     } else {
-                        mapcodes = MapcodeCodec.encode(latValue, lonValue, territoryValue);
+                        mapcodes = MapcodeCodec.encode(latDeg, lonValue, territory);
                     }
                     for (final Mapcode mapcode : mapcodes) {
-                        final MapcodeBinder item = new MapcodeBinder(getMapcodePrecision(mapcode, precisionValue), mapcode.getTerritory());
+                        final MapcodeBinder item = new MapcodeBinder(getMapcodePrecision(mapcode, precision), mapcode.getTerritory());
                         list.add(item);
                     }
                     final MapcodesBinder mapcodesBinder = new MapcodesBinder(list);
                     mapcodesBinder.validate();
                     binder = mapcodesBinder;
                     break;
+                }
 
-                case SHORTEST:
-                    final Mapcode mapcode = MapcodeCodec.encodeToShortest(latValue, lonValue);
-                    final MapcodeBinder mapcodeBinder = new MapcodeBinder(getMapcodePrecision(mapcode, precisionValue), mapcode.getTerritory());
+                case LOCAL: {
+                    final Mapcode mapcode;
+                    if (territory == null) {
+                        mapcode = MapcodeCodec.encodeToShortest(latDeg, lonValue);
+                    } else {
+                        mapcode = MapcodeCodec.encodeToShortest(latDeg, lonValue, territory);
+                    }
+                    final MapcodeBinder mapcodeBinder = new MapcodeBinder(getMapcodePrecision(mapcode, precision), mapcode.getTerritory());
                     mapcodeBinder.validate();
                     binder = mapcodeBinder;
                     break;
+                }
+
+                case INTERNATIONAL: {
+                    final List<Mapcode> mapcodes = MapcodeCodec.encode(latDeg, lonValue);
+                    final Mapcode mapcode = mapcodes.get(mapcodes.size() - 1);
+                    final MapcodeBinder mapcodeBinder = new MapcodeBinder(getMapcodePrecision(mapcode, precision), mapcode.getTerritory());
+                    mapcodeBinder.validate();
+                    binder = mapcodeBinder;
+                    break;
+                }
 
                 default:
                     assert false;
@@ -188,36 +211,37 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Override
     public void convertMapcodeToLatLon(
-            @Nonnull final String mapcode,
-            @Nullable final String territory,
+            @Nonnull final String paramMapcode,
+            @Nullable final String paramTerritory,
             @Nonnull final AsynchronousResponse response) throws ApiException {
-        assert mapcode != null;
+        assert paramMapcode != null;
         assert response != null;
 
         processor.process("convertMapcodeToLatLon", LOG, response, () -> {
-            LOG.debug("convertMapcodeToLatLon: mapcode={}, territory={}", mapcode, territory);
+            LOG.debug("convertMapcodeToLatLon: mapcode={}, territory={}", paramMapcode, paramTerritory);
 
-            Territory territoryValue = null;
-            if (territory != null) {
+            Territory territory = null;
+            if (paramTerritory != null) {
                 try {
-                    final int territoryCode = Integer.valueOf(territory);
-                    territoryValue = Territory.fromTerritoryCode(territoryCode);
+                    final int territoryCode = Integer.valueOf(paramTerritory);
+                    territory = Territory.fromTerritoryCode(territoryCode);
                 } catch (final IllegalArgumentException ignored) {
                     try {
-                        territoryValue = Territory.fromString(territory);
+                        territory = Territory.fromString(paramTerritory);
                     } catch (final UnknownTerritoryException ignored2) {
-                        throw new ApiInvalidFormatException("territory", territory, TERRITORIES);
+                        throw new ApiInvalidFormatException("territory", paramTerritory, TERRITORIES);
                     }
                 }
             }
-            assert ((territory == null) && (territoryValue == null)) || ((territory != null) && (territoryValue != null));
+            assert ((paramTerritory == null) && (territory == null)) || ((paramTerritory != null) && (territory != null));
 
+            // Create result body.
             try {
                 final Point point;
                 if (territory == null) {
-                    point = MapcodeCodec.decode(mapcode);
+                    point = MapcodeCodec.decode(paramMapcode);
                 } else {
-                    point = MapcodeCodec.decode(mapcode, territoryValue);
+                    point = MapcodeCodec.decode(paramMapcode, territory);
                 }
                 final PointBinder binder = new PointBinder(point.getLatDeg(), point.getLonDeg());
                 binder.validate();
@@ -236,6 +260,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
         assert response != null;
 
         processor.process("getTerritories", LOG, response, () -> {
+            LOG.debug("getTerritories");
 
             final List<TerritoryBinder> binders = new ArrayList<>();
             for (final Territory territory : Territory.values()) {
@@ -260,33 +285,33 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Override
     public void getTerritory(
-            @Nullable final String territory,
+            @Nullable final String paramTerritory,
             @Nonnull final AsynchronousResponse response) throws ApiException {
-        assert territory != null;
+        assert paramTerritory != null;
         assert response != null;
 
         processor.process("getTerritory", LOG, response, () -> {
-            LOG.debug("getTerritory: territory={}", territory);
+            LOG.debug("getTerritory: territory={}", paramTerritory);
 
-            Territory territoryValue = null;
+            Territory territory = null;
             try {
-                final int territoryCode = Integer.valueOf(territory);
-                territoryValue = Territory.fromTerritoryCode(territoryCode);
+                final int territoryCode = Integer.valueOf(paramTerritory);
+                territory = Territory.fromTerritoryCode(territoryCode);
             } catch (final IllegalArgumentException ignored) {
                 try {
-                    territoryValue = Territory.fromString(territory);
+                    territory = Territory.fromString(paramTerritory);
                 } catch (final UnknownTerritoryException ignored2) {
-                    throw new ApiInvalidFormatException("territory", territory, TERRITORIES);
+                    throw new ApiInvalidFormatException("territory", paramTerritory, TERRITORIES);
                 }
             }
 
-            final Territory parentTerritory = territoryValue.getParentTerritory();
+            final Territory parentTerritory = territory.getParentTerritory();
             final TerritoryBinder binder = new TerritoryBinder(
-                    territoryValue.getTerritoryCode(),
-                    territoryValue.getFullName(),
+                    territory.getTerritoryCode(),
+                    territory.getFullName(),
                     (parentTerritory == null) ? null : parentTerritory.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
-                    territoryValue.getAliases(),
-                    territoryValue.getFullNameAliases()
+                    territory.getAliases(),
+                    territory.getFullNameAliases()
             );
             binder.validate();
             response.setResponse(Response.ok(binder).build());
