@@ -28,45 +28,77 @@ import javax.ws.rs.core.MediaType;
 @Path("/mapcode")
 public interface MapcodeResource {
 
-    public static final String PARAM_LAT_DEG = "lat";
-    public static final String PARAM_LON_DEG = "lon";
-    public static final String PARAM_PRECISION = "precision";
-    public static final String PARAM_TERRITORY = "territory";
-    public static final String PARAM_INCLUDE = "include";
-    public static final String PARAM_MAPCODE = "mapcode";
+    public enum ParamType {
+        ALL,
+        LOCAL,
+        INTERNATIONAL
+    }
+
+    public enum ParamInclude {
+        NONE,
+        OFFSET
+    }
+
+    static final String PARAM_LAT_DEG = "lat";
+    static final String PARAM_LON_DEG = "lon";
+    static final String PARAM_PRECISION = "precision";
+    static final String PARAM_TERRITORY = "territory";
+    static final String PARAM_TYPE = "type";
+    static final String PARAM_MAPCODE = "mapcode";
+    static final String PARAM_INCLUDE = "include";
+    static final String PARAM_COUNT = "count";
+    static final String PARAM_OFFSET = "offset";
+
+    static final String DEFAULT_OFFSET = "0";
+    static final String DEFAULT_COUNT = "1000";
 
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("to/{" + PARAM_LAT_DEG + "}/{" + PARAM_LON_DEG + '}')
+    void convertLatLonToMapcodeAll(
+            @PathParam(PARAM_LAT_DEG) final double paramLatDeg,
+            @PathParam(PARAM_LON_DEG) final double paramLonDeg,
+            @PathParam(PARAM_PRECISION) @DefaultValue("0") final int paramPrecision,
+            @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("to/{" + PARAM_LAT_DEG + "}/{" + PARAM_LON_DEG + "}/{" + PARAM_TYPE + '}')
     void convertLatLonToMapcode(
-            @Nonnull @PathParam(PARAM_LAT_DEG) final String paramLatDeg,
-            @Nonnull @PathParam(PARAM_LON_DEG) final String paramLonDeg,
-            @Nonnull @QueryParam(PARAM_PRECISION) @DefaultValue("0") final String paramPrecision,
-            @Nullable @QueryParam(PARAM_TERRITORY) final String paramTerritory,
-            @Nonnull @QueryParam(PARAM_INCLUDE) @DefaultValue("shortest") final String paramInclude,
-            @Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response) throws ApiException;
+            @PathParam(PARAM_LAT_DEG) final double paramLatDeg,
+            @PathParam(PARAM_LON_DEG) final double paramLonDeg,
+            @PathParam(PARAM_PRECISION) @DefaultValue("0") final int paramPrecision,
+            @PathParam(PARAM_TYPE) @Nonnull final String paramType,
+            @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
+            @QueryParam(PARAM_INCLUDE) @DefaultValue("none") @Nonnull final String paramInclude,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("from/{" + PARAM_MAPCODE + '}')
     void convertMapcodeToLatLon(
-            @Nonnull @PathParam(PARAM_MAPCODE) final String paramMapcode,
-            @Nullable @QueryParam(PARAM_TERRITORY) final String paramTerritory,
-            @Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response) throws ApiException;
+            @PathParam(PARAM_MAPCODE) @Nonnull final String paramMapcode,
+            @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("territory")
-    void getTerritories(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response) throws ApiException;
+    void getTerritories(
+            @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) final int offset,
+            @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) final int count,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("territory/{" + PARAM_TERRITORY + '}')
     void getTerritory(
-            @Nonnull @PathParam(PARAM_TERRITORY) final String paramTerritory,
-            @Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response) throws ApiException;
+            @PathParam(PARAM_TERRITORY) @Nonnull final String paramTerritory,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 }

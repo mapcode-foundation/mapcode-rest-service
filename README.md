@@ -1,5 +1,7 @@
 # README for Mapcode REST API Web Services 
  
+Copyright (C) 2014-2015 Stichting Mapcode Foundation (http://www.mapcode.com)
+
 This application provide a REST API for mapcodes. 
 Available methods:
 

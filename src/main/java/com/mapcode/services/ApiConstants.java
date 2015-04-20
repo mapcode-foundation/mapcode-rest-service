@@ -16,10 +16,6 @@
 
 package com.mapcode.services;
 
-import org.joda.time.DateTime;
-
-import com.tomtom.speedtools.geometry.Geo;
-
 /**
  * This utility class contains constants used in the Web services API.
  */
@@ -37,29 +33,22 @@ public final class ApiConstants {
     public static final int SUSPEND_TIMEOUT = 30000;
 
     /**
-     * Date limits.
-     */
-    public static final DateTime API_DATE_MAX = new DateTime(2200, 1, 1, 0, 0);
-    public static final DateTime API_DATE_MIN = new DateTime(1900, 1, 1, 0, 0);
-
-    /**
      * General limits for count and offset.
      */
-    public static final int API_COUNT_MAX  = Integer.MAX_VALUE;
+    public static final int API_COUNT_MAX = Integer.MAX_VALUE;
     public static final int API_OFFSET_MAX = Integer.MAX_VALUE;
 
-    public static final int API_VERSION_LEN_MIN = 1;
-    public static final int API_VERSION_LEN_MAX = 250;
-
+    /**
+     * Ranges for binder values.
+     */
     public static final int API_NAME_LEN_MIN = 1;
     public static final int API_NAME_LEN_MAX = 250;
     public static final int API_MAPCODE_LEN_MIN = 1;
     public static final int API_MAPCODE_LEN_MAX = 14;
     public static final int API_TERRITORY_LEN_MIN = 1;
     public static final int API_TERRITORY_LEN_MAX = 6;
-
+    public static final int API_VERSION_LEN_MIN = 1;
+    public static final int API_VERSION_LEN_MAX = 250;
     public static final double API_LAT_MAX = 90.0;
     public static final double API_LAT_MIN = -90.0;
-    public static final double API_LON_MAX = Geo.LON180;
-    public static final double API_LON_MIN = -180.0;
 }

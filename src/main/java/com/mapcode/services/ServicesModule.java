@@ -19,9 +19,9 @@ package com.mapcode.services;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.inject.Binder;
 import com.google.inject.Module;
-import com.tomtom.speedtools.json.Json;
 import com.mapcode.services.implementation.MapcodeResourceImpl;
 import com.mapcode.services.implementation.RootResourceImpl;
+import com.tomtom.speedtools.json.Json;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +46,6 @@ public class ServicesModule implements Module {
         LOG.info("configure: GET /help -- Get help text for web services");
 
         // Add some additional features for string (human readable) mappers.
-        Json.getCurrentStringObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true);
+        Json.getCurrentStringObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, false);
     }
 }

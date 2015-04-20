@@ -32,10 +32,8 @@ public final class PointBinder extends ApiDataBinder {
     @Override
     public void validate() {
         validator().start();
-        validator().checkDouble(true, "latDeg", latDeg,
-                ApiConstants.API_LAT_MIN, ApiConstants.API_LAT_MAX, false);
-        validator().checkDouble(true, "lonDeg", lonDeg,
-                ApiConstants.API_LON_MIN, ApiConstants.API_LON_MAX, false);
+        validator().checkDouble(true, "latDeg", latDeg, ApiConstants.API_LAT_MIN, ApiConstants.API_LAT_MAX, false);
+        validator().checkDouble(true, "lonDeg", lonDeg, Double.MIN_VALUE, Double.MAX_VALUE, false);
         validator().done();
     }
 

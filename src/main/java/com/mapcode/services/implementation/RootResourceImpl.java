@@ -37,30 +37,45 @@ public class RootResourceImpl implements RootResource {
     private static final Logger LOG = LoggerFactory.getLogger(RootResourceImpl.class);
 
     @Nonnull
-    private static final String HELP_TEXT = "HELP PAGE FOR MAPCODE REST API\n" +
-            "----------------------\n\n" +
+    private static final String HELP_TEXT = "" +
+            "MAPCODE REST SERVICES\n" +
+            "---------------------\n\n" +
 
-            "Available methods:\n\n" +
+            "GET /mapcode/to/{lat}/{lon}/[all|local|international] [?precision=[0|1|2] & territory={code}]\n" +
+            "   Convert latitude/longitude to one or more mapcodes.\n\n" +
 
-            "  GET /mapcode/to/{lat}/{lon}[?type=[all|shortest]&precision=[0|1|2]&territory={code}\n" +
-            "       Convert a latitude/longitude pair to a mapcode.\n" +
-            "       lat       : latitude, range [-90, 90]\n" +
-            "       lon       : longitude, range [-180, 180]\n" +
-            "       type      : all      = return all possible mapcodes\n" +
-            "                   shortest = return shortest mapcode only (default)\n" +
-            "       precision : precision, range [0, 2] (default=0)\n" +
-            "       territory : numeric or alpha territory code\n\n" +
+            "   Path parameters:\n" +
+            "   lat             : latitude, range [-90, 90]\n" +
+            "   lon             : longitude, range [-180, 180] (mapped if outside range)\n" +
+            "   all             : return all mapcodes (sorted short to long)\n" +
+            "   local           : return the shortest local mapcode\n" +
+            "   international   : return the shortest international mapcode\n\n" +
 
-            "  GET /mapcode/from/{mapcode}[?territory={code}]\n" +
-            "       Convert a mapcode into a latitude/longitude pair\n" +
-            "       territory : numeric or alpha territory code\n\n" +
+            "   Query parameters:\n" +
+            "   precision       : precision, range [0, 2] (default=0)\n" +
+            "   territory       : territory context, numeric or alpha code\n\n" +
 
-            "  GET /mapcode/territory\n" +
-            "       Return a list of all valid numeric and alpha territory codes.\n\n" +
+            "GET /mapcode/from/{mapcode} [?territory={code}]\n" +
+            "   Convert a mapcode into a latitude/longitude pair\n\n" +
 
-            "  GET /mapcode/territory/{code}\n" +
-            "       Return information for a specific territory code.\n" +
-            "       territory : numeric or alpha territory code\n";
+            "   Path parameters:\n" +
+            "   territory       : territory context, numeric or alpha code\n" +
+
+            "   Path parameters:\n" +
+            "   territory       : territory context, numeric or alpha code\n" +
+
+            "GET /mapcode/territory [?offset={offset} & count={count}]\n" +
+            "   Return a list of all valid numeric and alpha territory codes.\n\n" +
+
+            "   Query parameters:\n" +
+            "   offset          : return list from 'offset' (negative value start counting from end)\n" +
+            "   count           : return 'count' items at most\n\n" +
+
+            "GET /mapcode/territory/{code}\n" +
+            "   Return information for a single territory code.\n\n" +
+
+            "   Path parameters:\n" +
+            "   territory       : territory context, numeric or alpha code\n";
 
     @Nonnull
     private final MavenProperties mavenProperties;

@@ -21,6 +21,7 @@ import com.mapcode.services.ApiConstants;
 import com.tomtom.speedtools.apivalidation.ApiDataBinder;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode"})
 public final class MapcodeBinder extends ApiDataBinder {
@@ -29,6 +30,8 @@ public final class MapcodeBinder extends ApiDataBinder {
     private String mapcode;
     @Nonnull
     private Territory territory;
+    @Nullable
+    private Double offsetMeters;
 
     @Override
     public void validate() {
@@ -37,14 +40,17 @@ public final class MapcodeBinder extends ApiDataBinder {
                 ApiConstants.API_MAPCODE_LEN_MIN,
                 ApiConstants.API_MAPCODE_LEN_MAX);
         validator().checkNotNullAndValidateEnum(true, "territory", territory);
+        validator().checkDouble(false, "offsetMeters", offsetMeters, Double.MIN_VALUE, Double.MAX_VALUE, false);
         validator().done();
     }
 
     public MapcodeBinder(
             @Nonnull final String mapcode,
-            @Nonnull final Territory territory) {
+            @Nonnull final Territory territory,
+            @Nullable final Double offsetMeters) {
         this.mapcode = mapcode;
-        this.territory= territory;
+        this.territory = territory;
+        this.offsetMeters = offsetMeters;
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -72,9 +78,20 @@ public final class MapcodeBinder extends ApiDataBinder {
         return territory;
     }
 
-    public void setTerritory(@Nonnull final String territory) {
+    public void setTerritory(@Nonnull final Territory territory) {
         beforeSet();
         assert territory != null;
-        this.mapcode = territory;
+        this.territory = territory;
+    }
+
+    @Nullable
+    public Double getOffsetMeters() {
+        beforeGet();
+        return offsetMeters;
+    }
+
+    public void setOffsetMeters(@Nullable final Double offsetMeters) {
+        beforeSet();
+        this.offsetMeters = offsetMeters;
     }
 }

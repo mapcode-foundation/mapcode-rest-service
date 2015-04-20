@@ -37,6 +37,11 @@
     </appender>
     -->
 
+    <!-- The Mapcode services. -->
+    <logger name="com.mapcode">
+        <level value="debug"/>
+    </logger>
+
     <!-- The SpeedTools framework. -->
     <logger name="com.tomtom.speedtools">
         <level value="info"/>
