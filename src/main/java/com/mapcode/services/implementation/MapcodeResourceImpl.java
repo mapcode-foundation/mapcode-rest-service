@@ -17,6 +17,7 @@
 package com.mapcode.services.implementation;
 
 import akka.dispatch.Futures;
+import com.google.common.base.Joiner;
 import com.mapcode.*;
 import com.mapcode.Territory.NameFormat;
 import com.mapcode.services.ApiConstants;
@@ -38,8 +39,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class implements the REST API that deals with TTBin files.
@@ -48,52 +50,17 @@ public class MapcodeResourceImpl implements MapcodeResource {
     private static final Logger LOG = LoggerFactory.getLogger(MapcodeResourceImpl.class);
 
     private final ResourceProcessor processor;
-    private final String listOfAllTerritories;
-    private final String listOfAllTypes;
-    private final String listOfAllIncludes;
+    private final String listOfAllTerritories = Joiner.on('|').join(Arrays.asList(Territory.values()).stream().
+            map(x -> x.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS)).collect(Collectors.toList()));
+    private final String listOfAllTypes = Joiner.on('|').join(Arrays.asList(ParamType.values()).stream().
+            map(x -> x).collect(Collectors.toList()));
+    private final String listOfAllIncludes = Joiner.on('|').join(Arrays.asList(ParamInclude.values()).stream().
+            map(x -> x).collect(Collectors.toList()));
 
     @Inject
     public MapcodeResourceImpl(@Nonnull final ResourceProcessor processor) {
         assert processor != null;
         this.processor = processor;
-
-        boolean first = true;
-        StringBuilder sb = new StringBuilder();
-        for (final Territory territory : Territory.values()) {
-            if (first) {
-                first = false;
-            } else {
-                sb.append('|');
-            }
-            sb.append(territory.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS));
-            sb.append('=');
-            sb.append(territory.getTerritoryCode());
-        }
-        listOfAllTerritories = sb.toString();
-
-        first = true;
-        sb = new StringBuilder();
-        for (final ParamType paramType : ParamType.values()) {
-            if (first) {
-                first = false;
-            } else {
-                sb.append('|');
-            }
-            sb.append(paramType.toString().toLowerCase());
-        }
-        listOfAllTypes = sb.toString();
-
-        first = true;
-        sb = new StringBuilder();
-        for (final ParamInclude paramInclude : ParamInclude.values()) {
-            if (first) {
-                first = false;
-            } else {
-                sb.append('|');
-            }
-            sb.append(paramInclude.toString().toLowerCase());
-        }
-        listOfAllIncludes = sb.toString();
     }
 
     @Override
@@ -110,8 +77,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void convertLatLonToMapcode(
             final double paramLatDeg,
             final double paramLonDeg,
-            final int paramPrecision,
             @Nonnull final String paramType,
+            final int paramPrecision,
             @Nullable final String paramTerritory,
             @Nonnull final String paramInclude,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
@@ -173,21 +140,18 @@ public class MapcodeResourceImpl implements MapcodeResource {
             ApiDataBinder binder;
             switch (type) {
                 case ALL: {
-                    final List<MapcodeBinder> list = new ArrayList<>();
                     final List<Mapcode> mapcodes;
                     if (territory == null) {
                         mapcodes = MapcodeCodec.encode(latDeg, lonDeg);
                     } else {
                         mapcodes = MapcodeCodec.encode(latDeg, lonDeg, territory);
                     }
-                    for (final Mapcode mapcode : mapcodes) {
-                        final MapcodeBinder item = new MapcodeBinder(
-                                getMapcodePrecision(mapcode, precision),
-                                mapcode.getTerritory(),
-                                (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode) : null);
-                        list.add(item);
-                    }
-                    final MapcodesBinder mapcodesBinder = new MapcodesBinder(list);
+                    final MapcodesBinder mapcodesBinder = new MapcodesBinder(mapcodes.stream().
+                            map(x -> new MapcodeBinder(
+                                    getMapcodePrecision(x, precision),
+                                    x.getTerritory(),
+                                    (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, x, precision) : null)).
+                            collect(Collectors.toList()));
                     mapcodesBinder.validate();
                     binder = mapcodesBinder;
                     break;
@@ -203,7 +167,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     final MapcodeBinder mapcodeBinder = new MapcodeBinder(
                             getMapcodePrecision(mapcode, precision),
                             mapcode.getTerritory(),
-                            (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode) : null);
+                            (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);
                     mapcodeBinder.validate();
                     binder = mapcodeBinder;
                     break;
@@ -215,7 +179,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     final MapcodeBinder mapcodeBinder = new MapcodeBinder(
                             getMapcodePrecision(mapcode, precision),
                             mapcode.getTerritory(),
-                            (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode) : null);
+                            (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);
                     mapcodeBinder.validate();
                     binder = mapcodeBinder;
                     break;
@@ -292,18 +256,20 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
             assert count >= 0;
 
-            final List<TerritoryBinder> allTerritories = new ArrayList<>();
-            for (final Territory territory : Territory.values()) {
-                final Territory parentTerritory = territory.getParentTerritory();
-                final TerritoryBinder binder = new TerritoryBinder(
-                        territory.getTerritoryCode(),
-                        territory.getFullName(),
-                        (parentTerritory == null) ? null : parentTerritory.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
-                        territory.getAliases(),
-                        territory.getFullNameAliases()
-                );
-                allTerritories.add(binder);
-            }
+            Joiner.on('|').join(Arrays.asList(Territory.values()).stream().
+                    map(x -> x.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS)).collect(Collectors.toList()));
+
+            final List<TerritoryBinder> allTerritories = Arrays.asList(Territory.values()).stream().
+                    map(x -> {
+                        final Territory parentTerritory = x.getParentTerritory();
+                        return new TerritoryBinder(
+                                x.getTerritoryCode(),
+                                x.getFullName(),
+                                (parentTerritory == null) ? null : parentTerritory.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
+                                x.getAliases(),
+                                x.getFullNameAliases());
+                    }).
+                    collect(Collectors.toList());
 
             // Create the response and validate it.
             final int nrTerritories = allTerritories.size();
@@ -359,13 +325,19 @@ public class MapcodeResourceImpl implements MapcodeResource {
     private static double offsetFromLatLonInMeters(
             final double latDeg,
             final double lonDeg,
-            @Nonnull final Mapcode mapcode) throws UnknownMapcodeException {
+            @Nonnull final Mapcode mapcode,
+            final int precision) {
         assert mapcode != null;
         final GeoPoint position = new GeoPoint(latDeg, lonDeg);
-        final Point point = MapcodeCodec.decode(mapcode.getMapcode(), mapcode.getTerritory());
-        final GeoPoint center = new GeoPoint(point.getLatDeg(), point.getLonDeg());
-        final double distanceMeters = Geo.distanceInMeters(position, center);
-        return distanceMeters;
+        try {
+            final Point point = MapcodeCodec.decode(getMapcodePrecision(mapcode, precision), mapcode.getTerritory());
+            final GeoPoint center = new GeoPoint(point.getLatDeg(), point.getLonDeg());
+            final double distanceMeters = Geo.distanceInMeters(position, center);
+            return Math.round(distanceMeters * 100.0) / 100.0;
+        } catch (final UnknownMapcodeException ignore) {
+            // Simply ignore.
+            return 0.0;
+        }
     }
 
     @Nonnull

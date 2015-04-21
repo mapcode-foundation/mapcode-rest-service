@@ -52,6 +52,17 @@ public interface MapcodeResource {
     static final String DEFAULT_OFFSET = "0";
     static final String DEFAULT_COUNT = "1000";
 
+    /**
+     * This method is added only to provide a reasonable error message if you forget to specify
+     * the 'type' field in the URL.
+     *
+     * @param paramLatDeg    Dummy.
+     * @param paramLonDeg    Dummy.
+     * @param paramPrecision Dummy.
+     * @param paramTerritory Dummy.
+     * @param response       Dummy.
+     * @throws ApiException ApiException API exception, translated into HTTP status code.
+     */
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -63,6 +74,21 @@ public interface MapcodeResource {
             @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
+    /**
+     * Convert a lat/lon to one or more mapcodes.
+     *
+     * @param paramLatDeg    Latitude. Range: [-90, 90].
+     * @param paramLonDeg    Longitude. Range: Any double, wrapped along the earth to [-180, 180].
+     * @param paramType      Specifies whether to return only the shortest local, the international, or all mapcodes.
+     *                       Range: all, local, international.
+     * @param paramPrecision Precision specifier; specifies additional mapcode digits. Range: [0, 2].
+     * @param paramTerritory Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
+     *                       Range: any valid territory code, alpha or numeric.
+     * @param paramInclude   Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
+     *                       Range: none, offset.
+     * @param response       One or more mapcodes.
+     * @throws ApiException API exception, translated into HTTP status code.
+     */
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -70,12 +96,20 @@ public interface MapcodeResource {
     void convertLatLonToMapcode(
             @PathParam(PARAM_LAT_DEG) final double paramLatDeg,
             @PathParam(PARAM_LON_DEG) final double paramLonDeg,
-            @PathParam(PARAM_PRECISION) @DefaultValue("0") final int paramPrecision,
             @PathParam(PARAM_TYPE) @Nonnull final String paramType,
+            @QueryParam(PARAM_PRECISION) @DefaultValue("0") final int paramPrecision,
             @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("none") @Nonnull final String paramInclude,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
+    /**
+     * Convert a mapcode into a lat/lon pair.
+     *
+     * @param paramMapcode   Mapcode to convert.
+     * @param paramTerritory Optional territory code. Range: any valid territory code, alpha or numeric.
+     * @param response       Lat/lon.
+     * @throws ApiException API exception, translated into HTTP status code.
+     */
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -85,6 +119,14 @@ public interface MapcodeResource {
             @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
+    /**
+     * Get a list of all valid territory codes.
+     *
+     * @param offset   Return values from 'offset'. Range: >= 0 counts from start, < 0 counts from end.
+     * @param count    Return 'count' values at most. Range: >= 0.
+     * @param response Territory codes and information.
+     * @throws ApiException API exception, translated into HTTP status code.
+     */
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -94,6 +136,13 @@ public interface MapcodeResource {
             @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) final int count,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
+    /**
+     * Get info for a specific territory.
+     *
+     * @param paramTerritory Territory code. Range: any valid territory code, alpha or numeric.
+     * @param response       Territory information.
+     * @throws ApiException API exception, translated into HTTP status code.
+     */
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

@@ -41,7 +41,7 @@ public class RootResourceImpl implements RootResource {
             "MAPCODE REST SERVICES\n" +
             "---------------------\n\n" +
 
-            "GET /mapcode/to/{lat}/{lon}/[all|local|international] [?precision=[0|1|2] & territory={code}]\n" +
+            "GET /mapcode/to/{lat}/{lon}/[all|local|international] [?precision=[0|1|2]&territory={territory}&include={none|offset}]\n" +
             "   Convert latitude/longitude to one or more mapcodes.\n\n" +
 
             "   Path parameters:\n" +
@@ -53,7 +53,8 @@ public class RootResourceImpl implements RootResource {
 
             "   Query parameters:\n" +
             "   precision       : precision, range [0, 2] (default=0)\n" +
-            "   territory       : territory context, numeric or alpha code\n\n" +
+            "   territory       : territory context, numeric or alpha code\n" +
+            "   include         : include offset from mapcode center to lat/lon (in meters)\n\n" +
 
             "GET /mapcode/from/{mapcode} [?territory={code}]\n" +
             "   Convert a mapcode into a latitude/longitude pair\n\n" +
@@ -64,7 +65,7 @@ public class RootResourceImpl implements RootResource {
             "   Path parameters:\n" +
             "   territory       : territory context, numeric or alpha code\n" +
 
-            "GET /mapcode/territory [?offset={offset} & count={count}]\n" +
+            "GET /mapcode/territory [?offset={offset}&count={count}]\n" +
             "   Return a list of all valid numeric and alpha territory codes.\n\n" +
 
             "   Query parameters:\n" +
