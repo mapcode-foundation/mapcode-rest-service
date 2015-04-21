@@ -26,6 +26,7 @@ public final class PointBinder extends ApiDataBinder {
 
     @Nonnull
     private Double latDeg;
+
     @Nonnull
     private Double lonDeg;
 

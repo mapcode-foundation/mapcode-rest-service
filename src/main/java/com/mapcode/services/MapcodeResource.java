@@ -122,8 +122,8 @@ public interface MapcodeResource {
     /**
      * Get a list of all valid territory codes.
      *
-     * @param offset   Return values from 'offset'. Range: >= 0 counts from start, < 0 counts from end.
-     * @param count    Return 'count' values at most. Range: >= 0.
+     * @param offset   Return values from 'offset'. Range: &gt;= 0 counts from start, &lt; 0 counts from end.
+     * @param count    Return 'count' values at most. Range: &gt;= 0.
      * @param response Territory codes and information.
      * @throws ApiException API exception, translated into HTTP status code.
      */

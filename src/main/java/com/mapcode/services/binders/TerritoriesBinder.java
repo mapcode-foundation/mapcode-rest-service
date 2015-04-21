@@ -32,12 +32,15 @@
 
 package com.mapcode.services.binders;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.tomtom.speedtools.apivalidation.ApiDataBinder;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode"})
+@JsonInclude(Include.NON_EMPTY)
 public final class TerritoriesBinder extends ApiDataBinder {
 
     @Nonnull
