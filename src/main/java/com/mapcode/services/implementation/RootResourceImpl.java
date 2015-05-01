@@ -16,7 +16,6 @@
 
 package com.mapcode.services.implementation;
 
-import com.google.common.io.BaseEncoding;
 import com.mapcode.services.ApiConstants;
 import com.mapcode.services.RootResource;
 import com.mapcode.services.dto.VersionDTO;
@@ -38,8 +37,8 @@ public class RootResourceImpl implements RootResource {
 
     @Nonnull
     private static final String HELP_TEXT = "" +
-            "MAPCODE REST SERVICES\n" +
-            "---------------------\n\n" +
+            "Mapcode API\n" +
+            "-----------\n\n" +
 
             "GET /mapcode/to/{lat}/{lon}/[all|local|international] [?precision=[0|1|2]&territory={territory}&include={none|offset}]\n" +
             "   Convert latitude/longitude to one or more mapcodes.\n\n" +
@@ -92,13 +91,7 @@ public class RootResourceImpl implements RootResource {
 
     @Override
     @Nonnull
-    public String getRoot() {
-        return getHelp();
-    }
-
-    @Override
-    @Nonnull
-    public String getHelp() {
+    public String getHelpHTML() {
         return "<html><pre>\n" + HELP_TEXT + "</pre></html>\n";
     }
 
@@ -123,39 +116,5 @@ public class RootResourceImpl implements RootResource {
 
         // Build the response and return it.
         response.setResponse(Response.ok(binder).build());
-    }
-
-    @Override
-    @Nonnull
-    public byte[] getFavicon() {
-
-        final String faviconBase64 = "" +
-                "AAABAAEAEBAAAAEACABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEA" +
-                "AAAAAAAAAAAAGhYLABsWCwAyKxwA3eLrAPj6/AC4v8wAb3BqACgiFAApIhQAUU1CAFNMPwCIi40A" +
-                "iIyQAEQ9LgB6fHwAMSsdAEpCNADi5u8ATEc6AE1HOgBgXVcAPzgpABQRBwCKiosALCYYAHZ3dwCt" +
-                "tcIAMCobAFhSSQBFPjIABAMCAEpCNQBxbWMApqu3AIOFhgCXnKYAdnRvACwlFgB1d3gAmqCpAImP" +
-                "kgACAgAAjJCVAJ2lrwBma2cASUEzAFxWTQBLRTYATEU2AJSXmABKRDwAIx0RALzBzACWm6QAUEo8" +
-                "ACghFADS2OMA0dnmAFJKPACDiZMAh4uQAEI7KwAYFAkABAIBAGxpYgBHQTQANC0dAH2BhQBJRjoA" +
-                "4ujvADkyIwClrrkA5unyADw2JgCpsrwAc3V0AD43KQBiYV0AVU9DAFRRSQCfpK4AMy0eAAYFAgCn" +
-                "rroAJyATAP///gCpsboAKSQWAEA3KgB0dngAdnh1AFVPRABlY2QAwsrXAFdPRABraWQAjpSbAHyA" +
-                "hABcVU0Aj5SbAKKptQB/gIQAODEiAAwIAwBeWVAAXlpTAGBaUwCChYoAvcPMAP///wASDwYAlp6n" +
-                "AJiepwBBOisAZ2RfAFZSRQBFPzEAamhiAI6SlgBaVEsAHxcMAFpVTgB6gosAXVlRAIGEiADP1uEA" +
-                "UEg6AHVzcQB0dHQAZWJaAMHJ1gBFPi8ARj8yALK6xQCOkpcAXFVGAKCotABbV0wAXFhPAG5taQBc" +
-                "WVIAcW9mAIGEiQD9/v4A/v7+AGNcUgBiXVUAc3NyAEA5KgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
-                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
-                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
-                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
-                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
-                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
-                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
-                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
-                "AAAAUm8RQgJ9U4srOZFubm5ublyVAIxHRmgWGn4Sbm5ubm6ACziECIVqUYoQckBWbm5uKBVUGXxn" +
-                "bIlBDi+UG25ubgQ9YTQBOg8kLhxpMSdubm6RPkgJWjYlcU11DnZkbm5uboNlLH81PI9gE3M7TG5u" +
-                "bm6QKnAHMGZQICZ3S25ubm5ubnldIl9DNwOCDI1ubm5ubm5Yay1FdD9PYiltDW5ubm5uP457ThR4" +
-                "FzJZVW5ubm5ubkkfhh6SCh1bGAZubm5ubm5uSoghM2Mjeldubm5ubm5ubm6Hk4FEXgVubm5ubm5u" +
-                "bm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
-                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-        final byte[] faviconDecoded = BaseEncoding.base64().decode(faviconBase64);
-        return faviconDecoded;
     }
 }

@@ -25,7 +25,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("/")
+@Path("/mapcode")
 public interface RootResource {
 
     /**
@@ -36,18 +36,7 @@ public interface RootResource {
     @GET
     @Produces(MediaType.TEXT_HTML)
     @Nonnull
-    String getRoot();
-
-    /**
-     * This method provides help info.
-     *
-     * @return Returns help text as HTML.
-     */
-    @Path("help")
-    @GET
-    @Produces(MediaType.TEXT_HTML)
-    @Nonnull
-    String getHelp();
+    String getHelpHTML();
 
     /**
      * This method provides a version number.
@@ -58,15 +47,4 @@ public interface RootResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("version")
     void getVersion(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response);
-
-    /**
-     * Get favicon.ico for help page.
-     *
-     * @return Returns a GIF icon.
-     */
-    @GET
-    @Produces("image/gif")
-    @Path("favicon.ico")
-    @Nonnull
-    byte[] getFavicon();
 }
