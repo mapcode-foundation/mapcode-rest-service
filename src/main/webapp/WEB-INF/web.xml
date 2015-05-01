@@ -33,10 +33,7 @@
             <!-- Include the modules we need from the SpeedTools framework. -->
             com.tomtom.speedtools.rest.ServicesModule,
 
-            <!-- REST API services. -->
-            com.mapcode.services.ServicesModule,
-
-            <!-- Include the bootstrap module for deployment. -->
+            <!-- Include the REST API and bootstrap module for deployment. -->
             com.mapcode.services.deployment.DeploymentModule
         </param-value>
     </context-param>
