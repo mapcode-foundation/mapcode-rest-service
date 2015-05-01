@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.mapcode.services.binders;
+package com.mapcode.services.dto;
 
 import com.mapcode.services.ApiConstants;
-import com.tomtom.speedtools.apivalidation.ApiDataBinder;
+import com.tomtom.speedtools.apivalidation.ApiDTO;
 
 import javax.annotation.Nonnull;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode"})
-public final class PointBinder extends ApiDataBinder {
+public final class PointDTO extends ApiDTO {
 
     @Nonnull
     private Double latDeg;
@@ -38,7 +38,7 @@ public final class PointBinder extends ApiDataBinder {
         validator().done();
     }
 
-    public PointBinder(
+    public PointDTO(
             @Nonnull final Double latDeg,
             @Nonnull final Double lonDeg) {
         this.latDeg = latDeg;
@@ -47,7 +47,7 @@ public final class PointBinder extends ApiDataBinder {
 
     @SuppressWarnings("UnusedDeclaration")
     @Deprecated
-    private PointBinder() {
+    private PointDTO() {
         // Default constructor required by JAX-B.
         super();
     }

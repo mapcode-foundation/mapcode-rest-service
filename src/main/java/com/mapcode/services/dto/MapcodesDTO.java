@@ -14,48 +14,50 @@
  * limitations under the License.
  */
 
-package com.mapcode.services.binders;
+package com.mapcode.services.dto;
 
-import com.mapcode.services.ApiConstants;
-import com.tomtom.speedtools.apivalidation.ApiDataBinder;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.tomtom.speedtools.apivalidation.ApiDTO;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode"})
-public final class VersionBinder extends ApiDataBinder {
+@JsonInclude(Include.NON_EMPTY)
+public final class MapcodesDTO extends ApiDTO {
 
     @Nonnull
-    private String version;
+    private List<MapcodeDTO> mapcodes;
 
     @Override
     public void validate() {
         validator().start();
-        validator().checkString(true, "version", version,
-                ApiConstants.API_VERSION_LEN_MIN,
-                ApiConstants.API_VERSION_LEN_MAX);
+        validator().checkNotNull(true, "mapcodes", mapcodes);
         validator().done();
     }
 
-    public VersionBinder(@Nonnull final String version) {
-        this.version = version;
+    public MapcodesDTO(@Nonnull final List<MapcodeDTO> mapcodes) {
+        this.mapcodes = mapcodes;
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @Deprecated
-    private VersionBinder() {
+    private MapcodesDTO() {
         // Default constructor required by JAX-B.
         super();
     }
 
     @Nonnull
-    public String getVersion() {
+    public List<MapcodeDTO> getMapcodes() {
         beforeGet();
-        return version;
+        return mapcodes;
     }
 
-    public void setVersion(@Nonnull final String version) {
+    public void setMapcode(@Nonnull final List<MapcodeDTO> mapcodes) {
         beforeSet();
-        assert version != null;
-        this.version = version;
+        assert mapcodes != null;
+        this.mapcodes = mapcodes;
     }
+
 }

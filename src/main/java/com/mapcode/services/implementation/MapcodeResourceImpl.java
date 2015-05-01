@@ -22,8 +22,8 @@ import com.mapcode.*;
 import com.mapcode.Territory.NameFormat;
 import com.mapcode.services.ApiConstants;
 import com.mapcode.services.MapcodeResource;
-import com.mapcode.services.binders.*;
-import com.tomtom.speedtools.apivalidation.ApiDataBinder;
+import com.mapcode.services.dto.*;
+import com.tomtom.speedtools.apivalidation.ApiDTO;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiIntegerOutOfRangeException;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiInvalidFormatException;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiNotFoundException;
@@ -137,7 +137,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
 
             // Create result body.
-            ApiDataBinder binder;
+            ApiDTO dto;
             switch (type) {
                 case ALL: {
                     final List<Mapcode> mapcodes;
@@ -146,14 +146,12 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     } else {
                         mapcodes = MapcodeCodec.encode(latDeg, lonDeg, territory);
                     }
-                    final MapcodesBinder mapcodesBinder = new MapcodesBinder(mapcodes.stream().
-                            map(x -> new MapcodeBinder(
+                    dto = new MapcodesDTO(mapcodes.stream().
+                            map(x -> new MapcodeDTO(
                                     getMapcodePrecision(x, precision),
                                     x.getTerritory(),
                                     (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, x, precision) : null)).
                             collect(Collectors.toList()));
-                    mapcodesBinder.validate();
-                    binder = mapcodesBinder;
                     break;
                 }
 
@@ -164,32 +162,29 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     } else {
                         mapcode = MapcodeCodec.encodeToShortest(latDeg, lonDeg, territory);
                     }
-                    final MapcodeBinder mapcodeBinder = new MapcodeBinder(
+                    dto = new MapcodeDTO(
                             getMapcodePrecision(mapcode, precision),
                             mapcode.getTerritory(),
                             (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);
-                    mapcodeBinder.validate();
-                    binder = mapcodeBinder;
                     break;
                 }
 
                 case INTERNATIONAL: {
                     final List<Mapcode> mapcodes = MapcodeCodec.encode(latDeg, lonDeg);
                     final Mapcode mapcode = mapcodes.get(mapcodes.size() - 1);
-                    final MapcodeBinder mapcodeBinder = new MapcodeBinder(
+                    dto = new MapcodeDTO(
                             getMapcodePrecision(mapcode, precision),
                             mapcode.getTerritory(),
                             (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);
-                    mapcodeBinder.validate();
-                    binder = mapcodeBinder;
                     break;
                 }
 
                 default:
                     assert false;
-                    binder = null;
+                    dto = null;
             }
-            response.setResponse(Response.ok(binder).build());
+            dto.validate();
+            response.setResponse(Response.ok(dto).build());
 
             // The response is already set within this method body.
             return Futures.successful(null);
@@ -229,9 +224,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 } else {
                     point = MapcodeCodec.decode(paramMapcode, territory);
                 }
-                final PointBinder binder = new PointBinder(point.getLatDeg(), point.getLonDeg());
-                binder.validate();
-                response.setResponse(Response.ok(binder).build());
+                final PointDTO dto = new PointDTO(point.getLatDeg(), point.getLonDeg());
+                dto.validate();
+                response.setResponse(Response.ok(dto).build());
             } catch (final UnknownMapcodeException e) {
                 throw new ApiNotFoundException(e.getMessage());
             }
@@ -259,10 +254,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
             Joiner.on('|').join(Arrays.asList(Territory.values()).stream().
                     map(x -> x.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS)).collect(Collectors.toList()));
 
-            final List<TerritoryBinder> allTerritories = Arrays.asList(Territory.values()).stream().
+            final List<TerritoryDTO> allTerritories = Arrays.asList(Territory.values()).stream().
                     map(x -> {
                         final Territory parentTerritory = x.getParentTerritory();
-                        return new TerritoryBinder(
+                        return new TerritoryDTO(
                                 x.getTerritoryCode(),
                                 x.getFullName(),
                                 (parentTerritory == null) ? null : parentTerritory.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
@@ -275,9 +270,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final int nrTerritories = allTerritories.size();
             final int fromIndex = (offset < 0) ? Math.max(0, nrTerritories + offset) : Math.min(nrTerritories, offset);
             final int toIndex = Math.min(nrTerritories, fromIndex + count);
-            final TerritoriesBinder binder = new TerritoriesBinder(allTerritories.subList(fromIndex, toIndex));
-            binder.validate();
-            response.setResponse(Response.ok(binder).build());
+            final TerritoriesDTO dto = new TerritoriesDTO(allTerritories.subList(fromIndex, toIndex));
+            dto.validate();
+            response.setResponse(Response.ok(dto).build());
 
             // The response is already set within this method body.
             return Futures.successful(null);
@@ -307,15 +302,15 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
 
             final Territory parentTerritory = territory.getParentTerritory();
-            final TerritoryBinder binder = new TerritoryBinder(
+            final TerritoryDTO dto = new TerritoryDTO(
                     territory.getTerritoryCode(),
                     territory.getFullName(),
                     (parentTerritory == null) ? null : parentTerritory.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
                     territory.getAliases(),
                     territory.getFullNameAliases()
             );
-            binder.validate();
-            response.setResponse(Response.ok(binder).build());
+            dto.validate();
+            response.setResponse(Response.ok(dto).build());
 
             // The response is already set within this method body.
             return Futures.successful(null);

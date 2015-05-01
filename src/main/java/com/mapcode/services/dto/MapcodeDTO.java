@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package com.mapcode.services.binders;
+package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.mapcode.Territory;
 import com.mapcode.services.ApiConstants;
-import com.tomtom.speedtools.apivalidation.ApiDataBinder;
+import com.tomtom.speedtools.apivalidation.ApiDTO;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode"})
 @JsonInclude(Include.NON_EMPTY)
-public final class MapcodeBinder extends ApiDataBinder {
+public final class MapcodeDTO extends ApiDTO {
 
     @Nonnull
     private String mapcode;
@@ -49,7 +49,7 @@ public final class MapcodeBinder extends ApiDataBinder {
         validator().done();
     }
 
-    public MapcodeBinder(
+    public MapcodeDTO(
             @Nonnull final String mapcode,
             @Nonnull final Territory territory,
             @Nullable final Double offsetMeters) {
@@ -60,7 +60,7 @@ public final class MapcodeBinder extends ApiDataBinder {
 
     @SuppressWarnings("UnusedDeclaration")
     @Deprecated
-    private MapcodeBinder() {
+    private MapcodeDTO() {
         // Default constructor required by JAX-B.
         super();
     }

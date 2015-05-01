@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package com.mapcode.services.binders;
+package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.mapcode.services.ApiConstants;
-import com.tomtom.speedtools.apivalidation.ApiDataBinder;
+import com.tomtom.speedtools.apivalidation.ApiDTO;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode"})
 @JsonInclude(Include.NON_EMPTY)
-public final class TerritoryBinder extends ApiDataBinder {
+public final class TerritoryDTO extends ApiDTO {
 
     @Nonnull
     private Integer territory;
@@ -54,11 +54,11 @@ public final class TerritoryBinder extends ApiDataBinder {
         validator().done();
     }
 
-    public TerritoryBinder(@Nonnull final Integer territory,
-                           @Nonnull final String fullName,
-                           @Nullable final String parentTerritory,
-                           @Nonnull final String[] aliases,
-                           @Nonnull final String[] fullNameAliases) {
+    public TerritoryDTO(@Nonnull final Integer territory,
+                        @Nonnull final String fullName,
+                        @Nullable final String parentTerritory,
+                        @Nonnull final String[] aliases,
+                        @Nonnull final String[] fullNameAliases) {
         this.territory = territory;
         this.fullName = fullName;
         this.parentTerritory = parentTerritory;
@@ -68,7 +68,7 @@ public final class TerritoryBinder extends ApiDataBinder {
 
     @SuppressWarnings("UnusedDeclaration")
     @Deprecated
-    private TerritoryBinder() {
+    private TerritoryDTO() {
         // Default constructor required by JAX-B.
         super();
     }

@@ -19,7 +19,7 @@ package com.mapcode.services.implementation;
 import com.google.common.io.BaseEncoding;
 import com.mapcode.services.ApiConstants;
 import com.mapcode.services.RootResource;
-import com.mapcode.services.binders.VersionBinder;
+import com.mapcode.services.dto.VersionDTO;
 import com.tomtom.speedtools.maven.MavenProperties;
 import org.jboss.resteasy.annotations.Suspend;
 import org.jboss.resteasy.spi.AsynchronousResponse;
@@ -118,7 +118,7 @@ public class RootResourceImpl implements RootResource {
 
         // Create the response binder and validate it (returned objects must also be validated!).
         // Validation errors are automatically caught as exceptions and returned by the framework.
-        final VersionBinder binder = new VersionBinder(pomVersion); // Create a binder.
+        final VersionDTO binder = new VersionDTO(pomVersion); // Create a binder.
         binder.validate();                                          // You must validate it before using it.
 
         // Build the response and return it.

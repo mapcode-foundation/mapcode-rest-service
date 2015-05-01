@@ -30,6 +30,8 @@ public interface RootResource {
 
     /**
      * This method provides help info.
+     *
+     * @return Returns help text as HTML.
      */
     @GET
     @Produces(MediaType.TEXT_HTML)
@@ -38,6 +40,8 @@ public interface RootResource {
 
     /**
      * This method provides help info.
+     *
+     * @return Returns help text as HTML.
      */
     @Path("help")
     @GET
@@ -45,6 +49,11 @@ public interface RootResource {
     @Nonnull
     String getHelp();
 
+    /**
+     * This method provides a version number.
+     *
+     * @param response Returns a version number as JSON.
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("version")
@@ -53,7 +62,7 @@ public interface RootResource {
     /**
      * Get favicon.ico for help page.
      *
-     * Return HTTP status 200.
+     * @return Returns a GIF icon.
      */
     @GET
     @Produces("image/gif")

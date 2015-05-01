@@ -30,21 +30,21 @@
  * limitations under the License.
  */
 
-package com.mapcode.services.binders;
+package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.tomtom.speedtools.apivalidation.ApiDataBinder;
+import com.tomtom.speedtools.apivalidation.ApiDTO;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode"})
 @JsonInclude(Include.NON_EMPTY)
-public final class TerritoriesBinder extends ApiDataBinder {
+public final class TerritoriesDTO extends ApiDTO {
 
     @Nonnull
-    private List<TerritoryBinder> territories;
+    private List<TerritoryDTO> territories;
 
     @Override
     public void validate() {
@@ -53,24 +53,24 @@ public final class TerritoriesBinder extends ApiDataBinder {
         validator().done();
     }
 
-    public TerritoriesBinder(@Nonnull final List<TerritoryBinder> territories) {
+    public TerritoriesDTO(@Nonnull final List<TerritoryDTO> territories) {
         this.territories = territories;
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @Deprecated
-    private TerritoriesBinder() {
+    private TerritoriesDTO() {
         // Default constructor required by JAX-B.
         super();
     }
 
     @Nonnull
-    public List<TerritoryBinder> getTerritories() {
+    public List<TerritoryDTO> getTerritories() {
         beforeGet();
         return territories;
     }
 
-    public void setTerritories(@Nonnull final List<TerritoryBinder> territories) {
+    public void setTerritories(@Nonnull final List<TerritoryDTO> territories) {
         beforeSet();
         assert territories != null;
         this.territories = territories;
