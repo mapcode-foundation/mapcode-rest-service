@@ -30,10 +30,18 @@ To build and run the REST API, type:
     mvn clean install
     mvn jetty:run
     
-Try out if the web services work by entering the following URL in your web browser:
+Try out if the web services work by entering the following URL in your web browser
+(this should show you a HTML help page):
 
-    http://localhost:8080/help
+    http://localhost:8080/
     
 Or use a tool like cURL:
     
-    curl -X GET http://localhost:8080/help
+    curl -X GET http://localhost:8080
+    
+The source uses Java JDK 1.8, so make sure your Java compiler is set to 1.8, for example
+using something like (MacOSX):
+
+    export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
+    
+
