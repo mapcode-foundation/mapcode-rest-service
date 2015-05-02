@@ -43,5 +43,3 @@ The source uses Java JDK 1.8, so make sure your Java compiler is set to 1.8, for
 using something like (MacOSX):
 
     export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
-    
-

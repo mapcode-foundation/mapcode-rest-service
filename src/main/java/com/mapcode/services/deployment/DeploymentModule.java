@@ -48,7 +48,7 @@ public class DeploymentModule extends GuiceConfigurationModule {
     public DeploymentModule() {
         super(
             "classpath:speedtools.default.properties",      // Default set required by SpeedTools.
-            "classpath:services.properties");               // Additional property file(s).
+            "classpath:mapcode.properties");                // Additional property file(s).
     }
 
     @Override

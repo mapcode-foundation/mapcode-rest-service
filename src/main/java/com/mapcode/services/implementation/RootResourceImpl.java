@@ -37,7 +37,7 @@ public class RootResourceImpl implements RootResource {
 
     @Nonnull
     private static final String HELP_TEXT = "" +
-            "Mapcode API\n" +
+            "MAPCODE API\n" +
             "-----------\n\n" +
 
             "GET /mapcode/to/{lat}/{lon}/[all|local|international] [?precision=[0|1|2]&territory={territory}&include={none|offset}]\n" +
