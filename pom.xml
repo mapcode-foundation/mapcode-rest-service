@@ -95,7 +95,7 @@
         <mapcode.version>1.41</mapcode.version>
         <resteasy.version>3.0.11.Final</resteasy.version>
         <slf4j.version>1.7.2</slf4j.version>
-        <speedtools.version>3.0.4</speedtools.version>
+        <speedtools.version>3.0.5</speedtools.version>
 
         <maven-compiler-plugin.version>3.2</maven-compiler-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
