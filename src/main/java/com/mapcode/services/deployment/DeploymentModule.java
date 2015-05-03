@@ -24,6 +24,11 @@ import com.mapcode.services.implementation.MapcodeResourceImpl;
 import com.mapcode.services.implementation.RootResourceImpl;
 import com.tomtom.speedtools.guice.GuiceConfigurationModule;
 import com.tomtom.speedtools.json.Json;
+import com.tomtom.speedtools.tracer.LoggingTraceHandler;
+import com.tomtom.speedtools.tracer.TracerFactory;
+import com.tomtom.speedtools.tracer.mongo.MongoDBTraceHandler;
+import com.tomtom.speedtools.tracer.mongo.MongoDBTraceProperties;
+import com.tomtom.speedtools.tracer.mongo.MongoDBTraceStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +62,12 @@ public class DeploymentModule extends GuiceConfigurationModule {
 
         super.configure(binder);
 
+        // Bind these classes if you wish to use the SpeedTools MongoDB tracing framework.
+        TracerFactory.setEnabled(true);
+        binder.bind(MongoDBTraceProperties.class).asEagerSingleton();
+        binder.bind(MongoDBTraceStream.class);
+        binder.bind(MongoDBTraceHandler.class).asEagerSingleton();
+        binder.bind(LoggingTraceHandler.class).asEagerSingleton();
 
         // Bind APIs to their implementation.
         binder.bind(RootResource.class).to(RootResourceImpl.class).in(Singleton.class);

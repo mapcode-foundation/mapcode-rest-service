@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-@Path("/mapcode")
+@Path("/")
 public interface MapcodeResource {
 
     public enum ParamType {

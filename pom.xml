@@ -225,6 +225,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.tomtom.speedtools</groupId>
+            <artifactId>mongodb</artifactId>
+            <version>${speedtools.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.mapcode</groupId>
             <artifactId>mapcode</artifactId>
             <version>${mapcode.version}</version>
