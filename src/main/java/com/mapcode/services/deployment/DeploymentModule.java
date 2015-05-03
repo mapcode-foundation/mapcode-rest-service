@@ -72,7 +72,6 @@ public class DeploymentModule extends GuiceConfigurationModule {
         // Bind APIs to their implementation.
         binder.bind(RootResource.class).to(RootResourceImpl.class).in(Singleton.class);
         binder.bind(MapcodeResource.class).to(MapcodeResourceImpl.class).in(Singleton.class);
-        LOG.info("configure: GET / -- Get help text for web services");
 
         // Bind start-up checking class (example).
         binder.bind(StartupCheck.class).asEagerSingleton();
