@@ -22,7 +22,6 @@ import com.mapcode.*;
 import com.mapcode.Territory.NameFormat;
 import com.mapcode.services.ApiConstants;
 import com.mapcode.services.MapcodeResource;
-import com.mapcode.services.MapcodeResourceTracer;
 import com.mapcode.services.dto.*;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiIntegerOutOfRangeException;
@@ -31,6 +30,7 @@ import com.tomtom.speedtools.apivalidation.exceptions.ApiNotFoundException;
 import com.tomtom.speedtools.geometry.Geo;
 import com.tomtom.speedtools.geometry.GeoPoint;
 import com.tomtom.speedtools.rest.ResourceProcessor;
+import com.tomtom.speedtools.tracer.Traceable;
 import com.tomtom.speedtools.tracer.TracerFactory;
 import com.tomtom.speedtools.utils.MathUtils;
 import org.jboss.resteasy.spi.AsynchronousResponse;
@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
  */
 public class MapcodeResourceImpl implements MapcodeResource {
     private static final Logger LOG = LoggerFactory.getLogger(MapcodeResourceImpl.class);
-    private static final MapcodeResourceTracer TRACER = TracerFactory.getTracer(MapcodeResourceImpl.class, MapcodeResourceTracer.class);
+    private static final Tracer TRACER = TracerFactory.getTracer(MapcodeResourceImpl.class, Tracer.class);
 
     private final ResourceProcessor processor;
     private final String listOfAllTerritories = Joiner.on('|').join(Arrays.asList(Territory.values()).stream().
@@ -140,55 +140,59 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
             TRACER.eventLatLonToMapcode(latDeg, lonDeg, territory, precision, type.name(), include.name());
 
-            // Create result body.
-            ApiDTO dto;
-            switch (type) {
-                case ALL: {
-                    final List<Mapcode> mapcodes;
-                    if (territory == null) {
-                        mapcodes = MapcodeCodec.encode(latDeg, lonDeg);
-                    } else {
-                        mapcodes = MapcodeCodec.encode(latDeg, lonDeg, territory);
+            try {
+                // Create result body.
+                ApiDTO dto;
+                switch (type) {
+                    case ALL: {
+                        final List<Mapcode> mapcodes;
+                        if (territory == null) {
+                            mapcodes = MapcodeCodec.encode(latDeg, lonDeg);
+                        } else {
+                            mapcodes = MapcodeCodec.encode(latDeg, lonDeg, territory);
+                        }
+                        dto = new MapcodesDTO(mapcodes.stream().
+                                map(x -> new MapcodeDTO(
+                                        getMapcodePrecision(x, precision),
+                                        x.getTerritory(),
+                                        (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, x, precision) : null)).
+                                collect(Collectors.toList()));
+                        break;
                     }
-                    dto = new MapcodesDTO(mapcodes.stream().
-                            map(x -> new MapcodeDTO(
-                                    getMapcodePrecision(x, precision),
-                                    x.getTerritory(),
-                                    (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, x, precision) : null)).
-                            collect(Collectors.toList()));
-                    break;
-                }
 
-                case LOCAL: {
-                    final Mapcode mapcode;
-                    if (territory == null) {
-                        mapcode = MapcodeCodec.encodeToShortest(latDeg, lonDeg);
-                    } else {
-                        mapcode = MapcodeCodec.encodeToShortest(latDeg, lonDeg, territory);
+                    case LOCAL: {
+                        final Mapcode mapcode;
+                        if (territory == null) {
+                            mapcode = MapcodeCodec.encodeToShortest(latDeg, lonDeg);
+                        } else {
+                            mapcode = MapcodeCodec.encodeToShortest(latDeg, lonDeg, territory);
+                        }
+                        dto = new MapcodeDTO(
+                                getMapcodePrecision(mapcode, precision),
+                                mapcode.getTerritory(),
+                                (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);
+                        break;
                     }
-                    dto = new MapcodeDTO(
-                            getMapcodePrecision(mapcode, precision),
-                            mapcode.getTerritory(),
-                            (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);
-                    break;
-                }
 
-                case INTERNATIONAL: {
-                    final List<Mapcode> mapcodes = MapcodeCodec.encode(latDeg, lonDeg);
-                    final Mapcode mapcode = mapcodes.get(mapcodes.size() - 1);
-                    dto = new MapcodeDTO(
-                            getMapcodePrecision(mapcode, precision),
-                            mapcode.getTerritory(),
-                            (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);
-                    break;
-                }
+                    case INTERNATIONAL: {
+                        final List<Mapcode> mapcodes = MapcodeCodec.encode(latDeg, lonDeg);
+                        final Mapcode mapcode = mapcodes.get(mapcodes.size() - 1);
+                        dto = new MapcodeDTO(
+                                getMapcodePrecision(mapcode, precision),
+                                mapcode.getTerritory(),
+                                (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);
+                        break;
+                    }
 
-                default:
-                    assert false;
-                    dto = null;
+                    default:
+                        assert false;
+                        dto = null;
+                }
+                dto.validate();
+                response.setResponse(Response.ok(dto).build());
+            } catch (final UnknownMapcodeException ignored) {
+                throw new ApiNotFoundException("No mapcode found for lat=" + latDeg + ", lon=" + lonDeg + ", territory=" + territory);
             }
-            dto.validate();
-            response.setResponse(Response.ok(dto).build());
 
             // The response is already set within this method body.
             return Futures.successful(null);
@@ -233,7 +237,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 dto.validate();
                 response.setResponse(Response.ok(dto).build());
             } catch (final UnknownMapcodeException e) {
-                throw new ApiNotFoundException(e.getMessage());
+                throw new ApiNotFoundException("No mapcode found for mapcode='" + paramMapcode + "', territory=" + territory);
             }
 
             // The response is already set within this method body.
@@ -352,6 +356,19 @@ public class MapcodeResourceImpl implements MapcodeResource {
             default:
                 return mapcode.getMapcodePrecision0();
         }
+    }
+
+    /**
+     * This interface defines a Tracer interface for mapcode service events.
+     */
+    public interface Tracer extends Traceable {
+
+        // A request to translate a lat/lon to a mapcode is made.
+        void eventLatLonToMapcode(double latDeg, double lonDeg, @Nullable Territory territory,
+                                  int precision, @Nonnull String type, @Nonnull String include);
+
+        // A request to translate a mapcode to a lat/lon is made.
+        void eventMapcodeToLatLon(@Nonnull String mapcode, @Nullable Territory territory);
     }
 }
 
