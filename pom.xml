@@ -28,7 +28,7 @@
 
     <name>Mapcode REST API Web Service</name>
     <description>
-        This application provide a REST API web service to mapcodes.
+        This application provides a REST API web service for mapcodes.
         For more info: http://www.mapcode.com
     </description>
 
@@ -42,18 +42,12 @@
             <id>pieter</id>
             <name>Pieter Geelen</name>
             <organization>Mapcode</organization>
-            <roles>
-                <role>Founder</role>
-            </roles>
         </developer>
 
         <developer>
             <id>rijn</id>
             <name>Rijn Buve</name>
             <organization>Mapcode</organization>
-            <roles>
-                <role>Developer</role>
-            </roles>
         </developer>
     </developers>
 
@@ -78,10 +72,7 @@
         <jdk.version>1.8</jdk.version>
 
         <!-- Library versions - these are not re-used from the top-level POM to simulate stand-alone usage. -->
-        <akka.version>2.3.0</akka.version>
-        <annotations.version>9.0.4</annotations.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
-        <equalsverifier.version>1.6</equalsverifier.version>
         <guava.version>17.0</guava.version>
         <guice.version>3.0</guice.version>
         <jackson.version>2.5.2</jackson.version>
