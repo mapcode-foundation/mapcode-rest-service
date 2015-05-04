@@ -38,13 +38,13 @@ import javax.inject.Singleton;
 
 /**
  * This class defines the deployment configuration for Google Guice.
- *
+ * <p>
  * The deployment module "bootstraps" the whole Guice injection process.
- *
+ * <p>
  * It bootstraps the Guice injection and specifies the property files to be read. It also needs to bind the tracer, so
  * they can be used early on in the app. Finally, it can bind a "startup check" (example provided) as an eager
  * singleton, so the system won't start unless a set of basic preconditions are fulfilled.
- *
+ * <p>
  * The "speedtools.default.properties" is required, but its values may be overridden in other property files.
  */
 public class DeploymentModule extends GuiceConfigurationModule {
@@ -52,8 +52,8 @@ public class DeploymentModule extends GuiceConfigurationModule {
 
     public DeploymentModule() {
         super(
-            "classpath:speedtools.default.properties",      // Default set required by SpeedTools.
-            "classpath:mapcode.properties");                // Additional property file(s).
+                "classpath:speedtools.default.properties",      // Default set required by SpeedTools.
+                "classpath:mapcode.properties");                // Additional property file(s).
     }
 
     @Override

@@ -22,6 +22,7 @@ import com.mapcode.*;
 import com.mapcode.Territory.NameFormat;
 import com.mapcode.services.ApiConstants;
 import com.mapcode.services.MapcodeResource;
+import com.mapcode.services.MapcodeResourceTracer;
 import com.mapcode.services.dto.*;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiIntegerOutOfRangeException;
@@ -30,7 +31,6 @@ import com.tomtom.speedtools.apivalidation.exceptions.ApiNotFoundException;
 import com.tomtom.speedtools.geometry.Geo;
 import com.tomtom.speedtools.geometry.GeoPoint;
 import com.tomtom.speedtools.rest.ResourceProcessor;
-import com.tomtom.speedtools.tracer.Traceable;
 import com.tomtom.speedtools.tracer.TracerFactory;
 import com.tomtom.speedtools.utils.MathUtils;
 import org.jboss.resteasy.spi.AsynchronousResponse;
@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
  */
 public class MapcodeResourceImpl implements MapcodeResource {
     private static final Logger LOG = LoggerFactory.getLogger(MapcodeResourceImpl.class);
-    private static final Tracer TRACER = TracerFactory.getTracer(MapcodeResourceImpl.class, Tracer.class);
+    private static final MapcodeResourceTracer TRACER = TracerFactory.getTracer(MapcodeResourceImpl.class, MapcodeResourceTracer.class);
 
     private final ResourceProcessor processor;
     private final String listOfAllTerritories = Joiner.on('|').join(Arrays.asList(Territory.values()).stream().
@@ -138,7 +138,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             } catch (final IllegalArgumentException ignored) {
                 throw new ApiInvalidFormatException(PARAM_INCLUDE, paramInclude, listOfAllIncludes);
             }
-            TRACER.eventLatLonToMapcode(latDeg, lonDeg, type, precision, territory, include);
+            TRACER.eventLatLonToMapcode(latDeg, lonDeg, territory, precision, type.name(), include.name());
 
             // Create result body.
             ApiDTO dto;
@@ -353,19 +353,5 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 return mapcode.getMapcodePrecision0();
         }
     }
-
-    public static interface Tracer extends Traceable {
-
-        // A request to translate a lat/lon to a mapcode is made.
-        void eventLatLonToMapcode(double paramLatDeg,
-                                  double paramLonDeg,
-                                  @Nonnull ParamType type,
-                                  int precision,
-                                  @Nullable Territory territory,
-                                  @Nonnull ParamInclude include);
-
-        // A request to translate a mapcode to a lat/lon is made.
-        void eventMapcodeToLatLon(@Nonnull String mapcode,
-                                  @Nullable Territory territory);
-    }
 }
+

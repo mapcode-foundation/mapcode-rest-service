@@ -83,10 +83,11 @@
         <jsr305.version>3.0.0</jsr305.version>
         <junit.version>4.9</junit.version>
         <log4j.version>1.2.17</log4j.version>
-        <mapcode.version>1.41</mapcode.version>
         <resteasy.version>3.0.11.Final</resteasy.version>
         <slf4j.version>1.7.2</slf4j.version>
-        <speedtools.version>3.0.5</speedtools.version>
+
+        <mapcode.version>1.41.1-SNAPSHOT</mapcode.version>
+        <speedtools.version>3.0.6-SNAPSHOT</speedtools.version>
 
         <maven-compiler-plugin.version>3.2</maven-compiler-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
@@ -165,6 +166,14 @@
                 </configuration>
             </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <!-- Let Maven change these files, to enter POM version and such. -->
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 
     <dependencies>
