@@ -45,7 +45,7 @@ public final class MapcodeDTO extends ApiDTO {
                 ApiConstants.API_MAPCODE_LEN_MIN,
                 ApiConstants.API_MAPCODE_LEN_MAX);
         validator().checkNotNullAndValidateEnum(true, "territory", territory);
-        validator().checkDouble(false, "offsetMeters", offsetMeters, Double.MIN_VALUE, Double.MAX_VALUE, false);
+        validator().checkDouble(false, "offsetMeters", offsetMeters, -Double.MAX_VALUE, Double.MAX_VALUE, false);
         validator().done();
     }
 

@@ -34,7 +34,7 @@ public final class PointDTO extends ApiDTO {
     public void validate() {
         validator().start();
         validator().checkDouble(true, "latDeg", latDeg, ApiConstants.API_LAT_MIN, ApiConstants.API_LAT_MAX, false);
-        validator().checkDouble(true, "lonDeg", lonDeg, Double.MIN_VALUE, Double.MAX_VALUE, false);
+        validator().checkDouble(true, "lonDeg", lonDeg, -Double.MAX_VALUE, Double.MAX_VALUE, false);
         validator().done();
     }
 
