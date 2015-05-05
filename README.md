@@ -33,11 +33,11 @@ To build and run the REST API, type:
 Try out if the web services work by entering the following URL in your web browser
 (this should show you a HTML help page):
 
-    http://localhost:8080/
+    http://localhost:8080/mapcode
     
 Or use a tool like cURL:
     
-    curl -X GET http://localhost:8080
+    curl -X GET http://localhost:8080/mapcode
     
 The source uses Java JDK 1.8, so make sure your Java compiler is set to 1.8, for example
 using something like (MacOSX):

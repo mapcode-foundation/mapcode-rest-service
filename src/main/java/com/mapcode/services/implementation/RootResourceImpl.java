@@ -40,7 +40,7 @@ public class RootResourceImpl implements RootResource {
             "MAPCODE API\n" +
             "-----------\n\n" +
 
-            "GET /to/{lat}/{lon}/[all|local|international] [?precision=[0|1|2]&territory={territory}&include={none|offset}]\n" +
+            "GET /mapcode/to/{lat}/{lon}/[all|local|international] [?precision=[0|1|2]&territory={territory}&include={none|offset}]\n" +
             "   Convert latitude/longitude to one or more mapcodes.\n\n" +
 
             "   Path parameters:\n" +
@@ -55,7 +55,7 @@ public class RootResourceImpl implements RootResource {
             "   territory       : territory context, numeric or alpha code\n" +
             "   include         : include offset from mapcode center to lat/lon (in meters)\n\n" +
 
-            "GET /from/{mapcode} [?territory={code}]\n" +
+            "GET /mapcode/from/{mapcode} [?territory={code}]\n" +
             "   Convert a mapcode into a latitude/longitude pair\n\n" +
 
             "   Path parameters:\n" +
@@ -64,14 +64,14 @@ public class RootResourceImpl implements RootResource {
             "   Path parameters:\n" +
             "   territory       : territory context, numeric or alpha code\n" +
 
-            "GET /territory [?offset={offset}&count={count}]\n" +
+            "GET /mapcode/territory [?offset={offset}&count={count}]\n" +
             "   Return a list of all valid numeric and alpha territory codes.\n\n" +
 
             "   Query parameters:\n" +
             "   offset          : return list from 'offset' (negative value start counting from end)\n" +
             "   count           : return 'count' items at most\n\n" +
 
-            "GET /territory/{code}\n" +
+            "GET /mapcode/territory/{code}\n" +
             "   Return information for a single territory code.\n\n" +
 
             "   Path parameters:\n" +
