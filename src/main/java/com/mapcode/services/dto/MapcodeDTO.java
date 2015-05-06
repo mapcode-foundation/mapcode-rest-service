@@ -18,7 +18,6 @@ package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.mapcode.Territory;
 import com.mapcode.services.ApiConstants;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
 
@@ -33,7 +32,7 @@ public final class MapcodeDTO extends ApiDTO {
     private String mapcode;
 
     @Nonnull
-    private Territory territory;
+    private String territory;
 
     @Nullable
     private Double offsetMeters;
@@ -51,7 +50,7 @@ public final class MapcodeDTO extends ApiDTO {
 
     public MapcodeDTO(
             @Nonnull final String mapcode,
-            @Nonnull final Territory territory,
+            @Nonnull final String territory,
             @Nullable final Double offsetMeters) {
         this.mapcode = mapcode;
         this.territory = territory;
@@ -78,12 +77,12 @@ public final class MapcodeDTO extends ApiDTO {
     }
 
     @Nonnull
-    public Territory getTerritory() {
+    public String getTerritory() {
         beforeGet();
         return territory;
     }
 
-    public void setTerritory(@Nonnull final Territory territory) {
+    public void setTerritory(@Nonnull final String territory) {
         beforeSet();
         assert territory != null;
         this.territory = territory;

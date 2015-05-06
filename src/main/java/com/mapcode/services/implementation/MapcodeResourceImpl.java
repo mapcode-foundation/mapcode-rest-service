@@ -152,10 +152,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
                             mapcodes = MapcodeCodec.encode(latDeg, lonDeg, territory);
                         }
                         dto = new MapcodesDTO(mapcodes.stream().
-                                map(x -> new MapcodeDTO(
-                                        getMapcodePrecision(x, precision),
-                                        x.getTerritory(),
-                                        (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, x, precision) : null)).
+                                map(mapcode -> new MapcodeDTO(
+                                        getMapcodePrecision(mapcode, precision),
+                                        mapcode.getTerritory().toNameFormat(NameFormat.INTERNATIONAL),
+                                        (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null)).
                                 collect(Collectors.toList()));
                         break;
                     }
@@ -169,7 +169,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                         }
                         dto = new MapcodeDTO(
                                 getMapcodePrecision(mapcode, precision),
-                                mapcode.getTerritory(),
+                                mapcode.getTerritory().toNameFormat(NameFormat.INTERNATIONAL),
                                 (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);
                         break;
                     }
@@ -179,7 +179,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                         final Mapcode mapcode = mapcodes.get(mapcodes.size() - 1);
                         dto = new MapcodeDTO(
                                 getMapcodePrecision(mapcode, precision),
-                                mapcode.getTerritory(),
+                                mapcode.getTerritory().toNameFormat(NameFormat.INTERNATIONAL),
                                 (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);
                         break;
                     }
