@@ -78,7 +78,6 @@
         <jackson.version>2.5.2</jackson.version>
         <javax.inject.version>1</javax.inject.version>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
-        <jetty.version>8.1.9.v20130131</jetty.version>
         <joda-time.version>2.3</joda-time.version>
         <jsr305.version>3.0.0</jsr305.version>
         <junit.version>4.9</junit.version>
@@ -93,10 +92,12 @@
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-javadoc-plugin.version>2.10.1</maven-javadoc-plugin.version>
         <maven-jetty-plugin.version>8.1.9.v20130131</maven-jetty-plugin.version>
+        <maven-tomcat-plugin.version>2.2</maven-tomcat-plugin.version>
         <maven-source-plugin.version>2.4</maven-source-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.5</nexus-staging-maven-plugin.version>
 
-        <maven.jetty.port>8080</maven.jetty.port>
+        <maven.httpserver.port>8080</maven.httpserver.port>
+        <maven.httpserver.root>/</maven.httpserver.root>
     </properties>
 
     <distributionManagement>
@@ -149,20 +150,29 @@
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>${jetty.version}</version>
+                <version>${maven-jetty-plugin.version}</version>
                 <configuration>
                     <webApp>
-                        <contextPath>/</contextPath>
+                        <contextPath>${maven.httpserver.root}</contextPath>
                     </webApp>
-                    <scanIntervalSeconds>2</scanIntervalSeconds>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
                     <stopKey>stop</stopKey>
                     <stopPort>9999</stopPort>
                     <connectors>
                         <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-                            <port>${maven.jetty.port}</port>
+                            <port>${maven.httpserver.port}</port>
                             <maxIdleTime>60000</maxIdleTime>
                         </connector>
                     </connectors>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>${maven-tomcat-plugin.version}</version>
+                <configuration>
+                    <path>${maven.httpserver.root}</path>
                 </configuration>
             </plugin>
         </plugins>
@@ -383,20 +393,6 @@
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>${commons-httpclient.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-            <version>${jetty.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-jndi</artifactId>
-            <version>${jetty.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

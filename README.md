@@ -28,7 +28,7 @@ Available methods:
 To build and run the REST API, type:
 
     mvn clean install
-    mvn jetty:run
+    mvn jetty:run           (alternatively, you can use: mvn tomcat7:run)
     
 Try out if the web services work by entering the following URL in your web browser
 (this should show you a HTML help page):
