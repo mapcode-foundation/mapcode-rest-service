@@ -111,10 +111,10 @@ public class RootResourceImpl implements RootResource {
 
         // Create the response binder and validate it (returned objects must also be validated!).
         // Validation errors are automatically caught as exceptions and returned by the framework.
-        final VersionDTO binder = new VersionDTO(pomVersion); // Create a binder.
-        binder.validate();                                          // You must validate it before using it.
+        final VersionDTO result = new VersionDTO(pomVersion); // Create a binder.
+        result.validate();                                          // You must validate it before using it.
 
         // Build the response and return it.
-        response.setResponse(Response.ok(binder).build());
+        response.setResponse(Response.ok(result).build());
     }
 }
