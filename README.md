@@ -5,7 +5,7 @@ Copyright (C) 2014-2015 Stichting Mapcode Foundation (http://www.mapcode.com)
 This application provide a REST API for mapcodes. 
 Available methods:
 
-  GET /mapcode/to/{lat}/{lon}[?type=[all|shortest]&precision=[0|1|2]&territory={code}
+    GET /mapcode/to/{lat}/{lon}[?type=[all|shortest]&precision=[0|1|2]&territory={code}
        Convert a latitude/longitude pair to a mapcode.
        lat       : latitude, range [-90, 90]
        lon       : longitude, range [-180, 180]
@@ -14,14 +14,14 @@ Available methods:
        precision : precision, range [0, 2] (default=0)
        territory : numeric or alpha territory code
 
-  GET /mapcode/from/{mapcode}[?territory={code}]
+    GET /mapcode/from/{mapcode}[?territory={code}]
        Convert a mapcode into a latitude/longitude pair
        territory : numeric or alpha territory code
 
-  GET /mapcode/territory
+    GET /mapcode/territory
        Return a list of all valid numeric and alpha territory codes.
 
-  GET /mapcode/territory/{code}
+    GET /mapcode/territory/{code}
        Return information for a specific territory code.
        territory : numeric or alpha territory code
 
