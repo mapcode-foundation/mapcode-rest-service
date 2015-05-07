@@ -24,7 +24,7 @@ import com.tomtom.speedtools.apivalidation.ApiDTO;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode"})
+@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems"})
 @JsonInclude(Include.NON_EMPTY)
 public final class TerritoryDTO extends ApiDTO {
 

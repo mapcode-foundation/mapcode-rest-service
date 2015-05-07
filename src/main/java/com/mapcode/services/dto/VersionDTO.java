@@ -21,7 +21,7 @@ import com.tomtom.speedtools.apivalidation.ApiDTO;
 
 import javax.annotation.Nonnull;
 
-@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode"})
+@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems"})
 public final class VersionDTO extends ApiDTO {
 
     @Nonnull
@@ -30,9 +30,7 @@ public final class VersionDTO extends ApiDTO {
     @Override
     public void validate() {
         validator().start();
-        validator().checkString(true, "version", version,
-                ApiConstants.API_VERSION_LEN_MIN,
-                ApiConstants.API_VERSION_LEN_MAX);
+        validator().checkString(true, "version", version, ApiConstants.API_VERSION_LEN_MIN, ApiConstants.API_VERSION_LEN_MAX);
         validator().done();
     }
 

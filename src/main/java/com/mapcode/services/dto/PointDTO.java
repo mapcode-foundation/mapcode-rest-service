@@ -21,7 +21,7 @@ import com.tomtom.speedtools.apivalidation.ApiDTO;
 
 import javax.annotation.Nonnull;
 
-@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode"})
+@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems"})
 public final class PointDTO extends ApiDTO {
 
     @Nonnull

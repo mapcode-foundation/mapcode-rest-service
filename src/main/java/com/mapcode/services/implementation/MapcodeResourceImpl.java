@@ -67,16 +67,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Override
-    public void convertLatLonToMapcodeAll(
-            final double paramLatDeg,
-            final double paramLonDeg,
-            final int paramPrecision,
-            @Nullable final String paramTerritory,
-            @Nonnull final AsynchronousResponse response) throws ApiNotFoundException {
-        throw new ApiNotFoundException("Specify: " + listOfAllTypes);
-    }
-
-    @Override
     public void convertLatLonToMapcode(
             final double paramLatDeg,
             final double paramLonDeg,
@@ -154,6 +144,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                         result = new MapcodesDTO(mapcodes.stream().
                                 map(mapcode -> new MapcodeDTO(
                                         getMapcodePrecision(mapcode, precision),
+                                        (mapcode.getTerritory() == Territory.AAA) ? null :
                                         mapcode.getTerritory().toNameFormat(NameFormat.INTERNATIONAL),
                                         (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null)).
                                 collect(Collectors.toList()));
@@ -169,6 +160,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                         }
                         result = new MapcodeDTO(
                                 getMapcodePrecision(mapcode, precision),
+                                (mapcode.getTerritory() == Territory.AAA) ? null :
                                 mapcode.getTerritory().toNameFormat(NameFormat.INTERNATIONAL),
                                 (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);
                         break;
@@ -179,6 +171,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                         final Mapcode mapcode = mapcodes.get(mapcodes.size() - 1);
                         result = new MapcodeDTO(
                                 getMapcodePrecision(mapcode, precision),
+                                (mapcode.getTerritory() == Territory.AAA) ? null :
                                 mapcode.getTerritory().toNameFormat(NameFormat.INTERNATIONAL),
                                 (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);
                         break;

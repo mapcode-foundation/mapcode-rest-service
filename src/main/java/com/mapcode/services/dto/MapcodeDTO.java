@@ -24,14 +24,14 @@ import com.tomtom.speedtools.apivalidation.ApiDTO;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode"})
+@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems"})
 @JsonInclude(Include.NON_EMPTY)
 public final class MapcodeDTO extends ApiDTO {
 
     @Nonnull
     private String mapcode;
 
-    @Nonnull
+    @Nullable
     private String territory;
 
     @Nullable
@@ -40,17 +40,15 @@ public final class MapcodeDTO extends ApiDTO {
     @Override
     public void validate() {
         validator().start();
-        validator().checkString(true, "mapcode", mapcode,
-                ApiConstants.API_MAPCODE_LEN_MIN,
-                ApiConstants.API_MAPCODE_LEN_MAX);
-        validator().checkNotNullAndValidateEnum(true, "territory", territory);
+        validator().checkString(true, "mapcode", mapcode, ApiConstants.API_MAPCODE_LEN_MIN, ApiConstants.API_MAPCODE_LEN_MAX);
+        validator().checkString(false, "territory", territory, ApiConstants.API_TERRITORY_LEN_MIN, ApiConstants.API_TERRITORY_LEN_MAX);
         validator().checkDouble(false, "offsetMeters", offsetMeters, -Double.MAX_VALUE, Double.MAX_VALUE, false);
         validator().done();
     }
 
     public MapcodeDTO(
             @Nonnull final String mapcode,
-            @Nonnull final String territory,
+            @Nullable final String territory,
             @Nullable final Double offsetMeters) {
         this.mapcode = mapcode;
         this.territory = territory;
@@ -76,15 +74,14 @@ public final class MapcodeDTO extends ApiDTO {
         this.mapcode = mapcode;
     }
 
-    @Nonnull
+    @Nullable
     public String getTerritory() {
         beforeGet();
         return territory;
     }
 
-    public void setTerritory(@Nonnull final String territory) {
+    public void setTerritory(@Nullable final String territory) {
         beforeSet();
-        assert territory != null;
         this.territory = territory;
     }
 

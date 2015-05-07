@@ -39,7 +39,7 @@ import com.tomtom.speedtools.apivalidation.ApiDTO;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode"})
+@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems"})
 @JsonInclude(Include.NON_EMPTY)
 public final class TerritoriesDTO extends ApiDTO {
 
@@ -49,7 +49,7 @@ public final class TerritoriesDTO extends ApiDTO {
     @Override
     public void validate() {
         validator().start();
-        validator().checkNotNull(true, "territories", territories);
+        validator().checkNotNullAndValidateAll(true, "territories", territories);
         validator().done();
     }
 

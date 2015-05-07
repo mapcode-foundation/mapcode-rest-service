@@ -23,7 +23,7 @@ import com.tomtom.speedtools.apivalidation.ApiDTO;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode"})
+@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems"})
 @JsonInclude(Include.NON_EMPTY)
 public final class MapcodesDTO extends ApiDTO {
 
@@ -33,7 +33,7 @@ public final class MapcodesDTO extends ApiDTO {
     @Override
     public void validate() {
         validator().start();
-        validator().checkNotNull(true, "mapcodes", mapcodes);
+        validator().checkNotNullAndValidateAll(true, "mapcodes", mapcodes);
         validator().done();
     }
 
