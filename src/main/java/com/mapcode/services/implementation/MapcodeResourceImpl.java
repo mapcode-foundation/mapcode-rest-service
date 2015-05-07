@@ -122,13 +122,22 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
 
             // Check include.
-            ParamInclude include;
-            try {
-                include = ParamInclude.valueOf(paramInclude.toUpperCase());
-            } catch (final IllegalArgumentException ignored) {
-                throw new ApiInvalidFormatException(PARAM_INCLUDE, paramInclude, listOfAllIncludes);
+            boolean foundIncludeOffset = false;
+            boolean foundIncludeTerritory = false;
+            for (final String arg : paramInclude.toUpperCase().split(",")) {
+                if (!arg.isEmpty()) {
+                    try {
+                        ParamInclude include = ParamInclude.valueOf(arg);
+                        foundIncludeOffset = foundIncludeOffset || (include == ParamInclude.OFFSET);
+                        foundIncludeTerritory = foundIncludeTerritory || (include == ParamInclude.TERRITORY);
+                    } catch (final IllegalArgumentException ignored) {
+                        throw new ApiInvalidFormatException(PARAM_INCLUDE, paramInclude, listOfAllIncludes);
+                    }
+                }
             }
-            TRACER.eventLatLonToMapcode(latDeg, lonDeg, territory, precision, type.name(), include.name());
+            final boolean includeOffset = foundIncludeOffset;
+            final boolean includeTerritory = foundIncludeTerritory;
+            TRACER.eventLatLonToMapcode(latDeg, lonDeg, territory, precision, paramType, paramInclude);
 
             try {
                 // Create result body.
@@ -142,11 +151,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                             mapcodes = MapcodeCodec.encode(latDeg, lonDeg, territory);
                         }
                         result = new MapcodesDTO(mapcodes.stream().
-                                map(mapcode -> new MapcodeDTO(
-                                        getMapcodePrecision(mapcode, precision),
-                                        (mapcode.getTerritory() == Territory.AAA) ? null :
-                                        mapcode.getTerritory().toNameFormat(NameFormat.INTERNATIONAL),
-                                        (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null)).
+                                map(mapcode -> getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcode)).
                                 collect(Collectors.toList()));
                         break;
                     }
@@ -158,22 +163,14 @@ public class MapcodeResourceImpl implements MapcodeResource {
                         } else {
                             mapcode = MapcodeCodec.encodeToShortest(latDeg, lonDeg, territory);
                         }
-                        result = new MapcodeDTO(
-                                getMapcodePrecision(mapcode, precision),
-                                (mapcode.getTerritory() == Territory.AAA) ? null :
-                                mapcode.getTerritory().toNameFormat(NameFormat.INTERNATIONAL),
-                                (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);
+                        result = getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcode);
                         break;
                     }
 
                     case INTERNATIONAL: {
                         final List<Mapcode> mapcodes = MapcodeCodec.encode(latDeg, lonDeg);
                         final Mapcode mapcode = mapcodes.get(mapcodes.size() - 1);
-                        result = new MapcodeDTO(
-                                getMapcodePrecision(mapcode, precision),
-                                (mapcode.getTerritory() == Territory.AAA) ? null :
-                                mapcode.getTerritory().toNameFormat(NameFormat.INTERNATIONAL),
-                                (include == ParamInclude.OFFSET) ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);
+                        result = getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcode);
                         break;
                     }
 
@@ -190,6 +187,17 @@ public class MapcodeResourceImpl implements MapcodeResource {
             // The response is already set within this method body.
             return Futures.successful(null);
         });
+    }
+
+    @Nonnull
+    private static MapcodeDTO getMapcodeDTO(double latDeg, double lonDeg, int precision,
+                                            boolean includeOffset, boolean includeTerritory,
+                                            @Nonnull final Mapcode mapcode) {
+        return new MapcodeDTO(
+                getMapcodePrecision(mapcode, precision),
+                (includeTerritory || (mapcode.getTerritory() != Territory.AAA)) ?
+                        mapcode.getTerritory().toNameFormat(NameFormat.INTERNATIONAL) : null,
+                includeOffset ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);
     }
 
     @Override

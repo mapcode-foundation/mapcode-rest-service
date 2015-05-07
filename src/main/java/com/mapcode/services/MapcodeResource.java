@@ -35,8 +35,8 @@ public interface MapcodeResource {
     }
 
     enum ParamInclude {
-        NONE,               // Include no additional information for mapcodes.
-        OFFSET              // Includes offset (in meters) from center of mapcode to originally specified lat/lon.
+        OFFSET,             // Includes offset (in meters) from center of mapcode to originally specified lat/lon.
+        TERRITORY           // Force including the territory, even when the territory code is "AAA".
     }
 
     /**
@@ -82,7 +82,7 @@ public interface MapcodeResource {
             @PathParam(PARAM_TYPE) @Nonnull final String paramType,
             @QueryParam(PARAM_PRECISION) @DefaultValue("0") final int paramPrecision,
             @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
-            @QueryParam(PARAM_INCLUDE) @DefaultValue("none") @Nonnull final String paramInclude,
+            @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull final String paramInclude,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
     /**
