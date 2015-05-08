@@ -39,7 +39,7 @@
 
     <!-- The Mapcode services. -->
     <logger name="com.mapcode">
-        <level value="info"/>
+        <level value="debug"/>
     </logger>
 
     <!-- The SpeedTools framework. -->
