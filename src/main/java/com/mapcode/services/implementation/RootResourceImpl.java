@@ -96,6 +96,7 @@ public class RootResourceImpl implements RootResource {
     @Override
     @Nonnull
     public String getHelpHTML() {
+        LOG.info("getHelpHTML: POM version={}", mavenProperties.getPomVersion());
         return "<html><pre>\n" + HELP_TEXT + "</pre></html>\n";
     }
 
