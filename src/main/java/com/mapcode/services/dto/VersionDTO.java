@@ -18,8 +18,12 @@ package com.mapcode.services.dto;
 
 import com.mapcode.services.ApiConstants;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems"})
 public final class VersionDTO extends ApiDTO {
@@ -55,5 +59,21 @@ public final class VersionDTO extends ApiDTO {
         beforeSet();
         assert version != null;
         this.version = version;
+    }
+
+    @Override
+    @Nonnull
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
+
+    @Override
+    public boolean equals(@Nullable final Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj, false);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this, false);
     }
 }

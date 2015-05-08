@@ -72,6 +72,7 @@
         <jdk.version>1.8</jdk.version>
 
         <!-- Library versions - these are not re-used from the top-level POM to simulate stand-alone usage. -->
+        <apache-commons-lang.version>3.0</apache-commons-lang.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <guava.version>17.0</guava.version>
         <guice.version>3.0</guice.version>
@@ -271,6 +272,12 @@
             <type>jar</type>
             <scope>provided</scope>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${apache-commons-lang.version}</version>
         </dependency>
 
         <dependency>
