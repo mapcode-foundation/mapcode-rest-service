@@ -40,15 +40,17 @@ public class RootResourceImpl implements RootResource {
             "MAPCODE API\n" +
             "-----------\n\n" +
 
-            "GET /mapcode/codes/{lat},{lon}/[all|local|international] [?precision=[0|1|2]&territory={territory}&include={offset|territory}]\n" +
+            "GET /mapcode/codes/{lat},{lon} [/all|local|international] [?precision=[0|1|2]&territory={territory}&include={offset|territory}]\n" +
             "   Convert latitude/longitude to one or more mapcodes.\n\n" +
 
             "   Path parameters:\n" +
             "   lat             : latitude, range [-90, 90]\n" +
-            "   lon             : longitude, range [-180, 180] (mapped if outside range)\n" +
-            "   all             : return all mapcodes (sorted short to long)\n" +
-            "   local           : return the shortest local mapcode\n" +
-            "   international   : return the shortest international mapcode\n\n" +
+            "   lon             : longitude, range [-180, 180] (mapped if outside range)\n\n" +
+
+            "   An additional filter can be specified to limit the results:\n" +
+            "     all           : same as without specifying a filter, returns all mapcodes\n" +
+            "     local         : return the shortest local mapcode\n" +
+            "     international : return the shortest international mapcode\n\n" +
 
             "   Query parameters:\n" +
             "   precision       : precision, range [0, 2] (default=0)\n" +

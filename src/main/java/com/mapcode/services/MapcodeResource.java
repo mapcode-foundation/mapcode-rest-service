@@ -61,12 +61,30 @@ public interface MapcodeResource {
     void convertLatLonToMapcode(
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
-    // Unsupported operation.
+    /**
+     * Convert a lat/lon to one or more mapcodes. All possible mapcodes are returned.
+     *
+     * @param paramLatDeg    Latitude. Range: [-90, 90].
+     * @param paramLonDeg    Longitude. Range: Any double, wrapped along the earth to [-180, 180].
+     * @param paramPrecision Precision specifier; specifies additional mapcode digits. Range: [0, 2].
+     * @param paramTerritory Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
+     *                       Range: any valid territory code, alpha or numeric.
+     * @param paramInclude   Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
+     *                       Range: {@link ParamInclude}.
+     * @param response       One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
+     *                       INTERNATIONAL and {@link com.mapcode.services.dto.MapcodesDTO} for ALL.
+     * @throws ApiException API exception, translated into HTTP status code.
+     */
     @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + '}')
     void convertLatLonToMapcode(
             @PathParam(PARAM_LAT_DEG) final double paramLatDeg,
             @PathParam(PARAM_LON_DEG) final double paramLonDeg,
+            @QueryParam(PARAM_PRECISION) @DefaultValue("0") final int paramPrecision,
+            @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
+            @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull final String paramInclude,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
     /**

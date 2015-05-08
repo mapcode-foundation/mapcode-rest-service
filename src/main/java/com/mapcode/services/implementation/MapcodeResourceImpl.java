@@ -77,8 +77,11 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void convertLatLonToMapcode(
             final double paramLatDeg,
             final double paramLonDeg,
+            final int paramPrecision,
+            @Nullable final String paramTerritory,
+            @Nonnull final String paramInclude,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
-        throw new ApiForbiddenException("Missing URL path parameter: /{" + listOfAllTypes.toLowerCase() + '}');
+        convertLatLonToMapcode(paramLatDeg, paramLonDeg, ParamType.ALL.toString(), paramPrecision, paramTerritory, paramInclude, response);
     }
 
     @Override
