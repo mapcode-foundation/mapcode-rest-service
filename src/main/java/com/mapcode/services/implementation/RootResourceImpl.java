@@ -66,7 +66,7 @@ public class RootResourceImpl implements RootResource {
             "   territory       : territory context, numeric or alpha code\n" +
 
             "   Path parameters:\n" +
-            "   territory       : territory context, numeric or alpha code\n" +
+            "   territory       : territory context, numeric or alpha code\n\n" +
 
             "GET /mapcode/territories [?offset={offset}&count={count}]\n" +
             "   Return a list of all valid numeric and alpha territory codes.\n\n" +
