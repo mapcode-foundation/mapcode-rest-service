@@ -67,9 +67,8 @@ public interface MapcodeResource {
      *                       Range: any valid territory code, alpha or numeric.
      * @param paramInclude   Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
      *                       Range: {@link ParamInclude}.
-     * @param response       One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for {@link ParamType.LOCAL}
-     *                       and {@link ParamType.INTERNATIONAL}, and {@link com.mapcode.services.dto.MapcodesDTO} for
-     *                       {@link ParamType.ALL}
+     * @param response       One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
+     *                       INTERNATIONAL and {@link com.mapcode.services.dto.MapcodesDTO} for ALL.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
