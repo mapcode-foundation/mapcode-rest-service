@@ -74,7 +74,7 @@ public interface MapcodeResource {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("to/{" + PARAM_LAT_DEG + "}/{" + PARAM_LON_DEG + "}/{" + PARAM_TYPE + '}')
+    @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + "}/{" + PARAM_TYPE + '}')
     void convertLatLonToMapcode(
             @PathParam(PARAM_LAT_DEG) final double paramLatDeg,
             @PathParam(PARAM_LON_DEG) final double paramLonDeg,
@@ -95,7 +95,7 @@ public interface MapcodeResource {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("from/{" + PARAM_MAPCODE + '}')
+    @Path("coords/{" + PARAM_MAPCODE + '}')
     void convertMapcodeToLatLon(
             @PathParam(PARAM_MAPCODE) @Nonnull final String paramMapcode,
             @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
@@ -112,7 +112,7 @@ public interface MapcodeResource {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("territory")
+    @Path("territories")
     void getTerritories(
             @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) final int offset,
             @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) final int count,
@@ -128,7 +128,7 @@ public interface MapcodeResource {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("territory/{" + PARAM_TERRITORY + '}')
+    @Path("territories/{" + PARAM_TERRITORY + '}')
     void getTerritory(
             @PathParam(PARAM_TERRITORY) @Nonnull final String paramTerritory,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
