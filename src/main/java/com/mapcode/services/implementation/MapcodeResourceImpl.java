@@ -24,6 +24,7 @@ import com.mapcode.services.ApiConstants;
 import com.mapcode.services.MapcodeResource;
 import com.mapcode.services.dto.*;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
+import com.tomtom.speedtools.apivalidation.exceptions.ApiForbiddenException;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiIntegerOutOfRangeException;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiInvalidFormatException;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiNotFoundException;
@@ -64,6 +65,20 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public MapcodeResourceImpl(@Nonnull final ResourceProcessor processor) {
         assert processor != null;
         this.processor = processor;
+    }
+
+    @Override
+    public void convertLatLonToMapcode(
+            @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
+        throw new ApiForbiddenException("Missing URL path parameters: /{lat,lon}/{" + listOfAllTypes.toLowerCase() + '}');
+    }
+
+    @Override
+    public void convertLatLonToMapcode(
+            final double paramLatDeg,
+            final double paramLonDeg,
+            @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
+        throw new ApiForbiddenException("Missing URL path parameter: /{" + listOfAllTypes.toLowerCase() + '}');
     }
 
     @Override
@@ -118,7 +133,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             try {
                 type = ParamType.valueOf(paramType.toUpperCase());
             } catch (final IllegalArgumentException ignored) {
-                throw new ApiInvalidFormatException(PARAM_TYPE, paramType, listOfAllTypes);
+                throw new ApiInvalidFormatException(PARAM_TYPE, paramType, listOfAllTypes.toLowerCase());
             }
 
             // Check include.
@@ -131,7 +146,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                         foundIncludeOffset = foundIncludeOffset || (include == ParamInclude.OFFSET);
                         foundIncludeTerritory = foundIncludeTerritory || (include == ParamInclude.TERRITORY);
                     } catch (final IllegalArgumentException ignored) {
-                        throw new ApiInvalidFormatException(PARAM_INCLUDE, paramInclude, listOfAllIncludes);
+                        throw new ApiInvalidFormatException(PARAM_INCLUDE, paramInclude, listOfAllIncludes.toLowerCase());
                     }
                 }
             }
@@ -189,15 +204,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
         });
     }
 
-    @Nonnull
-    private static MapcodeDTO getMapcodeDTO(double latDeg, double lonDeg, int precision,
-                                            boolean includeOffset, boolean includeTerritory,
-                                            @Nonnull final Mapcode mapcode) {
-        return new MapcodeDTO(
-                getMapcodePrecision(mapcode, precision),
-                (includeTerritory || (mapcode.getTerritory() != Territory.AAA)) ?
-                        mapcode.getTerritory().toNameFormat(NameFormat.INTERNATIONAL) : null,
-                includeOffset ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);
+    @Override
+    public void convertMapcodeToLatLon(
+            @Nonnull final AsynchronousResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
+        throw new ApiForbiddenException("Missing URL path parameters: /{mapcode}");
     }
 
     @Override
@@ -325,6 +335,17 @@ public class MapcodeResourceImpl implements MapcodeResource {
             // The response is already set within this method body.
             return Futures.successful(null);
         });
+    }
+
+    @Nonnull
+    private static MapcodeDTO getMapcodeDTO(double latDeg, double lonDeg, int precision,
+                                            boolean includeOffset, boolean includeTerritory,
+                                            @Nonnull final Mapcode mapcode) {
+        return new MapcodeDTO(
+                getMapcodePrecision(mapcode, precision),
+                (includeTerritory || (mapcode.getTerritory() != Territory.AAA)) ?
+                        mapcode.getTerritory().toNameFormat(NameFormat.INTERNATIONAL) : null,
+                includeOffset ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);
     }
 
     private static double offsetFromLatLonInMeters(

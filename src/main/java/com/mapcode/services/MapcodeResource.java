@@ -55,6 +55,20 @@ public interface MapcodeResource {
     static final String DEFAULT_OFFSET = "0";
     static final String DEFAULT_COUNT = "1000";
 
+    // Unsupported operation.
+    @GET
+    @Path("codes/")
+    void convertLatLonToMapcode(
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+
+    // Unsupported operation.
+    @GET
+    @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + '}')
+    void convertLatLonToMapcode(
+            @PathParam(PARAM_LAT_DEG) final double paramLatDeg,
+            @PathParam(PARAM_LON_DEG) final double paramLonDeg,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+
     /**
      * Convert a lat/lon to one or more mapcodes.
      *
@@ -82,6 +96,12 @@ public interface MapcodeResource {
             @QueryParam(PARAM_PRECISION) @DefaultValue("0") final int paramPrecision,
             @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull final String paramInclude,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+
+    // Unsupported operation.
+    @GET
+    @Path("coords")
+    void convertMapcodeToLatLon(
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
     /**
