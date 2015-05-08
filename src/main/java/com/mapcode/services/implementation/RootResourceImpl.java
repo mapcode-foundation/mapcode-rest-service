@@ -40,7 +40,7 @@ public class RootResourceImpl implements RootResource {
             "MAPCODE API\n" +
             "-----------\n\n" +
 
-            "GET /mapcode/codes/{lat}/{lon}/[all|local|international] [?precision=[0|1|2]&territory={territory}&include={offset|territory}]\n" +
+            "GET /mapcode/codes/{lat},{lon}/[all|local|international] [?precision=[0|1|2]&territory={territory}&include={offset|territory}]\n" +
             "   Convert latitude/longitude to one or more mapcodes.\n\n" +
 
             "   Path parameters:\n" +
