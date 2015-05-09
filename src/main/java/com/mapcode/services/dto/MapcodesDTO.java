@@ -32,17 +32,27 @@ import java.util.List;
 public final class MapcodesDTO extends ApiDTO {
 
     @Nonnull
-    private List<MapcodeDTO> mapcodes;
+    private MapcodeDTO local;
+
+    @Nonnull
+    private MapcodeDTO international;
+
+    @Nonnull
+    private List<MapcodeDTO> all;
 
     @Override
     public void validate() {
         validator().start();
-        validator().checkNotNullAndValidateAll(true, "mapcodes", mapcodes);
+        validator().checkNotNullAndValidate(true, "local", local);
+        validator().checkNotNullAndValidate(true, "international", international);
+        validator().checkNotNullAndValidateAll(true, "all", all);
         validator().done();
     }
 
-    public MapcodesDTO(@Nonnull final List<MapcodeDTO> mapcodes) {
-        this.mapcodes = mapcodes;
+    public MapcodesDTO(@Nonnull final MapcodeDTO local, @Nonnull final MapcodeDTO international, @Nonnull final List<MapcodeDTO> all) {
+        this.local = local;
+        this.international = international;
+        this.all = all;
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -53,15 +63,39 @@ public final class MapcodesDTO extends ApiDTO {
     }
 
     @Nonnull
-    public List<MapcodeDTO> getMapcodes() {
+    public MapcodeDTO getLocal() {
         beforeGet();
-        return mapcodes;
+        return local;
     }
 
-    public void setMapcode(@Nonnull final List<MapcodeDTO> mapcodes) {
+    @Nonnull
+    public MapcodeDTO getInternational() {
+        beforeGet();
+        return international;
+    }
+
+    @Nonnull
+    public List<MapcodeDTO> getAll() {
+        beforeGet();
+        return all;
+    }
+
+    public void setLocal(@Nonnull final MapcodeDTO local) {
         beforeSet();
-        assert mapcodes != null;
-        this.mapcodes = mapcodes;
+        assert local != null;
+        this.local = local;
+    }
+
+    public void setInternational(@Nonnull final MapcodeDTO international) {
+        beforeSet();
+        assert international != null;
+        this.local = international;
+    }
+
+    public void setAll(@Nonnull final List<MapcodeDTO> all) {
+        beforeSet();
+        assert all != null;
+        this.all = all;
     }
 
     @Override

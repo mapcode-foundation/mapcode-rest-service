@@ -93,7 +93,7 @@ public interface MapcodeResource {
      * @param paramLatDeg    Latitude. Range: [-90, 90].
      * @param paramLonDeg    Longitude. Range: Any double, wrapped along the earth to [-180, 180].
      * @param paramType      Specifies whether to return only the shortest local, the international, or all mapcodes.
-     *                       Range: {@link ParamType}.
+     *                       Range: {@link ParamType}, if null, no type is supplied.
      * @param paramPrecision Precision specifier; specifies additional mapcode digits. Range: [0, 2].
      * @param paramTerritory Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
      *                       Range: any valid territory code, alpha or numeric.
@@ -110,7 +110,7 @@ public interface MapcodeResource {
     void convertLatLonToMapcode(
             @PathParam(PARAM_LAT_DEG) final double paramLatDeg,
             @PathParam(PARAM_LON_DEG) final double paramLonDeg,
-            @PathParam(PARAM_TYPE) @Nonnull final String paramType,
+            @PathParam(PARAM_TYPE) @Nullable final String paramType,
             @QueryParam(PARAM_PRECISION) @DefaultValue("0") final int paramPrecision,
             @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull final String paramInclude,

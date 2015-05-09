@@ -81,19 +81,18 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramTerritory,
             @Nonnull final String paramInclude,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
-        convertLatLonToMapcode(paramLatDeg, paramLonDeg, ParamType.ALL.toString(), paramPrecision, paramTerritory, paramInclude, response);
+        convertLatLonToMapcode(paramLatDeg, paramLonDeg, null, paramPrecision, paramTerritory, paramInclude, response);
     }
 
     @Override
     public void convertLatLonToMapcode(
             final double paramLatDeg,
             final double paramLonDeg,
-            @Nonnull final String paramType,
+            @Nullable final String paramType,
             final int paramPrecision,
             @Nullable final String paramTerritory,
             @Nonnull final String paramInclude,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
-        assert paramType != null;
         assert response != null;
 
         processor.process("convertLatLonToMapcode", LOG, response, () -> {
@@ -132,11 +131,13 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
 
             // Check type.
-            ParamType type;
-            try {
-                type = ParamType.valueOf(paramType.toUpperCase());
-            } catch (final IllegalArgumentException ignored) {
-                throw new ApiInvalidFormatException(PARAM_TYPE, paramType, listOfAllTypes.toLowerCase());
+            ParamType type = null;
+            if (paramType != null) {
+                try {
+                    type = ParamType.valueOf(paramType.toUpperCase());
+                } catch (final IllegalArgumentException ignored) {
+                    throw new ApiInvalidFormatException(PARAM_TYPE, paramType, listOfAllTypes.toLowerCase());
+                }
             }
 
             // Check include.
@@ -158,37 +159,45 @@ public class MapcodeResourceImpl implements MapcodeResource {
             TRACER.eventLatLonToMapcode(latDeg, lonDeg, territory, precision, paramType, paramInclude);
 
             try {
+
+                // Get local.
+                final Mapcode mapcodeLocal;
+                if (territory == null) {
+                    mapcodeLocal = MapcodeCodec.encodeToShortest(latDeg, lonDeg);
+                } else {
+                    mapcodeLocal = MapcodeCodec.encodeToShortest(latDeg, lonDeg, territory);
+                }
+
+                // Get international.
+                final Mapcode mapcodeInternational = MapcodeCodec.encodeToInternational(latDeg, lonDeg);
+
+                // Get all.
+                final List<Mapcode> mapcodesAll;
+                if (territory == null) {
+                    mapcodesAll = MapcodeCodec.encode(latDeg, lonDeg);
+                } else {
+                    mapcodesAll = MapcodeCodec.encode(latDeg, lonDeg, territory);
+                }
+
                 // Create result body.
                 ApiDTO result;
                 switch (type) {
-                    case ALL: {
-                        final List<Mapcode> mapcodes;
-                        if (territory == null) {
-                            mapcodes = MapcodeCodec.encode(latDeg, lonDeg);
-                        } else {
-                            mapcodes = MapcodeCodec.encode(latDeg, lonDeg, territory);
-                        }
-                        result = new MapcodesDTO(mapcodes.stream().
-                                map(mapcode -> getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcode)).
-                                collect(Collectors.toList()));
-                        break;
-                    }
-
                     case LOCAL: {
-                        final Mapcode mapcode;
-                        if (territory == null) {
-                            mapcode = MapcodeCodec.encodeToShortest(latDeg, lonDeg);
-                        } else {
-                            mapcode = MapcodeCodec.encodeToShortest(latDeg, lonDeg, territory);
-                        }
-                        result = getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcode);
+                        result = getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeLocal);
                         break;
                     }
 
                     case INTERNATIONAL: {
-                        final List<Mapcode> mapcodes = MapcodeCodec.encode(latDeg, lonDeg);
-                        final Mapcode mapcode = mapcodes.get(mapcodes.size() - 1);
-                        result = getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcode);
+                        result = getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeInternational);
+                        break;
+                    }
+
+                    case ALL: {
+                        result = new MapcodesDTO(getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeLocal),
+                                getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeInternational),
+                                mapcodesAll.stream().
+                                        map(mapcode -> getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcode)).
+                                        collect(Collectors.toList()));
                         break;
                     }
 
@@ -390,7 +399,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
         // A request to translate a lat/lon to a mapcode is made.
         void eventLatLonToMapcode(double latDeg, double lonDeg, @Nullable Territory territory,
-                                  int precision, @Nonnull String type, @Nonnull String include);
+                                  int precision, @Nullable String type, @Nonnull String include);
 
         // A request to translate a mapcode to a lat/lon is made.
         void eventMapcodeToLatLon(@Nonnull String mapcode, @Nullable Territory territory);
