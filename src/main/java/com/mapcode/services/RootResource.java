@@ -47,4 +47,13 @@ public interface RootResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("version")
     void getVersion(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response);
+
+    /**
+     * This method returns whether the service is operational or not (status code 200 is OK).
+     *
+     * @param response Returns a version number as JSON.
+     */
+    @GET
+    @Path("status")
+    void getStatus(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response);
 }

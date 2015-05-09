@@ -40,6 +40,10 @@ public class RootResourceImpl implements RootResource {
             "MAPCODE API\n" +
             "-----------\n\n" +
 
+            "GET /mapcode         Returns this help page.\n" +
+            "GET /mapcode/version Returns the software version.\n" +
+            "GET /mapcode/status  Returns 200 if the service OK.\n\n" +
+
             "GET /mapcode/codes/{lat},{lon} [/all|local|international] [?precision=[0|1|2]&territory={territory}&include={offset|territory}]\n" +
             "   Convert latitude/longitude to one or more mapcodes.\n\n" +
 
@@ -96,18 +100,12 @@ public class RootResourceImpl implements RootResource {
     @Override
     @Nonnull
     public String getHelpHTML() {
-        LOG.info("getHelpHTML: POM version={}", mavenProperties.getPomVersion());
+        LOG.info("getHelpHTML: show help page", mavenProperties.getPomVersion());
         return "<html><pre>\n" + HELP_TEXT + "</pre></html>\n";
     }
 
-    /**
-     * This is the actual REST API call. Note that the response is an asynchronous response. The response type is
-     * entirely type safe and validated in the corresponding "binder" object in the package "domain" (the use of names
-     * like binder and domain is convention only).
-     */
     @Override
-    public void getVersion(
-            @Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) final AsynchronousResponse response) {
+    public void getVersion(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) final AsynchronousResponse response) {
         assert response != null;
 
         // No input validation required. Just return version number.
@@ -121,5 +119,12 @@ public class RootResourceImpl implements RootResource {
 
         // Build the response and return it.
         response.setResponse(Response.ok(result).build());
+    }
+
+    @Override
+    public void getStatus(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) final AsynchronousResponse response) {
+        assert response != null;
+        LOG.info("getStatus: get status");
+        response.setResponse(Response.ok().build());
     }
 }
