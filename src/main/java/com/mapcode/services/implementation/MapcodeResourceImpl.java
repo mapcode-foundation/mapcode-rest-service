@@ -253,7 +253,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     territory = Territory.fromTerritoryCode(territoryCode);
                 } catch (final IllegalArgumentException ignored) {
                     try {
-                        territory = Territory.fromString(paramTerritory);
+                        territory = Territory.fromString(paramTerritory.toUpperCase());
                     } catch (final UnknownTerritoryException ignored2) {
                         throw new ApiInvalidFormatException("territory", paramTerritory, listOfAllTerritories);
                     }
