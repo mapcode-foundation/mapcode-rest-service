@@ -29,67 +29,34 @@ import java.util.List;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems"})
 @JsonInclude(Include.NON_EMPTY)
-public final class MapcodesDTO extends ApiDTO {
+public final class MapcodeListDTO extends ApiDTO {
 
-    @Nonnull
-    private MapcodeDTO local;
-
-    @Nonnull
-    private MapcodeDTO international;
-
+    @JsonInclude
     @Nonnull
     private List<MapcodeDTO> mapcodes;
 
     @Override
     public void validate() {
         validator().start();
-        validator().checkNotNullAndValidate(true, "local", local);
-        validator().checkNotNullAndValidate(true, "international", international);
         validator().checkNotNullAndValidateAll(true, "mapcodes", mapcodes);
         validator().done();
     }
 
-    public MapcodesDTO(@Nonnull final MapcodeDTO local, @Nonnull final MapcodeDTO international, @Nonnull final List<MapcodeDTO> mapcodes) {
-        this.local = local;
-        this.international = international;
+    public MapcodeListDTO(@Nonnull final List<MapcodeDTO> mapcodes) {
         this.mapcodes = mapcodes;
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @Deprecated
-    private MapcodesDTO() {
+    public MapcodeListDTO() {
         // Default constructor required by JAX-B.
         super();
-    }
-
-    @Nonnull
-    public MapcodeDTO getLocal() {
-        beforeGet();
-        return local;
-    }
-
-    @Nonnull
-    public MapcodeDTO getInternational() {
-        beforeGet();
-        return international;
     }
 
     @Nonnull
     public List<MapcodeDTO> getMapcodes() {
         beforeGet();
         return mapcodes;
-    }
-
-    public void setLocal(@Nonnull final MapcodeDTO local) {
-        beforeSet();
-        assert local != null;
-        this.local = local;
-    }
-
-    public void setInternational(@Nonnull final MapcodeDTO international) {
-        beforeSet();
-        assert international != null;
-        this.local = international;
     }
 
     public void setMapcodes(@Nonnull final List<MapcodeDTO> mapcodes) {

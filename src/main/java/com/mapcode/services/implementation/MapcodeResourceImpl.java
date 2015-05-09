@@ -180,32 +180,45 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 }
 
                 // Create result body.
-                ApiDTO result;
-                switch (type) {
-                    case LOCAL: {
-                        result = getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeLocal);
-                        break;
-                    }
+                final Object result;
+                if (type == null) {
+                    final ApiDTO dto = new MapcodesDTO(getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeLocal),
+                            getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeInternational),
+                            mapcodesAll.stream().
+                                    map(mapcode -> getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcode)).
+                                    collect(Collectors.toList()));
+                    dto.validate();
+                    result = dto;
+                } else {
+                    switch (type) {
+                        case LOCAL: {
+                            final ApiDTO dto = getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeLocal);
+                            dto.validate();
+                            result = dto;
+                            break;
+                        }
 
-                    case INTERNATIONAL: {
-                        result = getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeInternational);
-                        break;
-                    }
+                        case INTERNATIONAL: {
+                            final ApiDTO dto = getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeInternational);
+                            dto.validate();
+                            result = dto;
+                            break;
+                        }
 
-                    case ALL: {
-                        result = new MapcodesDTO(getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeLocal),
-                                getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeInternational),
-                                mapcodesAll.stream().
-                                        map(mapcode -> getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcode)).
-                                        collect(Collectors.toList()));
-                        break;
-                    }
+                        case ALL: {
+                            final MapcodeListDTO dto = new MapcodeListDTO(mapcodesAll.stream().
+                                    map(mapcode -> getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcode)).
+                                    collect(Collectors.toList()));
+                            dto.validate();
+                            result = dto.getMapcodes();     // Return ONLY the list, not the parent object.
+                            break;
+                        }
 
-                    default:
-                        assert false;
-                        result = null;
+                        default:
+                            assert false;
+                            result = null;
+                    }
                 }
-                result.validate();
                 response.setResponse(Response.ok(result).build());
             } catch (final UnknownMapcodeException ignored) {
                 throw new ApiNotFoundException("No mapcode found for lat=" + latDeg + ", lon=" + lonDeg + ", territory=" + territory);
