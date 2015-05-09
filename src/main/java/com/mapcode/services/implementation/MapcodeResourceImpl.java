@@ -259,6 +259,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     }
                 }
             }
+
+            if (!Mapcode.isValidMapcodeFormat(paramMapcode)) {
+                throw new ApiInvalidFormatException("mapcode", paramMapcode, Mapcode.REGEX_MAPCODE_FORMAT);
+            }
             TRACER.eventMapcodeToLatLon(paramMapcode, territory);
 
             // Create result body.
