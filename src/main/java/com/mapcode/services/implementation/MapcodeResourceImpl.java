@@ -54,6 +54,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
     private static final Tracer TRACER = TracerFactory.getTracer(MapcodeResourceImpl.class, Tracer.class);
 
     private final ResourceProcessor processor;
+
     private final String listOfAllTerritoryCodes = Joiner.on('|').join(Arrays.asList(Territory.values()).stream().
             map(x -> x.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS)).collect(Collectors.toList()));
     private final String listOfAllTypes = Joiner.on('|').join(Arrays.asList(ParamType.values()).stream().
@@ -140,10 +141,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 try {
                     final int territoryCode = Integer.valueOf(paramTerritory);
                     territory = Territory.fromTerritoryCode(territoryCode);
-                } catch (final IllegalArgumentException ignored) {
+                } catch (final IllegalArgumentException ignore) {
                     try {
                         territory = Territory.fromString(paramTerritory.toUpperCase());
-                    } catch (final UnknownTerritoryException ignored2) {
+                    } catch (final UnknownTerritoryException ignored) {
                         throw new ApiInvalidFormatException(PARAM_TERRITORY, paramTerritory, listOfAllTerritoryCodes);
                     }
                 }
@@ -300,7 +301,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     point = MapcodeCodec.decode(paramMapcode, territory);
                 }
                 result = new PointDTO(point.getLatDeg(), point.getLonDeg());
-            } catch (final UnknownMapcodeException e) {
+            } catch (final UnknownMapcodeException ignored) {
                 throw new ApiNotFoundException("No mapcode found for mapcode='" + paramMapcode + "', territory=" + territory);
             }
 
@@ -377,19 +378,19 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Nonnull
-    private Territory getTerritoryFromParam(@Nonnull String paramTerritory) {
+    private Territory getTerritoryFromParam(@Nonnull final String paramTerritory) {
         Territory territory;
         try {
             final int territoryCode = Integer.valueOf(paramTerritory);
 
             // Try and convert it as an integer - this throws an exception for non-int codes.
             territory = Territory.fromTerritoryCode(territoryCode);
-        } catch (final IllegalArgumentException ignored) {
+        } catch (final IllegalArgumentException ignore) {
             try {
 
                 // Now, try to convert it as an ISO-code.
                 territory = Territory.fromString(paramTerritory.toUpperCase());
-            } catch (final UnknownTerritoryException ignored2) {
+            } catch (final UnknownTerritoryException ignored) {
                 throw new ApiInvalidFormatException("territory", paramTerritory, listOfAllTerritoryCodes);
             }
         }
@@ -397,8 +398,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Nonnull
-    private static MapcodeDTO getMapcodeDTO(double latDeg, double lonDeg, int precision,
-                                            boolean includeOffset, boolean includeTerritory,
+    private static MapcodeDTO getMapcodeDTO(final double latDeg, final double lonDeg, final int precision,
+                                            final boolean includeOffset, final boolean includeTerritory,
                                             @Nonnull final Mapcode mapcode) {
         return new MapcodeDTO(
                 getMapcodePrecision(mapcode, precision),
