@@ -278,7 +278,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             LOG.debug("convertMapcodeToLatLon: mapcode={}, territory={}", paramMapcode, paramTerritory);
 
             // Get the territory from the path (if specified).
-            final Territory territory = getTerritoryFromParam(paramTerritory);
+            final Territory territory = (paramTerritory != null) ? getTerritoryFromParam(paramTerritory) : null;
 
             // Check if the mapcode is correctly fortmatted.
             if (!Mapcode.isValidMapcodeFormat(paramMapcode)) {
@@ -346,7 +346,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Override
     public void getTerritory(
-            @Nullable final String paramTerritory,
+            @Nonnull final String paramTerritory,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         assert paramTerritory != null;
         assert response != null;
@@ -378,7 +378,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Nonnull
     private Territory getTerritoryFromParam(@Nonnull String paramTerritory) {
-        Territory territory = null;
+        Territory territory;
         try {
             final int territoryCode = Integer.valueOf(paramTerritory);
 
