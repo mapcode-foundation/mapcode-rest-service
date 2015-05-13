@@ -47,20 +47,38 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This class implements the REST API that deals with TTBin files.
+ * This class implements the REST API that handles mapcode conversions.
  */
 public class MapcodeResourceImpl implements MapcodeResource {
     private static final Logger LOG = LoggerFactory.getLogger(MapcodeResourceImpl.class);
     private static final Tracer TRACER = TracerFactory.getTracer(MapcodeResourceImpl.class, Tracer.class);
 
     private final ResourceProcessor processor;
-    private final String listOfAllTerritories = Joiner.on('|').join(Arrays.asList(Territory.values()).stream().
+    private final String listOfAllTerritoryCodes = Joiner.on('|').join(Arrays.asList(Territory.values()).stream().
             map(x -> x.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS)).collect(Collectors.toList()));
     private final String listOfAllTypes = Joiner.on('|').join(Arrays.asList(ParamType.values()).stream().
             map(x -> x).collect(Collectors.toList()));
     private final String listOfAllIncludes = Joiner.on('|').join(Arrays.asList(ParamInclude.values()).stream().
             map(x -> x).collect(Collectors.toList()));
+    private final List<TerritoryDTO> listOfAllTerritories = Arrays.asList(Territory.values()).stream().
+            map(x -> {
+                final Territory parentTerritory = x.getParentTerritory();
+                return new TerritoryDTO(
+                        x.getTerritoryCode(),
+                        x.getFullName(),
+                        (parentTerritory == null) ? null : parentTerritory.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
+                        x.getAliases(),
+                        x.getFullNameAliases());
+            }).
+            collect(Collectors.toList());
 
+
+    /**
+     * The constructor is called by Google Guice at start-up time and gets a processor injected
+     * to executed web requests on.
+     *
+     * @param processor Processor to process web requests on.
+     */
     @Inject
     public MapcodeResourceImpl(@Nonnull final ResourceProcessor processor) {
         assert processor != null;
@@ -68,8 +86,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Override
-    public void convertLatLonToMapcode(
-            @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
+    public void convertLatLonToMapcode(@Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
+
+        // This method is forbidden. In REST terms, this should return ALL potential mapcodes - intractable.
         throw new ApiForbiddenException("Missing URL path parameters: /{lat,lon}/{" + listOfAllTypes.toLowerCase() + '}');
     }
 
@@ -99,14 +118,14 @@ public class MapcodeResourceImpl implements MapcodeResource {
             LOG.debug("convertLatLonToMapcode: lat={}, lon={}, precision={}, type={}, territory={}, include={}",
                     paramLatDeg, paramLonDeg, paramPrecision, paramType, paramTerritory, paramInclude);
 
-            // Check lat.
+            // Check lat range.
             final double latDeg = paramLatDeg;
             if (!MathUtils.isBetween(latDeg, ApiConstants.API_LAT_MIN, ApiConstants.API_LAT_MAX)) {
                 throw new ApiInvalidFormatException(PARAM_LAT_DEG, String.valueOf(paramLatDeg),
                         "[" + ApiConstants.API_LAT_MIN + ", " + ApiConstants.API_LAT_MAX + ']');
             }
 
-            // Check lon.
+            // Check lon range.
             final double lonDeg = Geo.mapToLon(paramLonDeg);
 
             // Check precision.
@@ -125,7 +144,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     try {
                         territory = Territory.fromString(paramTerritory.toUpperCase());
                     } catch (final UnknownTerritoryException ignored2) {
-                        throw new ApiInvalidFormatException(PARAM_TERRITORY, paramTerritory, listOfAllTerritories);
+                        throw new ApiInvalidFormatException(PARAM_TERRITORY, paramTerritory, listOfAllTerritoryCodes);
                     }
                 }
             }
@@ -154,13 +173,23 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     }
                 }
             }
+
+            // Determine whether include=offset and territory=xxx were supplied as URL parameters.
             final boolean includeOffset = foundIncludeOffset;
             final boolean includeTerritory = foundIncludeTerritory;
+
+            // Send a trace event with the lat/lon and other parameters.
             TRACER.eventLatLonToMapcode(latDeg, lonDeg, territory, precision, paramType, paramInclude);
 
             try {
 
-                // Get local.
+                /**
+                 * First get all mapcodes. This is not the most efficient implementation, as we encode the
+                 * lat/lon 3 times, but unless there is a measured, significant performance issue in real life,
+                 * this implementation is good enough for now (and pretty straightforward).
+                 */
+
+                // Get the shortest local mapcode.
                 final Mapcode mapcodeLocal;
                 if (territory == null) {
                     mapcodeLocal = MapcodeCodec.encodeToShortest(latDeg, lonDeg);
@@ -168,10 +197,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     mapcodeLocal = MapcodeCodec.encodeToShortest(latDeg, lonDeg, territory);
                 }
 
-                // Get international.
+                // Get the international mapcode.
                 final Mapcode mapcodeInternational = MapcodeCodec.encodeToInternational(latDeg, lonDeg);
 
-                // Get all.
+                // Get all mapcodes.
                 final List<Mapcode> mapcodesAll;
                 if (territory == null) {
                     mapcodesAll = MapcodeCodec.encode(latDeg, lonDeg);
@@ -179,28 +208,32 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     mapcodesAll = MapcodeCodec.encode(latDeg, lonDeg, territory);
                 }
 
-                // Create result body.
-                final ApiDTO dto;
+                // Create result body, which is an ApiDTO. The exact type of DTO is still to be deteremined below.
+                final ApiDTO result;
                 if (type == null) {
-                    dto = new MapcodesDTO(getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeLocal),
+
+                    // No type was supplied, so we need to return the local, international and all mapcodes.
+                    result = new MapcodesDTO(getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeLocal),
                             getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeInternational),
                             mapcodesAll.stream().
                                     map(mapcode -> getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcode)).
                                     collect(Collectors.toList()));
                 } else {
+
+                    // Return only the local, international or all mapcodes.
                     switch (type) {
                         case LOCAL: {
-                            dto = getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeLocal);
+                            result = getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeLocal);
                             break;
                         }
 
                         case INTERNATIONAL: {
-                            dto = getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeInternational);
+                            result = getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcodeInternational);
                             break;
                         }
 
                         case ALL: {
-                            dto = new MapcodeListDTO(mapcodesAll.stream().
+                            result = new MapcodeListDTO(mapcodesAll.stream().
                                     map(mapcode -> getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcode)).
                                     collect(Collectors.toList()));
                             break;
@@ -208,12 +241,16 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
                         default:
                             assert false;
-                            dto = null;
+                            result = null;
                     }
                 }
-                dto.validate();
-                response.setResponse(Response.ok(dto).build());
+
+                // Validate the DTO before returning it, to make sure it's valid (internal consistency check).
+                result.validate();
+                response.setResponse(Response.ok(result).build());
             } catch (final UnknownMapcodeException ignored) {
+
+                // The mapcode conversion failed.
                 throw new ApiNotFoundException("No mapcode found for lat=" + latDeg + ", lon=" + lonDeg + ", territory=" + territory);
             }
 
@@ -223,8 +260,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Override
-    public void convertMapcodeToLatLon(
-            @Nonnull final AsynchronousResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
+    public void convertMapcodeToLatLon(@Nonnull final AsynchronousResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
+
+        // This method is forbidden. In REST terms, this would return all world coordinates - intractable.
         throw new ApiForbiddenException("Missing URL path parameters: /{mapcode}");
     }
 
@@ -239,39 +277,36 @@ public class MapcodeResourceImpl implements MapcodeResource {
         processor.process("convertMapcodeToLatLon", LOG, response, () -> {
             LOG.debug("convertMapcodeToLatLon: mapcode={}, territory={}", paramMapcode, paramTerritory);
 
-            Territory territory = null;
-            if (paramTerritory != null) {
-                try {
-                    final int territoryCode = Integer.valueOf(paramTerritory);
-                    territory = Territory.fromTerritoryCode(territoryCode);
-                } catch (final IllegalArgumentException ignored) {
-                    try {
-                        territory = Territory.fromString(paramTerritory.toUpperCase());
-                    } catch (final UnknownTerritoryException ignored2) {
-                        throw new ApiInvalidFormatException("territory", paramTerritory, listOfAllTerritories);
-                    }
-                }
-            }
+            // Get the territory from the path (if specified).
+            final Territory territory = getTerritoryFromParam(paramTerritory);
 
+            // Check if the mapcode is correctly fortmatted.
             if (!Mapcode.isValidMapcodeFormat(paramMapcode)) {
                 throw new ApiInvalidFormatException("mapcode", paramMapcode, Mapcode.REGEX_MAPCODE_FORMAT);
             }
+
+            // Send a trace event with the mapcode and territory.
             TRACER.eventMapcodeToLatLon(paramMapcode, territory);
 
-            // Create result body.
+            // Create result body (always an ApiDTO).
+            ApiDTO result;
             try {
+
+                // Decode the actual mapcode.
                 final Point point;
                 if (territory == null) {
                     point = MapcodeCodec.decode(paramMapcode);
                 } else {
                     point = MapcodeCodec.decode(paramMapcode, territory);
                 }
-                final PointDTO result = new PointDTO(point.getLatDeg(), point.getLonDeg());
-                result.validate();
-                response.setResponse(Response.ok(result).build());
+                result = new PointDTO(point.getLatDeg(), point.getLonDeg());
             } catch (final UnknownMapcodeException e) {
                 throw new ApiNotFoundException("No mapcode found for mapcode='" + paramMapcode + "', territory=" + territory);
             }
+
+            // Validate the result (internal consistency check).
+            result.validate();
+            response.setResponse(Response.ok(result).build());
 
             // The response is already set within this method body.
             return Futures.successful(null);
@@ -288,31 +323,19 @@ public class MapcodeResourceImpl implements MapcodeResource {
         processor.process("getTerritories", LOG, response, () -> {
             LOG.debug("getTerritories");
 
+            // Check value of count.
             if (count < 0) {
                 throw new ApiIntegerOutOfRangeException(PARAM_COUNT, count, 0, Integer.MAX_VALUE);
             }
             assert count >= 0;
 
-            Joiner.on('|').join(Arrays.asList(Territory.values()).stream().
-                    map(x -> x.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS)).collect(Collectors.toList()));
-
-            final List<TerritoryDTO> allTerritories = Arrays.asList(Territory.values()).stream().
-                    map(x -> {
-                        final Territory parentTerritory = x.getParentTerritory();
-                        return new TerritoryDTO(
-                                x.getTerritoryCode(),
-                                x.getFullName(),
-                                (parentTerritory == null) ? null : parentTerritory.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
-                                x.getAliases(),
-                                x.getFullNameAliases());
-                    }).
-                    collect(Collectors.toList());
-
             // Create the response and validate it.
-            final int nrTerritories = allTerritories.size();
+            final int nrTerritories = listOfAllTerritories.size();
             final int fromIndex = (offset < 0) ? Math.max(0, nrTerritories + offset) : Math.min(nrTerritories, offset);
             final int toIndex = Math.min(nrTerritories, fromIndex + count);
-            final TerritoriesDTO result = new TerritoriesDTO(allTerritories.subList(fromIndex, toIndex));
+            final TerritoriesDTO result = new TerritoriesDTO(listOfAllTerritories.subList(fromIndex, toIndex));
+
+            // Validate the result (internal consistency check).
             result.validate();
             response.setResponse(Response.ok(result).build());
 
@@ -331,18 +354,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
         processor.process("getTerritory", LOG, response, () -> {
             LOG.debug("getTerritory: territory={}", paramTerritory);
 
-            Territory territory = null;
-            try {
-                final int territoryCode = Integer.valueOf(paramTerritory);
-                territory = Territory.fromTerritoryCode(territoryCode);
-            } catch (final IllegalArgumentException ignored) {
-                try {
-                    territory = Territory.fromString(paramTerritory);
-                } catch (final UnknownTerritoryException ignored2) {
-                    throw new ApiInvalidFormatException("territory", paramTerritory, listOfAllTerritories);
-                }
-            }
+            // Get the territory from the URL.
+            final Territory territory = getTerritoryFromParam(paramTerritory);
 
+            // Return the right territory information.
             final Territory parentTerritory = territory.getParentTerritory();
             final TerritoryDTO result = new TerritoryDTO(
                     territory.getTerritoryCode(),
@@ -351,12 +366,34 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     territory.getAliases(),
                     territory.getFullNameAliases()
             );
+
+            // Validate the result (internal consistency check).
             result.validate();
             response.setResponse(Response.ok(result).build());
 
             // The response is already set within this method body.
             return Futures.successful(null);
         });
+    }
+
+    @Nonnull
+    private Territory getTerritoryFromParam(@Nonnull String paramTerritory) {
+        Territory territory = null;
+        try {
+            final int territoryCode = Integer.valueOf(paramTerritory);
+
+            // Try and convert it as an integer - this throws an exception for non-int codes.
+            territory = Territory.fromTerritoryCode(territoryCode);
+        } catch (final IllegalArgumentException ignored) {
+            try {
+
+                // Now, try to convert it as an ISO-code.
+                territory = Territory.fromString(paramTerritory.toUpperCase());
+            } catch (final UnknownTerritoryException ignored2) {
+                throw new ApiInvalidFormatException("territory", paramTerritory, listOfAllTerritoryCodes);
+            }
+        }
+        return territory;
     }
 
     @Nonnull

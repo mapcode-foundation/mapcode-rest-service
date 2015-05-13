@@ -39,7 +39,8 @@ public interface RootResource {
     String getHelpHTML();
 
     /**
-     * This method provides a version number.
+     * This method provides a version number for the service. Normally, this is the
+     * version number of the pom.xml file.
      *
      * @param response Returns a version number as JSON.
      */

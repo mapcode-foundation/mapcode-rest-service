@@ -25,6 +25,9 @@ import javax.annotation.Nullable;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
+/**
+ * This class handle the Mapcode REST API, which includes conversions to and from mapcodes.
+ */
 @Path("/mapcode")
 public interface MapcodeResource {
 

@@ -30,7 +30,8 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 /**
- * This class implements the REST API that deals with TTBin files.
+ * This class implements the REST API that deals with the root resource for the Mapcode REST API.
+ * This includes methods to get HTML help, the service version and server status.
  */
 public class RootResourceImpl implements RootResource {
     private static final Logger LOG = LoggerFactory.getLogger(RootResourceImpl.class);
