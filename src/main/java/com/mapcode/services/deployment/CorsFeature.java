@@ -24,7 +24,7 @@ import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.ext.Provider;
 
 /**
- * This class adds the Cross-Origin Resource Sharing feature to allow Javascrip to call
+ * This class adds the Cross-Origin Resource Sharing feature to allow Javascript to call
  * this service from another domain. It essentially add the calling domain to the list
  * of allowed origins in the HTTP header.
  *

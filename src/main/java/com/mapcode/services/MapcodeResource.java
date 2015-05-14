@@ -60,7 +60,7 @@ public interface MapcodeResource {
 
     // Unsupported operation.
     @GET
-    @Path("codes/")
+    @Path("codes")
     void convertLatLonToMapcode(
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
