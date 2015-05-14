@@ -86,7 +86,7 @@
         <resteasy.version>3.0.11.Final</resteasy.version>
         <slf4j.version>1.7.2</slf4j.version>
 
-        <mapcode.version>1.42</mapcode.version>
+        <mapcode.version>1.42.2</mapcode.version>
         <speedtools.version>3.0.9</speedtools.version>
 
         <maven-compiler-plugin.version>3.2</maven-compiler-plugin.version>

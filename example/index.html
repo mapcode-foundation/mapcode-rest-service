@@ -1,0 +1,137 @@
+<!--
+  ~ Copyright (C) 2015 Stichting Mapcode Foundation (http://www.mapcode.com)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<html>
+<body>
+    <font size=6>Sample HTML/Javascript using the mapcode REST API</font>
+    <p>
+        <script type="text/javascript">
+            var apiUrl = "http://mapcode.buve.info/mapcode";
+
+            function decodeButtonPressed() {
+                document.getElementById("resultdiv").innerHTML = '<font color=grey>waiting...</font>';
+
+                /* Use the input fields to build the request URL. */
+                var territory = document.getElementById("territory").value.toUpperCase();
+                if (territory == "") {
+                    territory = "AAA";
+                }
+                var mapcode = document.getElementById("mapcode").value.toUpperCase();
+                var url = apiUrl + "/coords/" + mapcode + "?territory=" + territory;
+
+                /* Asynchronously request to decode mapcode, call gotDecodeResponse when done. */
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function () {
+                    if (xmlhttp.readyState == 4) {
+                        gotDecodeResponse(xmlhttp.responseText, xmlhttp.status);
+                    }
+                }
+                xmlhttp.open("GET", url, true);
+                xmlhttp.send();
+                return false;
+            }
+
+            function gotDecodeResponse(result, status) {
+
+                /* Did the request succeed? */
+                if ((status == 200) && result) {
+
+                    /* Parse the result into a coordinate. */
+                    var coord = JSON.parse(result);
+                    document.getElementById("resultdiv").innerHTML = ("<u>Coordinate: </u><br>(" + coord.latDeg + ", " + coord.lonDeg + ')');
+                }
+                else {
+                    document.getElementById("resultdiv").innerHTML = "<font color=red>Request error (status=" + status + ")<br>" + result + "</font>";
+                }
+            }
+        </script>
+
+    <form action="#" onsubmit="return decodeButtonPressed();">
+        Territory:
+        <input type="text" id="territory" value="NLD">
+        Mapcode:
+        <input type="text" id="mapcode" value="XX.XX">
+        <input type="button" value="Decode" onclick="decodeButtonPressed();">
+    </form>
+    <div id="resultdiv"></div>
+
+    <hr>
+
+    <script type="text/javascript">
+        function encodeButtonPressed() {
+            document.getElementById("resultll").innerHTML = '<font color=grey>Waiting...</font>';
+
+            /* Use the input fields to build the request URL. */
+            var territory = document.getElementById("territory2").value.toUpperCase();
+            var lat = document.getElementById("lat").value.toUpperCase();
+            var lon = document.getElementById("lon").value.toUpperCase();
+            var url = apiUrl + "/codes/" + lat + "," + lon;
+            if (territory && (territory.length != 0)) {
+                url = url + "/all?precision=0&territory=" + territory;
+            }
+
+            /* Asynchronously request a solution, call gotEncodeResponse when done. */
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4) {
+                    gotEncodeResponse(xmlhttp.responseText, xmlhttp.status);
+                }
+            }
+            xmlhttp.open("GET", url, true);
+            xmlhttp.send();
+            return false;
+        }
+
+        function gotEncodeResponse(result, status) {
+
+            /* Did the request succeed? */
+            var line;
+            if ((status == 200) && result) {
+
+                /* Parse the result into an array of mapcodes. */
+                var r = JSON.parse(result);
+                if (r && r.all) {
+                    r = r.all;
+                }
+
+                /* Print the mapcodes, grey them if they are not the shortest (i.e. the first) in a territory. */
+                line = "<u>" + r.length + " possible mapcodes:</u><br>";
+                for (i = 0; i < r.length; i++) {
+                    if ((i > 0) && (r[i].territory == r[i - 1].territory)) {
+                        line += '<font color="#dddddd">';
+                    }
+                    line += ((r[i] && r[i].territory) ? r[i].territory : "") + " <b>" + r[i].mapcode + "</b></font><br>";
+                }
+            }
+            else {
+                line = "<font color=red>Error (status=" + status + ")<br>" + result + "</font>";
+            }
+            document.getElementById("resultll").innerHTML = line;
+        }
+    </script>
+
+    <form action="#" onsubmit="return encodeButtonPressed();">
+        Latitude:
+        <input type="text" id="lat" value="52.376514">
+        Longitude:
+        <input type="text" id="lon" value="4.908542">
+        Preferred territory:
+        <input type="text" id="territory2" value="">
+        <input type="button" value="Encode" onclick="encodeButtonPressed();">
+    </form>
+    <div id="resultll"></div>
+</body>
+</html>
