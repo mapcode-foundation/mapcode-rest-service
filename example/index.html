@@ -25,11 +25,11 @@
                 document.getElementById("resultdiv").innerHTML = '<font color=grey>waiting...</font>';
 
                 /* Use the input fields to build the request URL. */
-                var territory = document.getElementById("territory").value.toUpperCase();
+                var territory = document.getElementById("territory").value;
                 if (territory == "") {
                     territory = "AAA";
                 }
-                var mapcode = document.getElementById("mapcode").value.toUpperCase();
+                var mapcode = document.getElementById("mapcode").value;
                 var url = apiUrl + "/coords/" + mapcode + "?territory=" + territory;
 
                 /* Asynchronously request to decode mapcode, call gotDecodeResponse when done. */
@@ -75,9 +75,9 @@
             document.getElementById("resultll").innerHTML = '<font color=grey>Waiting...</font>';
 
             /* Use the input fields to build the request URL. */
-            var territory = document.getElementById("territory2").value.toUpperCase();
-            var lat = document.getElementById("lat").value.toUpperCase();
-            var lon = document.getElementById("lon").value.toUpperCase();
+            var territory = document.getElementById("territory2").value;
+            var lat = document.getElementById("lat").value;
+            var lon = document.getElementById("lon").value;
             var url = apiUrl + "/codes/" + lat + "," + lon;
             if (territory && (territory.length != 0)) {
                 url = url + "/all?precision=0&territory=" + territory;
