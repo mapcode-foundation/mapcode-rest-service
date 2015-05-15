@@ -127,19 +127,18 @@
             var result = JSON.parse(response);
 
             /* Print the mapcodes, grey them if they are not the shortest (i.e. the first) in a territory. */
-            var resultLines;
-            resultLines = "<b><u>There are " + result.all.length + " possible mapcodes:</b></u><br><tt>";
-            for (i = 0; i < result.all.length; i++) {
-                var isGrey = ((i > 0) && (result.all[i].territory == result.all[i - 1].territory));
+            var resultLines = "<b><u>There are " + result.mapcodes.length + " possible mapcodes:</b></u><br><tt>";
+            for (i = 0; i < result.mapcodes.length; i++) {
+                var isGrey = ((i > 0) && (result.mapcodes[i].territory == result.mapcodes[i - 1].territory));
                 if (isGrey) {
                     resultLines += "<font color=\"#bbbbbb\">";
                 }
-                resultLines += ((result.all[i].territory == "AAA") ? "" : result.all[i].territory) +
-                        " <b>" + result.all[i].mapcode + "</b>";
-                if (result.all[i].mapcode == result.local.mapcode) {
+                resultLines += ((result.mapcodes[i].territory == "AAA") ? "" : result.mapcodes[i].territory) +
+                        " <b>" + result.mapcodes[i].mapcode + "</b>";
+                if (result.mapcodes[i].mapcode == result.local.mapcode) {
                     resultLines += " (default local)";
                 }
-                if (result.all[i].territory == "AAA") {
+                if (result.mapcodes[i].territory == "AAA") {
                     resultLines += " (international)";
                 }
                 if (isGrey) {
@@ -158,9 +157,9 @@
 
 <form action="#" onsubmit="return encodeButtonPressed();">
     Latitude:
-    <input type="text" id="lat" value="50.754907">
+    <input type="text" id="lat" value="51.427624">
     Longitude:
-    <input type="text" id="lon" value="6.019821">
+    <input type="text" id="lon" value="5.488075">
     Preferred territory:
     <input type="text" id="territoryEncode" value="">
     <input type="button" value="Encode" onclick="encodeButtonPressed()">
@@ -171,5 +170,73 @@
 
 <div id="requestEncode"></div>
 <div id="responseEncode"></div>
+
+<hr/>
+
+<script>
+    function territoryButtonPressed() {
+        document.getElementById("resultTerritory").innerHTML = '<font color=grey>Waiting...</font>';
+
+        var territory = document.getElementById("territory").value;
+        var url = apiBaseURL + "/territories" + (territory ? ('/' + territory) : "");
+        document.getElementById("requestTerritory").innerHTML = createRequestLine(url);
+
+        /* Asynchronously request a solution, call encodeResponseReady when done. */
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4) {
+                territoryResponseReady(xmlhttp.responseText, xmlhttp.status);
+            }
+        }
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+    }
+
+    function territoryResponseReady(response, status) {
+
+        /* Did the request succeed? */
+        document.getElementById("responseTerritory").innerHTML = createResponseLine(status, response);
+        if ((status == 200) && response) {
+
+            /* Parse the response into an array of mapcodes. */
+            var result = JSON.parse(response);
+
+            var resultLines = "<small><b>";
+            if (result.territories) {
+                for (i = 0; i < result.territories.length; i++) {
+                    var territory = result.territories[i];
+                    resultLines += territory.territory + "</b> - " + territory.fullname + ", ";
+                    if (territory.aliases) {
+                        for (j = 0; j < territory.aliases.length; j++) {
+                            resultLines += territory.aliases[j] + ", ";
+                        }
+                    }
+                    resultLines += "<br/>";
+                }
+            }
+            else {
+                resultLines += "single"
+            }
+            resultLines += "<small>"
+            document.getElementById("resultTerritory").innerHTML = resultLines;
+        }
+        else {
+            document.getElementById("resultTerritory").innerHTML = "<b>Error</b> (status = " + status + ')';
+        }
+    }
+</script>
+
+<form action="#" onsubmit="return decodeButtonPressed();">
+    Territory:
+    <input type="text" id="territory" value="">
+    <input type="button" value="List" onclick="territoryButtonPressed()">
+</form>
+
+<div id="resultTerritory"></div>
+<br/>
+
+<div id="requestTerritory"></div>
+<div id="responseTerritory"></div>
+
 </body>
 </html>

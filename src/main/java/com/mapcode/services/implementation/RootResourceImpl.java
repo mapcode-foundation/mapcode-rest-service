@@ -45,7 +45,7 @@ public class RootResourceImpl implements RootResource {
             "GET /mapcode/version Returns the software version.\n" +
             "GET /mapcode/status  Returns 200 if the service OK.\n\n" +
 
-            "GET /mapcode/codes/{lat},{lon} [/all|local|international] [?precision=[0|1|2]&territory={territory}&include={offset|territory}]\n" +
+            "GET /mapcode/codes/{lat},{lon} [/mapcodes|local|international] [?precision=[0|1|2]&territory={territory}&include={offset|territory}]\n" +
             "   Convert latitude/longitude to one or more mapcodes.\n\n" +
 
             "   Path parameters:\n" +

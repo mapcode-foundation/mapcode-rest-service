@@ -32,7 +32,10 @@ import javax.annotation.Nullable;
 public final class TerritoryDTO extends ApiDTO {
 
     @Nonnull
-    private Integer territory;
+    private String territoryIso;
+
+    @Nonnull
+    private Integer territoryCode;
 
     @Nonnull
     private String fullName;
@@ -49,7 +52,8 @@ public final class TerritoryDTO extends ApiDTO {
     @Override
     public void validate() {
         validator().start();
-        validator().checkInteger(true, "territory", territory, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        validator().checkNotNull(true, "territoryIso", territoryIso);
+        validator().checkInteger(true, "territoryCode", territoryCode, Integer.MIN_VALUE, Integer.MAX_VALUE);
         validator().checkString(true, "fullName", fullName, ApiConstants.API_NAME_LEN_MIN, ApiConstants.API_NAME_LEN_MAX);
         validator().checkString(false, "parentTerritory", parentTerritory, ApiConstants.API_NAME_LEN_MIN, ApiConstants.API_NAME_LEN_MAX);
         validator().checkNotNull(false, "aliases", aliases);
@@ -57,12 +61,14 @@ public final class TerritoryDTO extends ApiDTO {
         validator().done();
     }
 
-    public TerritoryDTO(@Nonnull final Integer territory,
+    public TerritoryDTO(@Nonnull final String territoryIso,
+                        @Nonnull final Integer territoryCode,
                         @Nonnull final String fullName,
                         @Nullable final String parentTerritory,
                         @Nonnull final String[] aliases,
                         @Nonnull final String[] fullNameAliases) {
-        this.territory = territory;
+        this.territoryIso = territoryIso;
+        this.territoryCode = territoryCode;
         this.fullName = fullName;
         this.parentTerritory = parentTerritory;
         this.aliases = aliases;
@@ -77,15 +83,27 @@ public final class TerritoryDTO extends ApiDTO {
     }
 
     @Nonnull
-    public Integer getTerritory() {
+    public String getTerritoryIso() {
         beforeGet();
-        return territory;
+        return territoryIso;
     }
 
-    public void setTerritory(@Nonnull final Integer territory) {
+    public void setTerritoryIso(@Nonnull final String territoryIso) {
         beforeSet();
-        assert territory != null;
-        this.territory = territory;
+        assert territoryIso != null;
+        this.territoryIso = territoryIso;
+    }
+
+    @Nonnull
+    public Integer getTerritoryCode() {
+        beforeGet();
+        return territoryCode;
+    }
+
+    public void setTerritoryCode(@Nonnull final Integer territoryCode) {
+        beforeSet();
+        assert territoryCode != null;
+        this.territoryCode = territoryCode;
     }
 
     @Nonnull

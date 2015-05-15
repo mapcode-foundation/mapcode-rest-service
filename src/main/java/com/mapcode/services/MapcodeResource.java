@@ -32,7 +32,7 @@ import javax.ws.rs.core.MediaType;
 public interface MapcodeResource {
 
     enum ParamType {
-        ALL,                // All mapcode, sorted from (shortest) local to (longest) international code.
+        MAPCODES,           // All mapcodes, sorted from (shortest) local to (longest) international code.
         LOCAL,              // Shortest local mapcode, which potentially requires a territory code.
         INTERNATIONAL       // Longest international mapcode, which requires not territory code.
     }

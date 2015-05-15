@@ -38,21 +38,21 @@ public final class MapcodesDTO extends ApiDTO {
     private MapcodeDTO international;
 
     @Nonnull
-    private List<MapcodeDTO> all;
+    private List<MapcodeDTO> mapcodes;
 
     @Override
     public void validate() {
         validator().start();
         validator().checkNotNullAndValidate(true, "local", local);
         validator().checkNotNullAndValidate(true, "international", international);
-        validator().checkNotNullAndValidateAll(true, "all", all);
+        validator().checkNotNullAndValidateAll(true, "mapcodes", mapcodes);
         validator().done();
     }
 
-    public MapcodesDTO(@Nonnull final MapcodeDTO local, @Nonnull final MapcodeDTO international, @Nonnull final List<MapcodeDTO> all) {
+    public MapcodesDTO(@Nonnull final MapcodeDTO local, @Nonnull final MapcodeDTO international, @Nonnull final List<MapcodeDTO> mapcodes) {
         this.local = local;
         this.international = international;
-        this.all = all;
+        this.mapcodes = mapcodes;
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -75,9 +75,9 @@ public final class MapcodesDTO extends ApiDTO {
     }
 
     @Nonnull
-    public List<MapcodeDTO> getAll() {
+    public List<MapcodeDTO> getMapcodes() {
         beforeGet();
-        return all;
+        return mapcodes;
     }
 
     public void setLocal(@Nonnull final MapcodeDTO local) {
@@ -92,10 +92,10 @@ public final class MapcodesDTO extends ApiDTO {
         this.local = international;
     }
 
-    public void setAll(@Nonnull final List<MapcodeDTO> all) {
+    public void setMapcodes(@Nonnull final List<MapcodeDTO> mapcodes) {
         beforeSet();
-        assert all != null;
-        this.all = all;
+        assert mapcodes != null;
+        this.mapcodes = mapcodes;
     }
 
     @Override

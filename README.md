@@ -9,7 +9,7 @@ Available methods:
     GET /mapcode/version Returns the software version.
     GET /mapcode/status  Returns 200 if the service OK.
     
-    GET /mapcode/codes/{lat},{lon} [/all|local|international] [?precision=[0|1|2]&territory={territory}&include={offset|territory}]
+    GET /mapcode/codes/{lat},{lon} [/mapcodes|local|international] [?precision=[0|1|2]&territory={territory}&include={offset|territory}]
        Convert latitude/longitude to one or more mapcodes.
     
        Path parameters:

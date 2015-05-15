@@ -65,6 +65,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             map(x -> {
                 final Territory parentTerritory = x.getParentTerritory();
                 return new TerritoryDTO(
+                        x.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
                         x.getTerritoryCode(),
                         x.getFullName(),
                         (parentTerritory == null) ? null : parentTerritory.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
@@ -233,7 +234,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                             break;
                         }
 
-                        case ALL: {
+                        case MAPCODES: {
                             result = new MapcodeListDTO(mapcodesAll.stream().
                                     map(mapcode -> getMapcodeDTO(latDeg, lonDeg, precision, includeOffset, includeTerritory, mapcode)).
                                     collect(Collectors.toList()));
@@ -361,6 +362,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             // Return the right territory information.
             final Territory parentTerritory = territory.getParentTerritory();
             final TerritoryDTO result = new TerritoryDTO(
+                    territory.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
                     territory.getTerritoryCode(),
                     territory.getFullName(),
                     (parentTerritory == null) ? null : parentTerritory.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
@@ -430,13 +432,13 @@ public class MapcodeResourceImpl implements MapcodeResource {
     private static String getMapcodePrecision(@Nonnull final Mapcode mapcode, final int precision) {
         switch (precision) {
             case 1:
-                return mapcode.getMapcodePrecision1();
+                return mapcode.getMapcodePrecision(1);
 
             case 2:
-                return mapcode.getMapcodePrecision2();
+                return mapcode.getMapcodePrecision(2);
 
             default:
-                return mapcode.getMapcodePrecision0();
+                return mapcode.getMapcodePrecision(0);
         }
     }
 
