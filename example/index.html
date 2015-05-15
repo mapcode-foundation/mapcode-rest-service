@@ -16,9 +16,8 @@
 
 <html>
 <body>
-<font size=5>Sample HTML/Javascript using the mapcode REST API</font>
+<h1>Sample HTML/Javascript using the mapcode REST API</h1>
 
-<p></p>
 <script type="text/javascript">
 
     /* This is the base URL of the mapcode REST API. */
@@ -68,13 +67,19 @@
 
             /* Parse the response into a coordinate. */
             var result = JSON.parse(response);
-            document.getElementById("resultDecode").innerHTML = "<b><u>Coordinate:</u></b><br>(" + result.latDeg + ", " + result.lonDeg + ')';
+            document.getElementById("resultDecode").innerHTML = "<b><u>Coordinate:</u></b><br><tt>(" + result.latDeg + ", " + result.lonDeg + ")</tt>";
         }
         else {
             document.getElementById("resultDecode").innerHTML = "<b>Error</b> (status = " + status + ')';
         }
     }
 </script>
+
+<h2>Convert latitude/longitude to mapcode</h2>
+
+<p>
+    <tt>HTTP GET /mapcode/coords/{mapcode}?territory={territory}</tt>
+</p>
 
 <form action="#" onsubmit="return decodeButtonPressed();">
     Territory:
@@ -155,6 +160,12 @@
     }
 </script>
 
+<h2>Convert mapcode to latitude/longitude</h2>
+
+<p>
+    <tt>HTTP GET /mapcode/codes/{lat},{lon}?territory={territory}</tt>
+</p>
+
 <form action="#" onsubmit="return encodeButtonPressed();">
     Latitude:
     <input type="text" id="lat" value="51.427624">
@@ -174,6 +185,17 @@
 <hr/>
 
 <script>
+    function createTerritoryLine(territory) {
+        var line = "<b>" + territory.territoryIso + "</b> (" + territory.territoryCode + ") - <u>" + territory.fullname + "</u>";
+        if (territory.aliases) {
+            line += ", also known as: ";
+            for (j = 0; j < territory.aliases.length; j++) {
+                line += territory.aliases[j] + ' ';
+            }
+        }
+        return line;
+    }
+
     function territoryButtonPressed() {
         document.getElementById("resultTerritory").innerHTML = '<font color=grey>Waiting...</font>';
 
@@ -201,21 +223,17 @@
             /* Parse the response into an array of mapcodes. */
             var result = JSON.parse(response);
 
-            var resultLines = "<small><b>";
+            var resultLines = "";
             if (result.territories) {
+                resultLines += "<b><u>List all territories (" + result.territories.length + "):</u></b></u><br/><small>";
                 for (i = 0; i < result.territories.length; i++) {
                     var territory = result.territories[i];
-                    resultLines += territory.territory + "</b> - " + territory.fullname + ", ";
-                    if (territory.aliases) {
-                        for (j = 0; j < territory.aliases.length; j++) {
-                            resultLines += territory.aliases[j] + ", ";
-                        }
-                    }
-                    resultLines += "<br/>";
+                    resultLines += createTerritoryLine(territory) + "<br/>";
                 }
             }
             else {
-                resultLines += "single"
+                resultLines += "<b><u>List one territory:</u></b></u><br/><small>";
+                resultLines += createTerritoryLine(result);
             }
             resultLines += "<small>"
             document.getElementById("resultTerritory").innerHTML = resultLines;
@@ -225,6 +243,12 @@
         }
     }
 </script>
+
+<h2>Get territory information</h2>
+
+<p>
+    <tt>HTTP GET /mapcode/territory[/{territory}]</tt>
+</p>
 
 <form action="#" onsubmit="return decodeButtonPressed();">
     Territory:
