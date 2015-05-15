@@ -16,122 +16,160 @@
 
 <html>
 <body>
-    <font size=6>Sample HTML/Javascript using the mapcode REST API</font>
-    <p>
-        <script type="text/javascript">
-            var apiUrl = "http://mapcode.buve.info/mapcode";
+<font size=5>Sample HTML/Javascript using the mapcode REST API</font>
 
-            function decodeButtonPressed() {
-                document.getElementById("resultdiv").innerHTML = '<font color=grey>waiting...</font>';
+<p></p>
+<script type="text/javascript">
 
-                /* Use the input fields to build the request URL. */
-                var territory = document.getElementById("territory").value;
-                if (territory == "") {
-                    territory = "AAA";
-                }
-                var mapcode = document.getElementById("mapcode").value;
-                var url = apiUrl + "/coords/" + mapcode + "?territory=" + territory;
+    /* This is the base URL of the mapcode REST API. */
+    var apiBaseURL = "http://mapcode.buve.info/mapcode";
 
-                /* Asynchronously request to decode mapcode, call gotDecodeResponse when done. */
-                var xmlhttp = new XMLHttpRequest();
-                xmlhttp.onreadystatechange = function () {
-                    if (xmlhttp.readyState == 4) {
-                        gotDecodeResponse(xmlhttp.responseText, xmlhttp.status);
-                    }
-                }
-                xmlhttp.open("GET", url, true);
-                xmlhttp.send();
-                return false;
-            }
+    function createResponseLine(status, result) {
+        return "<font color=\"#22aa22\"><small>" + ((status == 200) ? "" : "<font color=\"cc2222\">") +
+                "<b>Response:</b><br><tt>" + result + "</tt>" +
+                ((status == 200) ? "" : "</font>") + "</small></font><br/><br/>";
+    }
 
-            function gotDecodeResponse(result, status) {
+    function createRequestLine(request) {
+        return "<font color=\"#22aa22\"><small><b>Request:</b><br><tt>HTTP GET " + request + "</tt></small></font><br/><br/>";
 
-                /* Did the request succeed? */
-                if ((status == 200) && result) {
+    }
 
-                    /* Parse the result into a coordinate. */
-                    var coord = JSON.parse(result);
-                    document.getElementById("resultdiv").innerHTML = ("<u>Coordinate: </u><br>(" + coord.latDeg + ", " + coord.lonDeg + ')');
-                }
-                else {
-                    document.getElementById("resultdiv").innerHTML = "<font color=red>Request error (status=" + status + ")<br>" + result + "</font>";
-                }
-            }
-        </script>
+    function decodeButtonPressed() {
 
-    <form action="#" onsubmit="return decodeButtonPressed();">
-        Territory:
-        <input type="text" id="territory" value="NLD">
-        Mapcode:
-        <input type="text" id="mapcode" value="XX.XX">
-        <input type="button" value="Decode" onclick="decodeButtonPressed();">
-    </form>
-    <div id="resultdiv"></div>
-
-    <hr>
-
-    <script type="text/javascript">
-        function encodeButtonPressed() {
-            document.getElementById("resultll").innerHTML = '<font color=grey>Waiting...</font>';
-
-            /* Use the input fields to build the request URL. */
-            var territory = document.getElementById("territory2").value;
-            var lat = document.getElementById("lat").value;
-            var lon = document.getElementById("lon").value;
-            var url = apiUrl + "/codes/" + lat + "," + lon;
-            if (territory && (territory.length != 0)) {
-                url = url + "/all?precision=0&territory=" + territory;
-            }
-
-            /* Asynchronously request a solution, call gotEncodeResponse when done. */
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function () {
-                if (xmlhttp.readyState == 4) {
-                    gotEncodeResponse(xmlhttp.responseText, xmlhttp.status);
-                }
-            }
-            xmlhttp.open("GET", url, true);
-            xmlhttp.send();
-            return false;
+        /* Use the input fields to build the request URL. */
+        var territory = document.getElementById("territoryDecode").value;
+        if (territory == "") {
+            territory = "AAA";
         }
+        var mapcode = document.getElementById("mapcode").value;
+        var url = apiBaseURL + "/coords/" + mapcode + "?territory=" + territory;
 
-        function gotEncodeResponse(result, status) {
+        /* Update page. */
+        document.getElementById("resultDecode").innerHTML = '<font color=grey>Waiting...</font>';
+        document.getElementById("requestDecode").innerHTML = createRequestLine(url);
 
-            /* Did the request succeed? */
-            var line;
-            if ((status == 200) && result) {
-
-                /* Parse the result into an array of mapcodes. */
-                var r = JSON.parse(result);
-                if (r && r.all) {
-                    r = r.all;
-                }
-
-                /* Print the mapcodes, grey them if they are not the shortest (i.e. the first) in a territory. */
-                line = "<u>" + r.length + " possible mapcodes:</u><br>";
-                for (i = 0; i < r.length; i++) {
-                    if ((i > 0) && (r[i].territory == r[i - 1].territory)) {
-                        line += '<font color="#dddddd">';
-                    }
-                    line += ((r[i] && r[i].territory) ? r[i].territory : "") + " <b>" + r[i].mapcode + "</b></font><br>";
-                }
+        /* Asynchronously request to decode mapcode, call decodeResponseReady when done. */
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function () {
+            if (request.readyState == 4) {
+                decodeResponseReady(request.responseText, request.status);
             }
-            else {
-                line = "<font color=red>Error (status=" + status + ")<br>" + result + "</font>";
-            }
-            document.getElementById("resultll").innerHTML = line;
         }
-    </script>
+        request.open("GET", url, true);
+        request.send();
+    }
 
-    <form action="#" onsubmit="return encodeButtonPressed();">
-        Latitude:
-        <input type="text" id="lat" value="52.376514">
-        Longitude:
-        <input type="text" id="lon" value="4.908542">
-        Preferred territory:
-        <input type="text" id="territory2" value="">
-        <input type="button" value="Encode" onclick="encodeButtonPressed();">
-    </form>
-    <div id="resultll"></div>
+    function decodeResponseReady(response, status) {
+
+        /* Did the request succeed? */
+        document.getElementById("responseDecode").innerHTML = createResponseLine(status, response);
+        if ((status == 200) && response) {
+
+            /* Parse the response into a coordinate. */
+            var result = JSON.parse(response);
+            document.getElementById("resultDecode").innerHTML = "<b><u>Coordinate:</u></b><br>(" + result.latDeg + ", " + result.lonDeg + ')';
+        }
+        else {
+            document.getElementById("resultDecode").innerHTML = "<b>Error</b> (status = " + status + ')';
+        }
+    }
+</script>
+
+<form action="#" onsubmit="return decodeButtonPressed();">
+    Territory:
+    <input type="text" id="territoryDecode" value="NLD">
+    Mapcode:
+    <input type="text" id="mapcode" value="XX.XX">
+    <input type="button" value="Decode" onclick="decodeButtonPressed()">
+</form>
+
+<div id="resultDecode"></div>
+<br/>
+
+<div id="requestDecode"></div>
+<div id="responseDecode"></div>
+
+<hr>
+
+<script type="text/javascript">
+    function encodeButtonPressed() {
+        document.getElementById("resultEncode").innerHTML = '<font color=grey>Waiting...</font>';
+
+        /* Use the input fields to build the request URL. */
+        var territory = document.getElementById("territoryEncode").value;
+        var lat = document.getElementById("lat").value;
+        var lon = document.getElementById("lon").value;
+        var url = apiBaseURL + "/codes/" + lat + "," + lon + "?precision=0&include=territory";
+        if (territory && (territory.length != 0)) {
+            url = url + "&territory=" + territory;
+        }
+        document.getElementById("requestEncode").innerHTML = createRequestLine(url);
+
+        /* Asynchronously request a solution, call encodeResponseReady when done. */
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4) {
+                encodeResponseReady(xmlhttp.responseText, xmlhttp.status);
+            }
+        }
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+    }
+
+    function encodeResponseReady(response, status) {
+
+        /* Did the request succeed? */
+        document.getElementById("responseEncode").innerHTML = createResponseLine(status, response);
+        if ((status == 200) && response) {
+
+            /* Parse the response into an array of mapcodes. */
+            var result = JSON.parse(response);
+
+            /* Print the mapcodes, grey them if they are not the shortest (i.e. the first) in a territory. */
+            var resultLines;
+            resultLines = "<b><u>There are " + result.all.length + " possible mapcodes:</b></u><br><tt>";
+            for (i = 0; i < result.all.length; i++) {
+                var isGrey = ((i > 0) && (result.all[i].territory == result.all[i - 1].territory));
+                if (isGrey) {
+                    resultLines += "<font color=\"#bbbbbb\">";
+                }
+                resultLines += ((result.all[i].territory == "AAA") ? "" : result.all[i].territory) +
+                        " <b>" + result.all[i].mapcode + "</b>";
+                if (result.all[i].mapcode == result.local.mapcode) {
+                    resultLines += " (default local)";
+                }
+                if (result.all[i].territory == "AAA") {
+                    resultLines += " (international)";
+                }
+                if (isGrey) {
+                    resultLines += "</font>";
+                }
+                resultLines += "<br/>"
+            }
+            resultLines += "</tt>"
+            document.getElementById("resultEncode").innerHTML = resultLines;
+        }
+        else {
+            document.getElementById("resultEncode").innerHTML = "<b>Error</b> (status = " + status + ')';
+        }
+    }
+</script>
+
+<form action="#" onsubmit="return encodeButtonPressed();">
+    Latitude:
+    <input type="text" id="lat" value="50.754907">
+    Longitude:
+    <input type="text" id="lon" value="6.019821">
+    Preferred territory:
+    <input type="text" id="territoryEncode" value="">
+    <input type="button" value="Encode" onclick="encodeButtonPressed()">
+</form>
+
+<div id="resultEncode"></div>
+<br/>
+
+<div id="requestEncode"></div>
+<div id="responseEncode"></div>
 </body>
 </html>
