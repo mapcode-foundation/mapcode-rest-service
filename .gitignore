@@ -1,2 +1,3 @@
+src/main/resources/mapcode-secret.properties
 target/
 out/
