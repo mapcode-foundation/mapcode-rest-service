@@ -41,8 +41,9 @@
         if (territory == "") {
             territory = "AAA";
         }
+        var parent = document.getElementById("parentDecode").value;
         var mapcode = document.getElementById("mapcode").value;
-        var url = apiBaseURL + "/coords/" + mapcode + "?territory=" + territory;
+        var url = apiBaseURL + "/coords/" + mapcode + "?territory=" + territory + (parent ? ("&parent=" + parent) : "");
 
         /* Update page. */
         document.getElementById("resultDecode").innerHTML = '<font color=grey>Waiting...</font>';
@@ -78,12 +79,13 @@
 <h2>Convert latitude/longitude to mapcode</h2>
 
 <p>
-    <tt>HTTP GET /mapcode/coords/{mapcode}?territory={territory}</tt>
+    <tt>HTTP GET /mapcode/coords/{mapcode}[?territory={territory}[&parent={parentTerritory}]]</tt>
 </p>
 
 <form action="#" onsubmit="return decodeButtonPressed();">
     Territory:
     <input type="text" id="territoryDecode" value="NLD">
+    <input type="text" id="parentDecode" value="">
     Mapcode:
     <input type="text" id="mapcode" value="XX.XX">
     <input type="button" value="Decode" onclick="decodeButtonPressed()">
@@ -103,12 +105,12 @@
 
         /* Use the input fields to build the request URL. */
         var territory = document.getElementById("territoryEncode").value;
+        var parent = document.getElementById("parentEncode").value;
         var lat = document.getElementById("lat").value;
         var lon = document.getElementById("lon").value;
-        var url = apiBaseURL + "/codes/" + lat + "," + lon + "?precision=0&include=territory";
-        if (territory && (territory.length != 0)) {
-            url = url + "&territory=" + territory;
-        }
+        var url = apiBaseURL + "/codes/" + lat + "," + lon + "?precision=0&include=territory" +
+                ((territory && (territory.length != 0)) ? "&territory=" + territory : "") +
+                (parent ? ("&parent=" + parent) : "");
         document.getElementById("requestEncode").innerHTML = createRequestLine(url);
 
         /* Asynchronously request a solution, call encodeResponseReady when done. */
@@ -163,7 +165,7 @@
 <h2>Convert mapcode to latitude/longitude</h2>
 
 <p>
-    <tt>HTTP GET /mapcode/codes/{lat},{lon}?territory={territory}</tt>
+    <tt>HTTP GET /mapcode/codes/{lat},{lon}[?territory={territory}[&parent={parentTerritory}]</tt>
 </p>
 
 <form action="#" onsubmit="return encodeButtonPressed();">
@@ -173,6 +175,7 @@
     <input type="text" id="lon" value="5.488075">
     Preferred territory:
     <input type="text" id="territoryEncode" value="">
+    <input type="text" id="parentEncode" value="">
     <input type="button" value="Encode" onclick="encodeButtonPressed()">
 </form>
 
@@ -200,6 +203,7 @@
         document.getElementById("resultTerritory").innerHTML = '<font color=grey>Waiting...</font>';
 
         var territory = document.getElementById("territory").value;
+        var parent = document.getElementById("parent").value;
         var url = apiBaseURL + "/territories" + (territory ? ('/' + territory) : "");
         document.getElementById("requestTerritory").innerHTML = createRequestLine(url);
 
