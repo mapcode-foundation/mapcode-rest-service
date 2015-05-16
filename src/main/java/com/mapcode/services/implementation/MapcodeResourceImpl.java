@@ -56,7 +56,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
     private final ResourceProcessor processor;
 
     private final String listOfAllTerritoryCodes = Joiner.on('|').join(Arrays.asList(Territory.values()).stream().
-            map(x -> x.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS)).collect(Collectors.toList()));
+            map(x -> x.toNameFormat(NameFormat.INTERNATIONAL)).collect(Collectors.toList()));
     private final String listOfAllTypes = Joiner.on('|').join(Arrays.asList(ParamType.values()).stream().
             map(x -> x).collect(Collectors.toList()));
     private final String listOfAllIncludes = Joiner.on('|').join(Arrays.asList(ParamInclude.values()).stream().
@@ -65,10 +65,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
             map(x -> {
                 final Territory parentTerritory = x.getParentTerritory();
                 return new TerritoryDTO(
-                        x.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
+                        x.toNameFormat(NameFormat.INTERNATIONAL),
                         x.getTerritoryCode(),
                         x.getFullName(),
-                        (parentTerritory == null) ? null : parentTerritory.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
+                        (parentTerritory == null) ? null : parentTerritory.toNameFormat(NameFormat.INTERNATIONAL),
                         x.getAliases(),
                         x.getFullNameAliases());
             }).
@@ -351,10 +351,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
             // Return the right territory information.
             final Territory parentTerritory = territory.getParentTerritory();
             final TerritoryDTO result = new TerritoryDTO(
-                    territory.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
+                    territory.toNameFormat(NameFormat.INTERNATIONAL),
                     territory.getTerritoryCode(),
                     territory.getFullName(),
-                    (parentTerritory == null) ? null : parentTerritory.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
+                    (parentTerritory == null) ? null : parentTerritory.toNameFormat(NameFormat.INTERNATIONAL),
                     territory.getAliases(),
                     territory.getFullNameAliases()
             );
