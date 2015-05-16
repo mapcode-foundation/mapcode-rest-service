@@ -66,6 +66,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 final Territory parentTerritory = x.getParentTerritory();
                 return new TerritoryDTO(
                         x.toNameFormat(NameFormat.INTERNATIONAL),
+                        x.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
+                        x.toNameFormat(NameFormat.MINIMAL),
                         x.getTerritoryCode(),
                         x.getFullName(),
                         (parentTerritory == null) ? null : parentTerritory.toNameFormat(NameFormat.INTERNATIONAL),
@@ -352,6 +354,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final Territory parentTerritory = territory.getParentTerritory();
             final TerritoryDTO result = new TerritoryDTO(
                     territory.toNameFormat(NameFormat.INTERNATIONAL),
+                    territory.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
+                    territory.toNameFormat(NameFormat.MINIMAL),
                     territory.getTerritoryCode(),
                     territory.getFullName(),
                     (parentTerritory == null) ? null : parentTerritory.toNameFormat(NameFormat.INTERNATIONAL),
