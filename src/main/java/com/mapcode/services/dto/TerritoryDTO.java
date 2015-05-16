@@ -61,7 +61,7 @@ public final class TerritoryDTO extends ApiDTO {
         validator().checkNotNull(true, "territoryNameInternational", territoryNameInternational);
         validator().checkNotNull(true, "territoryNameMinimalUnambiguous", territoryNameMinimalUnambiguous);
         validator().checkNotNull(true, "territoryNameMinimal", territoryNameMinimal);
-        validator().checkInteger(true, "territoryCOde", territoryCode, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        validator().checkInteger(true, "territoryCode", territoryCode, Integer.MIN_VALUE, Integer.MAX_VALUE);
         validator().checkString(true, "fullName", fullName, ApiConstants.API_NAME_LEN_MIN, ApiConstants.API_NAME_LEN_MAX);
         validator().checkString(false, "parentTerritory", parentTerritory, ApiConstants.API_NAME_LEN_MIN, ApiConstants.API_NAME_LEN_MAX);
         validator().checkNotNull(false, "aliases", aliases);
@@ -70,16 +70,16 @@ public final class TerritoryDTO extends ApiDTO {
     }
 
     public TerritoryDTO(@Nonnull final String territoryNameInternational,
-                        @Nonnull final String territoryNameMinimalUnambiguous,
-                        @Nonnull final String territoryNameMinimal,
+    @Nonnull final String territoryNameMinimalUnambiguous,
+    @Nonnull final String territoryNameMinimal,
                         @Nonnull final Integer territoryCode,
                         @Nonnull final String fullName,
                         @Nullable final String parentTerritory,
                         @Nonnull final String[] aliases,
                         @Nonnull final String[] fullNameAliases) {
         this.territoryNameInternational = territoryNameInternational;
-        this.territoryNameMinimalUnambiguous = territoryNameMinimalUnambiguous;
-        this.territoryNameMinimal = territoryNameMinimal;
+        this.territoryNameMinimalUnambiguous= territoryNameMinimalUnambiguous;
+        this.territoryNameMinimal= territoryNameMinimal;
         this.territoryCode = territoryCode;
         this.fullName = fullName;
         this.parentTerritory = parentTerritory;

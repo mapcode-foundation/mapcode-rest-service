@@ -15,8 +15,15 @@
   -->
 
 <html>
-<body>
+<body onload="onLoad()">
 <h1>Sample HTML/Javascript using the mapcode REST API</h1>
+
+<h2>REST API Version</h2>
+<p>
+    <tt>HTTP GET /mapcode/version</tt>
+</p>
+<b><u>REST API Version:</u></b>
+<tt><div id="version">(unknown)</div></tt>
 
 <!--
  ~ --------------------------------------------------------------------------------
@@ -30,6 +37,25 @@
     var apiBaseURL = "http://mapcode.buve.info/mapcode";
     // var apiBaseURL = "http://localhost:8080/mapcode";
 
+    function onLoad() {
+        var url = apiBaseURL + "/version";
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4) {
+                versionResponseReady(xmlhttp.responseText, xmlhttp.status);
+            }
+        }
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+    }
+
+    function versionResponseReady(response, status) {
+        if ((status == 200) && response) {
+            var result = JSON.parse(response);
+            document.getElementById("version").innerHTML = result.version;
+        }
+    }
+
     function createResponseLine(status, result) {
         return "<font color=\"#22aa22\"><small>" + ((status == 200) ? "" : "<font color=\"cc2222\">") +
                 "<b>Response:</b><br><tt>" + result + "</tt>" +
@@ -42,7 +68,7 @@
     }
 
     function createTerritoryLine(territory) {
-        var line = "<b>" + territory.territoryIso + "</b> (" + territory.territoryCode + ") - <u>" + territory.fullname + "</u>";
+        var line = "<b>" + territory.territoryNameInternational + "</b> (" + territory.territoryCode + ") - <u>" + territory.fullName + "</u>";
         if (territory.aliases) {
             line += ", also known as: ";
             for (j = 0; j < territory.aliases.length; j++) {
