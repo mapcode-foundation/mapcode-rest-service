@@ -69,6 +69,12 @@
 
     function createTerritoryLine(territory) {
         var line = "<b>" + territory.territoryNameInternational + "</b> (" + territory.territoryCode + ") - <u>" + territory.fullName + "</u>";
+        if (territory.fullNameAliases) {
+            line += ", ";
+            for (j = 0; j < territory.fullNameAliases.length; j++) {
+                line += territory.fullNameAliases[j] + ' ';
+            }
+        }
         if (territory.aliases) {
             line += ", also known as: ";
             for (j = 0; j < territory.aliases.length; j++) {

@@ -65,7 +65,7 @@ public final class TerritoryDTO extends ApiDTO {
         validator().checkString(true, "fullName", fullName, ApiConstants.API_NAME_LEN_MIN, ApiConstants.API_NAME_LEN_MAX);
         validator().checkString(false, "parentTerritory", parentTerritory, ApiConstants.API_NAME_LEN_MIN, ApiConstants.API_NAME_LEN_MAX);
         validator().checkNotNull(false, "aliases", aliases);
-        validator().checkNotNull(false, "fullNameAliases", aliases);
+        validator().checkNotNull(false, "fullNameAliases", fullNameAliases);
         validator().done();
     }
 
