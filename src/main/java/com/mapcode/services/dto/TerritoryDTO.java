@@ -143,12 +143,12 @@ public final class TerritoryDTO extends ApiDTO {
     }
 
     @Nonnull
-    public String getFullname() {
+    public String getFullName() {
         beforeGet();
         return fullName;
     }
 
-    public void setFullname(@Nonnull final String fullName) {
+    public void setFullName(@Nonnull final String fullName) {
         beforeSet();
         assert fullName != null;
         this.fullName = fullName;
