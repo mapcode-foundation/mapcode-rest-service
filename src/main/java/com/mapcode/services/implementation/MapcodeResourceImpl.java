@@ -24,10 +24,7 @@ import com.mapcode.services.ApiConstants;
 import com.mapcode.services.MapcodeResource;
 import com.mapcode.services.dto.*;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
-import com.tomtom.speedtools.apivalidation.exceptions.ApiForbiddenException;
-import com.tomtom.speedtools.apivalidation.exceptions.ApiIntegerOutOfRangeException;
-import com.tomtom.speedtools.apivalidation.exceptions.ApiInvalidFormatException;
-import com.tomtom.speedtools.apivalidation.exceptions.ApiNotFoundException;
+import com.tomtom.speedtools.apivalidation.exceptions.*;
 import com.tomtom.speedtools.geometry.Geo;
 import com.tomtom.speedtools.geometry.GeoPoint;
 import com.tomtom.speedtools.rest.ResourceProcessor;
@@ -57,8 +54,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     private final String listOfAllTerritoryCodes = Joiner.on('|').join(Arrays.asList(Territory.values()).stream().
             map(x -> x.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS)).collect(Collectors.toList()));
-    private final String listOfAllParentTerritoryCodes = Joiner.on('|').join(Arrays.asList(ParentTerritory.values()).stream().
-            map(x -> x.name()).collect(Collectors.toList()));
     private final String listOfAllTypes = Joiner.on('|').join(Arrays.asList(ParamType.values()).stream().
             map(x -> x).collect(Collectors.toList()));
     private final String listOfAllIncludes = Joiner.on('|').join(Arrays.asList(ParamInclude.values()).stream().
@@ -376,6 +371,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
     @Nonnull
     private Territory resolveTerritory(@Nonnull final String paramTerritory, @Nullable final String paramContext) {
         Territory territory;
+
+        // First try if its a numeric territory code.
         try {
             final int territoryCode = Integer.valueOf(paramTerritory);
 
@@ -383,18 +380,28 @@ public class MapcodeResourceImpl implements MapcodeResource {
             territory = Territory.fromTerritoryCode(territoryCode);
         } catch (final IllegalArgumentException ignore) {
 
-            // TODO !!
+            // Territory code failed. Now, try to convert it as an ISO-code.
             try {
-                // Now, try to convert it as an ISO-code.
+
                 if (paramContext != null) {
-                    ParentTerritory parentTerritory;
+
+                    // Parent context specified. Try to resolve the context.
                     try {
-                        parentTerritory = ParentTerritory.valueOf(paramContext.toUpperCase());
+                        final Territory contextTerritory = resolveTerritory(paramContext, null);
+                        final ParentTerritory parentTerritory = ParentTerritory.valueOf(contextTerritory.toString());
                         territory = Territory.fromString(paramTerritory.toUpperCase(), parentTerritory);
                     } catch (final IllegalArgumentException ignored) {
-                        throw new ApiInvalidFormatException("parentTerritory", paramContext, listOfAllParentTerritoryCodes);
+
+                        // Parent territory code was not a ParentTerritory.
+                        territory = Territory.fromString(paramTerritory.toUpperCase());
+                    } catch (final ApiException | UnknownTerritoryException ignored) {
+
+                        // Parent territory code resolution failed.
+                        throw new ApiInvalidFormatException("context", paramContext, listOfAllTerritoryCodes);
                     }
                 } else {
+
+                    // No parent context specified. Just try to resolve the territory code.
                     territory = Territory.fromString(paramTerritory.toUpperCase());
                 }
             } catch (final UnknownTerritoryException ignored) {

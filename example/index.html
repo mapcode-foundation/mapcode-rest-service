@@ -21,7 +21,7 @@
 <script type="text/javascript">
 
     /* This is the base URL of the mapcode REST API. */
-    var apiBaseURL = "http://mapcode.buve.info/mapcode";
+    var apiBaseURL = "http://localhost:8080/mapcode";
 
     function createResponseLine(status, result) {
         return "<font color=\"#22aa22\"><small>" + ((status == 200) ? "" : "<font color=\"cc2222\">") +
@@ -108,7 +108,7 @@
 
         /* Use the input fields to build the request URL. */
         var territory = document.getElementById("territoryEncode").value;
-        var context = document.getElementById("parentEncode").value;
+        var context = document.getElementById("contextEncode").value;
         var lat = document.getElementById("lat").value;
         var lon = document.getElementById("lon").value;
         var url = apiBaseURL + "/codes/" + lat + "," + lon + "?precision=0&include=territory" +
