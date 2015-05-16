@@ -34,73 +34,17 @@
 
     }
 
-    function decodeButtonPressed() {
-
-        /* Use the input fields to build the request URL. */
-        var territory = document.getElementById("territoryDecode").value;
-        if (territory == "") {
-            territory = "AAA";
-        }
-        var context = document.getElementById("contextDecode").value;
-        var mapcode = document.getElementById("mapcode").value;
-        var url = apiBaseURL + "/coords/" + mapcode + "?territory=" + territory + (context ? ("&context=" + context) : "");
-
-        /* Update page. */
-        document.getElementById("resultDecode").innerHTML = '<font color=grey>Waiting...</font>';
-        document.getElementById("requestDecode").innerHTML = createRequestLine(url);
-
-        /* Asynchronously request to decode mapcode, call decodeResponseReady when done. */
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = function () {
-            if (request.readyState == 4) {
-                decodeResponseReady(request.responseText, request.status);
+    function createTerritoryLine(territory) {
+        var line = "<b>" + territory.territoryIso + "</b> (" + territory.territoryCode + ") - <u>" + territory.fullname + "</u>";
+        if (territory.aliases) {
+            line += ", also known as: ";
+            for (j = 0; j < territory.aliases.length; j++) {
+                line += territory.aliases[j] + ' ';
             }
         }
-        request.open("GET", url, true);
-        request.send();
-    }
-
-    function decodeResponseReady(response, status) {
-
-        /* Did the request succeed? */
-        document.getElementById("responseDecode").innerHTML = createResponseLine(status, response);
-        if ((status == 200) && response) {
-
-            /* Parse the response into a coordinate. */
-            var result = JSON.parse(response);
-            document.getElementById("resultDecode").innerHTML = "<b><u>Coordinate:</u></b><br><tt>(" + result.latDeg + ", " + result.lonDeg + ")</tt>";
-        }
-        else {
-            document.getElementById("resultDecode").innerHTML = "<b>Error</b> (status = " + status + ')';
-        }
+        return line;
     }
 </script>
-
-<h2>Convert latitude/longitude to mapcode</h2>
-
-<p>
-    <tt>HTTP GET /mapcode/coords/{mapcode}[?territory={territory}[&parent={parentTerritory}]]</tt>
-</p>
-
-<form action="#" onsubmit="return decodeButtonPressed();">
-    Territory (optional):
-    <input type="text" id="territoryDecode" value="NLD">
-    Context (optional):
-    <input type="text" id="contextDecode" value="">
-    <br/>
-    Mapcode:
-    <input type="text" id="mapcode" value="XX.XX">
-    <br/>
-    <input type="button" value="Decode" onclick="decodeButtonPressed()">
-</form>
-
-<div id="resultDecode"></div>
-<br/>
-
-<div id="requestDecode"></div>
-<div id="responseDecode"></div>
-
-<hr>
 
 <script type="text/javascript">
     function encodeButtonPressed() {
@@ -108,12 +52,10 @@
 
         /* Use the input fields to build the request URL. */
         var territory = document.getElementById("territoryEncode").value;
-        var context = document.getElementById("contextEncode").value;
         var lat = document.getElementById("lat").value;
         var lon = document.getElementById("lon").value;
         var url = apiBaseURL + "/codes/" + lat + "," + lon + "?precision=0&include=territory" +
-                ((territory && (territory.length != 0)) ? "&territory=" + territory : "") +
-                (context ? ("&context=" + context) : "");
+                ((territory && (territory.length != 0)) ? "&territory=" + territory : "");
         document.getElementById("requestEncode").innerHTML = createRequestLine(url);
 
         /* Asynchronously request a solution, call encodeResponseReady when done. */
@@ -168,19 +110,15 @@
 <h2>Convert mapcode to latitude/longitude</h2>
 
 <p>
-    <tt>HTTP GET /mapcode/codes/{lat},{lon}[?territory={territory}[&parent={parentTerritory}]]</tt>
+    <tt>HTTP GET /mapcode/codes/{lat},{lon}[?territory={restrictToTerritory}]</tt>
 </p>
 
 <form action="#" onsubmit="return encodeButtonPressed();">
-    Latitude:
-    <input type="text" id="lat" value="51.427624">
-    Longitude:
-    <input type="text" id="lon" value="5.488075">
+    <input type="text" id="lat" value="51.427624"> = Latitude
     <br/>
-    Territory (optional):
-    <input type="text" id="territoryEncode" value="">
-    Context (optional):
-    <input type="text" id="contextEncode" value="">
+    <input type="text" id="lon" value="5.488075"> = Longitude
+    <br/>
+    <input type="text" id="territoryEncode" value=""> = (optional) Restrict results to territory
     <br/>
     <input type="button" value="Encode" onclick="encodeButtonPressed()">
 </form>
@@ -193,24 +131,77 @@
 
 <hr/>
 
-<script>
-    function createTerritoryLine(territory) {
-        var line = "<b>" + territory.territoryIso + "</b> (" + territory.territoryCode + ") - <u>" + territory.fullname + "</u>";
-        if (territory.aliases) {
-            line += ", also known as: ";
-            for (j = 0; j < territory.aliases.length; j++) {
-                line += territory.aliases[j] + ' ';
+<script type="text/javascript">
+    function decodeButtonPressed() {
+
+        /* Use the input fields to build the request URL. */
+        var context = document.getElementById("contextDecode").value;
+        if (context == "") {
+            context = "AAA";
+        }
+        var mapcode = document.getElementById("mapcode").value;
+        var url = apiBaseURL + "/coords/" + mapcode + "?context=" + context;
+
+        /* Update page. */
+        document.getElementById("resultDecode").innerHTML = '<font color=grey>Waiting...</font>';
+        document.getElementById("requestDecode").innerHTML = createRequestLine(url);
+
+        /* Asynchronously request to decode mapcode, call decodeResponseReady when done. */
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function () {
+            if (request.readyState == 4) {
+                decodeResponseReady(request.responseText, request.status);
             }
         }
-        return line;
+        request.open("GET", url, true);
+        request.send();
     }
 
+    function decodeResponseReady(response, status) {
+
+        /* Did the request succeed? */
+        document.getElementById("responseDecode").innerHTML = createResponseLine(status, response);
+        if ((status == 200) && response) {
+
+            /* Parse the response into a coordinate. */
+            var result = JSON.parse(response);
+            document.getElementById("resultDecode").innerHTML = "<b><u>Coordinate:</u></b><br><tt>(" + result.latDeg + ", " + result.lonDeg + ")</tt>";
+        }
+        else {
+            document.getElementById("resultDecode").innerHTML = "<b>Error</b> (status = " + status + ')';
+        }
+    }
+</script>
+
+<h2>Convert latitude/longitude to mapcode</h2>
+
+<p>
+    <tt>HTTP GET /mapcode/coords/{mapcode}[?context={defaultTerritoryContext}]</tt>
+</p>
+
+<form action="#" onsubmit="return decodeButtonPressed();">
+    <input type="text" id="contextDecode" value="NLD"> = (optional) Default territory context for disambiguation
+    <br/>
+    <input type="text" id="mapcode" value="XX.XX"> = Mapcode
+    <br/>
+    <input type="button" value="Decode" onclick="decodeButtonPressed()">
+</form>
+
+<div id="resultDecode"></div>
+<br/>
+
+<div id="requestDecode"></div>
+<div id="responseDecode"></div>
+
+<hr>
+
+<script>
     function territoryButtonPressed() {
         document.getElementById("resultTerritory").innerHTML = '<font color=grey>Waiting...</font>';
 
         var territory = document.getElementById("territory").value;
-        var context = document.getElementById("context").value;
-        var url = apiBaseURL + "/territories" + (territory ? ('/' + territory) : "") + (context ? ("?context=" + context) : "");
+        var parent = document.getElementById("parent").value;
+        var url = apiBaseURL + "/territories" + (territory ? ('/' + territory) : "") + (parent ? ("?parent=" + parent) : "");
         document.getElementById("requestTerritory").innerHTML = createRequestLine(url);
 
         /* Asynchronously request a solution, call encodeResponseReady when done. */
@@ -261,10 +252,9 @@
 </p>
 
 <form action="#" onsubmit="return decodeButtonPressed();">
-    Territory (optional):
-    <input type="text" id="territory" value="">
-    Context (optional):
-    <input type="text" id="context" value="">
+    <input type="text" id="territory" value=""> = (optional) Territory
+    <br/>
+    <input type="text" id="parent" value=""> = (optional) Parent territory
     <br/>
     <input type="button" value="List" onclick="territoryButtonPressed()">
 </form>

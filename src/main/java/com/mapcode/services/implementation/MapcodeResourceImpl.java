@@ -54,6 +54,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     private final String listOfAllTerritoryCodes = Joiner.on('|').join(Arrays.asList(Territory.values()).stream().
             map(x -> x.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS)).collect(Collectors.toList()));
+    private final String listOfAllParentTerritoryCodes = Joiner.on('|').join(Arrays.asList(ParentTerritory.values()).stream().
+            map(x -> x.name()).collect(Collectors.toList()));
     private final String listOfAllTypes = Joiner.on('|').join(Arrays.asList(ParamType.values()).stream().
             map(x -> x).collect(Collectors.toList()));
     private final String listOfAllIncludes = Joiner.on('|').join(Arrays.asList(ParamInclude.values()).stream().
@@ -97,10 +99,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final double paramLonDeg,
             final int paramPrecision,
             @Nullable final String paramTerritory,
-            @Nullable final String paramContext,
             @Nonnull final String paramInclude,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
-        convertLatLonToMapcode(paramLatDeg, paramLonDeg, null, paramPrecision, paramTerritory, paramContext, paramInclude, response);
+        convertLatLonToMapcode(paramLatDeg, paramLonDeg, null, paramPrecision, paramTerritory, paramInclude, response);
     }
 
     @Override
@@ -110,13 +111,12 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramType,
             final int paramPrecision,
             @Nullable final String paramTerritory,
-            @Nullable final String paramContext,
             @Nonnull final String paramInclude,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         assert response != null;
 
         processor.process("convertLatLonToMapcode", LOG, response, () -> {
-            LOG.debug("convertLatLonToMapcode: lat={}, lon={}, precision={}, type={}, territory={}, include={}",
+            LOG.debug("convertLatLonToMapcode: lat={}, lon={}, precision={}, type={}, context={}, include={}",
                     paramLatDeg, paramLonDeg, paramPrecision, paramType, paramTerritory, paramInclude);
 
             // Check lat range.
@@ -136,7 +136,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
 
             // Get the territory.
-            final Territory territory = (paramTerritory != null) ? resolveTerritory(paramTerritory, paramContext) : null;
+            final Territory territory = (paramTerritory != null) ? resolveTerritory(paramTerritory, null) : null;
 
             // Check type.
             ParamType type = null;
@@ -258,17 +258,16 @@ public class MapcodeResourceImpl implements MapcodeResource {
     @Override
     public void convertMapcodeToLatLon(
             @Nonnull final String paramMapcode,
-            @Nullable final String paramTerritory,
             @Nullable final String paramContext,
             @Nonnull final AsynchronousResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
         assert paramMapcode != null;
         assert response != null;
 
         processor.process("convertMapcodeToLatLon", LOG, response, () -> {
-            LOG.debug("convertMapcodeToLatLon: mapcode={}, territory={}", paramMapcode, paramTerritory);
+            LOG.debug("convertMapcodeToLatLon: mapcode={}, context={}", paramMapcode, paramContext);
 
             // Get the territory from the path (if specified).
-            final Territory territory = (paramTerritory != null) ? resolveTerritory(paramTerritory, paramContext) : null;
+            final Territory territory = (paramContext != null) ? resolveTerritory(paramContext, null) : null;
 
             // Check if the mapcode is correctly fortmatted.
             if (!Mapcode.isValidMapcodeFormat(paramMapcode)) {
@@ -337,16 +336,16 @@ public class MapcodeResourceImpl implements MapcodeResource {
     @Override
     public void getTerritory(
             @Nonnull final String paramTerritory,
-            @Nullable final String paramContext,
+            @Nullable final String paramParent,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         assert paramTerritory != null;
         assert response != null;
 
         processor.process("getTerritory", LOG, response, () -> {
-            LOG.debug("getTerritory: territory={}, parentTerritory={}", paramTerritory, paramContext);
+            LOG.debug("getTerritory: territory={}, parent={}", paramTerritory, paramParent);
 
             // Get the territory from the URL.
-            final Territory territory = resolveTerritory(paramTerritory, paramContext);
+            final Territory territory = resolveTerritory(paramTerritory, paramParent);
 
             // Return the right territory information.
             final Territory parentTerritory = territory.getParentTerritory();
@@ -369,46 +368,44 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Nonnull
-    private Territory resolveTerritory(@Nonnull final String paramTerritory, @Nullable final String paramContext) {
-        Territory territory;
+    private Territory resolveTerritory(@Nonnull final String paramTerritory, @Nullable final String paramParent) {
+        final ParentTerritory parentTerritory;
+        if (paramParent != null) {
+
+            // Try to use the parent territory, if available.
+            try {
+
+                parentTerritory = ParentTerritory.valueOf(paramParent.toUpperCase());
+            } catch (final IllegalArgumentException ignored) {
+                throw new ApiInvalidFormatException("parent", paramParent, listOfAllParentTerritoryCodes);
+            }
+        } else {
+            parentTerritory = null;
+        }
 
         // First try if its a numeric territory code.
         try {
             final int territoryCode = Integer.valueOf(paramTerritory);
 
             // Try and convert it as an integer - this throws an exception for non-int codes.
-            territory = Territory.fromTerritoryCode(territoryCode);
+            return Territory.fromTerritoryCode(territoryCode);
         } catch (final IllegalArgumentException ignore) {
 
             // Territory code failed. Now, try to convert it as an ISO-code.
             try {
+                if (parentTerritory != null) {
 
-                if (paramContext != null) {
-
-                    // Parent context specified. Try to resolve the context.
-                    try {
-                        final Territory contextTerritory = resolveTerritory(paramContext, null);
-                        final ParentTerritory parentTerritory = ParentTerritory.valueOf(contextTerritory.toString());
-                        territory = Territory.fromString(paramTerritory.toUpperCase(), parentTerritory);
-                    } catch (final IllegalArgumentException ignored) {
-
-                        // Parent territory code was not a ParentTerritory.
-                        territory = Territory.fromString(paramTerritory.toUpperCase());
-                    } catch (final ApiException | UnknownTerritoryException ignored) {
-
-                        // Parent territory code resolution failed.
-                        throw new ApiInvalidFormatException("context", paramContext, listOfAllTerritoryCodes);
-                    }
+                    // Parent was specified.
+                    return Territory.fromString(paramTerritory.toUpperCase(), parentTerritory);
                 } else {
 
-                    // No parent context specified. Just try to resolve the territory code.
-                    territory = Territory.fromString(paramTerritory.toUpperCase());
+                    // No parent available.
+                    return Territory.fromString(paramTerritory.toUpperCase());
                 }
             } catch (final UnknownTerritoryException ignored) {
                 throw new ApiInvalidFormatException("territory", paramTerritory, listOfAllTerritoryCodes);
             }
         }
-        return territory;
     }
 
     @Nonnull

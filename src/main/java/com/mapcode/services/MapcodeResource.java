@@ -49,6 +49,7 @@ public interface MapcodeResource {
     static final String PARAM_LON_DEG = "lon";
     static final String PARAM_PRECISION = "precision";
     static final String PARAM_TERRITORY = "territory";
+    static final String PARAM_PARENT = "parent";
     static final String PARAM_CONTEXT = "context";
     static final String PARAM_TYPE = "type";
     static final String PARAM_MAPCODE = "mapcode";
@@ -72,9 +73,8 @@ public interface MapcodeResource {
      * @param paramLonDeg    Longitude. Range: Any double, wrapped along the earth to [-180, 180].
      * @param paramPrecision Precision specifier; specifies additional mapcode digits. Range: [0, 2].
      * @param paramTerritory Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
+     *                       If the mapcode cannot be created for the territory, an exception is thrown.
      *                       Range: any valid territory code, alpha or numeric.
-     * @param paramContext   Specifies a parent territory context for disambiguation.
-     *                       Range: any valid parent territory code.
      * @param paramInclude   Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
      *                       Range: {@link ParamInclude}.
      * @param response       One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
@@ -90,7 +90,6 @@ public interface MapcodeResource {
             @PathParam(PARAM_LON_DEG) final double paramLonDeg,
             @QueryParam(PARAM_PRECISION) @DefaultValue("0") final int paramPrecision,
             @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
-            @QueryParam(PARAM_CONTEXT) @Nullable final String paramContext,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull final String paramInclude,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
@@ -103,9 +102,8 @@ public interface MapcodeResource {
      *                       Range: {@link ParamType}, if null, no type is supplied.
      * @param paramPrecision Precision specifier; specifies additional mapcode digits. Range: [0, 2].
      * @param paramTerritory Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
+     *                       If the mapcode cannot be created for the territory, an exception is thrown.
      *                       Range: any valid territory code, alpha or numeric.
-     * @param paramContext   Specifies a parent territory context for disambiguation.
-     *                       Range: any valid parent territory code.
      * @param paramInclude   Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
      *                       Range: {@link ParamInclude}.
      * @param response       One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
@@ -122,7 +120,6 @@ public interface MapcodeResource {
             @PathParam(PARAM_TYPE) @Nullable final String paramType,
             @QueryParam(PARAM_PRECISION) @DefaultValue("0") final int paramPrecision,
             @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
-            @QueryParam(PARAM_CONTEXT) @Nullable final String paramContext,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull final String paramInclude,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
@@ -136,7 +133,6 @@ public interface MapcodeResource {
      * Convert a mapcode into a lat/lon pair.
      *
      * @param paramMapcode   Mapcode to convert.
-     * @param paramTerritory Optional territory code. Range: any valid territory code, alpha or numeric.
      * @param paramContext   Specifies a parent territory context for disambiguation.
      *                       Range: any valid parent territory code.
      * @param response       Lat/lon. Format: {@link com.mapcode.services.dto.PointDTO}.
@@ -148,7 +144,6 @@ public interface MapcodeResource {
     @Path("coords/{" + PARAM_MAPCODE + '}')
     void convertMapcodeToLatLon(
             @PathParam(PARAM_MAPCODE) @Nonnull final String paramMapcode,
-            @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
             @QueryParam(PARAM_CONTEXT) @Nullable final String paramContext,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
@@ -173,6 +168,7 @@ public interface MapcodeResource {
      * Get info for a specific territory.
      *
      * @param paramTerritory Territory code. Range: any valid territory code, alpha or numeric.
+     * @param paramParent    Parent territory code for disambiuation. Range: any valid parent territory code.
      * @param response       Territory information. Format: {@link com.mapcode.services.dto.TerritoryDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
@@ -182,6 +178,6 @@ public interface MapcodeResource {
     @Path("territories/{" + PARAM_TERRITORY + '}')
     void getTerritory(
             @PathParam(PARAM_TERRITORY) @Nonnull final String paramTerritory,
-            @QueryParam(PARAM_CONTEXT) @Nullable final String paramContext,
+            @QueryParam(PARAM_PARENT) @Nullable final String paramParent,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 }
