@@ -102,10 +102,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final double paramLonDeg,
             final int paramPrecision,
             @Nullable final String paramTerritory,
-            @Nullable final String paramParentTerritory,
+            @Nullable final String paramContext,
             @Nonnull final String paramInclude,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
-        convertLatLonToMapcode(paramLatDeg, paramLonDeg, null, paramPrecision, paramTerritory, paramParentTerritory, paramInclude, response);
+        convertLatLonToMapcode(paramLatDeg, paramLonDeg, null, paramPrecision, paramTerritory, paramContext, paramInclude, response);
     }
 
     @Override
@@ -115,7 +115,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramType,
             final int paramPrecision,
             @Nullable final String paramTerritory,
-            @Nullable final String paramParentTerritory,
+            @Nullable final String paramContext,
             @Nonnull final String paramInclude,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         assert response != null;
@@ -140,29 +140,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 throw new ApiInvalidFormatException(PARAM_PRECISION, String.valueOf(paramPrecision), "[0, 2]");
             }
 
-            // Check territory.
-            Territory territory = null;
-            if (paramTerritory != null) {
-                try {
-                    final int territoryCode = Integer.valueOf(paramTerritory);
-                    territory = Territory.fromTerritoryCode(territoryCode);
-                } catch (final IllegalArgumentException ignore) {
-                    try {
-                        if (paramParentTerritory != null) {
-                            try {
-                                final ParentTerritory parentTerritory = ParentTerritory.valueOf(paramParentTerritory.toUpperCase());
-                                territory = Territory.fromString(paramTerritory.toUpperCase(), parentTerritory);
-                            } catch (final IllegalArgumentException ignored) {
-                                throw new ApiInvalidFormatException("parentTerritory", paramParentTerritory, listOfAllParentTerritoryCodes);
-                            }
-                        } else {
-                            territory = Territory.fromString(paramTerritory.toUpperCase());
-                        }
-                    } catch (final UnknownTerritoryException ignored) {
-                        throw new ApiInvalidFormatException(PARAM_TERRITORY, paramTerritory, listOfAllTerritoryCodes);
-                    }
-                }
-            }
+            // Get the territory.
+            final Territory territory = (paramTerritory != null) ? resolveTerritory(paramTerritory, paramContext) : null;
 
             // Check type.
             ParamType type = null;
@@ -285,7 +264,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void convertMapcodeToLatLon(
             @Nonnull final String paramMapcode,
             @Nullable final String paramTerritory,
-            @Nullable final String paramParentTerritory,
+            @Nullable final String paramContext,
             @Nonnull final AsynchronousResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
         assert paramMapcode != null;
         assert response != null;
@@ -294,7 +273,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             LOG.debug("convertMapcodeToLatLon: mapcode={}, territory={}", paramMapcode, paramTerritory);
 
             // Get the territory from the path (if specified).
-            final Territory territory = (paramTerritory != null) ? getTerritoryFromParam(paramTerritory, paramParentTerritory) : null;
+            final Territory territory = (paramTerritory != null) ? resolveTerritory(paramTerritory, paramContext) : null;
 
             // Check if the mapcode is correctly fortmatted.
             if (!Mapcode.isValidMapcodeFormat(paramMapcode)) {
@@ -363,16 +342,16 @@ public class MapcodeResourceImpl implements MapcodeResource {
     @Override
     public void getTerritory(
             @Nonnull final String paramTerritory,
-            @Nullable final String paramParentTerritory,
+            @Nullable final String paramContext,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         assert paramTerritory != null;
         assert response != null;
 
         processor.process("getTerritory", LOG, response, () -> {
-            LOG.debug("getTerritory: territory={}, parentTerritory={}", paramTerritory, paramParentTerritory);
+            LOG.debug("getTerritory: territory={}, parentTerritory={}", paramTerritory, paramContext);
 
             // Get the territory from the URL.
-            final Territory territory = getTerritoryFromParam(paramTerritory, paramParentTerritory);
+            final Territory territory = resolveTerritory(paramTerritory, paramContext);
 
             // Return the right territory information.
             final Territory parentTerritory = territory.getParentTerritory();
@@ -395,7 +374,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Nonnull
-    private Territory getTerritoryFromParam(@Nonnull final String paramTerritory, @Nullable final String paramParentTerritory) {
+    private Territory resolveTerritory(@Nonnull final String paramTerritory, @Nullable final String paramContext) {
         Territory territory;
         try {
             final int territoryCode = Integer.valueOf(paramTerritory);
@@ -403,15 +382,17 @@ public class MapcodeResourceImpl implements MapcodeResource {
             // Try and convert it as an integer - this throws an exception for non-int codes.
             territory = Territory.fromTerritoryCode(territoryCode);
         } catch (final IllegalArgumentException ignore) {
-            try {
 
+            // TODO !!
+            try {
                 // Now, try to convert it as an ISO-code.
-                if (paramParentTerritory != null) {
+                if (paramContext != null) {
+                    ParentTerritory parentTerritory;
                     try {
-                        final ParentTerritory parentTerritory = ParentTerritory.valueOf(paramParentTerritory.toUpperCase());
+                        parentTerritory = ParentTerritory.valueOf(paramContext.toUpperCase());
                         territory = Territory.fromString(paramTerritory.toUpperCase(), parentTerritory);
                     } catch (final IllegalArgumentException ignored) {
-                        throw new ApiInvalidFormatException("parentTerritory", paramParentTerritory, listOfAllParentTerritoryCodes);
+                        throw new ApiInvalidFormatException("parentTerritory", paramContext, listOfAllParentTerritoryCodes);
                     }
                 } else {
                     territory = Territory.fromString(paramTerritory.toUpperCase());

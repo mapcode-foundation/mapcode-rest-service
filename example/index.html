@@ -41,9 +41,9 @@
         if (territory == "") {
             territory = "AAA";
         }
-        var parent = document.getElementById("parentDecode").value;
+        var context = document.getElementById("contextDecode").value;
         var mapcode = document.getElementById("mapcode").value;
-        var url = apiBaseURL + "/coords/" + mapcode + "?territory=" + territory + (parent ? ("&parent=" + parent) : "");
+        var url = apiBaseURL + "/coords/" + mapcode + "?territory=" + territory + (context ? ("&context=" + context) : "");
 
         /* Update page. */
         document.getElementById("resultDecode").innerHTML = '<font color=grey>Waiting...</font>';
@@ -85,8 +85,8 @@
 <form action="#" onsubmit="return decodeButtonPressed();">
     Territory (optional):
     <input type="text" id="territoryDecode" value="NLD">
-    Parent (optional):
-    <input type="text" id="parentDecode" value="">
+    Context (optional):
+    <input type="text" id="contextDecode" value="">
     <br/>
     Mapcode:
     <input type="text" id="mapcode" value="XX.XX">
@@ -108,12 +108,12 @@
 
         /* Use the input fields to build the request URL. */
         var territory = document.getElementById("territoryEncode").value;
-        var parent = document.getElementById("parentEncode").value;
+        var context = document.getElementById("parentEncode").value;
         var lat = document.getElementById("lat").value;
         var lon = document.getElementById("lon").value;
         var url = apiBaseURL + "/codes/" + lat + "," + lon + "?precision=0&include=territory" +
                 ((territory && (territory.length != 0)) ? "&territory=" + territory : "") +
-                (parent ? ("&parent=" + parent) : "");
+                (context ? ("&context=" + context) : "");
         document.getElementById("requestEncode").innerHTML = createRequestLine(url);
 
         /* Asynchronously request a solution, call encodeResponseReady when done. */
@@ -168,7 +168,7 @@
 <h2>Convert mapcode to latitude/longitude</h2>
 
 <p>
-    <tt>HTTP GET /mapcode/codes/{lat},{lon}[?territory={territory}[&parent={parentTerritory}]</tt>
+    <tt>HTTP GET /mapcode/codes/{lat},{lon}[?territory={territory}[&parent={parentTerritory}]]</tt>
 </p>
 
 <form action="#" onsubmit="return encodeButtonPressed();">
@@ -179,8 +179,8 @@
     <br/>
     Territory (optional):
     <input type="text" id="territoryEncode" value="">
-    Parent (optional):
-    <input type="text" id="parentEncode" value="">
+    Context (optional):
+    <input type="text" id="contextEncode" value="">
     <br/>
     <input type="button" value="Encode" onclick="encodeButtonPressed()">
 </form>
@@ -209,8 +209,8 @@
         document.getElementById("resultTerritory").innerHTML = '<font color=grey>Waiting...</font>';
 
         var territory = document.getElementById("territory").value;
-        var parent = document.getElementById("parent").value;
-        var url = apiBaseURL + "/territories" + (territory ? ('/' + territory) : "") + (parent ? ("?parent=" + parent) : "");
+        var context = document.getElementById("context").value;
+        var url = apiBaseURL + "/territories" + (territory ? ('/' + territory) : "") + (context ? ("?context=" + context) : "");
         document.getElementById("requestTerritory").innerHTML = createRequestLine(url);
 
         /* Asynchronously request a solution, call encodeResponseReady when done. */
@@ -257,14 +257,14 @@
 <h2>Get territory information</h2>
 
 <p>
-    <tt>HTTP GET /mapcode/territory[/{territory}[?parent={parentTerritory}]</tt>
+    <tt>HTTP GET /mapcode/territory[/{territory}[?parent={parentTerritory}]]</tt>
 </p>
 
 <form action="#" onsubmit="return decodeButtonPressed();">
     Territory (optional):
     <input type="text" id="territory" value="">
-    Parent (optional):
-    <input type="text" id="parent" value="">
+    Context (optional):
+    <input type="text" id="context" value="">
     <br/>
     <input type="button" value="List" onclick="territoryButtonPressed()">
 </form>
