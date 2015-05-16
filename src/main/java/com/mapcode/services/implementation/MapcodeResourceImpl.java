@@ -24,7 +24,10 @@ import com.mapcode.services.ApiConstants;
 import com.mapcode.services.MapcodeResource;
 import com.mapcode.services.dto.*;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
-import com.tomtom.speedtools.apivalidation.exceptions.*;
+import com.tomtom.speedtools.apivalidation.exceptions.ApiForbiddenException;
+import com.tomtom.speedtools.apivalidation.exceptions.ApiIntegerOutOfRangeException;
+import com.tomtom.speedtools.apivalidation.exceptions.ApiInvalidFormatException;
+import com.tomtom.speedtools.apivalidation.exceptions.ApiNotFoundException;
 import com.tomtom.speedtools.geometry.Geo;
 import com.tomtom.speedtools.geometry.GeoPoint;
 import com.tomtom.speedtools.rest.ResourceProcessor;
@@ -54,8 +57,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     private final String listOfAllTerritoryCodes = Joiner.on('|').join(Arrays.asList(Territory.values()).stream().
             map(x -> x.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS)).collect(Collectors.toList()));
-    private final String listOfAllParentTerritoryCodes = Joiner.on('|').join(Arrays.asList(ParentTerritory.values()).stream().
-            map(x -> x.name()).collect(Collectors.toList()));
     private final String listOfAllTypes = Joiner.on('|').join(Arrays.asList(ParamType.values()).stream().
             map(x -> x).collect(Collectors.toList()));
     private final String listOfAllIncludes = Joiner.on('|').join(Arrays.asList(ParamInclude.values()).stream().
@@ -336,16 +337,16 @@ public class MapcodeResourceImpl implements MapcodeResource {
     @Override
     public void getTerritory(
             @Nonnull final String paramTerritory,
-            @Nullable final String paramParent,
+            @Nullable final String paramContext,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         assert paramTerritory != null;
         assert response != null;
 
         processor.process("getTerritory", LOG, response, () -> {
-            LOG.debug("getTerritory: territory={}, parent={}", paramTerritory, paramParent);
+            LOG.debug("getTerritory: territory={}, context={}", paramTerritory, paramContext);
 
             // Get the territory from the URL.
-            final Territory territory = resolveTerritory(paramTerritory, paramParent);
+            final Territory territory = resolveTerritory(paramTerritory, paramContext);
 
             // Return the right territory information.
             final Territory parentTerritory = territory.getParentTerritory();
@@ -369,15 +370,33 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Nonnull
     private Territory resolveTerritory(@Nonnull final String paramTerritory, @Nullable final String paramParent) {
-        final ParentTerritory parentTerritory;
+        ParentTerritory parentTerritory;
         if (paramParent != null) {
 
             // Try to use the parent territory, if available.
+            Territory context = null;
             try {
 
-                parentTerritory = ParentTerritory.valueOf(paramParent.toUpperCase());
+                context = Territory.valueOf(paramParent.replace('-', '_').toUpperCase());
+                if (context.getParentTerritory() != null) {
+                    context = context.getParentTerritory();
+                }
             } catch (final IllegalArgumentException ignored) {
-                throw new ApiInvalidFormatException("parent", paramParent, listOfAllParentTerritoryCodes);
+
+                // Check if it was an alias.
+                context = getTerritoryAlias(paramParent);
+                if (context == null) {
+                    throw new ApiInvalidFormatException("parent", paramParent, listOfAllTerritoryCodes);
+                }
+            }
+
+            // Use the resolved context.
+            try {
+                parentTerritory = ParentTerritory.valueOf(context.toString());
+            } catch (final IllegalArgumentException ignored) {
+
+                // Explicitly remove parent context.
+                parentTerritory = null;
             }
         } else {
             parentTerritory = null;
@@ -406,6 +425,19 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 throw new ApiInvalidFormatException("territory", paramTerritory, listOfAllTerritoryCodes);
             }
         }
+    }
+
+    @Nullable
+    private static Territory getTerritoryAlias(@Nonnull final String paramAlias) {
+        Territory context = null;
+        final String aliasToLookFor = paramAlias.replace('_', '-').toUpperCase();
+        for (final Territory aliasTerritory : Territory.values()) {
+            if (Arrays.asList(aliasTerritory.getAliases()).contains(aliasToLookFor)) {
+                context = aliasTerritory;
+                break;
+            }
+        }
+        return context;
     }
 
     @Nonnull

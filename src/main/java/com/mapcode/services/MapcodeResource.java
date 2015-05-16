@@ -132,10 +132,10 @@ public interface MapcodeResource {
     /**
      * Convert a mapcode into a lat/lon pair.
      *
-     * @param paramMapcode   Mapcode to convert.
-     * @param paramContext   Specifies a parent territory context for disambiguation.
-     *                       Range: any valid parent territory code.
-     * @param response       Lat/lon. Format: {@link com.mapcode.services.dto.PointDTO}.
+     * @param paramMapcode Mapcode to convert.
+     * @param paramContext Specifies a parent territory context for interpretation of the mapcode.
+     *                     Range: any valid parent territory code.
+     * @param response     Lat/lon. Format: {@link com.mapcode.services.dto.PointDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -168,7 +168,7 @@ public interface MapcodeResource {
      * Get info for a specific territory.
      *
      * @param paramTerritory Territory code. Range: any valid territory code, alpha or numeric.
-     * @param paramParent    Parent territory code for disambiuation. Range: any valid parent territory code.
+     * @param paramContext   Context territory code for disambiguation. Range: any valid territory code, or alias.
      * @param response       Territory information. Format: {@link com.mapcode.services.dto.TerritoryDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
@@ -178,6 +178,6 @@ public interface MapcodeResource {
     @Path("territories/{" + PARAM_TERRITORY + '}')
     void getTerritory(
             @PathParam(PARAM_TERRITORY) @Nonnull final String paramTerritory,
-            @QueryParam(PARAM_PARENT) @Nullable final String paramParent,
+            @QueryParam(PARAM_CONTEXT) @Nullable final String paramContext,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 }

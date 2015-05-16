@@ -21,6 +21,7 @@
 <script type="text/javascript">
 
     /* This is the base URL of the mapcode REST API. */
+    // var apiBaseURL = "http://mapcode.buve.info/mapcode";
     var apiBaseURL = "http://localhost:8080/mapcode";
 
     function createResponseLine(status, result) {
@@ -107,16 +108,16 @@
     }
 </script>
 
-<h2>Convert mapcode to latitude/longitude</h2>
+<h2>Convert latitude/longitude to mapcode</h2>
 
 <p>
     <tt>HTTP GET /mapcode/codes/{lat},{lon}[?territory={restrictToTerritory}]</tt>
 </p>
 
 <form action="#" onsubmit="return encodeButtonPressed();">
-    <input type="text" id="lat" value="51.427624"> = Latitude
+    <input type="text" id="lat" value="51.427624"> = Latitude [-90, 90] (must be in range)
     <br/>
-    <input type="text" id="lon" value="5.488075"> = Longitude
+    <input type="text" id="lon" value="5.488075"> = Longitude [-180, 180] (wrapped if outside of range)
     <br/>
     <input type="text" id="territoryEncode" value=""> = (optional) Restrict results to territory
     <br/>
@@ -173,14 +174,14 @@
     }
 </script>
 
-<h2>Convert latitude/longitude to mapcode</h2>
+<h2>Convert mapcode to latitude/longitude</h2>
 
 <p>
-    <tt>HTTP GET /mapcode/coords/{mapcode}[?context={defaultTerritoryContext}]</tt>
+    <tt>HTTP GET /mapcode/coords/{mapcode}[?context={territoryContext}]</tt>
 </p>
 
 <form action="#" onsubmit="return decodeButtonPressed();">
-    <input type="text" id="contextDecode" value="NLD"> = (optional) Default territory context for disambiguation
+    <input type="text" id="contextDecode" value="NLD"> = (optional) Territory context for interpretation of mapcode (empty = international)
     <br/>
     <input type="text" id="mapcode" value="XX.XX"> = Mapcode
     <br/>
@@ -200,8 +201,8 @@
         document.getElementById("resultTerritory").innerHTML = '<font color=grey>Waiting...</font>';
 
         var territory = document.getElementById("territory").value;
-        var parent = document.getElementById("parent").value;
-        var url = apiBaseURL + "/territories" + (territory ? ('/' + territory) : "") + (parent ? ("?parent=" + parent) : "");
+        var context = document.getElementById("context").value;
+        var url = apiBaseURL + "/territories" + (territory ? ('/' + territory) : "") + (context ? ("?context=" + context) : "");
         document.getElementById("requestTerritory").innerHTML = createRequestLine(url);
 
         /* Asynchronously request a solution, call encodeResponseReady when done. */
@@ -252,9 +253,9 @@
 </p>
 
 <form action="#" onsubmit="return decodeButtonPressed();">
-    <input type="text" id="territory" value=""> = (optional) Territory
+    <input type="text" id="territory" value=""> = (optional) Territory to request info for
     <br/>
-    <input type="text" id="parent" value=""> = (optional) Parent territory
+    <input type="text" id="context" value=""> = (optional) Territory context for disambiguation
     <br/>
     <input type="button" value="List" onclick="territoryButtonPressed()">
 </form>
