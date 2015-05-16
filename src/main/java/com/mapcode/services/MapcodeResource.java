@@ -49,10 +49,9 @@ public interface MapcodeResource {
     static final String PARAM_LON_DEG = "lon";
     static final String PARAM_PRECISION = "precision";
     static final String PARAM_TERRITORY = "territory";
-    static final String PARAM_PARENT = "parent";
     static final String PARAM_CONTEXT = "context";
     static final String PARAM_TYPE = "type";
-    static final String PARAM_MAPCODE = "mapcode";
+    static final String PARAM_CODE = "mapcode";
     static final String PARAM_INCLUDE = "include";
     static final String PARAM_COUNT = "count";
     static final String PARAM_OFFSET = "offset";
@@ -132,8 +131,8 @@ public interface MapcodeResource {
     /**
      * Convert a mapcode into a lat/lon pair.
      *
-     * @param paramMapcode Mapcode to convert.
-     * @param paramContext Specifies a parent territory context for interpretation of the mapcode.
+     * @param paramCode Mapcode to convert.
+     * @param paramTerritory Specifies a parent territory context for interpretation of the mapcode.
      *                     Range: any valid parent territory code.
      * @param response     Lat/lon. Format: {@link com.mapcode.services.dto.PointDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
@@ -141,10 +140,10 @@ public interface MapcodeResource {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("coords/{" + PARAM_MAPCODE + '}')
+    @Path("coords/{" + PARAM_CODE + '}')
     void convertMapcodeToLatLon(
-            @PathParam(PARAM_MAPCODE) @Nonnull final String paramMapcode,
-            @QueryParam(PARAM_CONTEXT) @Nullable final String paramContext,
+            @PathParam(PARAM_CODE) @Nonnull final String paramCode,
+            @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
     /**

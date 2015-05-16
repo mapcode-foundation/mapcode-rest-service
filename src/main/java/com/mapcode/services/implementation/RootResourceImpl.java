@@ -45,7 +45,8 @@ public class RootResourceImpl implements RootResource {
             "GET /mapcode/version Returns the software version.\n" +
             "GET /mapcode/status  Returns 200 if the service OK.\n\n" +
 
-            "GET /mapcode/codes/{lat},{lon} [/mapcodes|local|international] [?precision=[0|1|2]&territory={territory}&include={offset|territory}]\n" +
+            "GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]\n" +
+            "   [?precision=[0|1|2]&territory={restrictToTerritory}&include={offset|territory}]\n" +
             "   Convert latitude/longitude to one or more mapcodes.\n\n" +
 
             "   Path parameters:\n" +
@@ -59,32 +60,35 @@ public class RootResourceImpl implements RootResource {
 
             "   Query parameters:\n" +
             "   precision       : precision, range [0, 2] (default=0)\n" +
-            "   territory       : territory context, numeric or alpha code\n" +
+            "   territory       : territory to restrict results to, numeric or alpha code\n" +
             "   include         : Multiple options may be set, separated by comma's:\n" +
             "                     offset    = include offset from mapcode center to lat/lon (in meters)\n" +
             "                     territory = always include territory in result, also for territory 'AAA'\n\n" +
 
-            "GET /mapcode/coords/{mapcode} [?territory={code}]\n" +
+            "GET /mapcode/coords/{code} [?territory={mapcodeTerritory}]\n" +
             "   Convert a mapcode into a latitude/longitude pair\n\n" +
 
             "   Path parameters:\n" +
-            "   territory       : territory context, numeric or alpha code\n" +
+            "   code            : mapcode code (local or international)\n" +
 
-            "   Path parameters:\n" +
-            "   territory       : territory context, numeric or alpha code\n\n" +
+            "   URL parameters:\n" +
+            "   territory       : mapcode territory, numeric or alpha code\n\n" +
 
             "GET /mapcode/territories [?offset={offset}&count={count}]\n" +
-            "   Return a list of all valid numeric and alpha territory codes.\n\n" +
+            "   Return a list of all territories.\n\n" +
 
             "   Query parameters:\n" +
             "   offset          : return list from 'offset' (negative value start counting from end)\n" +
             "   count           : return 'count' items at most\n\n" +
 
-            "GET /mapcode/territories/{code}\n" +
+            "GET /mapcode/territories/{territory} [?context={territoryContext}]\n" +
             "   Return information for a single territory code.\n\n" +
 
             "   Path parameters:\n" +
-            "   territory       : territory context, numeric or alpha code\n";
+            "   territory       : territory to get info for, numeric or alpha code\n\n" +
+
+            "   Query parameters:\n" +
+            "   territoryContext: territory context (optional, for disambiguation)\n";
 
     @Nonnull
     private final MavenProperties mavenProperties;

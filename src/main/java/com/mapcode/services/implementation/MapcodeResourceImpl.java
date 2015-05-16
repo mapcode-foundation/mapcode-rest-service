@@ -260,25 +260,25 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Override
     public void convertMapcodeToLatLon(
-            @Nonnull final String paramMapcode,
-            @Nullable final String paramContext,
+            @Nonnull final String paramCode,
+            @Nullable final String paramTerritory,
             @Nonnull final AsynchronousResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
-        assert paramMapcode != null;
+        assert paramCode != null;
         assert response != null;
 
         processor.process("convertMapcodeToLatLon", LOG, response, () -> {
-            LOG.debug("convertMapcodeToLatLon: mapcode={}, context={}", paramMapcode, paramContext);
+            LOG.debug("convertMapcodeToLatLon: code={}, territory={}", paramCode, paramTerritory);
 
             // Get the territory from the path (if specified).
-            final Territory territory = (paramContext != null) ? resolveTerritory(paramContext, null) : null;
+            final Territory territory = (paramTerritory != null) ? resolveTerritory(paramTerritory, null) : null;
 
-            // Check if the mapcode is correctly fortmatted.
-            if (!Mapcode.isValidMapcodeFormat(paramMapcode)) {
-                throw new ApiInvalidFormatException("mapcode", paramMapcode, Mapcode.REGEX_MAPCODE_FORMAT);
+            // Check if the mapcode is correctly formatted.
+            if (!Mapcode.isValidMapcodeFormat(paramCode)) {
+                throw new ApiInvalidFormatException("mapcode", paramCode, Mapcode.REGEX_MAPCODE_FORMAT);
             }
 
             // Send a trace event with the mapcode and territory.
-            TRACER.eventMapcodeToLatLon(paramMapcode, territory);
+            TRACER.eventMapcodeToLatLon(paramCode, territory);
 
             // Create result body (always an ApiDTO).
             ApiDTO result;
@@ -287,13 +287,13 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 // Decode the actual mapcode.
                 final Point point;
                 if (territory == null) {
-                    point = MapcodeCodec.decode(paramMapcode);
+                    point = MapcodeCodec.decode(paramCode);
                 } else {
-                    point = MapcodeCodec.decode(paramMapcode, territory);
+                    point = MapcodeCodec.decode(paramCode, territory);
                 }
                 result = new PointDTO(point.getLatDeg(), point.getLonDeg());
             } catch (final UnknownMapcodeException ignored) {
-                throw new ApiNotFoundException("No mapcode found for mapcode='" + paramMapcode + "', territory=" + territory);
+                throw new ApiNotFoundException("No mapcode found for mapcode='" + paramCode + "', territory=" + territory);
             }
 
             // Validate the result (internal consistency check).
