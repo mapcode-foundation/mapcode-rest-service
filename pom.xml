@@ -24,7 +24,7 @@
     <artifactId>mapcode-rest-service</artifactId>
 
     <packaging>war</packaging>
-    <version>1.0.10</version>
+    <version>1.0.11</version>
 
     <name>Mapcode REST API Web Service</name>
     <description>
