@@ -419,7 +419,16 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 if (parentTerritory != null) {
 
                     // Parent was specified.
-                    return Territory.fromString(paramTerritory.toUpperCase(), parentTerritory);
+                    try {
+
+                        // Try to use the parent.
+                        return Territory.fromString(paramTerritory.toUpperCase(), parentTerritory);
+                    }
+                    catch (final UnknownTerritoryException ignored) {
+
+                        // If using the parent fails, try without the parent.
+                        return Territory.fromString(paramTerritory.toUpperCase());
+                    }
                 } else {
 
                     // No parent available.
