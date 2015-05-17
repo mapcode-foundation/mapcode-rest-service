@@ -32,7 +32,7 @@ import javax.ws.rs.ext.Provider;
  *
  * <pre>
  *   &lt;context-param&gt;
- *     &lt;param-name>resteasy.providers&lt;/param-name&gt;
+ *     &lt;param-name&gt;resteasy.providers&lt;/param-name&gt;
  *     &lt;param-value&gt;com.mapcode.services.deployment.CorsFeature&lt;/param-value&gt;
  *   &lt;/context-param&gt;
  * </pre>
