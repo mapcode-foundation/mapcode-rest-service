@@ -127,7 +127,6 @@ public class RootResourceImpl implements RootResource {
         final VersionDTO result = new VersionDTO(pomVersion); // Create a binder.
         result.validate();                                    // You must validate it before using it.
 
-        LOG.error("ERR");
         // Build the response and return it.
         response.setResponse(Response.ok(result).build());
     }
