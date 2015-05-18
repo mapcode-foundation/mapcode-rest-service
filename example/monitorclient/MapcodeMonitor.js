@@ -15,18 +15,18 @@
  */
 
 $(document).ready(function () {
+    var fInterval = 1000;
+
     // To use on production system:
-    // var jolokia1 = new Jolokia({ url: "http://mapcode.buve.info/jolokia", fetchInterval: 100});
+    var jolokia1 = new Jolokia({ url: "http://mapcode.buve.info/jolokia", fetchInterval: fInterval});
 
     // For local testing:
-    var jolokia1 = new Jolokia({url: "http://localhost:8080/jolokia", fetchInterval: fInterval});
+    // var jolokia1 = new Jolokia({url: "http://localhost:8080/jolokia", fetchInterval: fInterval});
 
 
     var colorsRed = ["#FDBE85", "#FEEDDE", "#FD8D3C", "#E6550D", "#A63603", "#FDBE85", "#FEEDDE", "#FD8D3C", "#E6550D", "#A63603"],
         colorsGreen = ["#FDBE85"],
         colorsBlue = ["#ECE7F2", "#A6BDDB", "#2B8CBE", "#ECE7F2", "#A6BDDB", "#2B8CBE"];
-
-    var fInterval = 10000;
 
     var context = cubism.context()
         .serverDelay(0)
