@@ -20,7 +20,6 @@ import com.mapcode.services.SystemMetrics;
 import com.mapcode.services.SystemMetricsCollector;
 import com.tomtom.speedtools.metrics.MultiMetricsCollector;
 import com.tomtom.speedtools.metrics.MultiMetricsData;
-import com.tomtom.speedtools.time.UTCTime;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.LoggingEvent;
@@ -81,6 +80,7 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
 
         @Override
         public void close() {
+            // Empty.
         }
 
         @Override
@@ -96,27 +96,57 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
         return all.get(metric);
     }
 
+    @Nonnull
+    @Override
+    public MultiMetricsData getAllMapcodeToLatLonRequests() {
+        return allMapcodeToLatLonRequests;
+    }
+
+    @Nonnull
+    @Override
+    public MultiMetricsData getValidMapcodeToLatLonRequests() {
+        return validMapcodeToLatLonRequests;
+    }
+
+    @Nonnull
+    @Override
+    public MultiMetricsData getAllLatLonToMapcodeRequests() {
+        return allLatLonToMapcodeRequests;
+    }
+
+    @Nonnull
+    @Override
+    public MultiMetricsData getValidLatLonToMapcodeRequests() {
+        return validLatLonToMapcodeRequests;
+    }
+
+    @Nonnull
+    @Override
+    public MultiMetricsData getWarningsAndErrors() {
+        return warningsAndErrors;
+    }
+
     @Override
     public void allMapcodeToLatLonRequests() {
         LOG.debug("allMapcodeToLatLonRequests: {} in last 24 hours", allMapcodeToLatLonRequests.getLastDay().getCount());
-        allMapcodeToLatLonRequests.addValueNow(1, UTCTime.now());
+        allMapcodeToLatLonRequests.addValue(1);
     }
 
     @Override
     public void validMapcodeToLatLonRequests() {
         LOG.debug("validMapcodeToLatLonRequests: {} in last 24 hours", validMapcodeToLatLonRequests.getLastDay().getCount());
-        validMapcodeToLatLonRequests.addValueNow(1, UTCTime.now());
+        validMapcodeToLatLonRequests.addValue(1);
     }
 
     @Override
     public void allLatLonToMapcodeRequests() {
         LOG.debug("allLatLonToMapcodeRequests: {} in last 24 hours", allLatLonToMapcodeRequests.getLastDay().getCount());
-        allLatLonToMapcodeRequests.addValueNow(1, UTCTime.now());
+        allLatLonToMapcodeRequests.addValue(1);
     }
 
     @Override
     public void validLatLonToMapcodeRequests() {
         LOG.debug("validLatLonToMapcodeRequests: {} in last 24 hours", validLatLonToMapcodeRequests.getLastDay().getCount());
-        validLatLonToMapcodeRequests.addValueNow(1, UTCTime.now());
+        validLatLonToMapcodeRequests.addValue(1);
     }
 }

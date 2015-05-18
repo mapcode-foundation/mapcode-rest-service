@@ -35,7 +35,6 @@
 <div class="page-wrapper">
     <div class="page">
         <div class="teaser-wrapper">
-
             <div class="teaser-content">
                 <h1>Mapcode System Monitor</h1>
             </div>
@@ -43,11 +42,25 @@
 
         <div class="tiles-wrapper">
             <div class="tiles">
-                <h2>System Health</h2>
-
+                <h2>System Statistics</h2>
                 <div class="tile tile-l">
                     <div class="tile-content">
-                        <div id="octs"></div>
+                        <div id="validMapcodeToLatLonRequests"></div>
+                    </div>
+                </div>
+                <div class="tile tile-l">
+                    <div class="tile-content">
+                        <div id="allMapcodeToLatLonRequests"></div>
+                    </div>
+                </div>
+                <div class="tile tile-l">
+                    <div class="tile-content">
+                        <div id="validLatLonToMapcodeRequests"></div>
+                    </div>
+                </div>
+                <div class="tile tile-l">
+                    <div class="tile-content">
+                        <div id="allLatLonToMapcodeRequests"></div>
                     </div>
                 </div>
                 <div class="tile tile-l">
@@ -55,47 +68,9 @@
                         <div id="warningsAndErrors"></div>
                     </div>
                 </div>
-                <div class="tile tile-l">
-                    <div class="tile-content">
-                        <div id="actorRestarts"></div>
-                    </div>
-                </div>
-                <div class="tile tile-l">
-                    <div class="tile-content">
-                        <div id="actorTerminations"></div>
-                    </div>
-                </div>
-                <div class="tile tile-l">
-                    <div class="tile-content">
-                        <div id="lostConnectionsTND"></div>
-                    </div>
-                </div>
-                <div class="tile tile-l">
-                    <div class="tile-content">
-                        <div id="failedTrips"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="tiles">
-                <h2>System Statistics</h2>
-
-                <div class="tile tile-l">
-                    <div class="tile-content">
-                        <div id="requests"></div>
-                    </div>
-                </div>
-                <div class="tile tile-l">
-                    <div class="tile-content">
-                        <div id="avgPickUpTimes"></div>
-                    </div>
-                </div>
-                <div class="tile tile-l">
-                    <div class="tile-content">
-                        <div id="avgMatchedDrivers"></div>
-                    </div>
-                </div>
             </div>
         </div>
+        Memory usage (Mb): <div id="memoryUsage">Waiting...</div>
 
         <div class="footer-wrapper">
             <div class="footer">

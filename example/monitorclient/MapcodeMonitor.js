@@ -15,13 +15,13 @@
  */
 
 $(document).ready(function () {
-    var fInterval = 1000;
+    var fInterval = 2000;
 
     // To use on production system:
-    var jolokia1 = new Jolokia({ url: "http://mapcode.buve.info/jolokia", fetchInterval: fInterval});
+    var jolokiaConnector = new Jolokia({ url: "http://mapcode.buve.info/jolokia", fetchInterval: fInterval});
 
     // For local testing:
-    // var jolokia1 = new Jolokia({url: "http://localhost:8080/jolokia", fetchInterval: fInterval});
+    jolokiaConnector = new Jolokia({url: "http://localhost:8080/jolokia", fetchInterval: fInterval});
 
 
     var colorsRed = ["#FDBE85", "#FEEDDE", "#FD8D3C", "#E6550D", "#A63603", "#FDBE85", "#FEEDDE", "#FD8D3C", "#E6550D", "#A63603"],
@@ -33,13 +33,13 @@ $(document).ready(function () {
         .clientDelay(0)
         .step(fInterval)
         .size(400);
-    var jolokia = context.jolokia(jolokia1);
+    var jolokia = context.jolokia(jolokiaConnector);
 
 
     function metric(metricName, path, label) {
         return jolokia.metric({
             type: 'read',
-            mbean: 'TomTomTaxi:name=SystemMetrics',
+            mbean: 'mapcode:name=SystemMetrics',
             attribute: metricName,
             path: path
         }, label);
@@ -77,12 +77,12 @@ $(document).ready(function () {
             metric(metricName, "lastMonth/" + pathPostfix, "Last Month")]);
     }
 
-    stdgraph("#allMapcodeToLatLonRequests", "All Mapcode --> Lat/Lon Requests", "AllMapcodeToLatLonRequests", "avg");
-    stdgraph("#validMapcodeToLatLonRequests", "Valid Mapcode --> Lat/Lon Requests", "ValidMapcodeToLatLonRequests", "avg");
-    stdgraph("#allLatLonToMapcodeRequests", "All Lat/Lon --> Mapcode Requests", "AllLatLonToMapcodeRequests", "avg");
-    stdgraph("#validLatLonToMapcodeRequests", "Valid Lat/Lon --> Mapcode Requests", "ValidLatLonToMapcodeRequests", "avg");
+    stdgraph("#allMapcodeToLatLonRequests", "All Mapcode to Lat/Lon Requests", "AllMapcodeToLatLonRequests", "sum");
+    stdgraph("#validMapcodeToLatLonRequests", "Valid Mapcode to Lat/Lon Requests", "ValidMapcodeToLatLonRequests", "sum");
+    stdgraph("#allLatLonToMapcodeRequests", "All Lat/Lon to Mapcode Requests", "AllLatLonToMapcodeRequests", "sum");
+    stdgraph("#validLatLonToMapcodeRequests", "Valid Lat/Lon to Mapcode Requests", "ValidLatLonToMapcodeRequests", "sum");
     stdgraph("#warningsAndErrors", "Warnings and Errors", "WarningsAndErrors", "sum");
 
-    var value = jolokia1.getAttribute("java.lang:type=Memory", "HeapMemoryUsage", "used");
-    $("#memoryUsage").text(value);
+    var value = jolokiaConnector.getAttribute("java.lang:type=Memory", "HeapMemoryUsage", "used") / (1024 * 1024);
+    $("#memoryUsage").text(Math.round(value));
 });

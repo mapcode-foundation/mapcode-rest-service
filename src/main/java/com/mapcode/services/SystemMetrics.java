@@ -28,7 +28,7 @@ import javax.management.MXBean;
  * month. For each time interval, the sum, average, standard deviation, minimum value and maximum value can be
  * retrieved.
  * <p/>
- * Note that the returned {@link MultiMetricsData} and embedded {@link com.tomtom.texas.utils.metrics.MetricsData}
+ * Note that the returned {@link MultiMetricsData} and embedded {@link com.tomtom.speedtools.metrics.MetricsData}
  * instances are 'live' objects. They will continue to change when values are requested. They are thread-safe.
  */
 @MXBean
@@ -47,4 +47,34 @@ public interface SystemMetrics {
      */
     @Nonnull
     MultiMetricsData getMetricData(@Nonnull Metric metric);
+
+    /**
+     * @return The total number of requests for mapcode to lat/lon.
+     */
+    @Nonnull
+    MultiMetricsData getAllMapcodeToLatLonRequests();
+
+    /**
+     * @return The number of valid requests for mapcode to lat/lon.
+     */
+    @Nonnull
+    MultiMetricsData getValidMapcodeToLatLonRequests();
+
+    /**
+     * @return The total number of requests for lat/lon to mapcode.
+     */
+    @Nonnull
+    MultiMetricsData getAllLatLonToMapcodeRequests();
+
+    /**
+     * @return The number of valid requests for lat/lon to mapcode.
+     */
+    @Nonnull
+    MultiMetricsData getValidLatLonToMapcodeRequests();
+
+    /**
+     * @return The number of warnings and errors that were logged through log4j.
+     */
+    @Nonnull
+    MultiMetricsData getWarningsAndErrors();
 }
