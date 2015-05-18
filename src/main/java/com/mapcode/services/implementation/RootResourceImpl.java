@@ -18,7 +18,9 @@ package com.mapcode.services.implementation;
 
 import com.mapcode.services.ApiConstants;
 import com.mapcode.services.RootResource;
+import com.mapcode.services.SystemMetrics;
 import com.mapcode.services.dto.VersionDTO;
+import com.tomtom.speedtools.json.Json;
 import com.tomtom.speedtools.maven.MavenProperties;
 import org.jboss.resteasy.annotations.Suspend;
 import org.jboss.resteasy.spi.AsynchronousResponse;
@@ -43,6 +45,7 @@ public class RootResourceImpl implements RootResource {
 
             "GET /mapcode         Returns this help page.\n" +
             "GET /mapcode/version Returns the software version.\n" +
+            "GET /mapcode/metrics Returns some system metrics (also available from JMX).\n" +
             "GET /mapcode/status  Returns 200 if the service OK.\n\n" +
 
             "GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]\n" +
@@ -90,16 +93,18 @@ public class RootResourceImpl implements RootResource {
             "   Query parameters:\n" +
             "   territoryContext: territory context (optional, for disambiguation)\n";
 
-    @Nonnull
     private final MavenProperties mavenProperties;
+    private final SystemMetrics metrics;
 
     @Inject
     public RootResourceImpl(
-            @Nonnull final MavenProperties mavenProperties) {
+            @Nonnull final MavenProperties mavenProperties,
+            @Nonnull final SystemMetrics metrics) {
         assert mavenProperties != null;
 
         // Store the injected values.
         this.mavenProperties = mavenProperties;
+        this.metrics = metrics;
     }
 
     @Override
@@ -131,5 +136,15 @@ public class RootResourceImpl implements RootResource {
         assert response != null;
         LOG.info("getStatus: get status");
         response.setResponse(Response.ok().build());
+    }
+
+    @Override
+    public void getMetrics(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) final AsynchronousResponse response) {
+        assert response != null;
+        LOG.info("getMetrics");
+
+        // No input validation required. Just return metrics as a plain JSON string.
+        final String json = Json.toJson(metrics);
+        response.setResponse(Response.ok(json).build());
     }
 }

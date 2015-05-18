@@ -16,14 +16,8 @@
 
 package com.mapcode.services.deployment;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.inject.Binder;
-import com.mapcode.services.MapcodeResource;
-import com.mapcode.services.RootResource;
-import com.mapcode.services.implementation.MapcodeResourceImpl;
-import com.mapcode.services.implementation.RootResourceImpl;
 import com.tomtom.speedtools.guice.GuiceConfigurationModule;
-import com.tomtom.speedtools.json.Json;
 import com.tomtom.speedtools.tracer.LoggingTraceHandler;
 import com.tomtom.speedtools.tracer.TracerFactory;
 import com.tomtom.speedtools.tracer.mongo.MongoDBTraceHandler;
@@ -33,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import javax.inject.Singleton;
 
 
 /**
@@ -70,14 +63,8 @@ public class DeploymentModule extends GuiceConfigurationModule {
         binder.bind(MongoDBTraceHandler.class).asEagerSingleton();
         binder.bind(LoggingTraceHandler.class).asEagerSingleton();
 
-        // Bind APIs to their implementation.
-        binder.bind(RootResource.class).to(RootResourceImpl.class).in(Singleton.class);
-        binder.bind(MapcodeResource.class).to(MapcodeResourceImpl.class).in(Singleton.class);
-
         // Bind start-up checking class (example).
         binder.bind(StartupCheck.class).asEagerSingleton();
-
-        // Add some additional features for string (human readable) mappers.
-        Json.getCurrentStringObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, false);
     }
 }
+

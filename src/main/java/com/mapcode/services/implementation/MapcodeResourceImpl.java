@@ -22,6 +22,7 @@ import com.mapcode.*;
 import com.mapcode.Territory.NameFormat;
 import com.mapcode.services.ApiConstants;
 import com.mapcode.services.MapcodeResource;
+import com.mapcode.services.SystemMetricsCollector;
 import com.mapcode.services.dto.*;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiForbiddenException;
@@ -54,6 +55,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
     private static final Tracer TRACER = TracerFactory.getTracer(MapcodeResourceImpl.class, Tracer.class);
 
     private final ResourceProcessor processor;
+    private final SystemMetricsCollector metricsCollector;
 
     private final String listOfAllTerritoryCodes = Joiner.on('|').join(Arrays.asList(Territory.values()).stream().
             map(x -> x.toNameFormat(NameFormat.INTERNATIONAL)).collect(Collectors.toList()));
@@ -84,9 +86,13 @@ public class MapcodeResourceImpl implements MapcodeResource {
      * @param processor Processor to process web requests on.
      */
     @Inject
-    public MapcodeResourceImpl(@Nonnull final ResourceProcessor processor) {
+    public MapcodeResourceImpl(
+            @Nonnull final ResourceProcessor processor,
+            @Nonnull final SystemMetricsCollector metricsCollector) {
         assert processor != null;
+        assert metricsCollector != null;
         this.processor = processor;
+        this.metricsCollector = metricsCollector;
     }
 
     @Override
@@ -121,6 +127,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
         processor.process("convertLatLonToMapcode", LOG, response, () -> {
             LOG.debug("convertLatLonToMapcode: lat={}, lon={}, precision={}, type={}, context={}, include={}",
                     paramLatDeg, paramLonDeg, paramPrecision, paramType, paramTerritory, paramInclude);
+            metricsCollector.allLatLonToMapcodeRequests();
 
             // Check lat range.
             final double latDeg = paramLatDeg;
@@ -239,6 +246,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
                 // Validate the DTO before returning it, to make sure it's valid (internal consistency check).
                 result.validate();
+                metricsCollector.validLatLonToMapcodeRequests();
                 response.setResponse(Response.ok(result).build());
             } catch (final UnknownMapcodeException ignored) {
 
@@ -268,6 +276,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
         processor.process("convertMapcodeToLatLon", LOG, response, () -> {
             LOG.debug("convertMapcodeToLatLon: code={}, territory={}", paramCode, paramTerritory);
+            metricsCollector.allMapcodeToLatLonRequests();
 
             // Get the territory from the path (if specified).
             final Territory territory = (paramTerritory != null) ? resolveTerritory(paramTerritory, null) : null;
@@ -298,6 +307,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
             // Validate the result (internal consistency check).
             result.validate();
+            metricsCollector.validMapcodeToLatLonRequests();
             response.setResponse(Response.ok(result).build());
 
             // The response is already set within this method body.
@@ -378,7 +388,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
         if (paramParent != null) {
 
             // Try to use the parent territory, if available.
-            Territory context = null;
+            Territory context;
             try {
 
                 context = Territory.valueOf(paramParent.replace('-', '_').toUpperCase());
