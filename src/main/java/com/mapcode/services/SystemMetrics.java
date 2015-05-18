@@ -27,7 +27,7 @@ import javax.management.MXBean;
  * Mapcode metrics interface. Metrics are aggregated for multiple time intervals, being last minute, hour day, week and
  * month. For each time interval, the sum, average, standard deviation, minimum value and maximum value can be
  * retrieved.
- * <p/>
+ *
  * Note that the returned {@link MultiMetricsData} and embedded {@link com.tomtom.speedtools.metrics.MetricsData}
  * instances are 'live' objects. They will continue to change when values are requested. They are thread-safe.
  */
@@ -43,6 +43,9 @@ public interface SystemMetrics {
     }
 
     /**
+     * Return metrics data.
+     *
+     * @param metric Metric to return data for.
      * @return Metric data for given metric.
      */
     @Nonnull

@@ -83,7 +83,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
      * The constructor is called by Google Guice at start-up time and gets a processor injected
      * to executed web requests on.
      *
-     * @param processor Processor to process web requests on.
+     * @param processor        Processor to process web requests on.
+     * @param metricsCollector Metric collector.
      */
     @Inject
     public MapcodeResourceImpl(
@@ -433,8 +434,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
                         // Try to use the parent.
                         return Territory.fromString(paramTerritory.toUpperCase(), parentTerritory);
-                    }
-                    catch (final UnknownTerritoryException ignored) {
+                    } catch (final UnknownTerritoryException ignored) {
 
                         // If using the parent fails, try without the parent.
                         return Territory.fromString(paramTerritory.toUpperCase());
