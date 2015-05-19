@@ -284,7 +284,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
             // Check if the mapcode is correctly formatted.
             if (!Mapcode.isValidMapcodeFormat(paramCode)) {
-                throw new ApiInvalidFormatException("mapcode", paramCode, Mapcode.REGEX_MAPCODE_FORMAT);
+                throw new ApiInvalidFormatException("mapcode", paramCode, "[XXX] XX.XX[-XX]");
             }
 
             // Send a trace event with the mapcode and territory.
@@ -468,7 +468,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                                             final boolean includeOffset, final boolean includeTerritory,
                                             @Nonnull final Mapcode mapcode) {
         return new MapcodeDTO(
-                getMapcodePrecision(mapcode, precision),
+                mapcode.getCode(precision),
                 (includeTerritory || (mapcode.getTerritory() != Territory.AAA)) ?
                         mapcode.getTerritory().toNameFormat(NameFormat.INTERNATIONAL) : null,
                 includeOffset ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);
@@ -482,27 +482,13 @@ public class MapcodeResourceImpl implements MapcodeResource {
         assert mapcode != null;
         final GeoPoint position = new GeoPoint(latDeg, lonDeg);
         try {
-            final Point point = MapcodeCodec.decode(getMapcodePrecision(mapcode, precision), mapcode.getTerritory());
+            final Point point = MapcodeCodec.decode(mapcode.getCode(precision), mapcode.getTerritory());
             final GeoPoint center = new GeoPoint(point.getLatDeg(), point.getLonDeg());
             final double distanceMeters = Geo.distanceInMeters(position, center);
             return Math.round(distanceMeters * 100.0) / 100.0;
         } catch (final UnknownMapcodeException ignore) {
             // Simply ignore.
             return 0.0;
-        }
-    }
-
-    @Nonnull
-    private static String getMapcodePrecision(@Nonnull final Mapcode mapcode, final int precision) {
-        switch (precision) {
-            case 1:
-                return mapcode.getMapcodePrecision(1);
-
-            case 2:
-                return mapcode.getMapcodePrecision(2);
-
-            default:
-                return mapcode.getMapcodePrecision(0);
         }
     }
 
