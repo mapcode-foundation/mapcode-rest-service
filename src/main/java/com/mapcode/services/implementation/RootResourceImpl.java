@@ -49,49 +49,60 @@ public class RootResourceImpl implements RootResource {
             "GET /mapcode/status  Returns 200 if the service OK.\n\n" +
 
             "GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]\n" +
-            "   [?precision=[0|1|2]&territory={restrictToTerritory}&include={offset|territory}]\n" +
-            "   Convert latitude/longitude to one or more mapcodes.\n\n" +
+            "     [?precision=[0|1|2] & territory={restrictToTerritory} & alphabet={alphabet} & include={offset|territory}]\n\n" +
+            "   Convert latitude/longitude to one or more mapcodes.\n" +
 
             "   Path parameters:\n" +
-            "   lat             : latitude, range [-90, 90]\n" +
-            "   lon             : longitude, range [-180, 180] (mapped if outside range)\n\n" +
+            "     lat             : latitude, range [-90, 90]\n" +
+            "     lon             : longitude, range [-180, 180] (mapped if outside range)\n\n" +
 
             "   An additional filter can be specified to limit the results:\n" +
-            "     all           : same as without specifying a filter, returns all mapcodes\n" +
-            "     local         : return the shortest local mapcode\n" +
-            "     international : return the shortest international mapcode\n\n" +
+            "     all             : same as without specifying a filter, returns all mapcodes\n" +
+            "     local           : return the shortest local mapcode\n" +
+            "     international   : return the shortest international mapcode\n\n" +
 
             "   Query parameters:\n" +
-            "   precision       : precision, range [0, 2] (default=0)\n" +
-            "   territory       : territory to restrict results to, numeric or alpha code\n" +
-            "   include         : Multiple options may be set, separated by comma's:\n" +
-            "                     offset    = include offset from mapcode center to lat/lon (in meters)\n" +
-            "                     territory = always include territory in result, also for territory 'AAA'\n\n" +
+            "     precision       : precision, range [0, 2] (default=0)\n" +
+            "     territory       : territory to restrict results to, numeric or alpha code\n" +
+            "     alphabet        : Alphabet to return results in, numeric or alpha code\n" +
+            "     include         : Multiple options may be set, separated by comma's:\n" +
+            "                       offset    = include offset from mapcode center to lat/lon (in meters)\n" +
+            "                       territory = always include territory in result, also for territory 'AAA'\n\n" +
 
             "GET /mapcode/coords/{code} [?territory={mapcodeTerritory}]\n" +
             "   Convert a mapcode into a latitude/longitude pair\n\n" +
 
             "   Path parameters:\n" +
-            "   code            : mapcode code (local or international)\n" +
+            "     code            : mapcode code (local or international)\n" +
 
-            "   URL parameters:\n" +
-            "   territory       : mapcode territory, numeric or alpha code\n\n" +
+            "   Query parameters:\n" +
+            "     territory       : mapcode territory, numeric or alpha code\n\n" +
 
             "GET /mapcode/territories [?offset={offset}&count={count}]\n" +
             "   Return a list of all territories.\n\n" +
-
-            "   Query parameters:\n" +
-            "   offset          : return list from 'offset' (negative value start counting from end)\n" +
-            "   count           : return 'count' items at most\n\n" +
 
             "GET /mapcode/territories/{territory} [?context={territoryContext}]\n" +
             "   Return information for a single territory code.\n\n" +
 
             "   Path parameters:\n" +
-            "   territory       : territory to get info for, numeric or alpha code\n\n" +
+            "     territory       : territory to get info for, numeric or alpha code\n\n" +
 
             "   Query parameters:\n" +
-            "   territoryContext: territory context (optional, for disambiguation)\n";
+            "     territoryContext: territory context (optional, for disambiguation)\n\n" +
+
+            "GET /mapcode/alphabets [?offset={offset}&count={count}]\n" +
+            "   Return a list of all alphabet codes.\n\n" +
+
+            "GET /mapcode/alphabets/{alphabet}\n" +
+            "   Return information for a specific alphabet.\n\n" +
+
+            "   Path parameters:\n" +
+            "     alphabet        : alphabet to get info for, numeric or alpha code\n\n" +
+
+            "General query parameters for methods which return a list of results:\n\n" +
+            "   offset            : return list from 'offset' (negative value start counting from end)\n" +
+            "   count             : return 'count' items at most\n";
+
 
     private final MavenProperties mavenProperties;
     private final SystemMetrics metrics;

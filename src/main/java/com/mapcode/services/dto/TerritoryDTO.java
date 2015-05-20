@@ -18,6 +18,7 @@ package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.mapcode.Territory;
 import com.mapcode.services.ApiConstants;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -32,16 +33,16 @@ import javax.annotation.Nullable;
 public final class TerritoryDTO extends ApiDTO {
 
     @Nonnull
-    private String territoryNameInternational;
+    private String name;
 
     @Nonnull
-    private String territoryNameMinimalUnambiguous;
+    private String nameMinimalUnambiguous;
 
     @Nonnull
-    private String territoryNameMinimal;
+    private String nameMinimal;
 
     @Nonnull
-    private Integer territoryCode;
+    private Integer code;
 
     @Nonnull
     private String fullName;
@@ -58,10 +59,10 @@ public final class TerritoryDTO extends ApiDTO {
     @Override
     public void validate() {
         validator().start();
-        validator().checkNotNull(true, "territoryNameInternational", territoryNameInternational);
-        validator().checkNotNull(true, "territoryNameMinimalUnambiguous", territoryNameMinimalUnambiguous);
-        validator().checkNotNull(true, "territoryNameMinimal", territoryNameMinimal);
-        validator().checkInteger(true, "territoryCode", territoryCode, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        validator().checkNotNull(true, "name", name);
+        validator().checkNotNull(true, "nameMinimalUnambiguous", nameMinimalUnambiguous);
+        validator().checkNotNull(true, "nameMinimal", nameMinimal);
+        validator().checkInteger(true, "code", code, 0, Territory.values().length - 1);
         validator().checkString(true, "fullName", fullName, ApiConstants.API_NAME_LEN_MIN, ApiConstants.API_NAME_LEN_MAX);
         validator().checkString(false, "parentTerritory", parentTerritory, ApiConstants.API_NAME_LEN_MIN, ApiConstants.API_NAME_LEN_MAX);
         validator().checkNotNull(false, "aliases", aliases);
@@ -69,18 +70,18 @@ public final class TerritoryDTO extends ApiDTO {
         validator().done();
     }
 
-    public TerritoryDTO(@Nonnull final String territoryNameInternational,
-    @Nonnull final String territoryNameMinimalUnambiguous,
-    @Nonnull final String territoryNameMinimal,
-                        @Nonnull final Integer territoryCode,
+    public TerritoryDTO(@Nonnull final String name,
+                        @Nonnull final String nameMinimalUnambiguous,
+                        @Nonnull final String nameMinimal,
+                        @Nonnull final Integer code,
                         @Nonnull final String fullName,
                         @Nullable final String parentTerritory,
                         @Nonnull final String[] aliases,
                         @Nonnull final String[] fullNameAliases) {
-        this.territoryNameInternational = territoryNameInternational;
-        this.territoryNameMinimalUnambiguous= territoryNameMinimalUnambiguous;
-        this.territoryNameMinimal= territoryNameMinimal;
-        this.territoryCode = territoryCode;
+        this.name = name;
+        this.nameMinimalUnambiguous = nameMinimalUnambiguous;
+        this.nameMinimal = nameMinimal;
+        this.code = code;
         this.fullName = fullName;
         this.parentTerritory = parentTerritory;
         this.aliases = aliases;
@@ -95,51 +96,51 @@ public final class TerritoryDTO extends ApiDTO {
     }
 
     @Nonnull
-    public String getTerritoryNameInternational() {
+    public String getName() {
         beforeGet();
-        return territoryNameInternational;
+        return name;
     }
 
-    public void setTerritoryNameInternational(@Nonnull final String territoryNameInternational) {
+    public void setName(@Nonnull final String name) {
         beforeSet();
-        assert territoryNameInternational != null;
-        this.territoryNameInternational = territoryNameInternational;
+        assert name != null;
+        this.name = name;
     }
 
     @Nonnull
-    public String getTerritoryNameMinimalUnambiguous() {
+    public String getNameMinimalUnambiguous() {
         beforeGet();
-        return territoryNameMinimalUnambiguous;
+        return nameMinimalUnambiguous;
     }
 
-    public void setTerritoryNameMinimalUnambiguous(@Nonnull final String territoryNameMinimalUnambiguous) {
+    public void setNameMinimalUnambiguous(@Nonnull final String nameMinimalUnambiguous) {
         beforeSet();
-        assert territoryNameMinimalUnambiguous != null;
-        this.territoryNameMinimalUnambiguous = territoryNameMinimalUnambiguous;
+        assert nameMinimalUnambiguous != null;
+        this.nameMinimalUnambiguous = nameMinimalUnambiguous;
     }
 
     @Nonnull
-    public String getTerritoryNameMinimal() {
+    public String getNameMinimal() {
         beforeGet();
-        return territoryNameMinimal;
+        return nameMinimal;
     }
 
-    public void setTerritoryNameMinimal(@Nonnull final String territoryNameMinimal) {
+    public void setNameMinimal(@Nonnull final String nameMinimal) {
         beforeSet();
-        assert territoryNameMinimal != null;
-        this.territoryNameMinimal = territoryNameMinimal;
+        assert nameMinimal != null;
+        this.nameMinimal = nameMinimal;
     }
 
     @Nonnull
-    public Integer getTerritoryCode() {
+    public Integer getCode() {
         beforeGet();
-        return territoryCode;
+        return code;
     }
 
-    public void setTerritoryCode(@Nonnull final Integer territoryCode) {
+    public void setCode(@Nonnull final Integer code) {
         beforeSet();
-        assert territoryCode != null;
-        this.territoryCode = territoryCode;
+        assert code != null;
+        this.code = code;
     }
 
     @Nonnull

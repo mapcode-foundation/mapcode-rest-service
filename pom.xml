@@ -24,7 +24,7 @@
     <artifactId>mapcode-rest-service</artifactId>
 
     <packaging>war</packaging>
-    <version>1.50.0-alpha2</version>
+    <version>1.50.0-alpha3</version>
 
     <name>Mapcode REST API Web Service</name>
     <description>
@@ -87,7 +87,7 @@
         <resteasy.version>3.0.11.Final</resteasy.version>
         <slf4j.version>1.7.2</slf4j.version>
 
-        <mapcode.version>1.50.0</mapcode.version>
+        <mapcode.version>1.50.0-SNAPSHOT</mapcode.version>
         <speedtools.version>3.0.9</speedtools.version>
 
         <maven-compiler-plugin.version>3.2</maven-compiler-plugin.version>

@@ -72,7 +72,6 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
                     event.getLevel().equals(Level.FATAL)) {
                 // Increase counter first, then log - on the off chance that another errors occurs...
                 warningsAndErrors.addValue(1);
-                LOG.debug("Log4jAppender::append: {} in last 24 hours", warningsAndErrors.getLastDay().getCount());
             } else {
                 // OK. Do NOT use LOG.debug (would be recursive).
             }
@@ -128,25 +127,21 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
 
     @Override
     public void allMapcodeToLatLonRequests() {
-        LOG.debug("allMapcodeToLatLonRequests: {} in last 24 hours", allMapcodeToLatLonRequests.getLastDay().getCount());
         allMapcodeToLatLonRequests.addValue(1);
     }
 
     @Override
     public void validMapcodeToLatLonRequests() {
-        LOG.debug("validMapcodeToLatLonRequests: {} in last 24 hours", validMapcodeToLatLonRequests.getLastDay().getCount());
         validMapcodeToLatLonRequests.addValue(1);
     }
 
     @Override
     public void allLatLonToMapcodeRequests() {
-        LOG.debug("allLatLonToMapcodeRequests: {} in last 24 hours", allLatLonToMapcodeRequests.getLastDay().getCount());
         allLatLonToMapcodeRequests.addValue(1);
     }
 
     @Override
     public void validLatLonToMapcodeRequests() {
-        LOG.debug("validLatLonToMapcodeRequests: {} in last 24 hours", validLatLonToMapcodeRequests.getLastDay().getCount());
         validLatLonToMapcodeRequests.addValue(1);
     }
 }

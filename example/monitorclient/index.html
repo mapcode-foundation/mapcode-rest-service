@@ -42,47 +42,55 @@
 
         <div class="tiles-wrapper">
             <div class="tiles">
-                <h2>System Statistics</h2>
+                <h2>System Health - Average Load</h2>
                 <div class="tile tile-l">
                     <div class="tile-content">
-                        <div id="validMapcodeToLatLonRequests"></div>
+                        <div id="validMapcodeToLatLonRequestsAvg"></div>
                     </div>
                 </div>
                 <div class="tile tile-l">
                     <div class="tile-content">
-                        <div id="allMapcodeToLatLonRequests"></div>
+                        <div id="validLatLonToMapcodeRequestsAvg"></div>
                     </div>
                 </div>
                 <div class="tile tile-l">
                     <div class="tile-content">
-                        <div id="validLatLonToMapcodeRequests"></div>
-                    </div>
-                </div>
-                <div class="tile tile-l">
-                    <div class="tile-content">
-                        <div id="allLatLonToMapcodeRequests"></div>
-                    </div>
-                </div>
-                <div class="tile tile-l">
-                    <div class="tile-content">
-                        <div id="warningsAndErrors"></div>
+                        <div id="warningsAndErrorsAvg"></div>
                     </div>
                 </div>
             </div>
+
+            <h2>System Usage - Totals</h2>
+            <div class="tile tile-l">
+                <div class="tile-content">
+                    <div id="allMapcodeToLatLonRequestsSum"></div>
+                </div>
+            </div>
+            <div class="tile tile-l">
+                <div class="tile-content">
+                    <div id="validMapcodeToLatLonRequestsSum"></div>
+                </div>
+            </div>
+            <div class="tile tile-l">
+                <div class="tile-content">
+                    <div id="allLatLonToMapcodeRequestsSum"></div>
+                </div>
+            </div>
+            <div class="tile tile-l">
+                <div class="tile-content">
+                    <div id="validLatLonToMapcodeRequestsSum"></div>
+                </div>
+            </div>
         </div>
-        <small>Memory usage (Mb): <div id="memoryUsage">Waiting...</div></small>
 
         <div class="footer-wrapper">
             <div class="footer">
+                <div id="memoryUsage">Waiting...</div>
                 <div>
                     Copyright &copy; 2015 Stichting Mapcode Foundation. All rights reserved.
                 </div>
-                <div class="linklist">
-                    <h1>Footer</h1>
-                </div>
             </div>
         </div>
-
     </div>
 </div>
 <script data-main="/static/js/prelaunch.js" src="/static/js/libs/require-jquery.js"></script>

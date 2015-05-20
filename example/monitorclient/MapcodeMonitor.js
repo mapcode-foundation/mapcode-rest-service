@@ -77,12 +77,14 @@ $(document).ready(function () {
             metric(metricName, "lastMonth/" + pathPostfix, "Last Month")]);
     }
 
-    stdgraph("#allMapcodeToLatLonRequests", "All Mapcode to Lat/Lon Requests", "AllMapcodeToLatLonRequests", "sum");
-    stdgraph("#validMapcodeToLatLonRequests", "Valid Mapcode to Lat/Lon Requests", "ValidMapcodeToLatLonRequests", "sum");
-    stdgraph("#allLatLonToMapcodeRequests", "All Lat/Lon to Mapcode Requests", "AllLatLonToMapcodeRequests", "sum");
-    stdgraph("#validLatLonToMapcodeRequests", "Valid Lat/Lon to Mapcode Requests", "ValidLatLonToMapcodeRequests", "sum");
-    stdgraph("#warningsAndErrors", "Warnings and Errors", "WarningsAndErrors", "sum");
+    stdgraph("#allMapcodeToLatLonRequestsSum", "Total requests: mapcode->coord", "AllMapcodeToLatLonRequests", "sum");
+    stdgraph("#validMapcodeToLatLonRequestsSum", "Valid requests: mapcode->coord", "ValidMapcodeToLatLonRequests", "sum");
+    stdgraph("#validMapcodeToLatLonRequestsAvg", "Average load: mapcode->coord", "ValidMapcodeToLatLonRequests", "avg");
+    stdgraph("#allLatLonToMapcodeRequestsSum", "Total requests: coord->mapcode", "AllLatLonToMapcodeRequests", "sum");
+    stdgraph("#validLatLonToMapcodeRequestsSum", "Valid requests: coord->mapcode", "ValidLatLonToMapcodeRequests", "sum");
+    stdgraph("#validLatLonToMapcodeRequestsAvg", "Average load: coord->mapcode", "ValidLatLonToMapcodeRequests", "avg");
+    stdgraph("#warningsAndErrorsAvg", "Warnings and Errors", "WarningsAndErrors", "avg");
 
     var value = jolokiaConnector.getAttribute("java.lang:type=Memory", "HeapMemoryUsage", "used") / (1024 * 1024);
-    $("#memoryUsage").text(Math.round(value));
+    $("#memoryUsage").text("Memory used: " + Math.round(value) + "Mb");
 });

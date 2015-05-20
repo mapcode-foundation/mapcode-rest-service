@@ -64,9 +64,9 @@ information in the dialog boxes and pressing the conversion/request buttons.
 <script type="text/javascript">
 
     /* This is the base URL of the mapcode REST API. */
-    var apiBaseURL = "http://mapcode.buve.info/mapcode";
+    // var apiBaseURL = "http://mapcode.buve.info/mapcode";
     // For local testing, use:
-    // var apiBaseURL = "http://localhost:8080/mapcode";
+    var apiBaseURL = "http://localhost:8080/mapcode";
 
     function onLoad() {
         var url = apiBaseURL + "/version";
@@ -98,7 +98,7 @@ information in the dialog boxes and pressing the conversion/request buttons.
     }
 
     function createTerritoryLine(territory) {
-        var line = "<b>" + territory.territoryNameInternational + "</b> (" + territory.territoryCode + ") - <u>" + territory.fullName + "</u>";
+        var line = "<b>" + territory.name + "</b> (" + territory.code + ") - <u>" + territory.fullName + "</u>";
         if (territory.fullNameAliases) {
             for (j = 0; j < territory.fullNameAliases.length; j++) {
                 line += ", " + territory.fullNameAliases[j];
@@ -111,6 +111,10 @@ information in the dialog boxes and pressing the conversion/request buttons.
             }
         }
         return line;
+    }
+
+    function createAlphabetLine(alphabet) {
+        return "<b>" + alphabet.name + "</b> (" + alphabet.code + ")</u>";
     }
 </script>
 
@@ -126,10 +130,12 @@ information in the dialog boxes and pressing the conversion/request buttons.
 
         /* Use the input fields to build the request URL. */
         var territory = document.getElementById("territoryEncode").value;
+        var alphabet = document.getElementById("alphabetEncode").value;
         var lat = document.getElementById("lat").value;
         var lon = document.getElementById("lon").value;
         var url = apiBaseURL + "/codes/" + lat + "," + lon + "?precision=0&include=territory" +
-                ((territory && (territory.length != 0)) ? "&territory=" + territory : "");
+                ((territory && (territory.length != 0)) ? "&territory=" + territory : "") +
+                ((alphabet && (alphabet.length != 0)) ? "&alphabet=" + alphabet : "");
         document.getElementById("requestEncode").innerHTML = createRequestLine(url);
 
         /* Asynchronously request a solution, call encodeResponseReady when done. */
@@ -157,7 +163,7 @@ information in the dialog boxes and pressing the conversion/request buttons.
             for (i = 0; i < result.mapcodes.length; i++) {
                 var isGrey = ((i > 0) && (result.mapcodes[i].territory == result.mapcodes[i - 1].territory));
                 if (isGrey) {
-                    resultLines += "<font color=\"#bbbbbb\">";
+                    resultLines += "<font color=\"#888888\">";
                 }
                 resultLines += ((result.mapcodes[i].territory == "AAA") ? "" : result.mapcodes[i].territory) +
                         " <b>" + result.mapcodes[i].mapcode + "</b>";
@@ -192,7 +198,10 @@ information in the dialog boxes and pressing the conversion/request buttons.
     <br/>
     <input type="text" id="lon" value="5.488075"> = longitude [-180, 180] (wrapped if outside of range)
     <br/>
-    <input type="text" id="territoryEncode" value=""> = restrict results to 1 territory (empty = show all)
+    <input type="text" id="territoryEncode" value=""> = restrict results to 1 territory (numeric or alpha, empty = show
+    all)
+    <br/>
+    <input type="text" id="alphabetEncode" value=""> = alphabet used for results (numeric or alpha, empty = roman)
     <br/>
     <input type="button" value="Encode" onclick="encodeButtonPressed()">
 </form>
@@ -306,8 +315,6 @@ information in the dialog boxes and pressing the conversion/request buttons.
         /* Did the request succeed? */
         document.getElementById("responseTerritory").innerHTML = createResponseLine(status, response);
         if ((status == 200) && response) {
-
-            /* Parse the response into an array of mapcodes. */
             var result = JSON.parse(response);
 
             var resultLines = "";
@@ -350,6 +357,79 @@ information in the dialog boxes and pressing the conversion/request buttons.
 
 <div id="requestTerritory"></div>
 <div id="responseTerritory"></div>
+
+<hr/>
+
+<!--
+ ~ --------------------------------------------------------------------------------
+ ~ ALPHABET INFORMATION
+ ~ --------------------------------------------------------------------------------
+-->
+
+<script>
+    function alphabetButtonPressed() {
+        document.getElementById("resultAlphabet").innerHTML = '<font color=grey>Waiting...</font>';
+
+        var alphabet = document.getElementById("alphabet").value;
+        var url = apiBaseURL + "/alphabets" + (alphabet ? ('/' + alphabet) : "");
+        document.getElementById("requestAlphabet").innerHTML = createRequestLine(url);
+
+        /* Asynchronously request a solution, call encodeResponseReady when done. */
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4) {
+                alphabetResponseReady(xmlhttp.responseText, xmlhttp.status);
+            }
+        }
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+    }
+
+    function alphabetResponseReady(response, status) {
+
+        /* Did the request succeed? */
+        document.getElementById("responseAlphabet").innerHTML = createResponseLine(status, response);
+        if ((status == 200) && response) {
+            var result = JSON.parse(response);
+
+            var resultLines = "";
+            if (result.alphabets) {
+                resultLines += "<b><u>List all alphabets (" + result.alphabets.length + "):</u></b></u><br/><small>";
+                for (i = 0; i < result.alphabets.length; i++) {
+                    var alphabet = result.alphabets[i];
+                    resultLines += createAlphabetLine(alphabet) + "<br/>";
+                }
+            }
+            else {
+                resultLines += "<b><u>List one alphabet:</u></b></u><br/><small>";
+                resultLines += createAlphabetLine(result);
+            }
+            resultLines += "<small>"
+            document.getElementById("resultAlphabet").innerHTML = resultLines;
+        }
+        else {
+            document.getElementById("resultAlphabet").innerHTML = "<b>Error</b> (status = " + status + ')';
+        }
+    }
+</script>
+
+<h2>Get alphabet information</h2>
+
+<p>
+    <tt>HTTP GET /mapcode/alphabet[/{alphabet}[?context={territoryContext}]]</tt>
+</p>
+
+<form action="#" onsubmit="return decodeButtonPressed();">
+    <input type="text" id="alphabet" value=""> = alphabet to show info for (empty = all alphabets)
+    <br/>
+    <input type="button" value="List" onclick="alphabetButtonPressed()">
+</form>
+
+<div id="resultAlphabet"></div>
+<br/>
+
+<div id="requestAlphabet"></div>
+<div id="responseAlphabet"></div>
 
 <hr/>
 <h2>System Monitoring and Metrics</h2>
