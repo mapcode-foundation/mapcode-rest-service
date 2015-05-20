@@ -79,11 +79,9 @@ $(document).ready(function () {
 
     stdgraph("#allMapcodeToLatLonRequestsSum", "Total requests: mapcode->coord", "AllMapcodeToLatLonRequests", "sum");
     stdgraph("#validMapcodeToLatLonRequestsSum", "Valid requests: mapcode->coord", "ValidMapcodeToLatLonRequests", "sum");
-    stdgraph("#validMapcodeToLatLonRequestsAvg", "Average load: mapcode->coord", "ValidMapcodeToLatLonRequests", "avg");
     stdgraph("#allLatLonToMapcodeRequestsSum", "Total requests: coord->mapcode", "AllLatLonToMapcodeRequests", "sum");
     stdgraph("#validLatLonToMapcodeRequestsSum", "Valid requests: coord->mapcode", "ValidLatLonToMapcodeRequests", "sum");
-    stdgraph("#validLatLonToMapcodeRequestsAvg", "Average load: coord->mapcode", "ValidLatLonToMapcodeRequests", "avg");
-    stdgraph("#warningsAndErrorsAvg", "Warnings and Errors", "WarningsAndErrors", "avg");
+    stdgraph("#warningsAndErrorsSum", "Warnings and Errors", "WarningsAndErrors", "sum");
 
     var value = jolokiaConnector.getAttribute("java.lang:type=Memory", "HeapMemoryUsage", "used") / (1024 * 1024);
     $("#memoryUsage").text("Memory used: " + Math.round(value) + "Mb");
