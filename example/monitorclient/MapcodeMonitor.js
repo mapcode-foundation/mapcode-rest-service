@@ -18,10 +18,10 @@ $(document).ready(function () {
     var fInterval = 2000;
 
     // To use on production system:
-    var jolokiaConnector = new Jolokia({ url: "http://mapcode.buve.info/jolokia", fetchInterval: fInterval});
+    // var jolokiaConnector = new Jolokia({ url: "http://api.mapcode.com/jolokia", fetchInterval: fInterval});
 
     // For local testing:
-    // jolokiaConnector = new Jolokia({url: "http://localhost:8080/jolokia", fetchInterval: fInterval});
+    jolokiaConnector = new Jolokia({url: "http://localhost:8080/jolokia", fetchInterval: fInterval});
 
 
     var colorsRed = ["#FDBE85", "#FEEDDE", "#FD8D3C", "#E6550D", "#A63603", "#FDBE85", "#FEEDDE", "#FD8D3C", "#E6550D", "#A63603"],
