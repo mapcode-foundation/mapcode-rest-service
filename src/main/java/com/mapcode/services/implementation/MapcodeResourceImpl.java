@@ -536,7 +536,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
                                             @Nullable final Alphabet alphabet, final boolean includeTerritory,
                                             final boolean includeOffset, final double latDeg, final double lonDeg) {
         return new MapcodeDTO(
+                mapcode.getCode(precision),
                 mapcode.getCode(precision, alphabet),
+                (includeTerritory || (mapcode.getTerritory() != Territory.AAA)) ?
+                        mapcode.getTerritory().toString() : null,
                 (includeTerritory || (mapcode.getTerritory() != Territory.AAA)) ?
                         mapcode.getTerritory().toString(alphabet) : null,
                 includeOffset ? offsetFromLatLonInMeters(latDeg, lonDeg, mapcode, precision) : null);

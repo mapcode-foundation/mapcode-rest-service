@@ -165,13 +165,19 @@ information in the dialog boxes and pressing the conversion/request buttons.
                 if (isGrey) {
                     resultLines += "<font color=\"#888888\">";
                 }
-                resultLines += ((result.mapcodes[i].territory == "AAA") ? "" : result.mapcodes[i].territory) +
-                        " <b>" + result.mapcodes[i].mapcode + "</b>";
+                resultLines += ((result.mapcodes[i].territory == "AAA") ? "" :
+                        result.mapcodes[i].territoryInAlphabet + " ") + "<b>" + result.mapcodes[i].mapcodeInAlphabet + "</b> ";
+
+                if (result.mapcodes[i].mapcode != result.mapcodes[i].mapcodeInAlphabet) {
+                    resultLines += " (" + ((result.mapcodes[i].territory == "AAA") ? "" :
+                            result.mapcodes[i].territory + " ") + result.mapcodes[i].mapcode + ") ";
+                }
+
                 if (result.mapcodes[i].mapcode == result.local.mapcode) {
-                    resultLines += " (default local)";
+                    resultLines += "(default local)";
                 }
                 if (result.mapcodes[i].territory == "AAA") {
-                    resultLines += " (international)";
+                    resultLines += "(international)";
                 }
                 if (isGrey) {
                     resultLines += "</font>";
