@@ -571,7 +571,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
         // A request to translate a lat/lon to a mapcode is made.
         void eventLatLonToMapcode(double latDeg, double lonDeg, @Nullable Territory territory,
                                   int precision, @Nullable String type, @Nullable String alphabet,
-                                  @Nonnull String include);
+                                  @Nullable String include);
 
         // A request to translate a mapcode to a lat/lon is made.
         void eventMapcodeToLatLon(@Nonnull String code, @Nullable Territory territory);
