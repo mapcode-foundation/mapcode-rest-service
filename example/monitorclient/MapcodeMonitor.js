@@ -15,18 +15,18 @@
  */
 
 $(document).ready(function () {
-    var fInterval = 2000;
+    var fInterval = 1000;
 
     // To use on production system:
-    // var jolokiaConnector = new Jolokia({ url: "http://api.mapcode.com/jolokia", fetchInterval: fInterval});
+    // var jolokiaConnector = new Jolokia({ url: "http://api.mapcode.com/monitor", fetchInterval: fInterval});
 
     // For local testing:
-    jolokiaConnector = new Jolokia({url: "http://localhost:8080/jolokia", fetchInterval: fInterval});
+    jolokiaConnector = new Jolokia({url: "http://localhost:8080/monitor", fetchInterval: fInterval});
 
 
-    var colorsRed = ["#FDBE85", "#FEEDDE", "#FD8D3C", "#E6550D", "#A63603", "#FDBE85", "#FEEDDE", "#FD8D3C", "#E6550D", "#A63603"],
-        colorsGreen = ["#FDBE85"],
-        colorsBlue = ["#ECE7F2", "#A6BDDB", "#2B8CBE", "#ECE7F2", "#A6BDDB", "#2B8CBE"];
+    var colorsRed = ["#FDBE85", "#FEEDDE", "#FD8D3C", "#E6550D", "#A63603", "#FDBE85", "#FEEDDE", "#FD8D3C", "#E6550D", "#A63603"];
+    var colorsGreen = ["#FDBE85"];
+    var colorsBlue = ["#ECE7F2", "#A6BDDB", "#2B8CBE", "#ECE7F2", "#A6BDDB", "#2B8CBE"];
 
     var context = cubism.context()
         .serverDelay(0)
@@ -77,10 +77,10 @@ $(document).ready(function () {
             metric(metricName, "lastMonth/" + pathPostfix, "Last Month")]);
     }
 
-    stdgraph("#allMapcodeToLatLonRequestsSum", "Total requests: mapcode->coord", "AllMapcodeToLatLonRequests", "sum");
-    stdgraph("#validMapcodeToLatLonRequestsSum", "Valid requests: mapcode->coord", "ValidMapcodeToLatLonRequests", "sum");
-    stdgraph("#allLatLonToMapcodeRequestsSum", "Total requests: coord->mapcode", "AllLatLonToMapcodeRequests", "sum");
-    stdgraph("#validLatLonToMapcodeRequestsSum", "Valid requests: coord->mapcode", "ValidLatLonToMapcodeRequests", "sum");
+    stdgraph("#allMapcodeToLatLonRequestsSum", "Total requests: mapcode > coord", "AllMapcodeToLatLonRequests", "sum");
+    stdgraph("#validMapcodeToLatLonRequestsSum", "Valid requests: mapcode > coord", "ValidMapcodeToLatLonRequests", "sum");
+    stdgraph("#allLatLonToMapcodeRequestsSum", "Total requests: coord > mapcode", "AllLatLonToMapcodeRequests", "sum");
+    stdgraph("#validLatLonToMapcodeRequestsSum", "Valid requests: coord > mapcode", "ValidLatLonToMapcodeRequests", "sum");
     stdgraph("#warningsAndErrorsSum", "Warnings and Errors", "WarningsAndErrors", "sum");
 
     var value = jolokiaConnector.getAttribute("java.lang:type=Memory", "HeapMemoryUsage", "used") / (1024 * 1024);

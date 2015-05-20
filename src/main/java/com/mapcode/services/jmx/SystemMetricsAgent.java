@@ -40,16 +40,16 @@ public class SystemMetricsAgent {
     public void register() throws MalformedObjectNameException, NotCompliantMBeanException, InstanceAlreadyExistsException,
             MBeanRegistrationException {
 
-        // Get the platform MBeanServer
+        // Get the platform MBeanServer.
         final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 
-        // Uniquely identify the MBeans and register them with the platform MBeanServer
+        // Uniquely identify the MBeans and register them with the platform MBeanServer.
         final ObjectName name = new ObjectName("mapcode:name=SystemMetrics");
 
         // Unregister old bean. Needed for tests.
         try {
             mbs.unregisterMBean(name);
-        } catch (InstanceNotFoundException ignored) {
+        } catch (final InstanceNotFoundException ignored) {
             // Ignored.
         }
 

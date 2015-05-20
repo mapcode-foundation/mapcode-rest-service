@@ -16,7 +16,6 @@
 
 package com.mapcode.services;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Provides;
@@ -24,7 +23,6 @@ import com.mapcode.services.implementation.MapcodeResourceImpl;
 import com.mapcode.services.implementation.RootResourceImpl;
 import com.mapcode.services.implementation.SystemMetricsImpl;
 import com.mapcode.services.jmx.SystemMetricsAgent;
-import com.tomtom.speedtools.json.Json;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,9 +55,6 @@ public class ServicesModule implements Module {
         // JMX interface.
         binder.bind(SystemMetricsImpl.class).in(Singleton.class);
         binder.bind(SystemMetricsAgent.class).in(Singleton.class);
-
-        // Add some additional features for string (human readable) mappers.
-        Json.getCurrentStringObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, false);
     }
 
     @Provides
