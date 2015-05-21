@@ -287,27 +287,27 @@ public class MapcodeResourceImpl implements MapcodeResource {
     @Override
     public void convertMapcodeToLatLon(
             @Nonnull final String paramCode,
-            @Nullable final String paramTerritory,
+            @Nullable final String paramContext,
             @Nonnull final AsynchronousResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
         assert paramCode != null;
         assert response != null;
 
         processor.process("convertMapcodeToLatLon", LOG, response, () -> {
-            LOG.debug("convertMapcodeToLatLon: code={}, territory={}", paramCode, paramTerritory);
+            LOG.debug("convertMapcodeToLatLon: code={}, territory={}", paramCode, paramContext);
             metricsCollector.allMapcodeToLatLonRequests();
 
             // Get the territory from the path (if specified).
-            final Territory territory;
-            if (paramTerritory != null) {
+            final Territory territoryContext;
+            if (paramContext != null) {
                 try {
                     // Query parameters are HTML escaped.
-                    territory = resolveTerritory(StringEscapeUtils.unescapeHtml4(paramTerritory), null);
+                    territoryContext = resolveTerritory(StringEscapeUtils.unescapeHtml4(paramContext), null);
                 } catch (final IllegalArgumentException ignored) {
-                    throw new ApiInvalidFormatException(PARAM_TERRITORY, paramTerritory, API_ERROR_VALID_TERRITORY_CODES);
+                    throw new ApiInvalidFormatException(PARAM_TERRITORY, paramContext, API_ERROR_VALID_TERRITORY_CODES);
                 }
 
             } else {
-                territory = null;
+                territoryContext = null;
             }
 
             // Check if the mapcode is correctly formatted.
@@ -316,7 +316,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
 
             // Send a trace event with the mapcode and territory.
-            TRACER.eventMapcodeToLatLon(paramCode, territory);
+            TRACER.eventMapcodeToLatLon(paramCode, territoryContext);
 
             // Create result body (always an ApiDTO).
             ApiDTO result;
@@ -324,10 +324,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
                 // Decode the actual mapcode.
                 final Point point;
-                point = MapcodeCodec.decode(paramCode, territory);
+                point = MapcodeCodec.decode(paramCode, territoryContext);
                 result = new PointDTO(point.getLatDeg(), point.getLonDeg());
             } catch (final UnknownMapcodeException ignored) {
-                throw new ApiNotFoundException("No mapcode found for mapcode='" + paramCode + "', territory=" + territory);
+                throw new ApiNotFoundException("No mapcode found for mapcode='" + paramCode + "', territoryContext=" + territoryContext);
             }
 
             // Validate the result (internal consistency check).

@@ -66,7 +66,7 @@ pressing the conversion/request buttons.
     var apiBaseURL = "http://api.mapcode.com/mapcode";
 
     // For local testing, use:
-    // var apiBaseURL = "http://localhost:8080/mapcode";
+     var apiBaseURL = "http://localhost:8080/mapcode";
 
     function onLoad() {
         var url = apiBaseURL + "/version";
@@ -130,11 +130,13 @@ pressing the conversion/request buttons.
 
         /* Use the input fields to build the request URL. */
         var territory = document.getElementById("territoryEncode").value;
+        var precision = document.getElementById("precision").value;
         var alphabet = document.getElementById("alphabetEncode").value;
         var lat = document.getElementById("lat").value;
         var lon = document.getElementById("lon").value;
-        var url = apiBaseURL + "/codes/" + lat + "," + lon + "?precision=0&include=territory" +
+        var url = apiBaseURL + "/codes/" + lat + "," + lon + "?include=territory" +
                 ((territory && (territory.length != 0)) ? "&territory=" + territory : "") +
+                ((precision && (precision.length != 0)) ? "&precision=" + precision : "") +
                 ((alphabet && (alphabet.length != 0)) ? "&alphabet=" + alphabet : "");
         document.getElementById("requestEncode").innerHTML = createRequestLine(url);
 
@@ -196,7 +198,7 @@ pressing the conversion/request buttons.
 <h2>Convert a coordinate (latitude, longitude) to mapcode(s)</h2>
 
 <p>
-    <tt>HTTP GET /mapcode/codes/{lat},{lon}[?territory={restrictToTerritory}]</tt>
+    <tt>HTTP GET /mapcode/codes/{lat},{lon}[?territory={restrictToTerritory}&precision=[0|1|2]]</tt>
 </p>
 
 <form action="#" onsubmit="return encodeButtonPressed();">
@@ -208,6 +210,8 @@ pressing the conversion/request buttons.
     all)
     <br/>
     <input type="text" id="alphabetEncode" value=""> = alphabet used for results (numeric or alpha, empty = roman)
+    <br/>
+    <input type="text" id="precision" value=""> = precision (0, 1 or 2, empty = 0)
     <br/>
     <input type="button" value="Encode" onclick="encodeButtonPressed()">
 </form>
@@ -230,12 +234,12 @@ pressing the conversion/request buttons.
     function decodeButtonPressed() {
 
         /* Use the input fields to build the request URL. */
-        var territory = document.getElementById("territoryDecode").value;
-        if (territory == "") {
-            territory = "AAA";
+        var context = document.getElementById("contextDecode").value;
+        if (context == "") {
+            context = "AAA";
         }
         var mapcode = document.getElementById("mapcode").value;
-        var url = apiBaseURL + "/coords/" + mapcode + "?territory=" + territory;
+        var url = apiBaseURL + "/coords/" + mapcode + "?context=" + context;
 
         /* Update page. */
         document.getElementById("resultDecode").innerHTML = '<font color=grey>Waiting...</font>';
@@ -271,11 +275,11 @@ pressing the conversion/request buttons.
 <h2>Convert a mapcode to a coordinate (latitude, longitude)</h2>
 
 <p>
-    <tt>HTTP GET /mapcode/coords/{code}[?territory={mapcodeTerritory}]</tt>
+    <tt>HTTP GET /mapcode/coords/{code}[?context={territoryContext}]</tt>
 </p>
 
 <form action="#" onsubmit="return decodeButtonPressed();">
-    <input type="text" id="territoryDecode" value="NLD"> = mapcode territory (empty = international)
+    <input type="text" id="contextDecode" value="NLD"> = mapcode territory (empty = international)
     <br/>
     <input type="text" id="mapcode" value="XX.XX"> = mapcode code
     <br/>

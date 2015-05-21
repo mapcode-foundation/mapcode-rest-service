@@ -53,30 +53,30 @@ public class RootResourceImpl implements RootResource {
             "   Convert latitude/longitude to one or more mapcodes.\n" +
 
             "   Path parameters:\n" +
-            "     lat             : latitude, range [-90, 90]\n" +
-            "     lon             : longitude, range [-180, 180] (mapped if outside range)\n\n" +
+            "     lat             : Latitude, range [-90, 90].\n" +
+            "     lon             : Longitude, range [-180, 180] (mapped if outside range).\n\n" +
 
             "   An additional filter can be specified to limit the results:\n" +
-            "     all             : same as without specifying a filter, returns all mapcodes\n" +
-            "     local           : return the shortest local mapcode\n" +
-            "     international   : return the shortest international mapcode\n\n" +
+            "     all             : Same as without specifying a filter, returns all mapcodes.\n" +
+            "     local           : Return the shortest local mapcode.\n" +
+            "     international   : Return the international mapcode.\n\n" +
 
             "   Query parameters:\n" +
-            "     precision       : precision, range [0, 2] (default=0)\n" +
-            "     territory       : territory to restrict results to, numeric or alpha code\n" +
-            "     alphabet        : Alphabet to return results in, numeric or alpha code\n" +
+            "     precision       : Precision, range [0, 2] (default=0).\n" +
+            "     territory       : Territory to restrict results to, numeric or alpha code.\n" +
+            "     alphabet        : Alphabet to return results in, numeric or alpha code.\n" +
             "     include         : Multiple options may be set, separated by comma's:\n" +
-            "                       offset    = include offset from mapcode center to lat/lon (in meters)\n" +
-            "                       territory = always include territory in result, also for territory 'AAA'\n\n" +
+            "                         offset    = Include offset from mapcode center to lat/lon (in meters).\n" +
+            "                         territory = Always include territory in result, also for territory 'AAA'.\n\n" +
 
-            "GET /mapcode/coords/{code} [?territory={mapcodeTerritory}]\n" +
-            "   Convert a mapcode into a latitude/longitude pair\n\n" +
+            "GET /mapcode/coords/{code} [?context={territoryContext}]\n" +
+            "   Convert a mapcode into a latitude/longitude pair.\n\n" +
 
             "   Path parameters:\n" +
-            "     code            : mapcode code (local or international)\n" +
+            "     code            : Mapcode code (local or international).\n" +
 
             "   Query parameters:\n" +
-            "     territory       : mapcode territory, numeric or alpha code\n\n" +
+            "     context         : Optional mapcode territory context, numeric or alpha code.\n\n" +
 
             "GET /mapcode/territories [?offset={offset}&count={count}]\n" +
             "   Return a list of all territories.\n\n" +
@@ -85,10 +85,10 @@ public class RootResourceImpl implements RootResource {
             "   Return information for a single territory code.\n\n" +
 
             "   Path parameters:\n" +
-            "     territory       : territory to get info for, numeric or alpha code\n\n" +
+            "     territory       : Territory to get info for, numeric or alpha code.\n\n" +
 
             "   Query parameters:\n" +
-            "     territoryContext: territory context (optional, for disambiguation)\n\n" +
+            "     context         : Territory context (optional, for disambiguation).\n\n" +
 
             "GET /mapcode/alphabets [?offset={offset}&count={count}]\n" +
             "   Return a list of all alphabet codes.\n\n" +
@@ -97,11 +97,11 @@ public class RootResourceImpl implements RootResource {
             "   Return information for a specific alphabet.\n\n" +
 
             "   Path parameters:\n" +
-            "     alphabet        : alphabet to get info for, numeric or alpha code\n\n" +
+            "     alphabet        : Alphabet to get info for, numeric or alpha code.\n\n" +
 
             "General query parameters for methods which return a list of results:\n\n" +
-            "   offset            : return list from 'offset' (negative value start counting from end)\n" +
-            "   count             : return 'count' items at most\n";
+            "   offset            : Return list from 'offset' (negative value start counting from end).\n" +
+            "   count             : Return 'count' items at most.\n";
 
 
     private final MavenProperties mavenProperties;

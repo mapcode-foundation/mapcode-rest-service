@@ -136,10 +136,10 @@ public interface MapcodeResource {
     /**
      * Convert a mapcode into a lat/lon pair.
      *
-     * @param paramCode      Mapcode to convert.
-     * @param paramTerritory Specifies a parent territory context for interpretation of the mapcode.
-     *                       Range: any valid parent territory code.
-     * @param response       Lat/lon. Format: {@link com.mapcode.services.dto.PointDTO}.
+     * @param paramCode    Mapcode to convert.
+     * @param paramContext Specifies a territory context for interpretation of the mapcode.
+     *                     Range: any valid territory.
+     * @param response     Lat/lon. Format: {@link com.mapcode.services.dto.PointDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -148,7 +148,7 @@ public interface MapcodeResource {
     @Path("coords/{" + PARAM_CODE + '}')
     void convertMapcodeToLatLon(
             @PathParam(PARAM_CODE) @Nonnull final String paramCode,
-            @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
+            @QueryParam(PARAM_CONTEXT) @Nullable final String paramContext,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
     /**
