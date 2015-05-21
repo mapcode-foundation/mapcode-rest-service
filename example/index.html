@@ -22,7 +22,7 @@
             margin: 5px 10px 5px 10px;
             font-family: verdana, geneva, arial, helvetica, sans-serif;
             font-size: 12px;
-            background-color: #ddeeff;
+            background-color: #eeeeee;
             text-decoration: none;
             font-weight: normal;
             line-height: normal;
@@ -33,12 +33,11 @@
 <body onload="onLoad()">
 <h1>Sample HTML/Javascript using the mapcode REST API</h1>
 
-This page is an example of how the mapcode REST API can be used from HTML/Javascript (or
-other languages, for that matter). You can look at the source code of this page to see
-how the REST API is called from Javascript, or you can try it out by simply entering some
-information in the dialog boxes and pressing the conversion/request buttons.
-<br/>
-<br/>
+This page is an example of how the mapcode REST API can be used from HTML/Javascript.
+You can have a look at the source code of this page to see how the REST API is called,
+r you can try it out by simply entering some information in the dialog boxes and
+pressing the conversion/request buttons.
+
 <b>Copyright (C) 2015, Stichting Mapcode Foundation</b>, <a href="http://www.mapcode.com">http://www.mapcode.com</a>
 
 <hr/>
@@ -65,6 +64,7 @@ information in the dialog boxes and pressing the conversion/request buttons.
 
     /* This is the base URL of the mapcode REST API. */
     var apiBaseURL = "http://api.mapcode.com/mapcode";
+
     // For local testing, use:
     // var apiBaseURL = "http://localhost:8080/mapcode";
 
@@ -438,9 +438,13 @@ information in the dialog boxes and pressing the conversion/request buttons.
 <div id="responseAlphabet"></div>
 
 <hr/>
-<h2>System Monitoring and Metrics</h2>
-
-<a href="monitorclient/index.html">To enter the system monitoring and metrics client, click here...</a>
+<p><font color="#882222">
+    <b>Important:</b> The Mapcode REST API on <tt>api.mapcode.com</tt> is provided primarily
+    for examples and reference purposes. If you plan to use the REST API more extensively,
+    please consider running your own REST API server. You can find the REST API server sources
+    and installation notes on
+    <a href="https://github.com/mapcode-foundation/mapcode-rest-service" target="_blank">Github</a>.
+</font></p>
 
 </body>
 </html>
