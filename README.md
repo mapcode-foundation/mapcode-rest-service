@@ -7,53 +7,81 @@ Available methods:
     
     GET /mapcode         Returns this help page.
     GET /mapcode/version Returns the software version.
+    GET /mapcode/metrics Returns some system metrics (also available from JMX).
     GET /mapcode/status  Returns 200 if the service OK.
     
-    GET /mapcode/codes/{lat},{lon} [/mapcodes|local|international] [?precision=[0|1|2]&territory={territory}&include={offset|territory}]
-       Convert latitude/longitude to one or more mapcodes.
+    GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]
+         [?precision=[0|1|2] & territory={restrictToTerritory} & alphabet={alphabet} & include={offset|territory}]
     
+       Convert latitude/longitude to one or more mapcodes.
        Path parameters:
-       lat             : latitude, range [-90, 90]
-       lon             : longitude, range [-180, 180] (mapped if outside range)
+         lat             : latitude, range [-90, 90]
+         lon             : longitude, range [-180, 180] (mapped if outside range)
     
        An additional filter can be specified to limit the results:
-         all           : same as without specifying a filter, returns all mapcodes
-         local         : return the shortest local mapcode
-         international : return the shortest international mapcode
+         all             : same as without specifying a filter, returns all mapcodes
+         local           : return the shortest local mapcode
+         international   : return the shortest international mapcode
     
        Query parameters:
-       precision       : precision, range [0, 2] (default=0)
-       territory       : territory context, numeric or alpha code
-       include         : Multiple options may be set, separated by comma's:
-                         offset    = include offset from mapcode center to lat/lon (in meters)
-                         territory = always include territory in result, also for territory 'AAA'
+         precision       : precision, range [0, 2] (default=0)
+         territory       : territory to restrict results to, numeric or alpha code
+         alphabet        : Alphabet to return results in, numeric or alpha code
+         include         : Multiple options may be set, separated by comma's:
+                           offset    = include offset from mapcode center to lat/lon (in meters)
+                           territory = always include territory in result, also for territory 'AAA'
     
-    GET /mapcode/coords/{mapcode} [?territory={code}]
+    GET /mapcode/coords/{code} [?territory={mapcodeTerritory}]
        Convert a mapcode into a latitude/longitude pair
     
        Path parameters:
-       territory       : territory context, numeric or alpha code
-       Path parameters:
-       territory       : territory context, numeric or alpha code
+         code            : mapcode code (local or international)
+       Query parameters:
+         territory       : mapcode territory, numeric or alpha code
     
     GET /mapcode/territories [?offset={offset}&count={count}]
-       Return a list of all valid numeric and alpha territory codes.
+       Return a list of all territories.
     
-       Query parameters:
-       offset          : return list from 'offset' (negative value start counting from end)
-       count           : return 'count' items at most
-    
-    GET /mapcode/territories/{code}
+    GET /mapcode/territories/{territory} [?context={territoryContext}]
        Return information for a single territory code.
     
        Path parameters:
-       territory       : territory context, numeric or alpha code
-
+         territory       : territory to get info for, numeric or alpha code
+    
+       Query parameters:
+         territoryContext: territory context (optional, for disambiguation)
+    
+    GET /mapcode/alphabets [?offset={offset}&count={count}]
+       Return a list of all alphabet codes.
+    
+    GET /mapcode/alphabets/{alphabet}
+       Return information for a specific alphabet.
+    
+       Path parameters:
+         alphabet        : alphabet to get info for, numeric or alpha code
+    
+    General query parameters for methods which return a list of results:
+    
+       offset            : return list from 'offset' (negative value start counting from end)
+       count             : return 'count' items at most
+       
 To build and run the REST API, type:
 
     mvn clean install
     mvn jetty:run           (alternatively, you can use: mvn tomcat7:run)
-    
+
+If you wish to use MongoDB tracing, will need to provide your own local 
+*secret* properties file, called `mapcode-secret.properties`, for example
+in `src/main/resources` which override the following properties:
+
+    MongoDBTrace.writeEnabled = true
+    MongoDBTrace.servers = your-server:27017
+    MongoDBTrace.userName = your-username
+    MongoDBTrace.password = your-password
+ 
+The service will work without this, but will not trace events to the
+database.
+
 Try out if the web services work by entering the following URL in your web browser
 (this should show you a HTML help page):
 

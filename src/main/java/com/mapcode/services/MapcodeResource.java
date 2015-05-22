@@ -49,6 +49,7 @@ public interface MapcodeResource {
     static final String PARAM_LON_DEG = "lon";
     static final String PARAM_PRECISION = "precision";
     static final String PARAM_TERRITORY = "territory";
+    static final String PARAM_ALPHABET = "alphabet";
     static final String PARAM_CONTEXT = "context";
     static final String PARAM_TYPE = "type";
     static final String PARAM_CODE = "mapcode";
@@ -74,6 +75,7 @@ public interface MapcodeResource {
      * @param paramTerritory Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
      *                       If the mapcode cannot be created for the territory, an exception is thrown.
      *                       Range: any valid territory code, alpha or numeric.
+     * @param paramAlphabet  Alphabet. Range: any valid alphabet code, alpha or numeric.
      * @param paramInclude   Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
      *                       Range: {@link ParamInclude}.
      * @param response       One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
@@ -89,6 +91,7 @@ public interface MapcodeResource {
             @PathParam(PARAM_LON_DEG) final double paramLonDeg,
             @QueryParam(PARAM_PRECISION) @DefaultValue("0") final int paramPrecision,
             @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
+            @QueryParam(PARAM_ALPHABET) @Nullable final String paramAlphabet,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull final String paramInclude,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
@@ -103,6 +106,7 @@ public interface MapcodeResource {
      * @param paramTerritory Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
      *                       If the mapcode cannot be created for the territory, an exception is thrown.
      *                       Range: any valid territory code, alpha or numeric.
+     * @param paramAlphabet  Alphabet. Range: any valid alphabet code, alpha or numeric.
      * @param paramInclude   Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
      *                       Range: {@link ParamInclude}.
      * @param response       One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
@@ -119,6 +123,7 @@ public interface MapcodeResource {
             @PathParam(PARAM_TYPE) @Nullable final String paramType,
             @QueryParam(PARAM_PRECISION) @DefaultValue("0") final int paramPrecision,
             @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
+            @QueryParam(PARAM_ALPHABET) @Nullable final String paramAlphabet,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull final String paramInclude,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
@@ -131,9 +136,9 @@ public interface MapcodeResource {
     /**
      * Convert a mapcode into a lat/lon pair.
      *
-     * @param paramCode Mapcode to convert.
-     * @param paramTerritory Specifies a parent territory context for interpretation of the mapcode.
-     *                     Range: any valid parent territory code.
+     * @param paramCode    Mapcode to convert.
+     * @param paramContext Specifies a territory context for interpretation of the mapcode.
+     *                     Range: any valid territory.
      * @param response     Lat/lon. Format: {@link com.mapcode.services.dto.PointDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
@@ -143,7 +148,7 @@ public interface MapcodeResource {
     @Path("coords/{" + PARAM_CODE + '}')
     void convertMapcodeToLatLon(
             @PathParam(PARAM_CODE) @Nonnull final String paramCode,
-            @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
+            @QueryParam(PARAM_CONTEXT) @Nullable final String paramContext,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
     /**
@@ -179,4 +184,37 @@ public interface MapcodeResource {
             @PathParam(PARAM_TERRITORY) @Nonnull final String paramTerritory,
             @QueryParam(PARAM_CONTEXT) @Nullable final String paramContext,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+
+    /**
+     * Get a list of all valid alphabet codes.
+     *
+     * @param offset   Return values from 'offset'. Range: &gt;= 0 counts from start, &lt; 0 counts from end.
+     * @param count    Return 'count' values at most. Range: &gt;= 0.
+     * @param response Alphabet codes and information. Format: {@link com.mapcode.services.dto.AlphabetsDTO}.
+     * @throws ApiException API exception, translated into HTTP status code.
+     */
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("alphabets")
+    void getAlphabets(
+            @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) final int offset,
+            @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) final int count,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+
+    /**
+     * Get info for a specific alphabet.
+     *
+     * @param paramAlphabet Alphabet code. Range: any valid alphabet code, alpha or numeric.
+     * @param response      Territory information. Format: {@link com.mapcode.services.dto.AlphabetDTO}.
+     * @throws ApiException API exception, translated into HTTP status code.
+     */
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("alphabets/{" + PARAM_ALPHABET + '}')
+    void getAlphabet(
+            @PathParam(PARAM_ALPHABET) @Nonnull final String paramAlphabet,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+
 }

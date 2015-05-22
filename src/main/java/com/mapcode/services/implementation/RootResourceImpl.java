@@ -18,7 +18,9 @@ package com.mapcode.services.implementation;
 
 import com.mapcode.services.ApiConstants;
 import com.mapcode.services.RootResource;
+import com.mapcode.services.SystemMetrics;
 import com.mapcode.services.dto.VersionDTO;
+import com.tomtom.speedtools.json.Json;
 import com.tomtom.speedtools.maven.MavenProperties;
 import org.jboss.resteasy.annotations.Suspend;
 import org.jboss.resteasy.spi.AsynchronousResponse;
@@ -43,63 +45,77 @@ public class RootResourceImpl implements RootResource {
 
             "GET /mapcode         Returns this help page.\n" +
             "GET /mapcode/version Returns the software version.\n" +
+            "GET /mapcode/metrics Returns some system metrics (also available from JMX).\n" +
             "GET /mapcode/status  Returns 200 if the service OK.\n\n" +
 
             "GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]\n" +
-            "   [?precision=[0|1|2]&territory={restrictToTerritory}&include={offset|territory}]\n" +
-            "   Convert latitude/longitude to one or more mapcodes.\n\n" +
+            "     [?precision=[0|1|2] & territory={restrictToTerritory} & alphabet={alphabet} & include={offset|territory}]\n\n" +
+            "   Convert latitude/longitude to one or more mapcodes.\n" +
 
             "   Path parameters:\n" +
-            "   lat             : latitude, range [-90, 90]\n" +
-            "   lon             : longitude, range [-180, 180] (mapped if outside range)\n\n" +
+            "     lat             : Latitude, range [-90, 90].\n" +
+            "     lon             : Longitude, range [-180, 180] (mapped if outside range).\n\n" +
 
             "   An additional filter can be specified to limit the results:\n" +
-            "     all           : same as without specifying a filter, returns all mapcodes\n" +
-            "     local         : return the shortest local mapcode\n" +
-            "     international : return the shortest international mapcode\n\n" +
+            "     all             : Same as without specifying a filter, returns all mapcodes.\n" +
+            "     local           : Return the shortest local mapcode.\n" +
+            "     international   : Return the international mapcode.\n\n" +
 
             "   Query parameters:\n" +
-            "   precision       : precision, range [0, 2] (default=0)\n" +
-            "   territory       : territory to restrict results to, numeric or alpha code\n" +
-            "   include         : Multiple options may be set, separated by comma's:\n" +
-            "                     offset    = include offset from mapcode center to lat/lon (in meters)\n" +
-            "                     territory = always include territory in result, also for territory 'AAA'\n\n" +
+            "     precision       : Precision, range [0, 2] (default=0).\n" +
+            "     territory       : Territory to restrict results to, numeric or alpha code.\n" +
+            "     alphabet        : Alphabet to return results in, numeric or alpha code.\n" +
+            "     include         : Multiple options may be set, separated by comma's:\n" +
+            "                         offset    = Include offset from mapcode center to lat/lon (in meters).\n" +
+            "                         territory = Always include territory in result, also for territory 'AAA'.\n\n" +
 
-            "GET /mapcode/coords/{code} [?territory={mapcodeTerritory}]\n" +
-            "   Convert a mapcode into a latitude/longitude pair\n\n" +
+            "GET /mapcode/coords/{code} [?context={territoryContext}]\n" +
+            "   Convert a mapcode into a latitude/longitude pair.\n\n" +
 
             "   Path parameters:\n" +
-            "   code            : mapcode code (local or international)\n" +
+            "     code            : Mapcode code (local or international).\n" +
 
-            "   URL parameters:\n" +
-            "   territory       : mapcode territory, numeric or alpha code\n\n" +
+            "   Query parameters:\n" +
+            "     context         : Optional mapcode territory context, numeric or alpha code.\n\n" +
 
             "GET /mapcode/territories [?offset={offset}&count={count}]\n" +
             "   Return a list of all territories.\n\n" +
-
-            "   Query parameters:\n" +
-            "   offset          : return list from 'offset' (negative value start counting from end)\n" +
-            "   count           : return 'count' items at most\n\n" +
 
             "GET /mapcode/territories/{territory} [?context={territoryContext}]\n" +
             "   Return information for a single territory code.\n\n" +
 
             "   Path parameters:\n" +
-            "   territory       : territory to get info for, numeric or alpha code\n\n" +
+            "     territory       : Territory to get info for, numeric or alpha code.\n\n" +
 
             "   Query parameters:\n" +
-            "   territoryContext: territory context (optional, for disambiguation)\n";
+            "     context         : Territory context (optional, for disambiguation).\n\n" +
 
-    @Nonnull
+            "GET /mapcode/alphabets [?offset={offset}&count={count}]\n" +
+            "   Return a list of all alphabet codes.\n\n" +
+
+            "GET /mapcode/alphabets/{alphabet}\n" +
+            "   Return information for a specific alphabet.\n\n" +
+
+            "   Path parameters:\n" +
+            "     alphabet        : Alphabet to get info for, numeric or alpha code.\n\n" +
+
+            "General query parameters for methods which return a list of results:\n\n" +
+            "   offset            : Return list from 'offset' (negative value start counting from end).\n" +
+            "   count             : Return 'count' items at most.\n";
+
+
     private final MavenProperties mavenProperties;
+    private final SystemMetrics metrics;
 
     @Inject
     public RootResourceImpl(
-            @Nonnull final MavenProperties mavenProperties) {
+            @Nonnull final MavenProperties mavenProperties,
+            @Nonnull final SystemMetrics metrics) {
         assert mavenProperties != null;
 
         // Store the injected values.
         this.mavenProperties = mavenProperties;
+        this.metrics = metrics;
     }
 
     @Override
@@ -131,5 +147,15 @@ public class RootResourceImpl implements RootResource {
         assert response != null;
         LOG.info("getStatus: get status");
         response.setResponse(Response.ok().build());
+    }
+
+    @Override
+    public void getMetrics(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) final AsynchronousResponse response) {
+        assert response != null;
+        LOG.info("getMetrics");
+
+        // No input validation required. Just return metrics as a plain JSON string.
+        final String json = Json.toJson(metrics);
+        response.setResponse(Response.ok(json).build());
     }
 }

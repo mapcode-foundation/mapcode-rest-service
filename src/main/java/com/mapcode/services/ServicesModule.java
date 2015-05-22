@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package com.mapcode.services.deployment;
+package com.mapcode.services;
 
 import com.google.inject.Binder;
-import com.tomtom.speedtools.guice.GuiceConfigurationModule;
-import com.tomtom.speedtools.tracer.LoggingTraceHandler;
-import com.tomtom.speedtools.tracer.TracerFactory;
-import com.tomtom.speedtools.tracer.mongo.MongoDBTraceHandler;
-import com.tomtom.speedtools.tracer.mongo.MongoDBTraceProperties;
-import com.tomtom.speedtools.tracer.mongo.MongoDBTraceStream;
+import com.google.inject.Module;
+import com.google.inject.Provides;
+import com.mapcode.services.implementation.MapcodeResourceImpl;
+import com.mapcode.services.implementation.RootResourceImpl;
+import com.mapcode.services.implementation.SystemMetricsImpl;
+import com.mapcode.services.jmx.SystemMetricsAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.inject.Singleton;
 
 
 /**
@@ -40,31 +41,37 @@ import javax.annotation.Nonnull;
  * <p>
  * The "speedtools.default.properties" is required, but its values may be overridden in other property files.
  */
-public class DeploymentModule extends GuiceConfigurationModule {
-    private static final Logger LOG = LoggerFactory.getLogger(DeploymentModule.class);
-
-    public DeploymentModule() {
-        super(
-                "classpath:speedtools.default.properties",      // Default set required by SpeedTools.
-                "classpath:mapcode.properties",                 // Specific for mapcode service.
-                "classpath:mapcode-secret.properties");         // Secret properties (not in WAR file).
-    }
+public class ServicesModule implements Module {
+    private static final Logger LOG = LoggerFactory.getLogger(ServicesModule.class);
 
     @Override
     public void configure(@Nonnull final Binder binder) {
         assert binder != null;
 
-        super.configure(binder);
+        // Bind APIs to their implementation.
+        binder.bind(RootResource.class).to(RootResourceImpl.class).in(Singleton.class);
+        binder.bind(MapcodeResource.class).to(MapcodeResourceImpl.class).in(Singleton.class);
 
-        // Bind these classes if you wish to use the SpeedTools MongoDB tracing framework.
-        TracerFactory.setEnabled(true);
-        binder.bind(MongoDBTraceProperties.class).asEagerSingleton();
-        binder.bind(MongoDBTraceStream.class);
-        binder.bind(MongoDBTraceHandler.class).asEagerSingleton();
-        binder.bind(LoggingTraceHandler.class).asEagerSingleton();
+        // JMX interface.
+        binder.bind(SystemMetricsImpl.class).in(Singleton.class);
+        binder.bind(SystemMetricsAgent.class).in(Singleton.class);
+    }
 
-        // Bind start-up checking class (example).
-        binder.bind(StartupCheck.class).asEagerSingleton();
+    @Provides
+    @Singleton
+    @Nonnull
+    public SystemMetrics provideSystemMetrics(
+            @Nonnull final SystemMetricsImpl impl) {
+        assert impl != null;
+        return impl;
+    }
+
+    @Provides
+    @Singleton
+    @Nonnull
+    public SystemMetricsCollector provideSystemMetricsCollector(
+            @Nonnull final SystemMetricsImpl impl) {
+        assert impl != null;
+        return impl;
     }
 }
-

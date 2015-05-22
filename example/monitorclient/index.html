@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!--
+    ~ Copyright (C) 2015 Stichting Mapcode Foundation (http://www.mapcode.com)
+    ~
+    ~ Licensed under the Apache License, Version 2.0 (the "License");
+    ~ you may not use this file except in compliance with the License.
+    ~ You may obtain a copy of the License at
+    ~
+    ~    http://www.apache.org/licenses/LICENSE-2.0
+    ~
+    ~ Unless required by applicable law or agreed to in writing, software
+    ~ distributed under the License is distributed on an "AS IS" BASIS,
+    ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    ~ See the License for the specific language governing permissions and
+    ~ limitations under the License.
+-->
+
+<html>
+<head>
+    <title>Mapcode Monitor</title>
+    <link media="screen" rel="stylesheet" href="MapcodeMonitor.css">
+    <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="d3.v2.min.js"></script>
+    <script type="text/javascript" src="jolokia-min.js"></script>
+    <script type="text/javascript" src="jolokia-simple-min.js"></script>
+    <script type="text/javascript" src="cubism.v1.min.js"></script>
+    <script type="text/javascript" src="jolokia-cubism-min.js"></script>
+    <script type="text/javascript" src="MapcodeMonitor.js"></script>
+
+    <script lang="javascript">
+
+    </script>
+</head>
+<body class="prelaunch">
+<div class="page-wrapper">
+    <div class="page">
+        <div class="teaser-wrapper">
+            <div class="teaser-content">
+                <h1>Mapcode System Monitor</h1>
+            </div>
+        </div>
+
+        <div class="tiles-wrapper">
+            <div class="tiles">
+                <h2>System Health</h2>
+                <div class="tile tile-l">
+                    <div class="tile-content">
+                        <div id="warningsAndErrorsSum"></div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>System Usage - Totals</h2>
+            <div class="tile tile-l">
+                <div class="tile-content">
+                    <div id="allMapcodeToLatLonRequestsSum"></div>
+                </div>
+            </div>
+            <div class="tile tile-l">
+                <div class="tile-content">
+                    <div id="validMapcodeToLatLonRequestsSum"></div>
+                </div>
+            </div>
+            <div class="tile tile-l">
+                <div class="tile-content">
+                    <div id="allLatLonToMapcodeRequestsSum"></div>
+                </div>
+            </div>
+            <div class="tile tile-l">
+                <div class="tile-content">
+                    <div id="validLatLonToMapcodeRequestsSum"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-wrapper">
+            <div class="footer">
+                <div id="memoryUsage">Waiting...</div>
+                <div>
+                    Copyright &copy; 2015 Stichting Mapcode Foundation. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script data-main="/static/js/prelaunch.js" src="/static/js/libs/require-jquery.js"></script>
+
+</body>
+</html>

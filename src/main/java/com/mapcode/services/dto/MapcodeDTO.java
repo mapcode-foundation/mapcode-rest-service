@@ -34,8 +34,14 @@ public final class MapcodeDTO extends ApiDTO {
     @Nonnull
     private String mapcode;
 
+    @Nonnull
+    private String mapcodeInAlphabet;
+
     @Nullable
     private String territory;
+
+    @Nullable
+    private String territoryInAlphabet;
 
     @Nullable
     private Double offsetMeters;
@@ -44,17 +50,23 @@ public final class MapcodeDTO extends ApiDTO {
     public void validate() {
         validator().start();
         validator().checkString(true, "mapcode", mapcode, ApiConstants.API_MAPCODE_LEN_MIN, ApiConstants.API_MAPCODE_LEN_MAX);
+        validator().checkString(true, "mapcodeInAlphabet", mapcodeInAlphabet, ApiConstants.API_MAPCODE_LEN_MIN, ApiConstants.API_MAPCODE_LEN_MAX);
         validator().checkString(false, "territory", territory, ApiConstants.API_TERRITORY_LEN_MIN, ApiConstants.API_TERRITORY_LEN_MAX);
+        validator().checkString(false, "territoryInAlphabet", territoryInAlphabet, ApiConstants.API_TERRITORY_LEN_MIN, ApiConstants.API_TERRITORY_LEN_MAX);
         validator().checkDouble(false, "offsetMeters", offsetMeters, -Double.MAX_VALUE, Double.MAX_VALUE, false);
         validator().done();
     }
 
     public MapcodeDTO(
             @Nonnull final String mapcode,
+            @Nonnull final String mapcodeInAlphabet,
             @Nullable final String territory,
+            @Nullable final String territoryInAlphabet,
             @Nullable final Double offsetMeters) {
         this.mapcode = mapcode;
+        this.mapcodeInAlphabet = mapcodeInAlphabet;
         this.territory = territory;
+        this.territoryInAlphabet = territoryInAlphabet;
         this.offsetMeters = offsetMeters;
     }
 
@@ -77,6 +89,18 @@ public final class MapcodeDTO extends ApiDTO {
         this.mapcode = mapcode;
     }
 
+    @Nonnull
+    public String getMapcodeInAlphabet() {
+        beforeGet();
+        return mapcodeInAlphabet;
+    }
+
+    public void setMapcodeInAlphabet(@Nonnull final String mapcodeInAlphabet) {
+        beforeSet();
+        assert mapcodeInAlphabet != null;
+        this.mapcodeInAlphabet = mapcodeInAlphabet;
+    }
+
     @Nullable
     public String getTerritory() {
         beforeGet();
@@ -86,6 +110,17 @@ public final class MapcodeDTO extends ApiDTO {
     public void setTerritory(@Nullable final String territory) {
         beforeSet();
         this.territory = territory;
+    }
+
+    @Nullable
+    public String getTerritoryInAlphabet() {
+        beforeGet();
+        return territoryInAlphabet;
+    }
+
+    public void setTerritoryInAlphabet(@Nullable final String territoryInAlphabet) {
+        beforeSet();
+        this.territoryInAlphabet = territoryInAlphabet;
     }
 
     @Nullable

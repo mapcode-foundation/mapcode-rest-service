@@ -17,6 +17,7 @@
 package com.mapcode.services.deployment;
 
 import com.google.inject.Injector;
+import com.mapcode.services.jmx.SystemMetricsAgent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,6 +67,15 @@ public class StartupCheck {
         check(REQUIRED_ENCODING.equals(Charset.defaultCharset().name()),
                 "The system default encoding must be UTF-8 (add '-Dfile.encoding=UTF-8' the JVM command line)." +
                         " Current value=" + Charset.defaultCharset().name());
+
+        // Start JMX server.
+        final SystemMetricsAgent jmxAgent = injector.getInstance(SystemMetricsAgent.class);
+        try {
+            jmxAgent.register();
+        }
+        catch (Exception e) {
+            check(false, "Could not register the JMX agent: " + e.getMessage());
+        }
 
         LOG.info("Startup: System started succesfully.");
     }
