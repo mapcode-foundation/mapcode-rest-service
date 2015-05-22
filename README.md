@@ -69,7 +69,19 @@ To build and run the REST API, type:
 
     mvn clean install
     mvn jetty:run           (alternatively, you can use: mvn tomcat7:run)
-    
+
+If you wish to use MongoDB tracing, will need to provide your own local 
+*secret* properties file, called `mapcode-secret.properties`, for example
+in `src/main/resources` which override the following properties:
+
+    MongoDBTrace.writeEnabled = true
+    MongoDBTrace.servers = your-server:27017
+    MongoDBTrace.userName = your-username
+    MongoDBTrace.password = your-password
+ 
+The service will work without this, but will not trace events to the
+database.
+
 Try out if the web services work by entering the following URL in your web browser
 (this should show you a HTML help page):
 
