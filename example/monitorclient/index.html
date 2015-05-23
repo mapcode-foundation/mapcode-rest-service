@@ -43,6 +43,7 @@
         <div class="tiles-wrapper">
             <div class="tiles">
                 <h2>System Health</h2>
+
                 <div class="tile tile-l">
                     <div class="tile-content">
                         <div id="warningsAndErrorsSum"></div>
@@ -51,6 +52,7 @@
             </div>
 
             <h2>System Usage - Totals</h2>
+
             <div class="tile tile-l">
                 <div class="tile-content">
                     <div id="allMapcodeToLatLonRequestsSum"></div>
@@ -77,7 +79,20 @@
             <div class="footer">
                 <div id="memoryUsage">Waiting...</div>
                 <div>
-                    Copyright &copy; 2015 Stichting Mapcode Foundation. All rights reserved.
+                    <hr/>
+                </div>
+                <div>
+                    <font color="#DD6666"><strong>
+                        Important: These monitoring statistics represent a <u>single</u>
+                        Mapcode REST API server instance. If the service using multiple servers
+                        behind a load-balancer, these statistics do not represent all servers,
+                        just one of them.
+                    </strong></font>
+                </div>
+                <div>
+                    <font color="#AAAAEE"><strong>
+                        Copyright &copy; 2015 Stichting Mapcode Foundation. All rights reserved.
+                    </strong></font>
                 </div>
             </div>
         </div>
