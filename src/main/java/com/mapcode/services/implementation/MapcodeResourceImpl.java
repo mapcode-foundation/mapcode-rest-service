@@ -136,7 +136,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
         assert response != null;
 
         processor.process("convertLatLonToMapcode", LOG, response, () -> {
-            LOG.debug("convertLatLonToMapcode: lat={}, lon={}, precision={}, type={}, context={}, alphabet={}, include={}",
+            LOG.info("convertLatLonToMapcode: lat={}, lon={}, precision={}, type={}, context={}, alphabet={}, include={}",
                     paramLatDeg, paramLonDeg, paramPrecision, paramType, paramTerritory, paramAlphabet, paramInclude);
             metricsCollector.allLatLonToMapcodeRequests();
 
@@ -293,7 +293,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
         assert response != null;
 
         processor.process("convertMapcodeToLatLon", LOG, response, () -> {
-            LOG.debug("convertMapcodeToLatLon: code={}, territory={}", paramCode, paramContext);
+            LOG.info("convertMapcodeToLatLon: code={}, territory={}", paramCode, paramContext);
             metricsCollector.allMapcodeToLatLonRequests();
 
             // Get the territory from the path (if specified).
@@ -348,7 +348,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
         assert response != null;
 
         processor.process("getTerritories", LOG, response, () -> {
-            LOG.debug("getTerritories");
+            LOG.info("getTerritories");
 
             // Check value of count.
             if (count < 0) {
@@ -380,7 +380,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
         assert response != null;
 
         processor.process("getTerritory", LOG, response, () -> {
-            LOG.debug("getTerritory: territory={}, context={}", paramTerritory, paramContext);
+            LOG.info("getTerritory: territory={}, context={}", paramTerritory, paramContext);
 
             // Get the territory from the URL.
             final Territory territory;
@@ -420,7 +420,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
         assert response != null;
 
         processor.process("getAlphabets", LOG, response, () -> {
-            LOG.debug("getAlphabets");
+            LOG.info("getAlphabets");
 
             // Check value of count.
             if (count < 0) {
@@ -451,7 +451,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
         assert response != null;
 
         processor.process("getAlphabet", LOG, response, () -> {
-            LOG.debug("getAlphabet: alphabet={}", paramAlphabet);
+            LOG.info("getAlphabet: alphabet={}", paramAlphabet);
 
             // Get the territory from the URL.
             final Alphabet alphabet;

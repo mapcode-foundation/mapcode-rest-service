@@ -64,11 +64,16 @@ Available methods:
     
        offset            : return list from 'offset' (negative value start counting from end)
        count             : return 'count' items at most
+
        
+## Building The REST API Service
+
 To build and run the REST API, type:
 
     mvn clean install
     mvn jetty:run           (alternatively, you can use: mvn tomcat7:run)
+
+Or deploy the WAR file (in `target`) on in your Tomcat instance.
 
 If you wish to use MongoDB tracing, will need to provide your own local 
 *secret* properties file, called `mapcode-secret.properties`, for example
@@ -82,19 +87,35 @@ in `src/main/resources` which override the following properties:
 The service will work without this, but will not trace events to the
 database.
 
-Try out if the web services work by entering the following URL in your web browser
-(this should show you a HTML help page):
-
-    http://localhost:8080/mapcode
-    
-Or use a tool like cURL:
-    
-    curl -X GET http://localhost:8080/mapcode
-    
-
-There's also an example HTML page in the examples/index.html for HTML/Javascript developers. 
-
 The source uses Java JDK 1.8, so make sure your Java compiler is set to 1.8, for example
 using something like (MacOSX):
 
     export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
+
+
+## Smoke Testing The REST API
+
+Try out if the web services work by entering the following URL in your web browser
+(this should show you a HTML help page):
+
+    http://localhost:8080/mapcode
+    http://localhost:8080/mapcode/codes/50,5
+    
+Or use a tool like cURL:
+    
+    curl -X GET http://localhost:8080/mapcode
+    curl -X GET http://localhost:8080/mapcode/codes/50,5
+    
+
+There's also an example HTML page in the `examples/index.html` for HTML/Javascript developers. 
+
+
+## Release Notes
+
+* 1.50.1
+
+    Bug fix for state IN-DD (in India).
+    
+* 1.50.0
+
+    First release of the REST API, based on the Mapcode Java library, version 1.50.0.

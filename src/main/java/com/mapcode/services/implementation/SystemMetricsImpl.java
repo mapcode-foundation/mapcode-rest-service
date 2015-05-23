@@ -22,9 +22,8 @@ import com.tomtom.speedtools.metrics.MultiMetricsCollector;
 import com.tomtom.speedtools.metrics.MultiMetricsData;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -36,8 +35,6 @@ import java.util.EnumMap;
  * possible. It does, however, use the ActorSystem to provide it with a periodic timer event to store its data.
  */
 public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector {
-    private static final Logger LOG = LoggerFactory.getLogger(SystemMetricsImpl.class);
-
     private final MultiMetricsCollector allMapcodeToLatLonRequests = MultiMetricsCollector.all();
     private final MultiMetricsCollector validMapcodeToLatLonRequests = MultiMetricsCollector.all();
     private final MultiMetricsCollector allLatLonToMapcodeRequests = MultiMetricsCollector.all();
@@ -58,7 +55,7 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
     public SystemMetricsImpl() {
 
         // Listen for log errors and warnings.
-        org.apache.log4j.Logger.getRootLogger().addAppender(new Log4jAppender());
+        Logger.getRootLogger().addAppender(new Log4jAppender());
     }
 
     /**
@@ -66,10 +63,10 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
      */
     private class Log4jAppender extends AppenderSkeleton {
         @Override
-        protected void append(@Nonnull final LoggingEvent event) {
-            if (event.getLevel().equals(Level.WARN) ||
-                    event.getLevel().equals(Level.ERROR) ||
-                    event.getLevel().equals(Level.FATAL)) {
+        protected void append(@Nonnull final LoggingEvent loggingEvent) {
+            if (loggingEvent.getLevel().equals(Level.WARN) ||
+                    loggingEvent.getLevel().equals(Level.ERROR) ||
+                    loggingEvent.getLevel().equals(Level.FATAL)) {
                 // Increase counter first, then log - on the off chance that another errors occurs...
                 warningsAndErrors.addValue(1);
             } else {
