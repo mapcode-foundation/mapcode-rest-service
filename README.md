@@ -2,8 +2,10 @@
  
 Copyright (C) 2014-2015 Stichting Mapcode Foundation (http://www.mapcode.com)
 
-This application provide a REST API for mapcodes. 
-Available methods:
+This application provides a REST API for mapcodes. It uses the Java Library for Mapcodes
+extensively.
+
+The available REST API methods are:
     
     MAPCODE API
     -----------
