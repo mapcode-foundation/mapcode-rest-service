@@ -96,6 +96,9 @@ in `src/main/resources` which override the following properties:
 The service will work without this, but will not trace events to the
 database.
 
+
+## Using Java 8 on MacOSX
+
 The source uses Java JDK 1.8, so make sure your Java compiler is set to 1.8, for example
 using something like (MacOSX):
 
