@@ -7,9 +7,6 @@ extensively.
 
 The available REST API methods are:
     
-    MAPCODE API
-    -----------
-    
     GET /mapcode         Returns this help page.
     GET /mapcode/version Returns the software version.
     GET /mapcode/metrics Returns some system metrics (also available from JMX).
