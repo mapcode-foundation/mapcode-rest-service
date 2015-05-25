@@ -53,8 +53,8 @@ public class RootResourceImpl implements RootResource {
             "   Convert latitude/longitude to one or more mapcodes.\n" +
 
             "   Path parameters:\n" +
-            "     lat             : Latitude, range [-90, 90].\n" +
-            "     lon             : Longitude, range [-180, 180] (mapped if outside range).\n\n" +
+            "     lat             : Latitude, range [-90, 90] (automatically limited to this range).\n" +
+            "     lon             : Longitude, range [-180, 180] (automatically wrapped to this range).\n\n" +
 
             "   An additional filter can be specified to limit the results:\n" +
             "     all             : Same as without specifying a filter, returns all mapcodes.\n" +
@@ -64,11 +64,16 @@ public class RootResourceImpl implements RootResource {
             "   Query parameters:\n" +
             "     precision       : Precision, range [0, 2] (default=0).\n" +
             "     territory       : Territory to restrict results to, numeric or alpha code.\n" +
-            "     alphabet        : Alphabet to return results in, numeric or alpha code.\n" +
+            "     alphabet        : Alphabet to return results in, numeric or alpha code.\n\n" +
+
             "     include         : Multiple options may be set, separated by comma's:\n" +
             "                         offset    = Include offset from mapcode center to lat/lon (in meters).\n" +
             "                         territory = Always include territory in result, also for territory 'AAA'.\n" +
             "                         alphabet  = Always the mapcodeInAlphabet, also if same as mapcode.\n\n" +
+
+            "                       Note that you can use 'include=territory,alphabet' to ensure the territory code\n" +
+            "                       is always present, as well as the translated territory and mapcode codes.\n" +
+            "                       This can make processing the records easier in scripts, for example.\n\n" +
 
             "GET /mapcode/coords/{code} [?context={territoryContext}]\n" +
             "   Convert a mapcode into a latitude/longitude pair.\n\n" +
