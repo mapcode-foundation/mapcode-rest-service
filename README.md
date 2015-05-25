@@ -82,6 +82,7 @@ in `src/main/resources` which override the following properties:
 
     MongoDBTrace.writeEnabled = true
     MongoDBTrace.servers = your-server:27017
+    MongoDBTrace.database = your-database
     MongoDBTrace.userName = your-username
     MongoDBTrace.password = your-password
  
