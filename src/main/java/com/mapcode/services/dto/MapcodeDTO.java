@@ -34,7 +34,7 @@ public final class MapcodeDTO extends ApiDTO {
     @Nonnull
     private String mapcode;
 
-    @Nonnull
+    @Nullable
     private String mapcodeInAlphabet;
 
     @Nullable
@@ -50,7 +50,7 @@ public final class MapcodeDTO extends ApiDTO {
     public void validate() {
         validator().start();
         validator().checkString(true, "mapcode", mapcode, ApiConstants.API_MAPCODE_LEN_MIN, ApiConstants.API_MAPCODE_LEN_MAX);
-        validator().checkString(true, "mapcodeInAlphabet", mapcodeInAlphabet, ApiConstants.API_MAPCODE_LEN_MIN, ApiConstants.API_MAPCODE_LEN_MAX);
+        validator().checkString(false, "mapcodeInAlphabet", mapcodeInAlphabet, ApiConstants.API_MAPCODE_LEN_MIN, ApiConstants.API_MAPCODE_LEN_MAX);
         validator().checkString(false, "territory", territory, ApiConstants.API_TERRITORY_LEN_MIN, ApiConstants.API_TERRITORY_LEN_MAX);
         validator().checkString(false, "territoryInAlphabet", territoryInAlphabet, ApiConstants.API_TERRITORY_LEN_MIN, ApiConstants.API_TERRITORY_LEN_MAX);
         validator().checkDouble(false, "offsetMeters", offsetMeters, -Double.MAX_VALUE, Double.MAX_VALUE, false);
@@ -59,7 +59,7 @@ public final class MapcodeDTO extends ApiDTO {
 
     public MapcodeDTO(
             @Nonnull final String mapcode,
-            @Nonnull final String mapcodeInAlphabet,
+            @Nullable final String mapcodeInAlphabet,
             @Nullable final String territory,
             @Nullable final String territoryInAlphabet,
             @Nullable final Double offsetMeters) {
@@ -89,15 +89,14 @@ public final class MapcodeDTO extends ApiDTO {
         this.mapcode = mapcode;
     }
 
-    @Nonnull
+    @Nullable
     public String getMapcodeInAlphabet() {
         beforeGet();
         return mapcodeInAlphabet;
     }
 
-    public void setMapcodeInAlphabet(@Nonnull final String mapcodeInAlphabet) {
+    public void setMapcodeInAlphabet(@Nullable final String mapcodeInAlphabet) {
         beforeSet();
-        assert mapcodeInAlphabet != null;
         this.mapcodeInAlphabet = mapcodeInAlphabet;
     }
 

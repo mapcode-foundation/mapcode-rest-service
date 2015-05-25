@@ -13,21 +13,21 @@ public interface SystemMetricsCollector {
      * Called whenever ANY mapcode to lat/lon request is made. The request may fail because
      * the parameters may be invalid though.
      */
-    public void allMapcodeToLatLonRequests();
+    public void addOneMapcodeToLatLonRequest();
 
     /**
      * Called whenever a successful mapcode to lat/lon request is made.
      */
-    public void validMapcodeToLatLonRequests();
+    public void addOneValidMapcodeToLatLonRequest();
 
     /**
      * Called whenever ANY lat/lon to mapcode request is made. The request may fail because
      * the parameters may be invalid though.
      */
-    public void allLatLonToMapcodeRequests();
+    public void addOneLatLonToMapcodeRequest();
 
     /**
      * Called whenever a successful lat/lon to mapcode request is made.
      */
-    public void validLatLonToMapcodeRequests();
+    public void addOneValidLatLonToMapcodeRequest();
 }

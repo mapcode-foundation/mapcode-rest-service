@@ -49,7 +49,7 @@ public class RootResourceImpl implements RootResource {
             "GET /mapcode/status  Returns 200 if the service OK.\n\n" +
 
             "GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]\n" +
-            "     [?precision=[0|1|2] & territory={restrictToTerritory} & alphabet={alphabet} & include={offset|territory}]\n\n" +
+            "     [?precision=[0|1|2] & territory={restrictToTerritory} & alphabet={alphabet} & include={offset|territory|alphabet}]\n\n" +
             "   Convert latitude/longitude to one or more mapcodes.\n" +
 
             "   Path parameters:\n" +
@@ -67,7 +67,8 @@ public class RootResourceImpl implements RootResource {
             "     alphabet        : Alphabet to return results in, numeric or alpha code.\n" +
             "     include         : Multiple options may be set, separated by comma's:\n" +
             "                         offset    = Include offset from mapcode center to lat/lon (in meters).\n" +
-            "                         territory = Always include territory in result, also for territory 'AAA'.\n\n" +
+            "                         territory = Always include territory in result, also for territory 'AAA'.\n" +
+            "                         alphabet  = Always the mapcodeInAlphabet, also if same as mapcode.\n\n" +
 
             "GET /mapcode/coords/{code} [?context={territoryContext}]\n" +
             "   Convert a mapcode into a latitude/longitude pair.\n\n" +

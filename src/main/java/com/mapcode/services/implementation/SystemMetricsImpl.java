@@ -94,7 +94,7 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
 
     @Nonnull
     @Override
-    public MultiMetricsData getAllMapcodeToLatLonRequests() {
+    public MultiMetricsData getTotalMapcodeToLatLonRequests() {
         return allMapcodeToLatLonRequests;
     }
 
@@ -106,7 +106,7 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
 
     @Nonnull
     @Override
-    public MultiMetricsData getAllLatLonToMapcodeRequests() {
+    public MultiMetricsData getTotalLatLonToMapcodeRequests() {
         return allLatLonToMapcodeRequests;
     }
 
@@ -123,22 +123,22 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
     }
 
     @Override
-    public void allMapcodeToLatLonRequests() {
+    public void addOneMapcodeToLatLonRequest() {
         allMapcodeToLatLonRequests.addValue(1);
     }
 
     @Override
-    public void validMapcodeToLatLonRequests() {
+    public void addOneValidMapcodeToLatLonRequest() {
         validMapcodeToLatLonRequests.addValue(1);
     }
 
     @Override
-    public void allLatLonToMapcodeRequests() {
+    public void addOneLatLonToMapcodeRequest() {
         allLatLonToMapcodeRequests.addValue(1);
     }
 
     @Override
-    public void validLatLonToMapcodeRequests() {
+    public void addOneValidLatLonToMapcodeRequest() {
         validLatLonToMapcodeRequests.addValue(1);
     }
 }
