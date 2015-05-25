@@ -39,7 +39,8 @@ public interface MapcodeResource {
 
     enum ParamInclude {
         OFFSET,             // Includes offset (in meters) from center of mapcode to originally specified lat/lon.
-        TERRITORY           // Force including the territory, even when the territory code is "AAA".
+        TERRITORY,          // Force including the territory, even when the territory code is "AAA".
+        ALPHABET            // Force including the mapcodeInAlphabet attribute, even if it is the same as the mapcode.
     }
 
     /**

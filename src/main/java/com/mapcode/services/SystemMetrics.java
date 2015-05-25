@@ -55,7 +55,7 @@ public interface SystemMetrics {
      * @return The total number of requests for mapcode to lat/lon.
      */
     @Nonnull
-    MultiMetricsData getAllMapcodeToLatLonRequests();
+    MultiMetricsData getTotalMapcodeToLatLonRequests();
 
     /**
      * @return The number of valid requests for mapcode to lat/lon.
@@ -67,7 +67,7 @@ public interface SystemMetrics {
      * @return The total number of requests for lat/lon to mapcode.
      */
     @Nonnull
-    MultiMetricsData getAllLatLonToMapcodeRequests();
+    MultiMetricsData getTotalLatLonToMapcodeRequests();
 
     /**
      * @return The number of valid requests for lat/lon to mapcode.

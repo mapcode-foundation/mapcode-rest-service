@@ -11,7 +11,7 @@ Available methods:
     GET /mapcode/status  Returns 200 if the service OK.
     
     GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]
-         [?precision=[0|1|2] & territory={restrictToTerritory} & alphabet={alphabet} & include={offset|territory}]
+         [?precision=[0|1|2] & territory={restrictToTerritory} & alphabet={alphabet} & include={offset|territory|alphabet}]
     
        Convert latitude/longitude to one or more mapcodes.
        Path parameters:
@@ -30,6 +30,7 @@ Available methods:
          include         : Multiple options may be set, separated by comma's:
                            offset    = include offset from mapcode center to lat/lon (in meters)
                            territory = always include territory in result, also for territory 'AAA'
+                           alphabet  = always include mapcodeInAlphabet, even if the same as mapcode
     
     GET /mapcode/coords/{code} [?territory={mapcodeTerritory}]
        Convert a mapcode into a latitude/longitude pair
@@ -112,7 +113,12 @@ There's also an example HTML page in the `examples/index.html` for HTML/Javascri
 
 ## Release Notes
 
-* 1.50.1
+* 1.50.1.3
+
+    Added "?include=alphabet" option to always include mapcodeInAlphabet or territoryInAlphabet even if the same
+    as the original (default is now these are only output if different).
+    
+* 1.50.1.0 - 1.50.1.2
 
     Bug fix for state IN-DD (in India).
     

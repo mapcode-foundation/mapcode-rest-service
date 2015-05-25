@@ -77,9 +77,9 @@ $(document).ready(function () {
             metric(metricName, "lastMonth/" + pathPostfix, "Last Month")]);
     }
 
-    stdgraph("#allMapcodeToLatLonRequestsSum", "Total requests: mapcode > coord", "AllMapcodeToLatLonRequests", "sum");
+    stdgraph("#totalMapcodeToLatLonRequestsSum", "Total requests: mapcode > coord", "TotalMapcodeToLatLonRequests", "sum");
     stdgraph("#validMapcodeToLatLonRequestsSum", "Valid requests: mapcode > coord", "ValidMapcodeToLatLonRequests", "sum");
-    stdgraph("#allLatLonToMapcodeRequestsSum", "Total requests: coord > mapcode", "AllLatLonToMapcodeRequests", "sum");
+    stdgraph("#totalLatLonToMapcodeRequestsSum", "Total requests: coord > mapcode", "TotalLatLonToMapcodeRequests", "sum");
     stdgraph("#validLatLonToMapcodeRequestsSum", "Valid requests: coord > mapcode", "ValidLatLonToMapcodeRequests", "sum");
     stdgraph("#warningsAndErrorsSum", "Warnings and Errors", "WarningsAndErrors", "sum");
 
