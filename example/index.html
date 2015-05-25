@@ -134,7 +134,7 @@ pressing the conversion/request buttons.
         var alphabet = document.getElementById("alphabetEncode").value;
         var lat = document.getElementById("lat").value;
         var lon = document.getElementById("lon").value;
-        var url = apiBaseURL + "/codes/" + lat + "," + lon + "?include=territory" +
+        var url = apiBaseURL + "/codes/" + lat + "," + lon + "?include=territory,alphabet" +
                 ((territory && (territory.length != 0)) ? "&territory=" + territory : "") +
                 ((precision && (precision.length != 0)) ? "&precision=" + precision : "") +
                 ((alphabet && (alphabet.length != 0)) ? "&alphabet=" + alphabet : "");
