@@ -19,7 +19,7 @@ package com.mapcode.services.implementation;
 import akka.dispatch.Futures;
 import com.google.common.base.Joiner;
 import com.mapcode.*;
-import com.mapcode.Territory.NameFormat;
+import com.mapcode.Territory.AlphaFormat;
 import com.mapcode.services.ApiConstants;
 import com.mapcode.services.MapcodeResource;
 import com.mapcode.services.SystemMetricsCollector;
@@ -72,8 +72,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 final Territory parentTerritory = x.getParentTerritory();
                 return new TerritoryDTO(
                         x.toString(),
-                        x.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
-                        x.toNameFormat(NameFormat.MINIMAL),
+                        x.toAlpha(AlphaFormat.MINIMAL_UNAMBIGUOUS),
+                        x.toAlpha(AlphaFormat.MINIMAL),
                         x.getCode(),
                         x.getFullName(),
                         (parentTerritory == null) ? null : parentTerritory.toString(),
@@ -403,8 +403,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final Territory parentTerritory = territory.getParentTerritory();
             final TerritoryDTO result = new TerritoryDTO(
                     territory.toString(),
-                    territory.toNameFormat(NameFormat.MINIMAL_UNAMBIGUOUS),
-                    territory.toNameFormat(NameFormat.MINIMAL),
+                    territory.toAlpha(AlphaFormat.MINIMAL_UNAMBIGUOUS),
+                    territory.toAlpha(AlphaFormat.MINIMAL),
                     territory.getCode(),
                     territory.getFullName(),
                     (parentTerritory == null) ? null : parentTerritory.toString(),
