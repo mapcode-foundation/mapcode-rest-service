@@ -124,6 +124,10 @@ There's also an example HTML page in the `examples/index.html` for HTML/Javascri
 
 ## Release Notes
 
+* 1.50.2.0 - 1.50.2.1
+
+    Updated Java library for Mapcode.
+    
 * 1.50.1.3
 
     Added "?include=alphabet" option to always include mapcodeInAlphabet or territoryInAlphabet even if the same
