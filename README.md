@@ -124,6 +124,19 @@ There's also an example HTML page in the `examples/index.html` for HTML/Javascri
 
 ## Release Notes
 
+* 1.50.3.0
+
+    Changed property names in REST API for territories: `code` is renamed to `number`, `name` is renamed to `alphaCode`.
+    
+    The decode service now only returns local mapcode if all local mapcodes are within the same territory.
+    
+    The decode service produces a 404 if you ask for a local code exists and none exists, or multiple exist in
+    different territories.
+
+* 1.50.2.0 - 1.50.2.1
+
+    Updated Java library for Mapcode.
+    
 * 1.50.1.3
 
     Added "?include=alphabet" option to always include mapcodeInAlphabet or territoryInAlphabet even if the same

@@ -63,7 +63,7 @@ pressing the conversion/request buttons.
 <script type="text/javascript">
 
     /* This is the base URL of the mapcode REST API. */
-    var apiBaseURL = "http://api.mapcode.com/mapcode";
+    var apiBaseURL = "http://mapcode.elasticbeanstalk.com/mapcode";
 
     // For local testing, use:
     // var apiBaseURL = "http://localhost:8080/mapcode";
@@ -98,7 +98,7 @@ pressing the conversion/request buttons.
     }
 
     function createTerritoryLine(territory) {
-        var line = "<b>" + territory.name + "</b> (" + territory.code + ") - <u>" + territory.fullName + "</u>";
+        var line = "<b>" + territory.alphaCode + "</b> (" + territory.number + ") - <u>" + territory.fullName + "</u>";
         if (territory.fullNameAliases) {
             for (j = 0; j < territory.fullNameAliases.length; j++) {
                 line += ", " + territory.fullNameAliases[j];
@@ -114,7 +114,7 @@ pressing the conversion/request buttons.
     }
 
     function createAlphabetLine(alphabet) {
-        return "<b>" + alphabet.name + "</b> (" + alphabet.code + ")</u>";
+        return "<b>" + alphabet.name + "</b> (" + alphabet.number + ")</u>";
     }
 </script>
 

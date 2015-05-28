@@ -31,7 +31,7 @@ import java.util.List;
 @JsonInclude(Include.NON_EMPTY)
 public final class MapcodesDTO extends ApiDTO {
 
-    @Nonnull
+    @Nullable
     private MapcodeDTO local;
 
     @Nonnull
@@ -43,13 +43,13 @@ public final class MapcodesDTO extends ApiDTO {
     @Override
     public void validate() {
         validator().start();
-        validator().checkNotNullAndValidate(true, "local", local);
+        validator().checkNotNullAndValidate(false, "local", local);
         validator().checkNotNullAndValidate(true, "international", international);
         validator().checkNotNullAndValidateAll(true, "mapcodes", mapcodes);
         validator().done();
     }
 
-    public MapcodesDTO(@Nonnull final MapcodeDTO local, @Nonnull final MapcodeDTO international, @Nonnull final List<MapcodeDTO> mapcodes) {
+    public MapcodesDTO(@Nullable final MapcodeDTO local, @Nonnull final MapcodeDTO international, @Nonnull final List<MapcodeDTO> mapcodes) {
         this.local = local;
         this.international = international;
         this.mapcodes = mapcodes;
@@ -62,7 +62,7 @@ public final class MapcodesDTO extends ApiDTO {
         super();
     }
 
-    @Nonnull
+    @Nullable
     public MapcodeDTO getLocal() {
         beforeGet();
         return local;
@@ -80,9 +80,8 @@ public final class MapcodesDTO extends ApiDTO {
         return mapcodes;
     }
 
-    public void setLocal(@Nonnull final MapcodeDTO local) {
+    public void setLocal(@Nullable final MapcodeDTO local) {
         beforeSet();
-        assert local != null;
         this.local = local;
     }
 

@@ -33,16 +33,16 @@ import javax.annotation.Nullable;
 public final class TerritoryDTO extends ApiDTO {
 
     @Nonnull
-    private String name;
+    private String alphaCode;
 
     @Nonnull
-    private String nameMinimalUnambiguous;
+    private String alphaCodeMinimalUnambiguous;
 
     @Nonnull
-    private String nameMinimal;
+    private String alphaCodeMinimal;
 
     @Nonnull
-    private Integer code;
+    private Integer number;
 
     @Nonnull
     private String fullName;
@@ -59,10 +59,10 @@ public final class TerritoryDTO extends ApiDTO {
     @Override
     public void validate() {
         validator().start();
-        validator().checkNotNull(true, "name", name);
-        validator().checkNotNull(true, "nameMinimalUnambiguous", nameMinimalUnambiguous);
-        validator().checkNotNull(true, "nameMinimal", nameMinimal);
-        validator().checkInteger(true, "code", code, 0, Territory.values().length - 1);
+        validator().checkNotNull(true, "alphaCode", alphaCode);
+        validator().checkNotNull(true, "alphaCodeMinimalUnambiguous", alphaCodeMinimalUnambiguous);
+        validator().checkNotNull(true, "alphaCodeMinimal", alphaCodeMinimal);
+        validator().checkInteger(true, "number", number, 0, Territory.values().length - 1);
         validator().checkString(true, "fullName", fullName, ApiConstants.API_NAME_LEN_MIN, ApiConstants.API_NAME_LEN_MAX);
         validator().checkString(false, "parentTerritory", parentTerritory, ApiConstants.API_NAME_LEN_MIN, ApiConstants.API_NAME_LEN_MAX);
         validator().checkNotNull(false, "aliases", aliases);
@@ -70,18 +70,18 @@ public final class TerritoryDTO extends ApiDTO {
         validator().done();
     }
 
-    public TerritoryDTO(@Nonnull final String name,
-                        @Nonnull final String nameMinimalUnambiguous,
-                        @Nonnull final String nameMinimal,
-                        @Nonnull final Integer code,
+    public TerritoryDTO(@Nonnull final String alphaCode,
+                        @Nonnull final String alphaCodeMinimalUnambiguous,
+                        @Nonnull final String alphaCodeMinimal,
+                        @Nonnull final Integer number,
                         @Nonnull final String fullName,
                         @Nullable final String parentTerritory,
                         @Nonnull final String[] aliases,
                         @Nonnull final String[] fullNameAliases) {
-        this.name = name;
-        this.nameMinimalUnambiguous = nameMinimalUnambiguous;
-        this.nameMinimal = nameMinimal;
-        this.code = code;
+        this.alphaCode = alphaCode;
+        this.alphaCodeMinimalUnambiguous = alphaCodeMinimalUnambiguous;
+        this.alphaCodeMinimal = alphaCodeMinimal;
+        this.number = number;
         this.fullName = fullName;
         this.parentTerritory = parentTerritory;
         this.aliases = aliases;
@@ -96,51 +96,51 @@ public final class TerritoryDTO extends ApiDTO {
     }
 
     @Nonnull
-    public String getName() {
+    public String getAlphaCode() {
         beforeGet();
-        return name;
+        return alphaCode;
     }
 
-    public void setName(@Nonnull final String name) {
+    public void setAlphaCode(@Nonnull final String alphaCode) {
         beforeSet();
-        assert name != null;
-        this.name = name;
+        assert alphaCode != null;
+        this.alphaCode = alphaCode;
     }
 
     @Nonnull
-    public String getNameMinimalUnambiguous() {
+    public String getAlphaCodeMinimalUnambiguous() {
         beforeGet();
-        return nameMinimalUnambiguous;
+        return alphaCodeMinimalUnambiguous;
     }
 
-    public void setNameMinimalUnambiguous(@Nonnull final String nameMinimalUnambiguous) {
+    public void setAlphaCodeMinimalUnambiguous(@Nonnull final String alphaCodeMinimalUnambiguous) {
         beforeSet();
-        assert nameMinimalUnambiguous != null;
-        this.nameMinimalUnambiguous = nameMinimalUnambiguous;
+        assert alphaCodeMinimalUnambiguous != null;
+        this.alphaCodeMinimalUnambiguous = alphaCodeMinimalUnambiguous;
     }
 
     @Nonnull
-    public String getNameMinimal() {
+    public String getAlphaCodeMinimal() {
         beforeGet();
-        return nameMinimal;
+        return alphaCodeMinimal;
     }
 
-    public void setNameMinimal(@Nonnull final String nameMinimal) {
+    public void setAlphaCodeMinimal(@Nonnull final String alphaCodeMinimal) {
         beforeSet();
-        assert nameMinimal != null;
-        this.nameMinimal = nameMinimal;
+        assert alphaCodeMinimal != null;
+        this.alphaCodeMinimal = alphaCodeMinimal;
     }
 
     @Nonnull
-    public Integer getCode() {
+    public Integer getNumber() {
         beforeGet();
-        return code;
+        return number;
     }
 
-    public void setCode(@Nonnull final Integer code) {
+    public void setNumber(@Nonnull final Integer number) {
         beforeSet();
-        assert code != null;
-        this.code = code;
+        assert number != null;
+        this.number = number;
     }
 
     @Nonnull

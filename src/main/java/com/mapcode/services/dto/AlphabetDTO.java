@@ -35,20 +35,20 @@ public final class AlphabetDTO extends ApiDTO {
     private String name;
 
     @Nonnull
-    private Integer code;
+    private Integer number;
 
     @Override
     public void validate() {
         validator().start();
         validator().checkNotNull(true, "name", name);
-        validator().checkInteger(true, "code", code, 0, Alphabet.values().length - 1);
+        validator().checkInteger(true, "numer", number, 0, Alphabet.values().length - 1);
         validator().done();
     }
 
     public AlphabetDTO(@Nonnull final String name,
-                       @Nonnull final Integer code) {
+                       @Nonnull final Integer number) {
         this.name = name;
-        this.code = code;
+        this.number = number;
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -71,15 +71,15 @@ public final class AlphabetDTO extends ApiDTO {
     }
 
     @Nonnull
-    public Integer getCode() {
+    public Integer getNumber() {
         beforeGet();
-        return code;
+        return number;
     }
 
-    public void setCode(@Nonnull final Integer code) {
+    public void setNumber(@Nonnull final Integer number) {
         beforeSet();
-        assert code != null;
-        this.code = code;
+        assert number != null;
+        this.number = number;
     }
 
     @Override

@@ -19,7 +19,7 @@ package com.mapcode.services.implementation;
 import akka.dispatch.Futures;
 import com.google.common.base.Joiner;
 import com.mapcode.*;
-import com.mapcode.Territory.AlphaFormat;
+import com.mapcode.Territory.AlphaCodeFormat;
 import com.mapcode.services.ApiConstants;
 import com.mapcode.services.MapcodeResource;
 import com.mapcode.services.SystemMetricsCollector;
@@ -59,9 +59,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
     private final SystemMetricsCollector metricsCollector;
 
     private static final String API_ERROR_VALID_TERRITORY_CODES = Joiner.on('|').join(Arrays.asList(Territory.values()).stream().
-            map(x -> (x.toString() + '(' + x.getCode() + ')')).collect(Collectors.toList()));
+            map(x -> (x.toString() + '(' + x.getNumber() + ')')).collect(Collectors.toList()));
     private static final String API_ERROR_VALID_ALPHABET_CODES = Joiner.on('|').join(Arrays.asList(Alphabet.values()).stream().
-            map(x -> (x.toString() + '(' + x.getCode() + ')')).collect(Collectors.toList()));
+            map(x -> (x.toString() + '(' + x.getNumber() + ')')).collect(Collectors.toList()));
     private static final String API_ERROR_VALID_TYPES = Joiner.on('|').join(Arrays.asList(ParamType.values()).stream().
             map(x -> x).collect(Collectors.toList()));
     private static final String API_ERROR_VALID_INCLUDES = Joiner.on('|').join(Arrays.asList(ParamInclude.values()).stream().
@@ -72,9 +72,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 final Territory parentTerritory = x.getParentTerritory();
                 return new TerritoryDTO(
                         x.toString(),
-                        x.toAlpha(AlphaFormat.MINIMAL_UNAMBIGUOUS),
-                        x.toAlpha(AlphaFormat.MINIMAL),
-                        x.getCode(),
+                        x.toAlphaCode(AlphaCodeFormat.MINIMAL_UNAMBIGUOUS),
+                        x.toAlphaCode(AlphaCodeFormat.MINIMAL),
+                        x.getNumber(),
                         x.getFullName(),
                         (parentTerritory == null) ? null : parentTerritory.toString(),
                         x.getAliases(),
@@ -82,7 +82,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }).
             collect(Collectors.toList());
     private static final List<AlphabetDTO> ALL_ALPHABET_DTO = Arrays.asList(Alphabet.values()).stream().
-            map(x -> new AlphabetDTO(x.name(), x.getCode())).
+            map(x -> new AlphabetDTO(x.name(), x.getNumber())).
             collect(Collectors.toList());
 
 
@@ -157,7 +157,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
 
             // Get the territory.
-            final Territory territory;
+            @Nullable final Territory territory;
             try {
                 territory = (paramTerritory != null) ?
                         resolveTerritory(StringEscapeUtils.unescapeHtml4(paramTerritory), null) : null;
@@ -216,16 +216,40 @@ public class MapcodeResourceImpl implements MapcodeResource {
                  * this implementation is good enough for now (and pretty straightforward).
                  */
 
-                // Get the shortest local mapcode.
-                final Mapcode mapcodeLocal;
-                mapcodeLocal = MapcodeCodec.encodeToShortest(latDeg, lonDeg, territory);
+                // Get all mapcodes.
+                final List<Mapcode> mapcodesAll;
+                mapcodesAll = MapcodeCodec.encode(latDeg, lonDeg, territory);
 
                 // Get the international mapcode.
                 final Mapcode mapcodeInternational = MapcodeCodec.encodeToInternational(latDeg, lonDeg);
 
-                // Get all mapcodes.
-                final List<Mapcode> mapcodesAll;
-                mapcodesAll = MapcodeCodec.encode(latDeg, lonDeg, territory);
+                // Get the shortest local mapcode.
+                boolean reasonMultipleTerritories = false;
+                Mapcode mapcodeLocal = null;
+                if (territory != null) {
+
+                    // A territory was provided, so simply use first.
+                    mapcodeLocal = MapcodeCodec.encodeToShortest(latDeg, lonDeg, territory);
+                } else {
+                    Territory localTerritory = null;
+                    for (final Mapcode mapcode : mapcodesAll) {
+                        if (mapcode.getTerritory() != Territory.AAA) {
+                            if (localTerritory == null) {
+
+                                // First local territory found. Use a local mapcode, unless another territory is found/
+                                localTerritory = mapcode.getTerritory();
+                                mapcodeLocal = mapcode;
+                            } else {
+                                if (localTerritory != mapcode.getTerritory()) {
+                                    // Found another local territory; reset local mapcode.
+                                    mapcodeLocal = null;
+                                    reasonMultipleTerritories = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
 
                 // Create result body, which is an ApiDTO. The exact type of DTO is still to be determined below.
                 final ApiDTO result;
@@ -233,8 +257,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
                     // No type was supplied, so we need to return the local, international and all mapcodes.
                     result = new MapcodesDTO(
-                            getMapcodeDTO(mapcodeLocal, precision, alphabet, includeOffset, includeTerritory, includeAlphabet,
-                                    latDeg, lonDeg),
+                            (mapcodeLocal == null) ? null :
+                                    getMapcodeDTO(mapcodeLocal, precision, alphabet, includeOffset, includeTerritory, includeAlphabet,
+                                            latDeg, lonDeg),
                             getMapcodeDTO(mapcodeInternational, precision, alphabet, includeOffset, includeTerritory, includeAlphabet,
                                     latDeg, lonDeg),
                             mapcodesAll.stream().
@@ -246,6 +271,12 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     // Return only the local, international or all mapcodes.
                     switch (type) {
                         case LOCAL: {
+                            if (mapcodeLocal == null) {
+                                throw new ApiNotFoundException((reasonMultipleTerritories ?
+                                        "Local mapcodes for multiple territories exist" :
+                                        "Only an international mapcode exists") +
+                                        " for (" + latDeg + ", " + lonDeg + ')');
+                            }
                             result = getMapcodeDTO(mapcodeLocal, precision, alphabet, includeOffset, includeTerritory, includeAlphabet,
                                     latDeg, lonDeg);
                             break;
@@ -320,7 +351,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
 
             // Check if the mapcode is correctly formatted.
-            if (!Mapcode.isValidMapcodeFormat(paramCode)) {
+            if (!Mapcode.isValidPrecisionFormat(paramCode)) {
                 throw new ApiInvalidFormatException("mapcode", paramCode, "[XXX] XX.XX[-XX]");
             }
 
@@ -403,9 +434,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final Territory parentTerritory = territory.getParentTerritory();
             final TerritoryDTO result = new TerritoryDTO(
                     territory.toString(),
-                    territory.toAlpha(AlphaFormat.MINIMAL_UNAMBIGUOUS),
-                    territory.toAlpha(AlphaFormat.MINIMAL),
-                    territory.getCode(),
+                    territory.toAlphaCode(AlphaCodeFormat.MINIMAL_UNAMBIGUOUS),
+                    territory.toAlphaCode(AlphaCodeFormat.MINIMAL),
+                    territory.getNumber(),
                     territory.getFullName(),
                     (parentTerritory == null) ? null : parentTerritory.toString(),
                     territory.getAliases(),
@@ -471,7 +502,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
 
             // Return the right territory information.
-            final AlphabetDTO result = new AlphabetDTO(alphabet.name(), alphabet.getCode());
+            final AlphabetDTO result = new AlphabetDTO(alphabet.name(), alphabet.getNumber());
 
             // Validate the result (internal consistency check).
             result.validate();
