@@ -21,7 +21,7 @@ $(document).ready(function () {
     var jolokiaConnector = new Jolokia({ url: "http://api.mapcode.com/monitor", fetchInterval: fInterval});
 
     // For local testing:
-    jolokiaConnector = new Jolokia({url: "http://localhost:8080/monitor", fetchInterval: fInterval});
+    // jolokiaConnector = new Jolokia({url: "http://localhost:8080/monitor", fetchInterval: fInterval});
 
 
     var colorsRed = ["#FDBE85", "#FEEDDE", "#FD8D3C", "#E6550D", "#A63603", "#FDBE85", "#FEEDDE", "#FD8D3C", "#E6550D", "#A63603"];
