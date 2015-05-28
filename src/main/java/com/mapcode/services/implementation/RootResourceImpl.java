@@ -50,7 +50,8 @@ public class RootResourceImpl implements RootResource {
 
             "GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]\n" +
             "     [?precision=[0|1|2] & territory={restrictToTerritory} & alphabet={alphabet} & include={offset|territory|alphabet}]\n\n" +
-            "   Convert latitude/longitude to one or more mapcodes.\n" +
+            "   Convert latitude/longitude to one or more mapcodes. The response always contains the 'international' mapcode and\n" +
+            "   only contains a 'local' mapcode if there are any non-international mapcode AND they are all of the same territory.\n\n" +
 
             "   Path parameters:\n" +
             "     lat             : Latitude, range [-90, 90] (automatically limited to this range).\n" +
@@ -58,7 +59,7 @@ public class RootResourceImpl implements RootResource {
 
             "   An additional filter can be specified to limit the results:\n" +
             "     all             : Same as without specifying a filter, returns all mapcodes.\n" +
-            "     local           : Return the shortest local mapcode.\n" +
+            "     local           : Return the shortest local mapcode. This produces a 404 if no (unambiguous) local mapcode exists.\n" +
             "     international   : Return the international mapcode.\n\n" +
 
             "   Query parameters:\n" +
