@@ -59,9 +59,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
     private final SystemMetricsCollector metricsCollector;
 
     private static final String API_ERROR_VALID_TERRITORY_CODES = Joiner.on('|').join(Arrays.asList(Territory.values()).stream().
-            map(x -> (x.toString() + '(' + x.getNumber() + ')')).collect(Collectors.toList()));
+            map(x -> (x.toString())).collect(Collectors.toList()));
     private static final String API_ERROR_VALID_ALPHABET_CODES = Joiner.on('|').join(Arrays.asList(Alphabet.values()).stream().
-            map(x -> (x.toString() + '(' + x.getNumber() + ')')).collect(Collectors.toList()));
+            map(x -> (x.toString())).collect(Collectors.toList()));
     private static final String API_ERROR_VALID_TYPES = Joiner.on('|').join(Arrays.asList(ParamType.values()).stream().
             map(x -> x).collect(Collectors.toList()));
     private static final String API_ERROR_VALID_INCLUDES = Joiner.on('|').join(Arrays.asList(ParamInclude.values()).stream().
@@ -74,7 +74,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
                         x.toString(),
                         x.toAlphaCode(AlphaCodeFormat.MINIMAL_UNAMBIGUOUS),
                         x.toAlphaCode(AlphaCodeFormat.MINIMAL),
-                        x.getNumber(),
                         x.getFullName(),
                         (parentTerritory == null) ? null : parentTerritory.toString(),
                         x.getAliases(),
@@ -82,7 +81,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }).
             collect(Collectors.toList());
     private static final List<AlphabetDTO> ALL_ALPHABET_DTO = Arrays.asList(Alphabet.values()).stream().
-            map(x -> new AlphabetDTO(x.name(), x.getNumber())).
+            map(x -> new AlphabetDTO(x.name())).
             collect(Collectors.toList());
 
 
@@ -436,7 +435,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     territory.toString(),
                     territory.toAlphaCode(AlphaCodeFormat.MINIMAL_UNAMBIGUOUS),
                     territory.toAlphaCode(AlphaCodeFormat.MINIMAL),
-                    territory.getNumber(),
                     territory.getFullName(),
                     (parentTerritory == null) ? null : parentTerritory.toString(),
                     territory.getAliases(),
@@ -502,7 +500,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
 
             // Return the right territory information.
-            final AlphabetDTO result = new AlphabetDTO(alphabet.name(), alphabet.getNumber());
+            final AlphabetDTO result = new AlphabetDTO(alphabet.name());
 
             // Validate the result (internal consistency check).
             result.validate();

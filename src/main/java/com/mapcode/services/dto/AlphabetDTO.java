@@ -18,7 +18,6 @@ package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.mapcode.Alphabet;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -34,21 +33,15 @@ public final class AlphabetDTO extends ApiDTO {
     @Nonnull
     private String name;
 
-    @Nonnull
-    private Integer number;
-
     @Override
     public void validate() {
         validator().start();
         validator().checkNotNull(true, "name", name);
-        validator().checkInteger(true, "numer", number, 0, Alphabet.values().length - 1);
         validator().done();
     }
 
-    public AlphabetDTO(@Nonnull final String name,
-                       @Nonnull final Integer number) {
+    public AlphabetDTO(@Nonnull final String name) {
         this.name = name;
-        this.number = number;
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -68,18 +61,6 @@ public final class AlphabetDTO extends ApiDTO {
         beforeSet();
         assert name != null;
         this.name = name;
-    }
-
-    @Nonnull
-    public Integer getNumber() {
-        beforeGet();
-        return number;
-    }
-
-    public void setNumber(@Nonnull final Integer number) {
-        beforeSet();
-        assert number != null;
-        this.number = number;
     }
 
     @Override
