@@ -40,9 +40,6 @@ public class RootResourceImpl implements RootResource {
 
     @Nonnull
     private static final String HELP_TEXT = "" +
-            "MAPCODE API\n" +
-            "-----------\n\n" +
-
             "GET /mapcode         Returns this help page.\n" +
             "GET /mapcode/version Returns the software version.\n" +
             "GET /mapcode/metrics Returns some system metrics (also available from JMX).\n" +
@@ -129,7 +126,10 @@ public class RootResourceImpl implements RootResource {
     @Nonnull
     public String getHelpHTML() {
         LOG.info("getHelpHTML: show help page", mavenProperties.getPomVersion());
-        return "<html><pre>\n" + HELP_TEXT + "</pre></html>\n";
+        return "<html><pre>\n" +
+                "MAPCODE API (" + mavenProperties.getPomVersion() + ")\n" +
+                "-----------\n\n" +
+                HELP_TEXT + "</pre></html>\n";
     }
 
     @Override
