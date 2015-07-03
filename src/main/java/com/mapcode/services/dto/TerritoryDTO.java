@@ -18,7 +18,6 @@ package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.mapcode.Territory;
 import com.mapcode.services.ApiConstants;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -42,9 +41,6 @@ public final class TerritoryDTO extends ApiDTO {
     private String alphaCodeMinimal;
 
     @Nonnull
-    private Integer number;
-
-    @Nonnull
     private String fullName;
 
     @Nullable
@@ -62,7 +58,6 @@ public final class TerritoryDTO extends ApiDTO {
         validator().checkNotNull(true, "alphaCode", alphaCode);
         validator().checkNotNull(true, "alphaCodeMinimalUnambiguous", alphaCodeMinimalUnambiguous);
         validator().checkNotNull(true, "alphaCodeMinimal", alphaCodeMinimal);
-        validator().checkInteger(true, "number", number, 0, Territory.values().length - 1);
         validator().checkString(true, "fullName", fullName, ApiConstants.API_NAME_LEN_MIN, ApiConstants.API_NAME_LEN_MAX);
         validator().checkString(false, "parentTerritory", parentTerritory, ApiConstants.API_NAME_LEN_MIN, ApiConstants.API_NAME_LEN_MAX);
         validator().checkNotNull(false, "aliases", aliases);
@@ -73,7 +68,6 @@ public final class TerritoryDTO extends ApiDTO {
     public TerritoryDTO(@Nonnull final String alphaCode,
                         @Nonnull final String alphaCodeMinimalUnambiguous,
                         @Nonnull final String alphaCodeMinimal,
-                        @Nonnull final Integer number,
                         @Nonnull final String fullName,
                         @Nullable final String parentTerritory,
                         @Nonnull final String[] aliases,
@@ -81,7 +75,6 @@ public final class TerritoryDTO extends ApiDTO {
         this.alphaCode = alphaCode;
         this.alphaCodeMinimalUnambiguous = alphaCodeMinimalUnambiguous;
         this.alphaCodeMinimal = alphaCodeMinimal;
-        this.number = number;
         this.fullName = fullName;
         this.parentTerritory = parentTerritory;
         this.aliases = aliases;
@@ -129,18 +122,6 @@ public final class TerritoryDTO extends ApiDTO {
         beforeSet();
         assert alphaCodeMinimal != null;
         this.alphaCodeMinimal = alphaCodeMinimal;
-    }
-
-    @Nonnull
-    public Integer getNumber() {
-        beforeGet();
-        return number;
-    }
-
-    public void setNumber(@Nonnull final Integer number) {
-        beforeSet();
-        assert number != null;
-        this.number = number;
     }
 
     @Nonnull

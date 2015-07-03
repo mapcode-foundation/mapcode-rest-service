@@ -40,9 +40,6 @@ public class RootResourceImpl implements RootResource {
 
     @Nonnull
     private static final String HELP_TEXT = "" +
-            "MAPCODE API\n" +
-            "-----------\n\n" +
-
             "GET /mapcode         Returns this help page.\n" +
             "GET /mapcode/version Returns the software version.\n" +
             "GET /mapcode/metrics Returns some system metrics (also available from JMX).\n" +
@@ -64,8 +61,8 @@ public class RootResourceImpl implements RootResource {
 
             "   Query parameters:\n" +
             "     precision       : Precision, range [0, 2] (default=0).\n" +
-            "     territory       : Territory to restrict results to, numeric or alpha code.\n" +
-            "     alphabet        : Alphabet to return results in, numeric or alpha code.\n\n" +
+            "     territory       : Territory to restrict results to.\n" +
+            "     alphabet        : Alphabet to return results in.\n\n" +
 
             "     include         : Multiple options may be set, separated by comma's:\n" +
             "                         offset    = Include offset from mapcode center to lat/lon (in meters).\n" +
@@ -83,7 +80,7 @@ public class RootResourceImpl implements RootResource {
             "     code            : Mapcode code (local or international).\n" +
 
             "   Query parameters:\n" +
-            "     context         : Optional mapcode territory context, numeric or alpha code.\n\n" +
+            "     context         : Optional mapcode territory context.\n\n" +
 
             "GET /mapcode/territories [?offset={offset}&count={count}]\n" +
             "   Return a list of all territories.\n\n" +
@@ -92,7 +89,7 @@ public class RootResourceImpl implements RootResource {
             "   Return information for a single territory code.\n\n" +
 
             "   Path parameters:\n" +
-            "     territory       : Territory to get info for, numeric or alpha code.\n\n" +
+            "     territory       : Territory to get info for.\n\n" +
 
             "   Query parameters:\n" +
             "     context         : Territory context (optional, for disambiguation).\n\n" +
@@ -104,7 +101,7 @@ public class RootResourceImpl implements RootResource {
             "   Return information for a specific alphabet.\n\n" +
 
             "   Path parameters:\n" +
-            "     alphabet        : Alphabet to get info for, numeric or alpha code.\n\n" +
+            "     alphabet        : Alphabet to get info for.\n\n" +
 
             "General query parameters for methods which return a list of results:\n\n" +
             "   offset            : Return list from 'offset' (negative value start counting from end).\n" +
@@ -129,7 +126,10 @@ public class RootResourceImpl implements RootResource {
     @Nonnull
     public String getHelpHTML() {
         LOG.info("getHelpHTML: show help page", mavenProperties.getPomVersion());
-        return "<html><pre>\n" + HELP_TEXT + "</pre></html>\n";
+        return "<html><pre>\n" +
+                "MAPCODE API (" + mavenProperties.getPomVersion() + ")\n" +
+                "-----------\n\n" +
+                HELP_TEXT + "</pre></html>\n";
     }
 
     @Override

@@ -124,6 +124,15 @@ There's also an example HTML page in the `examples/index.html` for HTML/Javascri
 
 ## Release Notes
 
+* 2.0.0.0
+
+    Based version 2.0.0 of the Java library.
+     
+    Includes fixes and enhancements to data. For a complete description, read the Word file that ships with
+    the C version of the library (on Github).
+    
+    This version no longer supports numeric codes for territories and alphabets.
+    
 * 1.50.3.0
 
     Changed property names in REST API for territories: `code` is renamed to `number`, `name` is renamed to `alphaCode`.
