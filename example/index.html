@@ -98,7 +98,7 @@ pressing the conversion/request buttons.
     }
 
     function createTerritoryLine(territory) {
-        var line = "<b>" + territory.alphaCode + "</b> (" + territory.number + ") - <u>" + territory.fullName + "</u>";
+        var line = "<b>" + territory.alphaCode + "</b> - <u>" + territory.fullName + "</u>";
         if (territory.fullNameAliases) {
             for (j = 0; j < territory.fullNameAliases.length; j++) {
                 line += ", " + territory.fullNameAliases[j];
@@ -114,7 +114,7 @@ pressing the conversion/request buttons.
     }
 
     function createAlphabetLine(alphabet) {
-        return "<b>" + alphabet.name + "</b> (" + alphabet.number + ")</u>";
+        return "<b>" + alphabet.name + "</b></u>";
     }
 </script>
 
@@ -208,10 +208,10 @@ pressing the conversion/request buttons.
     <br/>
     <input type="text" id="lon" value="5.488075"> = longitude [-180, 180] (wrapped if outside of range)
     <br/>
-    <input type="text" id="territoryEncode" value=""> = restrict results to 1 territory (numeric or alpha, empty = show
+    <input type="text" id="territoryEncode" value=""> = restrict results to 1 territory (empty = show
     all)
     <br/>
-    <input type="text" id="alphabetEncode" value=""> = alphabet used for results (numeric or alpha, empty = roman)
+    <input type="text" id="alphabetEncode" value=""> = alphabet used for results (empty = roman)
     <br/>
     <input type="text" id="precision" value=""> = precision (0, 1 or 2, empty = 0)
     <br/>
