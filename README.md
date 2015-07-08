@@ -124,6 +124,13 @@ There's also an example HTML page in the `examples/index.html` for HTML/Javascri
 
 ## Release Notes
 
+* 2.0.1.0
+
+    Based on version 2.0.1 of the Java library (which is Java 6 again, from Java 8).
+    
+    Typo in startup LOG message fixed.
+    
+    
 * 2.0.0.0
 
     Based version 2.0.0 of the Java library.

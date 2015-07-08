@@ -77,7 +77,7 @@ public class StartupCheck {
             check(false, "Could not register the JMX agent: " + e.getMessage());
         }
 
-        LOG.info("Startup: System started succesfully.");
+        LOG.info("Startup: System started successfully.");
     }
 
     private StartupCheck() {
@@ -94,11 +94,11 @@ public class StartupCheck {
             System.err.println("=======================================");
             System.err.println("ERROR");
             System.err.println("=======================================");
-            System.err.println("System did NOT start succesfully.");
+            System.err.println("System did NOT start successfully.");
             System.err.println("Reason: " + reason);
             System.err.println("=======================================");
             System.err.println("");
-            throw new IllegalStateException("System did NOT start succesfully.");
+            throw new IllegalStateException("System did NOT start successfully.");
         }
     }
 }
