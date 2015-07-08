@@ -61,7 +61,7 @@ public class RootResourceImpl implements RootResource {
 
             "   Query parameters:\n" +
             "     precision       : Precision, range [0, 2] (default=0).\n" +
-            "     territory       : Territory to restrict results to.\n" +
+            "     territory       : Territory to restrict results to (name or alphacode).\n" +
             "     alphabet        : Alphabet to return results in.\n\n" +
 
             "     include         : Multiple options may be set, separated by comma's:\n" +
@@ -80,7 +80,7 @@ public class RootResourceImpl implements RootResource {
             "     code            : Mapcode code (local or international).\n" +
 
             "   Query parameters:\n" +
-            "     context         : Optional mapcode territory context.\n\n" +
+            "     context         : Optional mapcode territory context (name or alphacode).\n\n" +
 
             "GET /mapcode/territories [?offset={offset}&count={count}]\n" +
             "   Return a list of all territories.\n\n" +
@@ -89,10 +89,10 @@ public class RootResourceImpl implements RootResource {
             "   Return information for a single territory code.\n\n" +
 
             "   Path parameters:\n" +
-            "     territory       : Territory to get info for.\n\n" +
+            "     territory       : Territory to get info for (name or alphacode).\n\n" +
 
             "   Query parameters:\n" +
-            "     context         : Territory context (optional, for disambiguation).\n\n" +
+            "     context         : Territory context (optional, for disambiguation, name or alphacode).\n\n" +
 
             "GET /mapcode/alphabets [?offset={offset}&count={count}]\n" +
             "   Return a list of all alphabet codes.\n\n" +
