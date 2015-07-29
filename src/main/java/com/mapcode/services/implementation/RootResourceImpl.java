@@ -55,7 +55,7 @@ public class RootResourceImpl implements RootResource {
             "     lon             : Longitude, range [-180, 180] (automatically wrapped to this range).\n\n" +
 
             "   An additional filter can be specified to limit the results:\n" +
-            "     all             : Same as without specifying a filter, returns all mapcodes.\n" +
+            "     mapcodes        : Same as without specifying a filter, returns all mapcodes.\n" +
             "     local           : Return the shortest local mapcode. This produces a 404 if no (unambiguous) local mapcode exists.\n" +
             "     international   : Return the international mapcode.\n\n" +
 
