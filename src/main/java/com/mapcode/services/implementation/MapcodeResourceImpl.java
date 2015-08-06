@@ -350,7 +350,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
 
             // Check if the mapcode is correctly formatted.
-            if (!Mapcode.isValidPrecisionFormat(paramCode)) {
+            if (!Mapcode.isValidMapcodeFormat(paramCode)) {
                 throw new ApiInvalidFormatException("mapcode", paramCode, "[XXX] XX.XX[-XX]");
             }
 
@@ -513,7 +513,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Nonnull
     private static Territory resolveTerritory(@Nonnull final String paramTerritory, @Nullable final String paramParent) {
-        ParentTerritory parentTerritory;
+        Territory parentTerritory;
         if (paramParent != null) {
 
             // Try to use the parent territory, if available.
@@ -535,7 +535,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
             // Use the resolved context.
             try {
-                parentTerritory = ParentTerritory.valueOf(context.toString());
+                parentTerritory = Territory.valueOf(context.toString());
             } catch (final IllegalArgumentException ignored) {
 
                 // Explicitly remove parent context.
