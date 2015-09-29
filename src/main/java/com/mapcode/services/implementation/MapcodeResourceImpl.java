@@ -599,7 +599,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final Point point = MapcodeCodec.decode(mapcode.getCode(precision), mapcode.getTerritory());
             final GeoPoint center = new GeoPoint(point.getLatDeg(), point.getLonDeg());
             final double distanceMeters = Geo.distanceInMeters(position, center);
-            return Math.round(distanceMeters * 100.0) / 100.0;
+            return Math.round(distanceMeters * 1.0e6) / 1.0e6;
         } catch (final UnknownMapcodeException ignore) {
             // Simply ignore.
             return 0.0;
