@@ -46,7 +46,8 @@ public class RootResourceImpl implements RootResource {
             "GET /mapcode/status  Returns 200 if the service OK.\n\n" +
 
             "GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]\n" +
-            "     [?precision=[0|1|2] & territory={restrictToTerritory} & alphabet={alphabet} & include={offset|territory|alphabet}]\n\n" +
+            "     [?precision=[0..8] & territory={restrictToTerritory} & alphabet={alphabet} & include={offset|territory|alphabet}]\n\n" +
+
             "   Convert latitude/longitude to one or more mapcodes. The response always contains the 'international' mapcode and\n" +
             "   only contains a 'local' mapcode if there are any non-international mapcode AND they are all of the same territory.\n\n" +
 
@@ -60,7 +61,7 @@ public class RootResourceImpl implements RootResource {
             "     international   : Return the international mapcode.\n\n" +
 
             "   Query parameters:\n" +
-            "     precision       : Precision, range [0, 2] (default=0).\n" +
+            "     precision       : Precision, range [0..8] (default=0).\n" +
             "     territory       : Territory to restrict results to (name or alphacode).\n" +
             "     alphabet        : Alphabet to return results in.\n\n" +
 

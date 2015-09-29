@@ -43,12 +43,19 @@ public final class ApiConstants {
      */
     public static final int API_NAME_LEN_MIN = 1;
     public static final int API_NAME_LEN_MAX = 250;
+
     public static final int API_MAPCODE_LEN_MIN = 1;
-    public static final int API_MAPCODE_LEN_MAX = 14;
+    public static final int API_MAPCODE_LEN_MAX = 19;
+
     public static final int API_TERRITORY_LEN_MIN = 2;
     public static final int API_TERRITORY_LEN_MAX = 7;
+
     public static final int API_VERSION_LEN_MIN = 1;
     public static final int API_VERSION_LEN_MAX = 250;
+
     public static final double API_LAT_MAX = 90.0;
     public static final double API_LAT_MIN = -90.0;
+
+    public static final int API_PRECISION_MIN = 0;
+    public static final int API_PRECISION_MAX = 8;
 }

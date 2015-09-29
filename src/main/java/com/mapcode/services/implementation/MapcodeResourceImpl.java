@@ -151,8 +151,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
             // Check precision.
             final int precision = paramPrecision;
-            if (!MathUtils.isBetween(precision, 0, 2)) {
-                throw new ApiInvalidFormatException(PARAM_PRECISION, String.valueOf(paramPrecision), "[0, 2]");
+            if (!MathUtils.isBetween(precision, ApiConstants.API_PRECISION_MIN, ApiConstants.API_PRECISION_MAX)) {
+                throw new ApiInvalidFormatException(PARAM_PRECISION, String.valueOf(paramPrecision), "[" + ApiConstants.API_PRECISION_MIN +
+                        ", " + ApiConstants.API_PRECISION_MAX + ']');
             }
 
             // Get the territory.

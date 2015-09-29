@@ -32,8 +32,8 @@ import java.util.List;
 public final class MapcodeListDTO extends ApiListDTO<MapcodeDTO> {
 
     @Override
-    public void validateOne(@Nonnull final MapcodeDTO elm) {
-        validator().checkNotNullAndValidate(true, "mapcode", elm);
+    public void validateOne(@Nonnull final MapcodeDTO t) {
+        validator().checkNotNullAndValidate(true, "mapcode", t);
     }
 
     public MapcodeListDTO(@Nonnull final List<MapcodeDTO> list) {
