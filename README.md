@@ -133,9 +133,9 @@ There's also an example HTML page in the `examples/index.html` for HTML/Javascri
 
 ## Release Notes
 
-* 2.2.1.0
+* 2.2.1.0 - 2.2.3.0
 
-    Based on version 2.2.1.0 of the Java library. Includes high-precision codes, up to precision 8.
+    Based on version 2.2.x.0 of the Java library. Includes high-precision codes, up to precision 8.
 
 * 2.0.2.0
 
