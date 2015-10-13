@@ -32,11 +32,13 @@ import com.tomtom.speedtools.apivalidation.exceptions.ApiNotFoundException;
 import com.tomtom.speedtools.geometry.Geo;
 import com.tomtom.speedtools.geometry.GeoPoint;
 import com.tomtom.speedtools.rest.ResourceProcessor;
+import com.tomtom.speedtools.time.UTCTime;
 import com.tomtom.speedtools.tracer.Traceable;
 import com.tomtom.speedtools.tracer.TracerFactory;
 import com.tomtom.speedtools.utils.MathUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.jboss.resteasy.spi.AsynchronousResponse;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -206,7 +208,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final boolean includeAlphabet = foundIncludeAlphabet;
 
             // Send a trace event with the lat/lon and other parameters.
-            TRACER.eventLatLonToMapcode(latDeg, lonDeg, territory, precision, paramType, paramAlphabet, paramInclude);
+            TRACER.eventLatLonToMapcode(latDeg, lonDeg, territory, precision, paramType, paramAlphabet, paramInclude, UTCTime.now());
 
             try {
 
@@ -356,7 +358,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
 
             // Send a trace event with the mapcode and territory.
-            TRACER.eventMapcodeToLatLon(paramCode, territoryContext);
+            TRACER.eventMapcodeToLatLon(paramCode, territoryContext, UTCTime.now());
 
             // Create result body (always an ApiDTO).
             ApiDTO result;
@@ -367,7 +369,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 point = MapcodeCodec.decode(paramCode, territoryContext);
                 result = new PointDTO(point.getLatDeg(), point.getLonDeg());
             } catch (final UnknownMapcodeException ignored) {
-                throw new ApiNotFoundException("No mapcode found for mapcode='" + paramCode + "', territoryContext=" + territoryContext);
+                throw new ApiNotFoundException("No mapcode found for mapcode='" + paramCode + "', context=" + territoryContext);
             }
 
             // Validate the result (internal consistency check).
@@ -614,10 +616,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
         // A request to translate a lat/lon to a mapcode is made.
         void eventLatLonToMapcode(double latDeg, double lonDeg, @Nullable Territory territory,
                                   int precision, @Nullable String type, @Nullable String alphabet,
-                                  @Nullable String include);
+                                  @Nullable String include, @Nonnull DateTime now);
 
         // A request to translate a mapcode to a lat/lon is made.
-        void eventMapcodeToLatLon(@Nonnull String code, @Nullable Territory territory);
+        void eventMapcodeToLatLon(@Nonnull String code, @Nullable Territory territory, @Nonnull DateTime now);
     }
 }
 

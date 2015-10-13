@@ -74,7 +74,7 @@ public class RootResourceImpl implements RootResource {
             "                       is always present, as well as the translated territory and mapcode codes.\n" +
             "                       This can make processing the records easier in scripts, for example.\n\n" +
 
-            "GET /mapcode/coords/{code} [?context={territoryContext}]\n" +
+            "GET /mapcode/coords/{code} [?context={territory}]\n" +
             "   Convert a mapcode into a latitude/longitude pair.\n\n" +
 
             "   Path parameters:\n" +
@@ -86,7 +86,7 @@ public class RootResourceImpl implements RootResource {
             "GET /mapcode/territories [?offset={offset}&count={count}]\n" +
             "   Return a list of all territories.\n\n" +
 
-            "GET /mapcode/territories/{territory} [?context={territoryContext}]\n" +
+            "GET /mapcode/territories/{territory} [?context={territory}]\n" +
             "   Return information for a single territory code.\n\n" +
 
             "   Path parameters:\n" +
