@@ -1,3 +1,21 @@
 src/main/resources/mapcode-secret.properties
-target/
 out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Intellij
+.idea/
+*.iml
+*.ipr
+*.iws
+bin/
+
+# Mac
+.DS_Store
+
+# Maven
+target/
+
