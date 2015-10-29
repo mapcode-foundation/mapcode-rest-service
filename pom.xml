@@ -188,6 +188,52 @@
         </resources>
     </build>
 
+    <profiles>
+        <profile>
+            <id>docker</id>
+
+            <properties>
+                <!--<docker.provider>local</docker.provider>-->
+                <!--<docker.host>192.168.99.100</docker.host>-->
+                <!--<docker.port>2376</docker.port>-->
+            </properties>
+
+            <build>
+                <plugins>
+                    <!--
+                     Plugin to build docker image for MapCode web service
+
+                     Note: To have this working there must be an active docker instance running locally
+                    -->
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.3.5</version>
+                        <configuration>
+                            <imageName>${project.artifactId}:${project.version}</imageName>
+                            <dockerDirectory>${project.basedir}/src/docker/</dockerDirectory>
+                            <resources>
+                                <resource>
+                                    <targetPath>/usr/local/tomcat/webapps</targetPath>
+                                    <directory>${project.build.directory}</directory>
+                                    <include>${project.build.finalName}.war</include>
+                                </resource>
+                            </resources>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <dependencies>
 
         <!--
