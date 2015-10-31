@@ -203,30 +203,79 @@
                     <!--
                      Plugin to build docker image for MapCode web service
 
-                     Note: To have this working there must be an active docker instance running locally
+                     Note: To have this working there must be an active docker instance running locally and for mac
+                     maven has to be executed within the docker VM
                     -->
                     <plugin>
-                        <groupId>com.spotify</groupId>
+                        <groupId>net.wouterdanes.docker</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.3.5</version>
-                        <configuration>
-                            <imageName>${project.artifactId}:${project.version}</imageName>
-                            <dockerDirectory>${project.basedir}/src/docker/</dockerDirectory>
-                            <resources>
-                                <resource>
-                                    <targetPath>/usr/local/tomcat/webapps</targetPath>
-                                    <directory>${project.build.directory}</directory>
-                                    <include>${project.build.finalName}.war</include>
-                                </resource>
-                            </resources>
-                        </configuration>
+                        <version>4.0.1</version>
                         <executions>
                             <execution>
-                                <phase>package</phase>
+                                <id>package</id>
                                 <goals>
-                                    <goal>build</goal>
+                                    <goal>build-images</goal>
+                                </goals>
+                                <configuration>
+                                    <images>
+                                        <image>
+                                            <id>${project.artifactId}</id>
+                                            <nameAndTag>${project.artifactId}:${project.version}</nameAndTag>
+                                            <keep>true</keep>
+                                            <dockerFile>${project.basedir}/src/docker/Dockerfile</dockerFile>
+                                            <artifacts>
+                                                <artifact>
+                                                    <file>
+                                                        ${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}
+                                                    </file>
+                                                </artifact>
+                                            </artifacts>
+                                        </image>
+                                    </images>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>start-container</id>
+                                <goals>
+                                    <goal>start-containers</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- You can set forceCleanup to true to stop and remove started containers
+                                         at the end of the build even if the stop-containers goal is not executed
+                                         (useful for preventing Ctrl+C causing dangling containers) -->
+                                    <forceCleanup>true</forceCleanup>
+                                    <containers>
+                                        <container>
+                                            <id>${project.artifactId}</id>
+                                            <image>${project.artifactId}:${project.version}</image>
+                                            <waitForStartup>Server startup in</waitForStartup>
+                                        </container>
+                                    </containers>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>stop-container</id>
+                                <goals>
+                                    <goal>stop-containers</goal>
                                 </goals>
                             </execution>
+                            <!--<execution>-->
+                                <!--<id>commit</id>-->
+                                <!--<goals>-->
+                                    <!--<goal>commit-containers</goal>-->
+                                <!--</goals>-->
+                                <!--<configuration>-->
+                                    <!--<containers>-->
+                                        <!--<container>-->
+                                            <!--<id>${project.artifactId}</id>-->
+                                            <!--<tag>${project.version}</tag>-->
+                                            <!--<comment>Build ${project.artifactId} version ${project.version} at ${maven.build.timestamp}</comment>-->
+                                            <!--<author>mapcode-foundation</author>-->
+                                            <!--<push>true</push>-->
+                                        <!--</container>-->
+                                    <!--</containers>-->
+                                <!--</configuration>-->
+                            <!--</execution>-->
                         </executions>
                     </plugin>
                 </plugins>
