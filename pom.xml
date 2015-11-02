@@ -77,6 +77,7 @@
         <!-- Library versions - these are not re-used from the top-level POM to simulate stand-alone usage. -->
         <apache-commons-lang.version>3.0</apache-commons-lang.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
+        <docker-maven-plugin.version>4.0.1</docker-maven-plugin.version>
         <guava.version>17.0</guava.version>
         <guice.version>3.0</guice.version>
         <jackson.version>2.5.2</jackson.version>
@@ -193,9 +194,11 @@
             <id>docker</id>
 
             <properties>
-                <!--<docker.provider>local</docker.provider>-->
-                <!--<docker.host>192.168.99.100</docker.host>-->
-                <!--<docker.port>2376</docker.port>-->
+                <!-- TODO: Provide properties - how can we supply proper values here?
+                <docker.provider>local</docker.provider>
+                <docker.host>192.168.99.100</docker.host>
+                <docker.port>2376</docker.port>
+                -->
             </properties>
 
             <build>
@@ -209,7 +212,7 @@
                     <plugin>
                         <groupId>net.wouterdanes.docker</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>4.0.1</version>
+                        <version>${docker-maven-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>package</id>
@@ -234,6 +237,7 @@
                                     </images>
                                 </configuration>
                             </execution>
+
                             <execution>
                                 <id>start-container</id>
                                 <goals>
@@ -253,29 +257,35 @@
                                     </containers>
                                 </configuration>
                             </execution>
+
                             <execution>
                                 <id>stop-container</id>
                                 <goals>
                                     <goal>stop-containers</goal>
                                 </goals>
                             </execution>
-                            <!--<execution>-->
-                                <!--<id>commit</id>-->
-                                <!--<goals>-->
-                                    <!--<goal>commit-containers</goal>-->
-                                <!--</goals>-->
-                                <!--<configuration>-->
-                                    <!--<containers>-->
-                                        <!--<container>-->
-                                            <!--<id>${project.artifactId}</id>-->
-                                            <!--<tag>${project.version}</tag>-->
-                                            <!--<comment>Build ${project.artifactId} version ${project.version} at ${maven.build.timestamp}</comment>-->
-                                            <!--<author>mapcode-foundation</author>-->
-                                            <!--<push>true</push>-->
-                                        <!--</container>-->
-                                    <!--</containers>-->
-                                <!--</configuration>-->
-                            <!--</execution>-->
+
+                            <!-- TODO: Remove comments.
+                            <execution>
+                                <id>commit</id>
+                                <goals>
+                                    <goal>commit-containers</goal>
+                                </goals>
+                                <configuration>
+                                    <containers>
+                                        <container>
+                                            <id>${project.artifactId}</id>
+                                            <tag>${project.version}</tag>
+                                            <comment>Build ${project.artifactId} version ${project.version} at
+                                                ${maven.build.timestamp}
+                                            </comment>
+                                            <author>mapcode-foundation</author>
+                                            <push>true</push>
+                                        </container>
+                                    </containers>
+                                </configuration>
+                            </execution>
+                            -->
                         </executions>
                     </plugin>
                 </plugins>
