@@ -96,6 +96,7 @@
         <maven-javadoc-plugin.version>2.10.1</maven-javadoc-plugin.version>
         <maven-jetty-plugin.version>8.1.9.v20130131</maven-jetty-plugin.version>
         <maven-tomcat-plugin.version>2.2</maven-tomcat-plugin.version>
+        <maven-resource-plugin.version>2.7</maven-resource-plugin.version>
         <maven-source-plugin.version>2.4</maven-source-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.5</nexus-staging-maven-plugin.version>
 
@@ -112,6 +113,15 @@
 
     <build>
         <plugins>
+            <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resource-plugin.version}</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -206,8 +216,9 @@
                     <!--
                      Plugin to build docker image for MapCode web service
 
-                     Note: To have this working there must be an active docker instance running locally and for mac
-                     maven has to be executed within the docker VM
+                     Note: To have this working there must be an active docker
+                     instance running locally and maven build has to be executed
+                     within the docker VM
                     -->
                     <plugin>
                         <groupId>net.wouterdanes.docker</groupId>
@@ -230,6 +241,11 @@
                                                 <artifact>
                                                     <file>
                                                         ${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}
+                                                    </file>
+                                                </artifact>
+                                                <artifact>
+                                                    <file>
+                                                        ${project.basedir}/src/config/mapcode-secret.properties
                                                     </file>
                                                 </artifact>
                                             </artifacts>
