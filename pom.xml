@@ -240,12 +240,18 @@
                                             <artifacts>
                                                 <artifact>
                                                     <file>
-                                                        ${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}
+                                                        ${project.build.directory}/${project.artifactId}-${project.version}.war
                                                     </file>
+                                                    <dest>${project.artifactId}.war</dest>
                                                 </artifact>
                                                 <artifact>
                                                     <file>
                                                         ${project.basedir}/src/config/mapcode-secret.properties
+                                                    </file>
+                                                </artifact>
+                                                <artifact>
+                                                    <file>
+                                                        ${project.basedir}/src/config/tomcat-users.xml
                                                     </file>
                                                 </artifact>
                                             </artifacts>
