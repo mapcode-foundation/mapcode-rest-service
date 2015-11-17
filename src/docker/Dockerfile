@@ -12,20 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Override these default properties:
+FROM tomcat:8.0.20-jre8
 
-Maven.pomVersion = ${pom.version}
+MAINTAINER Mapcode-Foundation
 
-MongoDBTrace.readEnabled = false
-MongoDBTrace.writeEnabled = false
-MongoDBTrace.maxDatabaseSizeMB = 1000
-MongoDBTrace.connectionTimeoutMsecs = 20000
+ENV JAVA_TOOL_OPTIONS -Dfile.encoding=UTF8
 
-# If you wish to use MongoDB tracing, override these in your own
-# mapcode-secret.properties file:
+ADD mapcode-rest-service.war    /usr/local/tomcat/webapps/
+ADD mapcode-secret.properties   /usr/local/tomcat/lib/
+ADD tomcat-users.xml            /usr/local/tomcat/conf/
 
-# MongoDBTrace.writeEnabled = true
-MongoDBTrace.servers = localhost:27017
-MongoDBTrace.database = trace
-MongoDBTrace.userName = {empty}
-MongoDBTrace.password = {empty}
+# RUN mkdir /usr/local/tomcat/webapps/myapp
+
+# COPY /mapcode-foundation /usr/local/tomcat/webapps

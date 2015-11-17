@@ -74,7 +74,7 @@ The available REST API methods are:
        count             : Return 'count' items at most.
 
 
-## Building The REST API Service
+## Build and Run: Missing `mapcode-secret.properties` File
 
 To build and run the REST API, type:
 
@@ -129,6 +129,37 @@ Or use a tool like cURL:
 
 
 There's also an example HTML page in the `examples/index.html` for HTML/Javascript developers.
+
+# Using Git and `.gitignore`
+
+It's good practice to set up a personal global `.gitignore` file on your machine which filters a number of files
+on your file systems that you do not wish to submit to the Git repository. You can set up your own global
+`~/.gitignore` file by executing:
+`git config --global core.excludesfile ~/.gitignore`
+
+In general, add the following file types to `~/.gitignore` (each entry should be on a separate line):
+`*.com *.class *.dll *.exe *.o *.so *.log *.sql *.sqlite *.tlog *.epoch *.swp *.hprof *.hprof.index *.releaseBackup *~`
+
+If you're using a Mac, filter:
+`.DS_Store* Thumbs.db`
+
+If you're using IntelliJ IDEA, filter:
+`*.iml *.iws .idea/`
+
+If you're using Eclips, filter:
+`.classpath .project .settings .cache`
+
+If you're using NetBeans, filter:
+`nb-configuration.xml *.orig`
+
+The local `.gitignore` file in the Git repository itself to reflect those file only that are produced by executing
+regular compile, build or release commands, such as:
+`target/ out/`
+
+# Bug Reports and New Feature Requests
+
+If you encounter any problems with this library, don't hesitate to use the `Issues` session to file your issues.
+Normally, one of our developers should be able to comment on them and fix.
 
 
 ## Release Notes

@@ -23,7 +23,7 @@
     <artifactId>mapcode-rest-service</artifactId>
 
     <packaging>war</packaging>
-    <version>2.2.3.4</version>
+    <version>2.2.3.5</version>
 
     <name>Mapcode REST API Web Service</name>
     <description>
@@ -77,6 +77,7 @@
         <!-- Library versions - these are not re-used from the top-level POM to simulate stand-alone usage. -->
         <apache-commons-lang.version>3.0</apache-commons-lang.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
+        <docker-maven-plugin.version>4.0.1</docker-maven-plugin.version>
         <guava.version>17.0</guava.version>
         <guice.version>3.0</guice.version>
         <jackson.version>2.5.2</jackson.version>
@@ -95,6 +96,7 @@
         <maven-javadoc-plugin.version>2.10.1</maven-javadoc-plugin.version>
         <maven-jetty-plugin.version>8.1.9.v20130131</maven-jetty-plugin.version>
         <maven-tomcat-plugin.version>2.2</maven-tomcat-plugin.version>
+        <maven-resource-plugin.version>2.7</maven-resource-plugin.version>
         <maven-source-plugin.version>2.4</maven-source-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.5</nexus-staging-maven-plugin.version>
 
@@ -111,6 +113,15 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resource-plugin.version}</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -187,6 +198,124 @@
             </resource>
         </resources>
     </build>
+
+    <profiles>
+        <profile>
+            <id>docker</id>
+
+            <properties>
+                <!-- TODO: Provide properties - how can we supply proper values here?
+                <docker.provider>local</docker.provider>
+                <docker.host>192.168.99.100</docker.host>
+                <docker.port>2376</docker.port>
+                -->
+            </properties>
+
+            <build>
+                <plugins>
+                    <!--
+                     Plugin to build docker image for Mapcode web service.
+
+                     Note: To have this working there must be an active docker
+                     instance running locally and maven build has to be executed
+                     within the docker VM.
+                    -->
+                    <plugin>
+                        <groupId>net.wouterdanes.docker</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>${docker-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>package</id>
+                                <goals>
+                                    <goal>build-images</goal>
+                                </goals>
+                                <configuration>
+                                    <images>
+                                        <image>
+                                            <id>${project.artifactId}</id>
+                                            <nameAndTag>${project.artifactId}:${project.version}</nameAndTag>
+                                            <keep>true</keep>
+                                            <dockerFile>${project.basedir}/src/docker/Dockerfile</dockerFile>
+                                            <artifacts>
+                                                <artifact>
+                                                    <file>
+                                                        ${project.build.directory}/${project.artifactId}-${project.version}.war
+                                                    </file>
+                                                    <dest>${project.artifactId}.war</dest>
+                                                </artifact>
+                                                <artifact>
+                                                    <file>
+                                                        ${project.basedir}/src/config/mapcode-secret.properties
+                                                    </file>
+                                                </artifact>
+                                                <artifact>
+                                                    <file>
+                                                        ${project.basedir}/src/config/tomcat-users.xml
+                                                    </file>
+                                                </artifact>
+                                            </artifacts>
+                                        </image>
+                                    </images>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>start-container</id>
+                                <goals>
+                                    <goal>start-containers</goal>
+                                </goals>
+                                <configuration>
+
+                                    <!-- You can set forceCleanup to true to stop and remove started containers
+                                         at the end of the build even if the stop-containers goal is not executed
+                                         (useful for preventing Ctrl+C causing dangling containers).
+                                    -->
+                                    <forceCleanup>true</forceCleanup>
+                                    <containers>
+                                        <container>
+                                            <id>${project.artifactId}</id>
+                                            <image>${project.artifactId}:${project.version}</image>
+                                            <waitForStartup>Server startup in</waitForStartup>
+                                        </container>
+                                    </containers>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>stop-container</id>
+                                <goals>
+                                    <goal>stop-containers</goal>
+                                </goals>
+                            </execution>
+
+                            <!-- TODO: Remove comments to commit the containers.
+                            <execution>
+                                <id>commit</id>
+                                <goals>
+                                    <goal>commit-containers</goal>
+                                </goals>
+                                <configuration>
+                                    <containers>
+                                        <container>
+                                            <id>${project.artifactId}</id>
+                                            <tag>${project.version}</tag>
+                                            <comment>Build ${project.artifactId} version ${project.version} at
+                                                ${maven.build.timestamp}
+                                            </comment>
+                                            <author>mapcode-foundation</author>
+                                            <push>true</push>
+                                        </container>
+                                    </containers>
+                                </configuration>
+                            </execution>
+                            -->
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <dependencies>
 
