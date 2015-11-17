@@ -114,8 +114,8 @@
     <build>
         <plugins>
             <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-resources-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
                 <version>${maven-resource-plugin.version}</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
@@ -214,11 +214,11 @@
             <build>
                 <plugins>
                     <!--
-                     Plugin to build docker image for MapCode web service
+                     Plugin to build docker image for Mapcode web service.
 
                      Note: To have this working there must be an active docker
                      instance running locally and maven build has to be executed
-                     within the docker VM
+                     within the docker VM.
                     -->
                     <plugin>
                         <groupId>net.wouterdanes.docker</groupId>
@@ -266,9 +266,11 @@
                                     <goal>start-containers</goal>
                                 </goals>
                                 <configuration>
+
                                     <!-- You can set forceCleanup to true to stop and remove started containers
                                          at the end of the build even if the stop-containers goal is not executed
-                                         (useful for preventing Ctrl+C causing dangling containers) -->
+                                         (useful for preventing Ctrl+C causing dangling containers).
+                                    -->
                                     <forceCleanup>true</forceCleanup>
                                     <containers>
                                         <container>
@@ -287,7 +289,7 @@
                                 </goals>
                             </execution>
 
-                            <!-- TODO: Remove comments.
+                            <!-- TODO: Remove comments to commit the containers.
                             <execution>
                                 <id>commit</id>
                                 <goals>
