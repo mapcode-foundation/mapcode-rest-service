@@ -130,6 +130,14 @@ Or use a tool like cURL:
 
 There's also an example HTML page in the `examples/index.html` for HTML/Javascript developers.
 
+# Creating Docker image
+
+To create a docker image of Mapcode you have to specify the `docker` profile within the maven build:
+
+    mvn -P docker clean install
+
+**NOTE:** It is assumed that you have installed docker on the machine AND that you are building within the docker VM.
+
 # Using Git and `.gitignore`
 
 It's good practice to set up a personal global `.gitignore` file on your machine which filters a number of files
