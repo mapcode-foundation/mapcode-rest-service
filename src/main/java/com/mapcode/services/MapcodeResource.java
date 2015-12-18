@@ -92,12 +92,12 @@ public interface MapcodeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + '}')
     void convertLatLonToMapcode(
-            @PathParam(PARAM_LAT_DEG) final double paramLatDeg,
-            @PathParam(PARAM_LON_DEG) final double paramLonDeg,
-            @QueryParam(PARAM_PRECISION) @DefaultValue("0") final int paramPrecision,
-            @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
-            @QueryParam(PARAM_ALPHABET) @Nullable final String paramAlphabet,
-            @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull final String paramInclude,
+            @PathParam(PARAM_LAT_DEG) double paramLatDeg,
+            @PathParam(PARAM_LON_DEG) double paramLonDeg,
+            @QueryParam(PARAM_PRECISION) @DefaultValue("0") int paramPrecision,
+            @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritory,
+            @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
+            @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
             @Context HttpServletRequest httpServletRequest,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
@@ -125,13 +125,13 @@ public interface MapcodeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + "}/{" + PARAM_TYPE + '}')
     void convertLatLonToMapcode(
-            @PathParam(PARAM_LAT_DEG) final double paramLatDeg,
-            @PathParam(PARAM_LON_DEG) final double paramLonDeg,
-            @PathParam(PARAM_TYPE) @Nullable final String paramType,
-            @QueryParam(PARAM_PRECISION) @DefaultValue("0") final int paramPrecision,
-            @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
-            @QueryParam(PARAM_ALPHABET) @Nullable final String paramAlphabet,
-            @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull final String paramInclude,
+            @PathParam(PARAM_LAT_DEG) double paramLatDeg,
+            @PathParam(PARAM_LON_DEG) double paramLonDeg,
+            @PathParam(PARAM_TYPE) @Nullable String paramType,
+            @QueryParam(PARAM_PRECISION) @DefaultValue("0") int paramPrecision,
+            @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritory,
+            @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
+            @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
             @Context HttpServletRequest httpServletRequest,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
@@ -139,6 +139,7 @@ public interface MapcodeResource {
     @GET
     @Path("coords")
     void convertMapcodeToLatLon(
+            @Context HttpServletRequest httpServletRequest,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
     /**
@@ -156,8 +157,8 @@ public interface MapcodeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("coords/{" + PARAM_CODE + '}')
     void convertMapcodeToLatLon(
-            @PathParam(PARAM_CODE) @Nonnull final String paramCode,
-            @QueryParam(PARAM_CONTEXT) @Nullable final String paramContext,
+            @PathParam(PARAM_CODE) @Nonnull String paramCode,
+            @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
             @Context HttpServletRequest httpServletRequest,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
@@ -175,8 +176,8 @@ public interface MapcodeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("territories")
     void getTerritories(
-            @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) final int offset,
-            @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) final int count,
+            @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
+            @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
             @Context HttpServletRequest httpServletRequest,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
@@ -194,8 +195,8 @@ public interface MapcodeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("territories/{" + PARAM_TERRITORY + '}')
     void getTerritory(
-            @PathParam(PARAM_TERRITORY) @Nonnull final String paramTerritory,
-            @QueryParam(PARAM_CONTEXT) @Nullable final String paramContext,
+            @PathParam(PARAM_TERRITORY) @Nonnull String paramTerritory,
+            @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
             @Context HttpServletRequest httpServletRequest,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
@@ -213,8 +214,8 @@ public interface MapcodeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("alphabets")
     void getAlphabets(
-            @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) final int offset,
-            @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) final int count,
+            @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
+            @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
             @Context HttpServletRequest httpServletRequest,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
@@ -231,7 +232,7 @@ public interface MapcodeResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("alphabets/{" + PARAM_ALPHABET + '}')
     void getAlphabet(
-            @PathParam(PARAM_ALPHABET) @Nonnull final String paramAlphabet,
+            @PathParam(PARAM_ALPHABET) @Nonnull String paramAlphabet,
             @Context HttpServletRequest httpServletRequest,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 

@@ -46,6 +46,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.List;
@@ -63,10 +64,13 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     private static final String API_ERROR_VALID_TERRITORY_CODES = Joiner.on('|').join(Arrays.asList(Territory.values()).stream().
             map(x -> (x.toString())).collect(Collectors.toList()));
+
     private static final String API_ERROR_VALID_ALPHABET_CODES = Joiner.on('|').join(Arrays.asList(Alphabet.values()).stream().
             map(x -> (x.toString())).collect(Collectors.toList()));
+
     private static final String API_ERROR_VALID_TYPES = Joiner.on('|').join(Arrays.asList(ParamType.values()).stream().
             map(x -> x).collect(Collectors.toList()));
+
     private static final String API_ERROR_VALID_INCLUDES = Joiner.on('|').join(Arrays.asList(ParamInclude.values()).stream().
             map(x -> x).collect(Collectors.toList()));
 
@@ -83,10 +87,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
                         x.getFullNameAliases());
             }).
             collect(Collectors.toList());
+
     private static final List<AlphabetDTO> ALL_ALPHABET_DTO = Arrays.asList(Alphabet.values()).stream().
             map(x -> new AlphabetDTO(x.name())).
             collect(Collectors.toList());
-
 
     /**
      * The constructor is called by Google Guice at start-up time and gets a processor injected
@@ -122,7 +126,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramTerritory,
             @Nullable final String paramAlphabet,
             @Nonnull final String paramInclude,
-            @Nonnull final HttpServletRequest httpServletRequest,
+            @Context @Nonnull final HttpServletRequest httpServletRequest,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         convertLatLonToMapcode(paramLatDeg, paramLonDeg, null, paramPrecision, paramTerritory, paramAlphabet,
                 paramInclude, httpServletRequest, response);
@@ -137,13 +141,14 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramTerritory,
             @Nullable final String paramAlphabet,
             @Nonnull final String paramInclude,
-            @Nonnull final HttpServletRequest httpServletRequest,
+            @Context @Nonnull final HttpServletRequest httpServletRequest,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         assert response != null;
 
         processor.process("convertLatLonToMapcode", LOG, response, () -> {
-            LOG.info("convertLatLonToMapcode: lat={}, lon={}, precision={}, type={}, context={}, alphabet={}, include={}",
-                    paramLatDeg, paramLonDeg, paramPrecision, paramType, paramTerritory, paramAlphabet, paramInclude);
+            final String clientIp = getClientIp(httpServletRequest);
+            LOG.info("convertLatLonToMapcode: lat={}, lon={}, precision={}, type={}, context={}, alphabet={}, include={}, ip={}",
+                    paramLatDeg, paramLonDeg, paramPrecision, paramType, paramTerritory, paramAlphabet, paramInclude, clientIp);
             metricsCollector.addOneLatLonToMapcodeRequest();
 
             // Check lat range.
@@ -197,7 +202,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             for (final String arg : paramInclude.toUpperCase().split(",")) {
                 if (!arg.isEmpty()) {
                     try {
-                        ParamInclude include = ParamInclude.valueOf(arg);
+                        final ParamInclude include = ParamInclude.valueOf(arg);
                         foundIncludeOffset = foundIncludeOffset || (include == ParamInclude.OFFSET);
                         foundIncludeTerritory = foundIncludeTerritory || (include == ParamInclude.TERRITORY);
                         foundIncludeAlphabet = foundIncludeAlphabet || (include == ParamInclude.ALPHABET);
@@ -213,7 +218,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final boolean includeAlphabet = foundIncludeAlphabet;
 
             // Send a trace event with the lat/lon and other parameters.
-            TRACER.eventLatLonToMapcode(latDeg, lonDeg, territory, precision, paramType,
+            TRACER.eventLatLonToMapcode(getClientIp(httpServletRequest), latDeg, lonDeg, territory, precision, paramType,
                     paramAlphabet, paramInclude, UTCTime.now());
 
             try {
@@ -326,7 +331,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Override
-    public void convertMapcodeToLatLon(@Nonnull final AsynchronousResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
+    public void convertMapcodeToLatLon(
+            @Context @Nonnull final HttpServletRequest httpServletRequest,
+            @Nonnull final AsynchronousResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
 
         // This method is forbidden. In REST terms, this would return all world coordinates - intractable.
         throw new ApiForbiddenException("Missing URL path parameters: /{mapcode}");
@@ -336,13 +343,14 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void convertMapcodeToLatLon(
             @Nonnull final String paramCode,
             @Nullable final String paramContext,
-            @Nonnull final HttpServletRequest httpServletRequest,
+            @Context @Nonnull final HttpServletRequest httpServletRequest,
             @Nonnull final AsynchronousResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
         assert paramCode != null;
         assert response != null;
 
         processor.process("convertMapcodeToLatLon", LOG, response, () -> {
-            LOG.info("convertMapcodeToLatLon: code={}, territory={}", paramCode, paramContext);
+            final String clientIp = getClientIp(httpServletRequest);
+            LOG.info("convertMapcodeToLatLon: code={}, territory={}, ip={}", paramCode, paramContext, clientIp);
             metricsCollector.addOneMapcodeToLatLonRequest();
 
             // Get the territory from the path (if specified).
@@ -365,10 +373,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
 
             // Send a trace event with the mapcode and territory.
-            TRACER.eventMapcodeToLatLon(paramCode, territoryContext, UTCTime.now());
+            TRACER.eventMapcodeToLatLon(clientIp, paramCode, territoryContext, UTCTime.now());
 
             // Create result body (always an ApiDTO).
-            ApiDTO result;
+            final ApiDTO result;
             try {
 
                 // Decode the actual mapcode.
@@ -393,12 +401,13 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void getTerritories(
             final int offset,
             final int count,
-            @Nonnull final HttpServletRequest httpServletRequest,
+            @Context @Nonnull final HttpServletRequest httpServletRequest,
             @Nonnull final AsynchronousResponse response) throws ApiIntegerOutOfRangeException {
         assert response != null;
 
         processor.process("getTerritories", LOG, response, () -> {
-            LOG.info("getTerritories");
+            final String clientIp = getClientIp(httpServletRequest);
+            LOG.info("getTerritories: ip={}", clientIp);
 
             // Check value of count.
             if (count < 0) {
@@ -425,13 +434,14 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void getTerritory(
             @Nonnull final String paramTerritory,
             @Nullable final String paramContext,
-            @Nonnull final HttpServletRequest httpServletRequest,
+            @Context @Nonnull final HttpServletRequest httpServletRequest,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         assert paramTerritory != null;
         assert response != null;
 
         processor.process("getTerritory", LOG, response, () -> {
-            LOG.info("getTerritory: territory={}, context={}", paramTerritory, paramContext);
+            final String clientIp = getClientIp(httpServletRequest);
+            LOG.info("getTerritory: territory={}, context={}, ip={}", paramTerritory, paramContext, clientIp);
 
             // Get the territory from the URL.
             final Territory territory;
@@ -466,12 +476,13 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void getAlphabets(
             final int offset,
             final int count,
-            @Nonnull final HttpServletRequest httpServletRequest,
+            @Context @Nonnull final HttpServletRequest httpServletRequest,
             @Nonnull final AsynchronousResponse response) throws ApiIntegerOutOfRangeException {
         assert response != null;
 
         processor.process("getAlphabets", LOG, response, () -> {
-            LOG.info("getAlphabets");
+            final String clientIp = getClientIp(httpServletRequest);
+            LOG.info("getAlphabets: ip={}", clientIp);
 
             // Check value of count.
             if (count < 0) {
@@ -497,13 +508,14 @@ public class MapcodeResourceImpl implements MapcodeResource {
     @Override
     public void getAlphabet(
             @Nonnull final String paramAlphabet,
-            @Nonnull final HttpServletRequest httpServletRequest,
+            @Context @Nonnull final HttpServletRequest httpServletRequest,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         assert paramAlphabet != null;
         assert response != null;
 
         processor.process("getAlphabet", LOG, response, () -> {
-            LOG.info("getAlphabet: alphabet={}", paramAlphabet);
+            final String clientIp = getClientIp(httpServletRequest);
+            LOG.info("getAlphabet: alphabet={}, ip={}", paramAlphabet, clientIp);
 
             // Get the territory from the URL.
             final Alphabet alphabet;
@@ -619,18 +631,40 @@ public class MapcodeResourceImpl implements MapcodeResource {
         }
     }
 
+    @Nonnull
+    public static String getClientIp(@Nonnull final HttpServletRequest httpServletRequest) {
+        final String unknown = "unknown";
+        String ip = httpServletRequest.getHeader("X-Forwarded-For");
+        if ((ip == null) || ip.isEmpty() || unknown.equalsIgnoreCase(ip)) {
+            ip = httpServletRequest.getHeader("Proxy-Client-IP");
+        }
+        if ((ip == null) || ip.isEmpty() || unknown.equalsIgnoreCase(ip)) {
+            ip = httpServletRequest.getHeader("WL-Proxy-Client-IP");
+        }
+        if ((ip == null) || ip.isEmpty() || unknown.equalsIgnoreCase(ip)) {
+            ip = httpServletRequest.getHeader("HTTP_CLIENT_IP");
+        }
+        if ((ip == null) || ip.isEmpty() || unknown.equalsIgnoreCase(ip)) {
+            ip = httpServletRequest.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if ((ip == null) || ip.isEmpty() || unknown.equalsIgnoreCase(ip)) {
+            ip = httpServletRequest.getRemoteAddr();
+        }
+        return ip;
+    }
+
     /**
      * This interface defines a Tracer interface for mapcode service events.
      */
     public interface Tracer extends Traceable {
 
         // A request to translate a lat/lon to a mapcode is made.
-        void eventLatLonToMapcode(double latDeg, double lonDeg, @Nullable Territory territory,
+        void eventLatLonToMapcode(@Nonnull String clientIp, double latDeg, double lonDeg, @Nullable Territory territory,
                                   int precision, @Nullable String type, @Nullable String alphabet,
                                   @Nullable String include, @Nonnull DateTime now);
 
         // A request to translate a mapcode to a lat/lon is made.
-        void eventMapcodeToLatLon(@Nonnull String code, @Nullable Territory territory, @Nonnull DateTime now);
+        void eventMapcodeToLatLon(@Nonnull String clientIp, @Nonnull String code, @Nullable Territory territory, @Nonnull DateTime now);
     }
 }
 
