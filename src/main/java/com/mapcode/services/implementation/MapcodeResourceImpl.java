@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.List;
@@ -105,7 +106,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Override
-    public void convertLatLonToMapcode(@Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
+    public void convertLatLonToMapcode(
+            @Nonnull final HttpServletRequest httpServletRequest,
+            @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
 
         // This method is forbidden. In REST terms, this should return ALL potential mapcodes - intractable.
         throw new ApiForbiddenException("Missing URL path parameters: /{lat,lon}/{" + API_ERROR_VALID_TYPES.toLowerCase() + '}');
@@ -119,9 +122,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramTerritory,
             @Nullable final String paramAlphabet,
             @Nonnull final String paramInclude,
+            @Nonnull final HttpServletRequest httpServletRequest,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         convertLatLonToMapcode(paramLatDeg, paramLonDeg, null, paramPrecision, paramTerritory, paramAlphabet,
-                paramInclude, response);
+                paramInclude, httpServletRequest, response);
     }
 
     @Override
@@ -133,6 +137,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramTerritory,
             @Nullable final String paramAlphabet,
             @Nonnull final String paramInclude,
+            @Nonnull final HttpServletRequest httpServletRequest,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         assert response != null;
 
@@ -208,7 +213,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final boolean includeAlphabet = foundIncludeAlphabet;
 
             // Send a trace event with the lat/lon and other parameters.
-            TRACER.eventLatLonToMapcode(latDeg, lonDeg, territory, precision, paramType, paramAlphabet, paramInclude, UTCTime.now());
+            TRACER.eventLatLonToMapcode(latDeg, lonDeg, territory, precision, paramType,
+                    paramAlphabet, paramInclude, UTCTime.now());
 
             try {
 
@@ -330,6 +336,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void convertMapcodeToLatLon(
             @Nonnull final String paramCode,
             @Nullable final String paramContext,
+            @Nonnull final HttpServletRequest httpServletRequest,
             @Nonnull final AsynchronousResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
         assert paramCode != null;
         assert response != null;
@@ -386,6 +393,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void getTerritories(
             final int offset,
             final int count,
+            @Nonnull final HttpServletRequest httpServletRequest,
             @Nonnull final AsynchronousResponse response) throws ApiIntegerOutOfRangeException {
         assert response != null;
 
@@ -417,6 +425,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void getTerritory(
             @Nonnull final String paramTerritory,
             @Nullable final String paramContext,
+            @Nonnull final HttpServletRequest httpServletRequest,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         assert paramTerritory != null;
         assert response != null;
@@ -457,6 +466,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void getAlphabets(
             final int offset,
             final int count,
+            @Nonnull final HttpServletRequest httpServletRequest,
             @Nonnull final AsynchronousResponse response) throws ApiIntegerOutOfRangeException {
         assert response != null;
 
@@ -487,6 +497,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
     @Override
     public void getAlphabet(
             @Nonnull final String paramAlphabet,
+            @Nonnull final HttpServletRequest httpServletRequest,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         assert paramAlphabet != null;
         assert response != null;

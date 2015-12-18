@@ -22,7 +22,9 @@ import org.jboss.resteasy.spi.AsynchronousResponse;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -65,22 +67,24 @@ public interface MapcodeResource {
     @GET
     @Path("codes")
     void convertLatLonToMapcode(
+            @Context HttpServletRequest httpServletRequest,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
     /**
      * Convert a lat/lon to one or more mapcodes. All possible mapcodes are returned.
      *
-     * @param paramLatDeg    Latitude. Range: [-90, 90].
-     * @param paramLonDeg    Longitude. Range: Any double, wrapped along the earth to [-180, 180].
-     * @param paramPrecision Precision specifier; specifies additional mapcode digits. Range: [0, 2].
-     * @param paramTerritory Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
-     *                       If the mapcode cannot be created for the territory, an exception is thrown.
-     *                       Range: any valid territory code, alpha or numeric.
-     * @param paramAlphabet  Alphabet. Range: any valid alphabet code, alpha or numeric.
-     * @param paramInclude   Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
-     *                       Range: {@link ParamInclude}.
-     * @param response       One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
-     *                       INTERNATIONAL and {@link com.mapcode.services.dto.MapcodesDTO} for ALL.
+     * @param paramLatDeg        Latitude. Range: [-90, 90].
+     * @param paramLonDeg        Longitude. Range: Any double, wrapped along the earth to [-180, 180].
+     * @param paramPrecision     Precision specifier; specifies additional mapcode digits. Range: [0, 2].
+     * @param paramTerritory     Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
+     *                           If the mapcode cannot be created for the territory, an exception is thrown.
+     *                           Range: any valid territory code, alpha or numeric.
+     * @param paramAlphabet      Alphabet. Range: any valid alphabet code, alpha or numeric.
+     * @param paramInclude       Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
+     *                           Range: {@link ParamInclude}.
+     * @param httpServletRequest HTTP servlet context, for IP address.
+     * @param response           One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
+     *                           INTERNATIONAL and {@link com.mapcode.services.dto.MapcodesDTO} for ALL.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -94,24 +98,26 @@ public interface MapcodeResource {
             @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
             @QueryParam(PARAM_ALPHABET) @Nullable final String paramAlphabet,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull final String paramInclude,
+            @Context HttpServletRequest httpServletRequest,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
     /**
      * Convert a lat/lon to one or more mapcodes.
      *
-     * @param paramLatDeg    Latitude. Range: [-90, 90].
-     * @param paramLonDeg    Longitude. Range: Any double, wrapped along the earth to [-180, 180].
-     * @param paramType      Specifies whether to return only the shortest local, the international, or all mapcodes.
-     *                       Range: {@link ParamType}, if null, no type is supplied.
-     * @param paramPrecision Precision specifier; specifies additional mapcode digits. Range: [0, 2].
-     * @param paramTerritory Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
-     *                       If the mapcode cannot be created for the territory, an exception is thrown.
-     *                       Range: any valid territory code, alpha or numeric.
-     * @param paramAlphabet  Alphabet. Range: any valid alphabet code, alpha or numeric.
-     * @param paramInclude   Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
-     *                       Range: {@link ParamInclude}.
-     * @param response       One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
-     *                       INTERNATIONAL and {@link com.mapcode.services.dto.MapcodesDTO} for ALL.
+     * @param paramLatDeg        Latitude. Range: [-90, 90].
+     * @param paramLonDeg        Longitude. Range: Any double, wrapped along the earth to [-180, 180].
+     * @param paramType          Specifies whether to return only the shortest local, the international, or all mapcodes.
+     *                           Range: {@link ParamType}, if null, no type is supplied.
+     * @param paramPrecision     Precision specifier; specifies additional mapcode digits. Range: [0, 2].
+     * @param paramTerritory     Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
+     *                           If the mapcode cannot be created for the territory, an exception is thrown.
+     *                           Range: any valid territory code, alpha or numeric.
+     * @param paramAlphabet      Alphabet. Range: any valid alphabet code, alpha or numeric.
+     * @param paramInclude       Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
+     *                           Range: {@link ParamInclude}.
+     * @param httpServletRequest HTTP servlet context, for IP address.
+     * @param response           One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
+     *                           INTERNATIONAL and {@link com.mapcode.services.dto.MapcodesDTO} for ALL.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -126,6 +132,7 @@ public interface MapcodeResource {
             @QueryParam(PARAM_TERRITORY) @Nullable final String paramTerritory,
             @QueryParam(PARAM_ALPHABET) @Nullable final String paramAlphabet,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull final String paramInclude,
+            @Context HttpServletRequest httpServletRequest,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
     // Unsupported operation.
@@ -137,10 +144,11 @@ public interface MapcodeResource {
     /**
      * Convert a mapcode into a lat/lon pair.
      *
-     * @param paramCode    Mapcode to convert.
-     * @param paramContext Specifies a territory context for interpretation of the mapcode.
-     *                     Range: any valid territory.
-     * @param response     Lat/lon. Format: {@link com.mapcode.services.dto.PointDTO}.
+     * @param paramCode          Mapcode to convert.
+     * @param paramContext       Specifies a territory context for interpretation of the mapcode.
+     *                           Range: any valid territory.
+     * @param httpServletRequest HTTP servlet context, for IP address.
+     * @param response           Lat/lon. Format: {@link com.mapcode.services.dto.PointDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -150,14 +158,16 @@ public interface MapcodeResource {
     void convertMapcodeToLatLon(
             @PathParam(PARAM_CODE) @Nonnull final String paramCode,
             @QueryParam(PARAM_CONTEXT) @Nullable final String paramContext,
+            @Context HttpServletRequest httpServletRequest,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
     /**
      * Get a list of all valid territory codes.
      *
-     * @param offset   Return values from 'offset'. Range: &gt;= 0 counts from start, &lt; 0 counts from end.
-     * @param count    Return 'count' values at most. Range: &gt;= 0.
-     * @param response Territory codes and information. Format: {@link com.mapcode.services.dto.TerritoriesDTO}.
+     * @param offset             Return values from 'offset'. Range: &gt;= 0 counts from start, &lt; 0 counts from end.
+     * @param count              Return 'count' values at most. Range: &gt;= 0.
+     * @param response           Territory codes and information. Format: {@link com.mapcode.services.dto.TerritoriesDTO}.
+     * @param httpServletRequest HTTP servlet context, for IP address.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -167,14 +177,16 @@ public interface MapcodeResource {
     void getTerritories(
             @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) final int offset,
             @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) final int count,
+            @Context HttpServletRequest httpServletRequest,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
     /**
      * Get info for a specific territory.
      *
-     * @param paramTerritory Territory code. Range: any valid territory code, alpha or numeric.
-     * @param paramContext   Context territory code for disambiguation. Range: any valid territory code, or alias.
-     * @param response       Territory information. Format: {@link com.mapcode.services.dto.TerritoryDTO}.
+     * @param paramTerritory     Territory code. Range: any valid territory code, alpha or numeric.
+     * @param paramContext       Context territory code for disambiguation. Range: any valid territory code, or alias.
+     * @param response           Territory information. Format: {@link com.mapcode.services.dto.TerritoryDTO}.
+     * @param httpServletRequest HTTP servlet context, for IP address.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -184,14 +196,16 @@ public interface MapcodeResource {
     void getTerritory(
             @PathParam(PARAM_TERRITORY) @Nonnull final String paramTerritory,
             @QueryParam(PARAM_CONTEXT) @Nullable final String paramContext,
+            @Context HttpServletRequest httpServletRequest,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
     /**
      * Get a list of all valid alphabet codes.
      *
-     * @param offset   Return values from 'offset'. Range: &gt;= 0 counts from start, &lt; 0 counts from end.
-     * @param count    Return 'count' values at most. Range: &gt;= 0.
-     * @param response Alphabet codes and information. Format: {@link com.mapcode.services.dto.AlphabetsDTO}.
+     * @param offset             Return values from 'offset'. Range: &gt;= 0 counts from start, &lt; 0 counts from end.
+     * @param count              Return 'count' values at most. Range: &gt;= 0.
+     * @param httpServletRequest HTTP servlet context, for IP address.
+     * @param response           Alphabet codes and information. Format: {@link com.mapcode.services.dto.AlphabetsDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -201,13 +215,15 @@ public interface MapcodeResource {
     void getAlphabets(
             @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) final int offset,
             @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) final int count,
+            @Context HttpServletRequest httpServletRequest,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
     /**
      * Get info for a specific alphabet.
      *
-     * @param paramAlphabet Alphabet code. Range: any valid alphabet code, alpha or numeric.
-     * @param response      Territory information. Format: {@link com.mapcode.services.dto.AlphabetDTO}.
+     * @param paramAlphabet      Alphabet code. Range: any valid alphabet code, alpha or numeric.
+     * @param httpServletRequest HTTP servlet context, for IP address.
+     * @param response           Territory information. Format: {@link com.mapcode.services.dto.AlphabetDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -216,6 +232,7 @@ public interface MapcodeResource {
     @Path("alphabets/{" + PARAM_ALPHABET + '}')
     void getAlphabet(
             @PathParam(PARAM_ALPHABET) @Nonnull final String paramAlphabet,
+            @Context HttpServletRequest httpServletRequest,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
 
 }
