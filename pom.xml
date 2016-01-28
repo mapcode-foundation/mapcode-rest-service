@@ -72,7 +72,7 @@
 
         <!-- Mapcode and SpeedTools libraries. -->
         <mapcode.version>2.2.3</mapcode.version>
-        <speedtools.version>3.0.12</speedtools.version>
+        <speedtools.version>3.0.13</speedtools.version>
 
         <!-- Library versions - these are not re-used from the top-level POM to simulate stand-alone usage. -->
         <apache-commons-lang.version>3.0</apache-commons-lang.version>
