@@ -74,7 +74,7 @@ The available REST API methods are:
        count             : Return 'count' items at most.
 
 
-## Build and Run: Missing `mapcode-secret.properties` File
+## Build and Run: `mapcode-secret.properties` File
 
 To build and run the REST API, type:
 
