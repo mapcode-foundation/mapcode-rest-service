@@ -172,7 +172,11 @@ Normally, one of our developers should be able to comment on them and fix.
 
 ## Release Notes
 
-* 2.2.1.0 - 2.2.3.2
+* 2.2.3.10
+
+    Fixed content type on GET operations to accept anything.
+
+* 2.2.1.0 - 2.2.3.9
 
     Based on new version of the Java library. Includes high-precision codes, up to precision 8.
 

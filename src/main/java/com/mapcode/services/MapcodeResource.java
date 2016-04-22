@@ -63,6 +63,7 @@ public interface MapcodeResource {
 
     // Unsupported operation.
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("codes")
     void convertLatLonToMapcode(
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
@@ -84,7 +85,6 @@ public interface MapcodeResource {
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + '}')
     void convertLatLonToMapcode(
@@ -115,7 +115,6 @@ public interface MapcodeResource {
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + "}/{" + PARAM_TYPE + '}')
     void convertLatLonToMapcode(
@@ -130,6 +129,7 @@ public interface MapcodeResource {
 
     // Unsupported operation.
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("coords")
     void convertMapcodeToLatLon(
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
@@ -144,7 +144,6 @@ public interface MapcodeResource {
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("coords/{" + PARAM_CODE + '}')
     void convertMapcodeToLatLon(
@@ -161,7 +160,6 @@ public interface MapcodeResource {
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("territories")
     void getTerritories(
@@ -178,7 +176,6 @@ public interface MapcodeResource {
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("territories/{" + PARAM_TERRITORY + '}')
     void getTerritory(
@@ -195,7 +192,6 @@ public interface MapcodeResource {
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("alphabets")
     void getAlphabets(
@@ -211,7 +207,6 @@ public interface MapcodeResource {
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("alphabets/{" + PARAM_ALPHABET + '}')
     void getAlphabet(
