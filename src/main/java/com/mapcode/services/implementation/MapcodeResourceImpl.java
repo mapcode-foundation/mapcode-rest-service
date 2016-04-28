@@ -123,9 +123,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramTerritory,
             @Nullable final String paramAlphabet,
             @Nonnull final String paramInclude,
+            @Nonnull final String paramDebug,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         convertLatLonToMapcode(paramLatDeg, paramLonDeg, null, paramPrecision, paramTerritory, paramAlphabet,
-                paramInclude, response);
+                paramInclude, paramDebug, response);
     }
 
     @Override
@@ -137,12 +138,17 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramTerritory,
             @Nullable final String paramAlphabet,
             @Nonnull final String paramInclude,
+            @Nonnull final String paramDebug,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         assert response != null;
 
         processor.process("convertLatLonToMapcode", LOG, response, () -> {
-            LOG.info("convertLatLonToMapcode: lat={}, lon={}, precision={}, type={}, context={}, alphabet={}, include={}",
-                    paramLatDeg, paramLonDeg, paramPrecision, paramType, paramTerritory, paramAlphabet, paramInclude);
+            // Get debug mode.
+            final boolean debug = paramDebug.equalsIgnoreCase("true");
+
+            LOG.info("convertLatLonToMapcode: lat={}, lon={}, precision={}, type={}, context={}, alphabet={}, include={}{}",
+                    paramLatDeg, paramLonDeg, paramPrecision, paramType, paramTerritory, paramAlphabet, paramInclude,
+                    debug ? " (DEBUG)" : "");
             metricsCollector.addOneLatLonToMapcodeRequest();
 
             // Check lat range.
@@ -212,8 +218,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final boolean includeAlphabet = foundIncludeAlphabet;
 
             // Send a trace event with the lat/lon and other parameters.
-            TRACER.eventLatLonToMapcode(latDeg, lonDeg, territory, precision, paramType,
-                    paramAlphabet, paramInclude, UTCTime.now());
+            if (!debug) {
+                TRACER.eventLatLonToMapcode(latDeg, lonDeg, territory, precision, paramType,
+                        paramAlphabet, paramInclude, UTCTime.now());
+            }
 
             try {
 
@@ -336,12 +344,16 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void convertMapcodeToLatLon(
             @Nonnull final String paramCode,
             @Nullable final String paramContext,
+            @Nonnull final String paramDebug,
             @Nonnull final AsynchronousResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
         assert paramCode != null;
         assert response != null;
 
         processor.process("convertMapcodeToLatLon", LOG, response, () -> {
-            LOG.info("convertMapcodeToLatLon: code={}, territory={}", paramCode, paramContext);
+            // Get debug mode.
+            final boolean debug = paramDebug.equalsIgnoreCase("true");
+
+            LOG.info("convertMapcodeToLatLon: code={}, territory={}{}", paramCode, paramContext, debug ? " (DEBUG)" : "");
             metricsCollector.addOneMapcodeToLatLonRequest();
 
             // Get the territory from the path (if specified).
@@ -364,7 +376,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
 
             // Send a trace event with the mapcode and territory.
-            TRACER.eventMapcodeToLatLon(paramCode, territoryContext, UTCTime.now());
+            if (!debug) {
+                TRACER.eventMapcodeToLatLon(paramCode, territoryContext, UTCTime.now());
+            }
 
             // Create result body (always an ApiDTO).
             final ApiDTO result;
@@ -392,11 +406,15 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void getTerritories(
             final int offset,
             final int count,
+            @Nonnull final String paramDebug,
             @Nonnull final AsynchronousResponse response) throws ApiIntegerOutOfRangeException {
         assert response != null;
 
         processor.process("getTerritories", LOG, response, () -> {
-            LOG.info("getTerritories");
+            // Get debug mode.
+            final boolean debug = paramDebug.equalsIgnoreCase("true");
+
+            LOG.info("getTerritories{}", debug ? " (DEBUG)" : "");
 
             // Check value of count.
             if (count < 0) {
@@ -423,12 +441,16 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void getTerritory(
             @Nonnull final String paramTerritory,
             @Nullable final String paramContext,
+            @Nonnull final String paramDebug,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         assert paramTerritory != null;
         assert response != null;
 
         processor.process("getTerritory", LOG, response, () -> {
-            LOG.info("getTerritory: territory={}, context={}", paramTerritory, paramContext);
+            // Get debug mode.
+            final boolean debug = paramDebug.equalsIgnoreCase("true");
+
+            LOG.info("getTerritory: territory={}, context={}{}", paramTerritory, paramContext, debug ? " (DEBUG)" : "");
 
             // Get the territory from the URL.
             final Territory territory;
@@ -463,11 +485,15 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void getAlphabets(
             final int offset,
             final int count,
+            @Nonnull final String paramDebug,
             @Nonnull final AsynchronousResponse response) throws ApiIntegerOutOfRangeException {
         assert response != null;
 
         processor.process("getAlphabets", LOG, response, () -> {
-            LOG.info("getAlphabets");
+            // Get debug mode.
+            final boolean debug = paramDebug.equalsIgnoreCase("true");
+
+            LOG.info("getAlphabets{}", debug ? " (DEBUG)" : "");
 
             // Check value of count.
             if (count < 0) {
@@ -493,12 +519,16 @@ public class MapcodeResourceImpl implements MapcodeResource {
     @Override
     public void getAlphabet(
             @Nonnull final String paramAlphabet,
+            @Nonnull final String paramDebug,
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         assert paramAlphabet != null;
         assert response != null;
 
         processor.process("getAlphabet", LOG, response, () -> {
-            LOG.info("getAlphabet: alphabet={}", paramAlphabet);
+            // Get debug mode.
+            final boolean debug = paramDebug.equalsIgnoreCase("true");
+
+            LOG.info("getAlphabet: alphabet={}{}", paramAlphabet, debug ? " (DEBUG)" : "");
 
             // Get the territory from the URL.
             final Alphabet alphabet;

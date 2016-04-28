@@ -172,6 +172,10 @@ Normally, one of our developers should be able to comment on them and fix.
 
 ## Release Notes
 
+* 2.2.3.11
+
+    Added debug mode, which prevents writing to the trace database.
+
 * 2.2.3.10
 
     Fixed content type on GET operations to accept anything.
