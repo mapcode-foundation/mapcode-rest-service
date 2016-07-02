@@ -172,6 +172,12 @@ Normally, one of our developers should be able to comment on them and fix.
 
 ## Release Notes
 
+* 2.2.3.12
+
+    Added full XML support, next to JSON. Use the HTTP Accept header to specify
+    the expected format: application/json or application/xml. (This features allows
+    users of MS Excel to use the "=WEBSERVICE()" function, on Windows.)
+
 * 2.2.3.11
 
     Added debug mode, which prevents writing to the trace database.

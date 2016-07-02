@@ -19,25 +19,43 @@ package com.mapcode.services.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.tomtom.speedtools.apivalidation.ApiListDTO;
+import com.tomtom.speedtools.objects.Immutables;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @JsonInclude(Include.NON_EMPTY)
+@XmlRootElement(name = "mapcodes")
+@XmlAccessorType(XmlAccessType.FIELD)
 public final class MapcodeListDTO extends ApiListDTO<MapcodeDTO> {
 
+    @XmlElement(name = "mapcode")
+    private List<MapcodeDTO> mapcodes;
+
     @Override
-    public void validateOne(@Nonnull final MapcodeDTO t) {
-        validator().checkNotNullAndValidate(true, "mapcode", t);
+    public void validateOne(@Nonnull final MapcodeDTO elm) {
+        validator().checkNotNullAndValidate(true, "mapcode", elm);
     }
 
     public MapcodeListDTO(@Nonnull final List<MapcodeDTO> list) {
         super(list);
+        mapcodes = Immutables.listOf(list);
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    @Deprecated
+    private MapcodeListDTO() {
+        // Default constructor required by JAX-B.
+        super();
     }
 
     @Override

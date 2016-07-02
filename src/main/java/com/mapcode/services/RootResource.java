@@ -44,9 +44,9 @@ public interface RootResource {
      *
      * @param response Returns a version number as JSON.
      */
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
     @Path("version")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     void getVersion(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response);
 
     /**
@@ -54,8 +54,8 @@ public interface RootResource {
      *
      * @param response Returns a version number as JSON.
      */
-    @GET
     @Path("status")
+    @GET
     void getStatus(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response);
 
     /**
@@ -63,8 +63,8 @@ public interface RootResource {
      *
      * @param response Returns a system metrics.
      */
+    @Path("metrics")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("metrics")
     void getMetrics(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response);
 }

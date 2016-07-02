@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 /**
@@ -40,9 +41,12 @@ public class RootResourceImpl implements RootResource {
 
     @Nonnull
     private static final String HELP_TEXT = "" +
+            "All REST services (except 'metrics') are able to return both JSON and XML.\n" +
+            "HTTP Accept header to specify the expected format: application/json or application/xml\n\n" +
+
             "GET /mapcode         Returns this help page.\n" +
             "GET /mapcode/version Returns the software version.\n" +
-            "GET /mapcode/metrics Returns some system metrics (also available from JMX).\n" +
+            "GET /mapcode/metrics Returns some system metrics (JSON-only, also available from JMX).\n" +
             "GET /mapcode/status  Returns 200 if the service OK.\n\n" +
 
             "GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]\n" +

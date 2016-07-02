@@ -64,7 +64,7 @@ public interface MapcodeResource {
 
     // Unsupported operation.
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("codes")
     void convertLatLonToMapcode(
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
@@ -87,7 +87,7 @@ public interface MapcodeResource {
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + '}')
     void convertLatLonToMapcode(
             @PathParam(PARAM_LAT_DEG) double paramLatDeg,
@@ -119,7 +119,7 @@ public interface MapcodeResource {
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + "}/{" + PARAM_TYPE + '}')
     void convertLatLonToMapcode(
             @PathParam(PARAM_LAT_DEG) double paramLatDeg,
@@ -134,7 +134,7 @@ public interface MapcodeResource {
 
     // Unsupported operation.
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("coords")
     void convertMapcodeToLatLon(
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
@@ -150,7 +150,7 @@ public interface MapcodeResource {
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("coords/{" + PARAM_CODE + '}')
     void convertMapcodeToLatLon(
             @PathParam(PARAM_CODE) @Nonnull String paramCode,
@@ -168,7 +168,7 @@ public interface MapcodeResource {
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("territories")
     void getTerritories(
             @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
@@ -186,7 +186,7 @@ public interface MapcodeResource {
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("territories/{" + PARAM_TERRITORY + '}')
     void getTerritory(
             @PathParam(PARAM_TERRITORY) @Nonnull String paramTerritory,
@@ -204,7 +204,7 @@ public interface MapcodeResource {
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("alphabets")
     void getAlphabets(
             @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
@@ -221,7 +221,7 @@ public interface MapcodeResource {
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("alphabets/{" + PARAM_ALPHABET + '}')
     void getAlphabet(
             @PathParam(PARAM_ALPHABET) @Nonnull String paramAlphabet,

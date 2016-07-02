@@ -25,10 +25,13 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.xml.bind.annotation.*;
 import java.util.List;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @JsonInclude(Include.NON_EMPTY)
+@XmlRootElement(name = "mapcodes")
+@XmlAccessorType(XmlAccessType.FIELD)
 public final class MapcodesDTO extends ApiDTO {
 
     @Nullable
@@ -37,8 +40,10 @@ public final class MapcodesDTO extends ApiDTO {
     @Nonnull
     private MapcodeDTO international;
 
+    @XmlElementWrapper(name = "mapcodes")
+    @XmlElement(name = "mapcode")
     @Nonnull
-    private List<MapcodeDTO> mapcodes;
+    private MapcodeListDTO mapcodes;
 
     @Override
     public void validate() {
@@ -49,10 +54,20 @@ public final class MapcodesDTO extends ApiDTO {
         validator().done();
     }
 
-    public MapcodesDTO(@Nullable final MapcodeDTO local, @Nonnull final MapcodeDTO international, @Nonnull final List<MapcodeDTO> mapcodes) {
+    public MapcodesDTO(
+            @Nullable final MapcodeDTO local,
+            @Nonnull final MapcodeDTO international,
+            @Nonnull final MapcodeListDTO mapcodes) {
         this.local = local;
         this.international = international;
         this.mapcodes = mapcodes;
+    }
+
+    public MapcodesDTO(
+            @Nullable final MapcodeDTO local,
+            @Nonnull final MapcodeDTO international,
+            @Nonnull final List<MapcodeDTO> mapcodes) {
+        this(local, international, new MapcodeListDTO(mapcodes));
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -91,7 +106,7 @@ public final class MapcodesDTO extends ApiDTO {
         this.local = international;
     }
 
-    public void setMapcodes(@Nonnull final List<MapcodeDTO> mapcodes) {
+    public void setMapcodes(@Nonnull final MapcodeListDTO mapcodes) {
         beforeSet();
         assert mapcodes != null;
         this.mapcodes = mapcodes;

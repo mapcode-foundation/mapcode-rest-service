@@ -90,6 +90,7 @@
         <log4j.version>1.2.17</log4j.version>
         <resteasy.version>3.0.12.Final</resteasy.version>
         <slf4j.version>1.7.13</slf4j.version>
+        <tjws.version>3.0.17.Final</tjws.version>
 
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
@@ -451,6 +452,13 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>tjws</artifactId>
+            <version>${tjws.version}</version>
             <scope>test</scope>
         </dependency>
 

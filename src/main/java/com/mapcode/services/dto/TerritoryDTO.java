@@ -26,9 +26,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.xml.bind.annotation.*;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @JsonInclude(Include.NON_EMPTY)
+@XmlRootElement(name = "territory")
+@XmlAccessorType(XmlAccessType.FIELD)
 public final class TerritoryDTO extends ApiDTO {
 
     @Nonnull
@@ -46,9 +49,13 @@ public final class TerritoryDTO extends ApiDTO {
     @Nullable
     private String parentTerritory;
 
+    @XmlElementWrapper(name = "aliases")
+    @XmlElements(@XmlElement(name = "alias"))
     @Nonnull
     private String[] aliases;
 
+    @XmlElementWrapper(name = "fullNameAliases")
+    @XmlElements(@XmlElement(name = "fullNameAlias"))
     @Nonnull
     private String[] fullNameAliases;
 
