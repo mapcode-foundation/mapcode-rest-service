@@ -77,7 +77,7 @@
         <!-- Library versions - these are not re-used from the top-level POM to simulate stand-alone usage. -->
         <apache-commons-lang.version>3.0</apache-commons-lang.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
-        <docker-maven-plugin.version>4.0.1</docker-maven-plugin.version>
+        <docker-maven-plugin.version>5.0.0</docker-maven-plugin.version>
         <guava.version>18.0</guava.version>
         <guice.version>4.0</guice.version>
         <jackson.version>2.7.2</jackson.version>
@@ -224,7 +224,6 @@
                     <plugin>
                         <groupId>net.wouterdanes.docker</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>${docker-maven-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>package</id>
@@ -324,6 +323,12 @@
             SpeedTools modules; normally you should specify a specific version
             instead of project.version.
         -->
+        <dependency>
+            <groupId>net.wouterdanes.docker</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>${docker-maven-plugin.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.tomtom.speedtools</groupId>
             <artifactId>apivalidation</artifactId>
