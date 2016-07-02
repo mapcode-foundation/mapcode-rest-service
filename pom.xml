@@ -259,6 +259,13 @@
         </dependency>
 
         <dependency>
+            <groupId>com.tomtom.speedtools</groupId>
+            <artifactId>testutils</artifactId>
+            <version>${speedtools.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.mapcode</groupId>
             <artifactId>mapcode</artifactId>
             <version>${mapcode.version}</version>
