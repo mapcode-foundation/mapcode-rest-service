@@ -77,7 +77,6 @@
         <!-- Library versions - these are not re-used from the top-level POM to simulate stand-alone usage. -->
         <apache-commons-lang.version>3.0</apache-commons-lang.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
-        <docker-maven-plugin.version>5.0.0</docker-maven-plugin.version>
         <guava.version>18.0</guava.version>
         <guice.version>4.0</guice.version>
         <jackson.version>2.7.2</jackson.version>
@@ -90,7 +89,6 @@
         <log4j.version>1.2.17</log4j.version>
         <resteasy.version>3.0.12.Final</resteasy.version>
         <slf4j.version>1.7.13</slf4j.version>
-        <tjws.version>3.0.17.Final</tjws.version>
 
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
@@ -200,135 +198,12 @@
         </resources>
     </build>
 
-    <profiles>
-        <profile>
-            <id>docker</id>
-
-            <properties>
-                <!-- TODO: Provide properties - how can we supply proper values here?
-                <docker.provider>local</docker.provider>
-                <docker.host>192.168.99.100</docker.host>
-                <docker.port>2376</docker.port>
-                -->
-            </properties>
-
-            <build>
-                <plugins>
-                    <!--
-                     Plugin to build docker image for Mapcode web service.
-
-                     Note: To have this working there must be an active docker
-                     instance running locally and maven build has to be executed
-                     within the docker VM.
-                    -->
-                    <plugin>
-                        <groupId>net.wouterdanes.docker</groupId>
-                        <artifactId>docker-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>package</id>
-                                <goals>
-                                    <goal>build-images</goal>
-                                </goals>
-                                <configuration>
-                                    <images>
-                                        <image>
-                                            <id>${project.artifactId}</id>
-                                            <nameAndTag>${project.artifactId}:${project.version}</nameAndTag>
-                                            <keep>true</keep>
-                                            <dockerFile>${project.basedir}/src/docker/Dockerfile</dockerFile>
-                                            <artifacts>
-                                                <artifact>
-                                                    <file>
-                                                        ${project.build.directory}/${project.artifactId}-${project.version}.war
-                                                    </file>
-                                                    <dest>${project.artifactId}.war</dest>
-                                                </artifact>
-                                                <artifact>
-                                                    <file>
-                                                        ${project.basedir}/src/config/mapcode-secret.properties
-                                                    </file>
-                                                </artifact>
-                                                <artifact>
-                                                    <file>
-                                                        ${project.basedir}/src/config/tomcat-users.xml
-                                                    </file>
-                                                </artifact>
-                                            </artifacts>
-                                        </image>
-                                    </images>
-                                </configuration>
-                            </execution>
-
-                            <execution>
-                                <id>start-container</id>
-                                <goals>
-                                    <goal>start-containers</goal>
-                                </goals>
-                                <configuration>
-
-                                    <!-- You can set forceCleanup to true to stop and remove started containers
-                                         at the end of the build even if the stop-containers goal is not executed
-                                         (useful for preventing Ctrl+C causing dangling containers).
-                                    -->
-                                    <forceCleanup>true</forceCleanup>
-                                    <containers>
-                                        <container>
-                                            <id>${project.artifactId}</id>
-                                            <image>${project.artifactId}:${project.version}</image>
-                                            <waitForStartup>Server startup in</waitForStartup>
-                                        </container>
-                                    </containers>
-                                </configuration>
-                            </execution>
-
-                            <execution>
-                                <id>stop-container</id>
-                                <goals>
-                                    <goal>stop-containers</goal>
-                                </goals>
-                            </execution>
-
-                            <!-- TODO: Remove comments to commit the containers.
-                            <execution>
-                                <id>commit</id>
-                                <goals>
-                                    <goal>commit-containers</goal>
-                                </goals>
-                                <configuration>
-                                    <containers>
-                                        <container>
-                                            <id>${project.artifactId}</id>
-                                            <tag>${project.version}</tag>
-                                            <comment>Build ${project.artifactId} version ${project.version} at
-                                                ${maven.build.timestamp}
-                                            </comment>
-                                            <author>mapcode-foundation</author>
-                                            <push>true</push>
-                                        </container>
-                                    </containers>
-                                </configuration>
-                            </execution>
-                            -->
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
     <dependencies>
 
         <!--
             SpeedTools modules; normally you should specify a specific version
             instead of project.version.
         -->
-        <dependency>
-            <groupId>net.wouterdanes.docker</groupId>
-            <artifactId>docker-maven-plugin</artifactId>
-            <version>${docker-maven-plugin.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>com.tomtom.speedtools</groupId>
             <artifactId>apivalidation</artifactId>
@@ -461,13 +336,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>tjws</artifactId>
-            <version>${tjws.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.jolokia</groupId>
             <artifactId>jolokia-core</artifactId>
             <version>${jolokia.version}</version>
@@ -549,6 +417,13 @@
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>async-http-servlet-3.0</artifactId>
             <version>${resteasy.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>tjws</artifactId>
+            <version>${resteasy.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
