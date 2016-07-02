@@ -182,6 +182,8 @@ Normally, one of our developers should be able to comment on them and fix.
     the expected format: application/json or application/xml. (This features allows
     users of MS Excel to use the "=WEBSERVICE()" function, on Windows.)
 
+    Added unit tests to test the REST services.
+
 * 2.2.3.11
 
     Added debug mode, which prevents writing to the trace database.
