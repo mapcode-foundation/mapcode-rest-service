@@ -2,12 +2,12 @@
 
 Copyright (C) 2014-2015 Stichting Mapcode Foundation (http://www.mapcode.com)
 
-*Warning:* If you want to use this source to run a production service, always use the source
-version from the latest release tag. Release names are tagged "vX.Y.Z". The head of the master
-branch may not be stable during development.
-
 This application provides a REST API for mapcodes. It uses the Java Library for Mapcodes
 extensively.
+
+**Warning:** *If you want to use this source to run a production service, always use the source
+version from the latest release tag. Release names are tagged "vX.Y.Z". The head of the master
+branch may not be stable during development.*
 
 The available REST API methods are:
 
