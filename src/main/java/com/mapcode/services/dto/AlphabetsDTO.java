@@ -50,7 +50,6 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class AlphabetsDTO extends ApiDTO {
 
-    @XmlElements(@XmlElement(name = "alphabet"))
     @Nonnull
     private List<AlphabetDTO> alphabets;
 

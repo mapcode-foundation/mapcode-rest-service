@@ -26,24 +26,20 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.util.List;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @JsonInclude(Include.NON_EMPTY)
-@XmlRootElement(name = "mapcodes")
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class MapcodeListDTO extends ApiListDTO<MapcodeDTO> {
 
-    @XmlElement(name = "mapcode")
+    @Nonnull
     private List<MapcodeDTO> mapcodes;
 
     @Override
-    public void validateOne(@Nonnull final MapcodeDTO elm) {
-        validator().checkNotNullAndValidate(true, "mapcode", elm);
+    public void validateOne(@Nonnull final MapcodeDTO t) {
+        validator().checkNotNullAndValidate(true, "mapcode", t);
     }
 
     public MapcodeListDTO(@Nonnull final List<MapcodeDTO> list) {
@@ -56,6 +52,15 @@ public final class MapcodeListDTO extends ApiListDTO<MapcodeDTO> {
     private MapcodeListDTO() {
         // Default constructor required by JAX-B.
         super();
+    }
+
+    @Nonnull
+    public List<MapcodeDTO> getMapcodes() {
+        return mapcodes;
+    }
+
+    public void setMapcodes(@Nonnull final List<MapcodeDTO> mapcodes) {
+        this.mapcodes = mapcodes;
     }
 
     @Override

@@ -40,8 +40,6 @@ public final class MapcodesDTO extends ApiDTO {
     @Nonnull
     private MapcodeDTO international;
 
-    @XmlElementWrapper(name = "mapcodes")
-    @XmlElement(name = "mapcode")
     @Nonnull
     private MapcodeListDTO mapcodes;
 

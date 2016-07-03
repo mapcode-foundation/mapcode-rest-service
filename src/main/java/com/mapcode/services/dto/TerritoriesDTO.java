@@ -43,7 +43,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
@@ -53,7 +52,6 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class TerritoriesDTO extends ApiDTO {
 
-    @XmlElement(name = "territory")
     @Nonnull
     private List<TerritoryDTO> territories;
 

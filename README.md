@@ -6,7 +6,7 @@ This application provides a REST API for mapcodes. It uses the Java Library for 
 extensively.
 
 **Warning:** *If you want to use this source to run a production service, always use the source
-version from the latest release tag. Release names are tagged "vX.Y.Z". The head of the master
+version from the **latest release tag**. Release names are tagged "vX.Y.Z". The head of the master
 branch may not be stable during development.*
 
 The available REST API methods are:
