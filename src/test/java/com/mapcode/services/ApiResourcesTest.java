@@ -26,9 +26,9 @@ import com.tomtom.speedtools.testutils.akka.SimpleExecutionContext;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.plugins.server.tjws.TJWSEmbeddedJaxrsServer;
 import org.joda.time.DateTime;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +38,8 @@ import javax.annotation.Nonnull;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-public class RootResourceTest {
-    private static final Logger LOG = LoggerFactory.getLogger(RootResourceTest.class);
+public class ApiResourcesTest {
+    private static final Logger LOG = LoggerFactory.getLogger(ApiResourcesTest.class);
 
     private static final String TEST_POM_VERSION = "TEST-1";
 
@@ -57,14 +57,15 @@ public class RootResourceTest {
 
     private static final int PORT = 8081;
     private static final String HOST = "http://localhost:" + PORT;
-    private static TJWSEmbeddedJaxrsServer server;
 
-    @BeforeClass
-    public static void startServer() {
+    private TJWSEmbeddedJaxrsServer server;
+
+    @Before
+    public void startServer() {
         server = new TJWSEmbeddedJaxrsServer();
         server.setPort(PORT);
 
-        // Create a simple ResourceProcessor, required for implementation of REST service.
+        // Create a simple ResourceProcessor, required for implementation of REST service using the SpeedTools framework.
         final Reactor reactor = new Reactor() {
             @Nonnull
             @Override
@@ -83,17 +84,19 @@ public class RootResourceTest {
             @Nonnull
             @Override
             public <T> T createTopLevelActor(@Nonnull final Class<T> interfaceClass, @Nonnull final Class<? extends T> implementationClass, @Nonnull Object... explicitParameters) {
+                assert false;
                 return null;
             }
         };
         final ResourceProcessor resourceProcessor = new ResourceProcessor(reactor);
 
-        // Add root.
+        // Add root resource.
         server.getDeployment().getResources().add(new RootResourceImpl(
                 new MavenProperties(TEST_POM_VERSION),
                 new SystemMetricsImpl()
         ));
 
+        // Add mapcode resource.
         server.getDeployment().getResources().add(new MapcodeResourceImpl(
                 resourceProcessor,
                 new SystemMetricsImpl()
@@ -101,8 +104,8 @@ public class RootResourceTest {
         server.start();
     }
 
-    @AfterClass
-    public static void stopServer() {
+    @After
+    public void stopServer() {
         server.stop();
     }
 
@@ -415,9 +418,14 @@ public class RootResourceTest {
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
         final String r = response.readEntity(String.class);
-        LOG.info("response=\n{}", r);
-        Assert.assertTrue(r.startsWith("{\"territories\":[{\"alphaCode\":\"USA\",\"alphaCodeMinimalUnambiguous\":\"USA\",\"alphaCodeMinimal\":\"USA\",\"fullName\":\"USA\",\"aliases\":[\"US\"],\"fullNameAliases\":[\"United States of America\",\"America\"]},{\"alphaCode\":\"IND\",\"alphaCodeMinimalUnambiguous\":\"IND\",\"alphaCodeMinimal\":\"IND\",\"fullName\":\"India\",\"aliases\":[\"IN\"]},{\"alphaCode\":\"CAN\",\"alphaCodeMinimalUnambiguous\":\"CAN\",\"alphaCodeMinimal\":\"CAN\",\"fullName\":\"Canada\",\"aliases\":[\"CA\"]},{\"alphaCode\":\"AUS\",\"alphaCodeMinimalUnambiguous\":\"AUS\",\"alphaCodeMinimal\":\"AUS\",\"fullName\":\"Australia\",\"aliases\":[\"AU\"]},{\"alphaCode\":\"MEX\",\"alphaCodeMinimalUnambiguous\":\"MEX\",\"alphaCodeMinimal\":\"MEX\",\"fullName\":\"Mexico\",\"aliases\":[\"MX\"]},{\"alphaCode\":\"BRA\",\"alphaCodeMinimalUnambiguous\":\"BRA\",\"alphaCodeMinimal\":\"BRA\",\"fullName\":\"Brazil\",\"aliases\":[\"BR\"]},{\"alphaCode\":\"RUS\",\"alphaCodeMinimalUnambiguous\":\"RUS\",\"alphaCodeMinimal\":\"RUS\",\"fullName\":\"Russia\",\"aliases\":[\"RU\"]},{\"alphaCode\":\"CHN\",\"alphaCodeMinimalUnambiguous\":\"CHN\",\"alphaCodeMinimal\":\"CHN\",\"fullName\":\"China\",\"aliases\":[\"CN\"]},{\"alphaCode\":\"ATA\",\"alphaCodeMinimalUnambiguous\":\"ATA\",\"alphaCodeMinimal\":\"ATA\",\"fullName\":\"Antarctica\"},{\"alphaCode\":\"VAT\",\"alphaCodeMinimalUnambiguous\":\"VAT\",\"alphaCodeMinimal\":\"VAT\",\"fullName\":\"Vatican City\",\"fullNameAliases\":[\"Holy See)\"]},{\"alphaCode\":\"MCO\",\"alphaCodeMinimalUnambiguous\":\"MCO\",\"alphaCodeMinimal\":\"MCO\",\"fullName\":\"Monaco\"},{\"alphaCode\":\"GIB\",\"alphaCodeMinimalUnambiguous\":\"GIB\",\"alphaCodeMinimal\":\"GIB\",\"fullName\":\"Gibraltar\"},{\"alphaCode\":\"TKL\",\"alphaCodeMinimalUnambiguous\":\"TKL\",\"alphaCodeMinimal\":\"TKL\",\"fullName\":\"Tokelau\"},{\"alphaCode\":\"CCK\",\"alphaCodeMinimalUnambiguous\":\"CCK\",\"alphaCodeMinimal\":\"CCK\",\"fullName\":\"Cocos Islands\",\"aliases\":[\"AU-CC\",\"AUS-CC\"],\"fullNameAliases\":[\"Keeling Islands\"]}"));
-        Assert.assertTrue(r.endsWith("\"alphaCodeMinimal\":\"XZ\",\"fullName\":\"Xizang\",\"parentTerritory\":\"CHN\",\"aliases\":[\"CN-54\"],\"fullNameAliases\":[\"Tibet\"]},{\"alphaCode\":\"CN-GS\",\"alphaCodeMinimalUnambiguous\":\"GS\",\"alphaCodeMinimal\":\"GS\",\"fullName\":\"Gansu\",\"parentTerritory\":\"CHN\",\"aliases\":[\"CN-62\"]},{\"alphaCode\":\"CN-QH\",\"alphaCodeMinimalUnambiguous\":\"QH\",\"alphaCodeMinimal\":\"QH\",\"fullName\":\"Qinghai\",\"parentTerritory\":\"CHN\",\"aliases\":[\"CN-63\"]},{\"alphaCode\":\"CN-XJ\",\"alphaCodeMinimalUnambiguous\":\"XJ\",\"alphaCodeMinimal\":\"XJ\",\"fullName\":\"Xinjiang Uyghur\",\"parentTerritory\":\"CHN\",\"aliases\":[\"CN-65\"]},{\"alphaCode\":\"UMI\",\"alphaCodeMinimalUnambiguous\":\"UMI\",\"alphaCodeMinimal\":\"UMI\",\"fullName\":\"United States Minor Outlying Islands\",\"aliases\":[\"US-UM\",\"USA-UM\",\"JTN\"]},{\"alphaCode\":\"CPT\",\"alphaCodeMinimalUnambiguous\":\"CPT\",\"alphaCodeMinimal\":"));
+        LOG.info("response={} chars, body=\n{}", r.length(), r);
+        Assert.assertTrue(r.length() > 500);
+        final String sub1 = r.substring(0, 500);
+        final String sub2 = r.substring(r.length() - 500, r.length());
+        Assert.assertEquals("{\"territories\":[{\"aliases\":[\"US\"],\"fullNameAliases\":[\"United States of America\",\"America\"],\"alphaCode\":\"USA\",\"alphaCodeMinimalUnambiguous\":\"USA\",\"alphaCodeMinimal\":\"USA\",\"fullName\":\"USA\"},{\"aliases\":[\"IN\"],\"alphaCode\":\"IND\",\"alphaCodeMinimalUnambiguous\":\"IND\",\"alphaCodeMinimal\":\"IND\",\"fullName\":\"India\"},{\"aliases\":[\"CA\"],\"alphaCode\":\"CAN\",\"alphaCodeMinimalUnambiguous\":\"CAN\",\"alphaCodeMinimal\":\"CAN\",\"fullName\":\"Canada\"},{\"aliases\":[\"AU\"],\"alphaCode\":\"AUS\",\"alphaCodeMinimalUnambiguous\":\"AUS\",\"alph",
+                sub1);
+        Assert.assertEquals("aCodeMinimal\":\"XJ\",\"fullName\":\"Xinjiang Uyghur\",\"parentTerritory\":\"CHN\"},{\"aliases\":[\"US-UM\",\"USA-UM\",\"JTN\"],\"alphaCode\":\"UMI\",\"alphaCodeMinimalUnambiguous\":\"UMI\",\"alphaCodeMinimal\":\"UMI\",\"fullName\":\"United States Minor Outlying Islands\"},{\"alphaCode\":\"CPT\",\"alphaCodeMinimalUnambiguous\":\"CPT\",\"alphaCodeMinimal\":\"CPT\",\"fullName\":\"Clipperton Island\"},{\"fullNameAliases\":[\"Worldwide\",\"Earth\"],\"alphaCode\":\"AAA\",\"alphaCodeMinimalUnambiguous\":\"AAA\",\"alphaCodeMinimal\":\"AAA\",\"fullName\":\"International\"}]}",
+                sub2);
     }
 
     @Test
@@ -430,9 +438,14 @@ public class RootResourceTest {
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
         final String r = response.readEntity(String.class);
-        LOG.info("response=\n{}", r);
-        Assert.assertTrue(r.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><territories><territory><alphaCode>USA</alphaCode><alphaCodeMinimalUnambiguous>USA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>USA</alphaCodeMinimal><fullName>USA</fullName><aliases><alias>US</alias></aliases><fullNameAliases><fullNameAlias>United States of America</fullNameAlias><fullNameAlias>America</fullNameAlias></fullNameAliases></territory><territory><alphaCode>IND</alphaCode><alphaCodeMinimalUnambiguous>IND</alphaCodeMinimalUnambiguous><alphaCodeMinimal>IND</alphaCodeMinimal><fullName>India</fullName><aliases><alias>IN</alias></aliases><fullNameAliases/></territory><territory><alphaCode>CAN</alphaCode><alphaCodeMinimalUnambiguous>CAN</alphaCodeMinimalUnambiguous><alphaCodeMinimal>CAN</alphaCodeMinimal><fullName>Canada</fullName><aliases><alias>CA</alias></aliases><fullNameAliases/></territory><territory><alphaCode>AUS</alphaCode><alphaCodeMinimalUnambiguous>AUS</alphaCodeMinimalUnambiguous><alphaCodeMinimal>AUS</alphaCodeMinimal><fullName>Australia</fullName><aliases><alias>AU</alias></aliases><fullNameAliases/></territory><territory><alphaCode>MEX</alphaCode><alphaCodeMinimalUnambiguous>MEX</alphaCodeMinimalUnambiguous><alphaCodeMinimal>MEX</alphaCodeMinimal><fullName>Mexico</fullName><aliases><alias>MX</alias></aliases><fullNameAliases/></territory><territory><alphaCode>BRA</alphaCode><alphaCodeMinimalUnambiguous>BRA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>BRA</alphaCodeMinimal>"));
-        Assert.assertTrue(r.endsWith("<alphaCodeMinimal>UMI</alphaCodeMinimal><fullName>United States Minor Outlying Islands</fullName><aliases><alias>US-UM</alias><alias>USA-UM</alias><alias>JTN</alias></aliases><fullNameAliases/></territory><territory><alphaCode>CPT</alphaCode><alphaCodeMinimalUnambiguous>CPT</alphaCodeMinimalUnambiguous><alphaCodeMinimal>CPT</alphaCodeMinimal><fullName>Clipperton Island</fullName><aliases/><fullNameAliases/></territory><territory><alphaCode>AAA</alphaCode><alphaCodeMinimalUnambiguous>AAA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>AAA</alphaCodeMinimal><fullName>International</fullName><aliases/><fullNameAliases><fullNameAlias>Worldwide</fullNameAlias><fullNameAlias>Earth</fullNameAlias></fullNameAliases></territory></territories>"));
+        LOG.info("response={} chars, body=\n{}", r.length(), r);
+        Assert.assertTrue(r.length() > 500);
+        final String sub1 = r.substring(0, 500);
+        final String sub2 = r.substring(r.length() - 500, r.length());
+        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><territories><territory><alphaCode>USA</alphaCode><alphaCodeMinimalUnambiguous>USA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>USA</alphaCodeMinimal><fullName>USA</fullName><aliases><alias>US</alias></aliases><fullNameAliases><fullNameAlias>United States of America</fullNameAlias><fullNameAlias>America</fullNameAlias></fullNameAliases></territory><territory><alphaCode>IND</alphaCode><alphaCodeMinimalUnambiguous>IND</alphaCodeMinimalUnambi",
+                sub1);
+        Assert.assertEquals("<alphaCodeMinimalUnambiguous>CPT</alphaCodeMinimalUnambiguous><alphaCodeMinimal>CPT</alphaCodeMinimal><fullName>Clipperton Island</fullName><aliases/><fullNameAliases/></territory><territory><alphaCode>AAA</alphaCode><alphaCodeMinimalUnambiguous>AAA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>AAA</alphaCodeMinimal><fullName>International</fullName><aliases/><fullNameAliases><fullNameAlias>Worldwide</fullNameAlias><fullNameAlias>Earth</fullNameAlias></fullNameAliases></territory></territories>",
+                sub2);
     }
 
     @Test
@@ -475,15 +488,80 @@ public class RootResourceTest {
     }
 
     @Test
-    public void checkAlphabetsXml() {
-        LOG.info("checkAlphabetsXml");
+    public void checkAlphabetsCountJson() {
+        LOG.info("checkAlphabetsCountJson");
         final Response response = new ResteasyClientBuilder().build().
-                target(HOST + "/mapcode/alphabets").
+                target(HOST + "/mapcode/alphabets?count=2").
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals("{\"alphabets\":[{\"name\":\"ROMAN\"},{\"name\":\"GREEK\"}]}",
+                response.readEntity(String.class));
+    }
+
+    @Test
+    public void checkAlphabetsCountXml() {
+        LOG.info("checkAlphabetsCountXml");
+        final Response response = new ResteasyClientBuilder().build().
+                target(HOST + "/mapcode/alphabets?count=2").
                 request().
                 accept(MediaType.APPLICATION_XML_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><alphabets><alphabet><name>ROMAN</name></alphabet><alphabet><name>GREEK</name></alphabet><alphabet><name>CYRILLIC</name></alphabet><alphabet><name>HEBREW</name></alphabet><alphabet><name>HINDI</name></alphabet><alphabet><name>MALAY</name></alphabet><alphabet><name>GEORGIAN</name></alphabet><alphabet><name>KATAKANA</name></alphabet><alphabet><name>THAI</name></alphabet><alphabet><name>LAO</name></alphabet><alphabet><name>ARMENIAN</name></alphabet><alphabet><name>BENGALI</name></alphabet><alphabet><name>GURMUKHI</name></alphabet><alphabet><name>TIBETAN</name></alphabet></alphabets>",
+        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><alphabets><alphabet><name>ROMAN</name></alphabet><alphabet><name>GREEK</name></alphabet></alphabets>",
+                response.readEntity(String.class));
+    }
+
+    @Test
+    public void checkAlphabetsCountOffsetJson() {
+        LOG.info("checkAlphabetsCountOffsetJson");
+        final Response response = new ResteasyClientBuilder().build().
+                target(HOST + "/mapcode/alphabets?count=1&offset=1").
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals("{\"alphabets\":[{\"name\":\"GREEK\"}]}",
+                response.readEntity(String.class));
+    }
+
+    @Test
+    public void checkAlphabetsCountOffsetXml() {
+        LOG.info("checkAlphabetsCountOffsetXml");
+        final Response response = new ResteasyClientBuilder().build().
+                target(HOST + "/mapcode/alphabets?count=1&offset=1").
+                request().
+                accept(MediaType.APPLICATION_XML_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><alphabets><alphabet><name>GREEK</name></alphabet></alphabets>",
+                response.readEntity(String.class));
+    }
+
+    @Test
+    public void checkAlphabetsCountOffsetFromEndJson() {
+        LOG.info("checkAlphabetsCountOffsetFromEndJson");
+        final Response response = new ResteasyClientBuilder().build().
+                target(HOST + "/mapcode/alphabets?count=1&offset=-1").
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals("{\"alphabets\":[{\"name\":\"TIBETAN\"}]}",
+                response.readEntity(String.class));
+    }
+
+    @Test
+    public void checkAlphabetsCountOffsetFromEndXml() {
+        LOG.info("checkAlphabetsCountOffsetXml");
+        final Response response = new ResteasyClientBuilder().build().
+                target(HOST + "/mapcode/alphabets?count=1&offset=-1").
+                request().
+                accept(MediaType.APPLICATION_XML_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><alphabets><alphabet><name>TIBETAN</name></alphabet></alphabets>",
                 response.readEntity(String.class));
     }
 

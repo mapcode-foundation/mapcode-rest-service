@@ -18,6 +18,7 @@ package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tomtom.speedtools.apivalidation.ApiListDTO;
 import com.tomtom.speedtools.objects.Immutables;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -31,15 +32,19 @@ import java.util.List;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @JsonInclude(Include.NON_EMPTY)
+@XmlRootElement(name = "mapcodes")
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class MapcodeListDTO extends ApiListDTO<MapcodeDTO> {
 
+    @JsonProperty("mapcodes")
+    @XmlElementWrapper(name = "mapcodes")
+    @XmlElement(name = "mapcode")
     @Nonnull
     private List<MapcodeDTO> mapcodes;
 
     @Override
-    public void validateOne(@Nonnull final MapcodeDTO t) {
-        validator().checkNotNullAndValidate(true, "mapcode", t);
+    public void validateOne(@Nonnull final MapcodeDTO elm) {
+        validator().checkNotNullAndValidate(true, "mapcode", elm);
     }
 
     public MapcodeListDTO(@Nonnull final List<MapcodeDTO> list) {

@@ -34,18 +34,23 @@ import javax.xml.bind.annotation.*;
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class TerritoryDTO extends ApiDTO {
 
+    @XmlElement(name = "alphaCode")
     @Nonnull
     private String alphaCode;
 
+    @XmlElement(name = "alphaCodeMinimalUnambiguous")
     @Nonnull
     private String alphaCodeMinimalUnambiguous;
 
+    @XmlElement(name = "alphaCodeMinimal")
     @Nonnull
     private String alphaCodeMinimal;
 
+    @XmlElement(name = "fullName")
     @Nonnull
     private String fullName;
 
+    @XmlElement(name = "parentTerritory")
     @Nullable
     private String parentTerritory;
 

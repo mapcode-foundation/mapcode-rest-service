@@ -44,7 +44,7 @@
 
     <!-- The SpeedTools framework. -->
     <logger name="com.tomtom.speedtools">
-        <level value="info"/>
+        <level value="warn"/>
     </logger>
 
     <!-- The JSON mapper shows a bit too much logging info sometimes, set it to warn. -->

@@ -34,17 +34,16 @@ package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
+import com.tomtom.speedtools.objects.Immutables;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.util.List;
+import javax.xml.bind.annotation.*;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @JsonInclude(Include.NON_EMPTY)
@@ -52,17 +51,22 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class TerritoriesDTO extends ApiDTO {
 
+    @JsonProperty("territories")
+    @XmlElement(name = "territory")
     @Nonnull
-    private List<TerritoryDTO> territories;
+    private TerritoryDTO[] territories;
 
     @Override
     public void validate() {
         validator().start();
-        validator().checkNotNullAndValidateAll(true, "territories", territories);
+        validator().checkNotNull(true, "territories", territories);
+        if (territories != null) {
+            validator().checkNotNullAndValidateAll(true, "territories", Immutables.listOf(territories));
+        }
         validator().done();
     }
 
-    public TerritoriesDTO(@Nonnull final List<TerritoryDTO> territories) {
+    public TerritoriesDTO(@Nonnull final TerritoryDTO[] territories) {
         this.territories = territories;
     }
 
@@ -74,12 +78,12 @@ public final class TerritoriesDTO extends ApiDTO {
     }
 
     @Nonnull
-    public List<TerritoryDTO> getTerritories() {
+    public TerritoryDTO[] getTerritories() {
         beforeGet();
         return territories;
     }
 
-    public void setTerritories(@Nonnull final List<TerritoryDTO> territories) {
+    public void setTerritories(@Nonnull final TerritoryDTO[] territories) {
         beforeSet();
         assert territories != null;
         this.territories = territories;

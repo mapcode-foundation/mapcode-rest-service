@@ -426,7 +426,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final int nrTerritories = ALL_TERRITORY_DTO.size();
             final int fromIndex = (offset < 0) ? Math.max(0, nrTerritories + offset) : Math.min(nrTerritories, offset);
             final int toIndex = Math.min(nrTerritories, fromIndex + count);
-            final TerritoriesDTO result = new TerritoriesDTO(ALL_TERRITORY_DTO.subList(fromIndex, toIndex));
+            final TerritoriesDTO result = new TerritoriesDTO(ALL_TERRITORY_DTO.subList(fromIndex, toIndex).toArray(new TerritoryDTO[0]));
 
             // Validate the result (internal consistency check).
             result.validate();
@@ -505,7 +505,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final int nrAlphabets = ALL_ALPHABET_DTO.size();
             final int fromIndex = (offset < 0) ? Math.max(0, nrAlphabets + offset) : Math.min(nrAlphabets, offset);
             final int toIndex = Math.min(nrAlphabets, fromIndex + count);
-            final AlphabetsDTO result = new AlphabetsDTO(ALL_ALPHABET_DTO.subList(fromIndex, toIndex));
+            final AlphabetsDTO result = new AlphabetsDTO(ALL_ALPHABET_DTO.subList(fromIndex, toIndex).toArray(new AlphabetDTO[0]));
 
             // Validate the result (internal consistency check).
             result.validate();

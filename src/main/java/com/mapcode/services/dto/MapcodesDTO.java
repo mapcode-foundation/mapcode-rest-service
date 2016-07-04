@@ -18,6 +18,7 @@ package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -34,12 +35,17 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class MapcodesDTO extends ApiDTO {
 
+    @XmlElement(name = "local")
     @Nullable
     private MapcodeDTO local;
 
+    @XmlElement(name = "international")
     @Nonnull
     private MapcodeDTO international;
 
+    @JsonProperty("mapcodes")
+    @XmlElementWrapper(name = "mapcodes")
+    @XmlElement(name = "mapcode")
     @Nonnull
     private MapcodeListDTO mapcodes;
 

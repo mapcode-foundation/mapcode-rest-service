@@ -18,6 +18,7 @@ package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.mapcode.services.ApiConstants;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -28,6 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
@@ -36,18 +38,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class MapcodeDTO extends ApiDTO {
 
+    @XmlElement(name = "mapcode")
     @Nonnull
     private String mapcode;
 
+    @XmlElement(name = "mapcodeInAlphabet")
     @Nullable
     private String mapcodeInAlphabet;
 
+    @XmlElement(name = "territory")
     @Nullable
     private String territory;
 
+    @XmlElement(name = "territoryInAlphabet")
     @Nullable
     private String territoryInAlphabet;
 
+    @XmlElement(name = "offsetMeters")
     @Nullable
     private Double offsetMeters;
 

@@ -34,7 +34,11 @@ package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
+import com.tomtom.speedtools.objects.Immutables;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -42,7 +46,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.*;
-import java.util.List;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @JsonInclude(Include.NON_EMPTY)
@@ -50,17 +53,22 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class AlphabetsDTO extends ApiDTO {
 
+    @JsonProperty("alphabets")
+    @XmlElement(name = "alphabet")
     @Nonnull
-    private List<AlphabetDTO> alphabets;
+    private AlphabetDTO[] alphabets;
 
     @Override
     public void validate() {
         validator().start();
-        validator().checkNotNullAndValidateAll(true, "alphabets", alphabets);
+        validator().checkNotNull(true, "alphabets", alphabets);
+        if (alphabets != null) {
+            validator().checkNotNull(true, "alphabets", Immutables.listOf(alphabets));
+        }
         validator().done();
     }
 
-    public AlphabetsDTO(@Nonnull final List<AlphabetDTO> alphabets) {
+    public AlphabetsDTO(@Nonnull final AlphabetDTO[] alphabets) {
         this.alphabets = alphabets;
     }
 
@@ -72,12 +80,12 @@ public final class AlphabetsDTO extends ApiDTO {
     }
 
     @Nonnull
-    public List<AlphabetDTO> getAlphabets() {
+    public AlphabetDTO[] getAlphabets() {
         beforeGet();
         return alphabets;
     }
 
-    public void setAlphabets(@Nonnull final List<AlphabetDTO> alphabets) {
+    public void setAlphabets(@Nonnull final AlphabetDTO[] alphabets) {
         beforeSet();
         assert alphabets != null;
         this.alphabets = alphabets;
