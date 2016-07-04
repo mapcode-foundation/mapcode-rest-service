@@ -197,6 +197,10 @@ Normally, one of our developers should be able to comment on them and fix.
 
 ## Release Notes
 
+* 2.2.3.14
+
+    Added help text.
+
 * 2.2.3.13
 
     Added additional XML support. You can prefix methods now with xml, to make
