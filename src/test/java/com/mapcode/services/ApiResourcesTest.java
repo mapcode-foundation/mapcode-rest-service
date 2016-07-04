@@ -404,7 +404,6 @@ public class ApiResourcesTest {
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
         final String r = response.readEntity(String.class);
-        LOG.info("response={} chars, body=\n{}", r.length(), r);
         Assert.assertTrue(r.length() > 500);
         final String sub1 = r.substring(0, 500);
         final String sub2 = r.substring(r.length() - 500, r.length());
@@ -424,7 +423,6 @@ public class ApiResourcesTest {
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
         final String r = response.readEntity(String.class);
-        LOG.info("response={} chars, body=\n{}", r.length(), r);
         Assert.assertTrue(r.length() > 500);
         final String sub1 = r.substring(0, 500);
         final String sub2 = r.substring(r.length() - 500, r.length());
