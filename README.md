@@ -176,6 +176,19 @@ Normally, one of our developers should be able to comment on them and fix.
 
 ## Release Notes
 
+* 2.2.3.13
+
+    Added additional XML support. You can prefix methods now with xml, to make
+    the default output XML, rather than JSON. This is particularly useful if you
+    need to use an XML service, but you can't specify the correct HTTP header.
+
+    Works with Google spreadsheets and Microsoft Excel. 
+
+    In Google spreadsheets use the =IMPORTXML function, e.g.
+    =IMPORTXML("http://api.mapcode.com/mapcode/xml/codes/52.376514,4.908543";"//local") 
+
+    In Microsoft Excel, use the =WEBSERVICE function.
+
 * 2.2.3.12
 
     Added full XML support, next to JSON. Use the HTTP Accept header to specify

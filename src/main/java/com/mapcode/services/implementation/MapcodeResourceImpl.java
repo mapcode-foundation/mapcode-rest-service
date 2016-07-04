@@ -37,6 +37,7 @@ import com.tomtom.speedtools.tracer.Traceable;
 import com.tomtom.speedtools.tracer.TracerFactory;
 import com.tomtom.speedtools.utils.MathUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.jboss.resteasy.annotations.Suspend;
 import org.jboss.resteasy.spi.AsynchronousResponse;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.List;
@@ -116,6 +118,11 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Override
+    public void convertLatLonToMapcodeXml(@Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiInvalidFormatException {
+        convertLatLonToMapcode(response);
+    }
+
+    @Override
     public void convertLatLonToMapcode(
             final double paramLatDeg,
             final double paramLonDeg,
@@ -127,6 +134,15 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         convertLatLonToMapcode(paramLatDeg, paramLonDeg, null, paramPrecision, paramTerritory, paramAlphabet,
                 paramInclude, paramDebug, response);
+    }
+
+    @Override
+    public void convertLatLonToMapcodeXml(
+            double paramLatDeg, double paramLonDeg, @DefaultValue("0") int paramPrecision,
+            @Nullable String paramTerritory, @Nullable String paramAlphabet, @DefaultValue("") @Nonnull String paramInclude,
+            @DefaultValue("false") @Nonnull String paramDebug, @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response)
+            throws ApiInvalidFormatException {
+        convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramPrecision, paramTerritory, paramAlphabet, paramInclude, paramDebug, response);
     }
 
     @Override
@@ -333,11 +349,26 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Override
+    public void convertLatLonToMapcodeXml(
+            double paramLatDeg, double paramLonDeg, @Nullable String paramType, @DefaultValue("0") int paramPrecision,
+            @Nullable String paramTerritory, @Nullable String paramAlphabet, @DefaultValue("") @Nonnull String paramInclude,
+            @DefaultValue("false") @Nonnull String paramDebug, @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response)
+            throws ApiInvalidFormatException {
+        convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramType, paramPrecision, paramTerritory, paramAlphabet, paramInclude, paramDebug, response);
+    }
+
+    @Override
     public void convertMapcodeToLatLon(
             @Nonnull final AsynchronousResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
 
         // This method is forbidden. In REST terms, this would return all world coordinates - intractable.
         throw new ApiForbiddenException("Missing URL path parameters: /{mapcode}");
+    }
+
+    @Override
+    public void convertMapcodeToLatLonXml(@Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response)
+            throws ApiNotFoundException, ApiInvalidFormatException {
+        convertMapcodeToLatLon(response);
     }
 
     @Override
@@ -403,6 +434,14 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Override
+    public void convertMapcodeToLatLonXml(
+            @Nonnull String paramCode, @Nullable String paramContext, @DefaultValue("false") @Nonnull String paramDebug,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response)
+            throws ApiNotFoundException, ApiInvalidFormatException {
+        convertMapcodeToLatLon(paramCode, paramContext, paramDebug, response);
+    }
+
+    @Override
     public void getTerritories(
             final int offset,
             final int count,
@@ -435,6 +474,14 @@ public class MapcodeResourceImpl implements MapcodeResource {
             // The response is already set within this method body.
             return Futures.successful(null);
         });
+    }
+
+    @Override
+    public void getTerritoriesXml(
+            @DefaultValue(DEFAULT_OFFSET) int offset, @DefaultValue(DEFAULT_COUNT) int count,
+            @DefaultValue("false") @Nonnull String paramDebug, @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response)
+            throws ApiIntegerOutOfRangeException {
+        getTerritories(offset, count, paramDebug, response);
     }
 
     @Override
@@ -482,6 +529,14 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Override
+    public void getTerritoryXml(
+            @Nonnull String paramTerritory, @Nullable String paramContext, @DefaultValue("false") @Nonnull String paramDebug,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response)
+            throws ApiInvalidFormatException {
+        getTerritory(paramTerritory, paramContext, paramDebug, response);
+    }
+
+    @Override
     public void getAlphabets(
             final int offset,
             final int count,
@@ -517,6 +572,14 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Override
+    public void getAlphabetsXml(
+            @DefaultValue(DEFAULT_OFFSET) int offset, @DefaultValue(DEFAULT_COUNT) int count,
+            @DefaultValue("false") @Nonnull String paramDebug, @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response)
+            throws ApiIntegerOutOfRangeException {
+        getAlphabets(offset, count, paramDebug, response);
+    }
+
+    @Override
     public void getAlphabet(
             @Nonnull final String paramAlphabet,
             @Nonnull final String paramDebug,
@@ -548,6 +611,14 @@ public class MapcodeResourceImpl implements MapcodeResource {
             // The response is already set within this method body.
             return Futures.successful(null);
         });
+    }
+
+    @Override
+    public void getAlphabetXml(
+            @Nonnull String paramAlphabet, @DefaultValue("false") @Nonnull String paramDebug,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response)
+            throws ApiInvalidFormatException {
+        getAlphabet(paramAlphabet, paramDebug, response);
     }
 
     @Nonnull

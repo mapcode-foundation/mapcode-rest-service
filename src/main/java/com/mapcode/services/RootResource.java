@@ -49,14 +49,25 @@ public interface RootResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     void getVersion(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response);
 
+    @Path("xml/version")
+    @GET
+    @Produces(MediaType.APPLICATION_XML)
+    void getVersionXml(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response);
+
     /**
      * This method returns whether the service is operational or not (status code 200 is OK).
      *
      * @param response Returns a version number as JSON.
      */
     @Path("status")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @GET
     void getStatus(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response);
+
+    @Path("xml/status")
+    @Produces(MediaType.APPLICATION_XML)
+    @GET
+    void getStatusXml(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response);
 
     /**
      * This method returns system metrics.

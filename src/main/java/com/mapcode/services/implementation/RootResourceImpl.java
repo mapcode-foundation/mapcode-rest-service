@@ -156,10 +156,20 @@ public class RootResourceImpl implements RootResource {
     }
 
     @Override
+    public void getVersionXml(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response) {
+        getVersion(response);
+    }
+
+    @Override
     public void getStatus(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) final AsynchronousResponse response) {
         assert response != null;
         LOG.info("getStatus: get status");
         response.setResponse(Response.ok().build());
+    }
+
+    @Override
+    public void getStatusXml(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response) {
+        getStatus(response);
     }
 
     @Override
