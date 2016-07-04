@@ -3,7 +3,7 @@
 Copyright (C) 2014-2016 Stichting Mapcode Foundation (http://www.mapcode.com)
 
 This application provides a REST API for mapcodes. It uses the Java Library for Mapcodes
-extensively.
+extensively. The API supports both XML and JSON (default) responses.
 
 **Warning:** *If you want to use this source to run a production service, always use the source
 version from the **latest release tag**. Release names are tagged "vX.Y.Z". The head of the master

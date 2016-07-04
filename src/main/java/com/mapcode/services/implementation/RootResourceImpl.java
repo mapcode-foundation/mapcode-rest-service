@@ -41,8 +41,9 @@ public class RootResourceImpl implements RootResource {
 
     @Nonnull
     private static final String HELP_TEXT = "" +
-            "All REST services (except 'metrics') are able to return both JSON and XML.\n" +
-            "HTTP Accept header to specify the expected format: application/json or application/xml\n\n" +
+            "All REST services (except 'metrics') are able to return both JSON and XML. Use the HTTP\n" +
+            "'Accept:' header to specify the expected format: application/json or application/xml\n" +
+            "If the 'Accept:' header is omitted, JSON is assumed." +
 
             "GET /mapcode         Returns this help page.\n" +
             "GET /mapcode/version Returns the software version.\n" +

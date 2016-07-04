@@ -227,5 +227,4 @@ public interface MapcodeResource {
             @PathParam(PARAM_ALPHABET) @Nonnull String paramAlphabet,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
             @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
-
 }
