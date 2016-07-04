@@ -77,6 +77,27 @@ The available REST API methods are:
        offset            : Return list from 'offset' (negative value start counting from end).
        count             : Return 'count' items at most.
 
+## Supporting JSON and XML Responses
+
+The REST API methods defined above obey the HTTP "Accept:" header. To retrieve JSON responses,
+use "Accept:application/json", to retrieve XML responses, use "Accept:application/xml".
+
+The default response type is **JSON**, if no "Accept:" header is specified.
+
+Alternatively, to retrieve **XML** responses if no "Accept:" header is specified, you can add "/xml"
+in the URL, directly after "/mapcode".
+
+So, the following methods are supported as well and return XML by default:
+
+    GET /mapcode/xml/version
+    GET /mapcode/xml/status
+    GET /mapcode/xml/codes
+    GET /mapcode/xml/coords
+    GET /mapcode/xml/territories
+    GET /mapcode/xml/alphabets
+
+We recommend to use the method without "/xml: and use the "Accept:" header to specify the
+response type, however.
 
 ## Build and Run: `mapcode-secret.properties` File
 
@@ -182,10 +203,10 @@ Normally, one of our developers should be able to comment on them and fix.
     the default output XML, rather than JSON. This is particularly useful if you
     need to use an XML service, but you can't specify the correct HTTP header.
 
-    Works with Google spreadsheets and Microsoft Excel. 
+    Works with Google spreadsheets and Microsoft Excel.
 
     In Google spreadsheets use the =IMPORTXML function, e.g.
-    =IMPORTXML("http://api.mapcode.com/mapcode/xml/codes/52.376514,4.908543";"//local") 
+    =IMPORTXML("http://api.mapcode.com/mapcode/xml/codes/52.376514,4.908543";"//local")
 
     In Microsoft Excel, use the =WEBSERVICE function.
 

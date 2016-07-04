@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 /**
@@ -111,8 +110,27 @@ public class RootResourceImpl implements RootResource {
 
             "General query parameters for methods which return a list of results:\n\n" +
             "   offset            : Return list from 'offset' (negative value start counting from end).\n" +
-            "   count             : Return 'count' items at most.\n";
+            "   count             : Return 'count' items at most.\n\n" +
 
+            "The REST API methods defined above obey the HTTP \"Accept:\" header. To retrieve JSON responses,\n" +
+            "use \"Accept:application/json\", to retrieve XML responses, use \"Accept:application/xml\".\n\n" +
+
+            "The default response type is **JSON**, if no \"Accept:\" header is specified.\n\n" +
+
+            "Alternatively, to retrieve **XML** responses if no \"Accept:\" header is specified, you can add \"/xml\"\n" +
+            "in the URL, directly after \"/mapcode\".\n\n" +
+
+            "So, the following methods are supported as well and return XML by default:\n\n" +
+
+            "    GET /mapcode/xml/version\n" +
+            "    GET /mapcode/xml/status\n" +
+            "    GET /mapcode/xml/codes\n" +
+            "    GET /mapcode/xml/coords\n" +
+            "    GET /mapcode/xml/territories\n" +
+            "    GET /mapcode/xml/alphabets\n\n" +
+
+            "We recommend to use the method without \"/xml: and use the \"Accept:\" header to specify the\n" +
+            "response type, however.\n";
 
     private final MavenProperties mavenProperties;
     private final SystemMetrics metrics;
