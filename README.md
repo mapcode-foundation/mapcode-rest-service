@@ -77,17 +77,15 @@ The available REST API methods are:
        offset            : Return list from 'offset' (negative value start counting from end).
        count             : Return 'count' items at most.
 
-## Supporting JSON and XML Responses
+## Supporting XML Tools (e.g. Google Spreadsheets, Microsoft Excel)
 
 The REST API methods defined above obey the HTTP "Accept:" header. To retrieve JSON responses,
-use "Accept:application/json", to retrieve XML responses, use "Accept:application/xml".
+use **Accept:application/json**, to retrieve XML responses, use **Accept:application/xml**.
+The default response type, if no header is specified, is **JSON**.
 
-The default response type is **JSON**, if no "Accept:" header is specified.
-
-Alternatively, to retrieve **XML** responses if no "Accept:" header is specified, you can add "/xml"
-in the URL, directly after "/mapcode".
-
-So, the following methods are supported as well and return XML by default:
+Some tools, like Google Spreadheets and Microsoft Excel, can only handle XML responses, but do
+not provide the correct HTTP "Accept:" header. In these cases you can alternatively
+retrieve **XML** responses with these alias URLs (note the "/xml" in the URLs):
 
     GET /mapcode/xml/version
     GET /mapcode/xml/status
@@ -96,8 +94,11 @@ So, the following methods are supported as well and return XML by default:
     GET /mapcode/xml/territories
     GET /mapcode/xml/alphabets
 
-We recommend to use the method without "/xml: and use the "Accept:" header to specify the
-response type, however.
+These URLs only provide XML responses, with or without the HTTP "Accept:" header.
+
+You can use these URLs, for example, in Google Spreadsheets, using the **=IMPORTXML(url, xpath)**
+function, or in Microsoft Excel 2013 or 2016 (for Windows) using the **=FILTERXML(WEBSERVICE(url), xpath)**
+functions. This should make live integration of mapcode conversion with your spreadsheets a breeze.
 
 ## Build and Run: `mapcode-secret.properties` File
 
