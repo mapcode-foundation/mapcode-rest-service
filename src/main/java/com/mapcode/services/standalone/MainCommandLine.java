@@ -30,13 +30,13 @@ import javax.annotation.Nonnull;
 import java.io.File;
 
 @SuppressWarnings({"UseOfSystemOutOrSystemErr", "ConstantConditions"})
-public class CommandLine {
+public class MainCommandLine {
     private static final String CMD_HELP = "--help";
     private static final String CMD_PROPERTIES = "--properties";
     private static final String CMD_SILENT = "--silent";
     private static final String CMD_DEBUG = "--debug";
 
-    private CommandLine() {
+    private MainCommandLine() {
         // Prevent instantiation.
     }
 

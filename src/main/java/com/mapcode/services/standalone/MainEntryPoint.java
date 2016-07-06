@@ -32,12 +32,11 @@ import java.util.jar.JarFile;
 /**
  * Stub to load cli main from war file.
  */
-public class Main {
-
-    private static final String MAIN_CLASS_NAME = "com.mapcode.service.standalone.CommandLine";
+public class MainEntryPoint {
+    private static final String MAIN_CLASS_NAME = "com.mapcode.services.standalone.MainCommandLine";
     private static final String MAIN_METHOD_NAME = "main";
 
-    private Main() {
+    private MainEntryPoint() {
         // Prevent instantiation.
     }
 
@@ -73,7 +72,7 @@ public class Main {
 
     @Nonnull
     private static String getWarFile() {
-        final URLClassLoader classLoader = (URLClassLoader) Main.class.getClassLoader();
+        final URLClassLoader classLoader = (URLClassLoader) MainEntryPoint.class.getClassLoader();
         for (final URL url : classLoader.getURLs()) {
             if (url.toString().endsWith(".war")) {
                 return url.getFile();
