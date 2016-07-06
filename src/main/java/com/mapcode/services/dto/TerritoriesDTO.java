@@ -60,6 +60,7 @@ public final class TerritoriesDTO extends ApiDTO {
     public void validate() {
         validator().start();
         validator().checkNotNull(true, "territories", territories);
+        //noinspection ConstantConditions
         if (territories != null) {
             validator().checkNotNullAndValidateAll(true, "territories", Immutables.listOf(territories));
         }

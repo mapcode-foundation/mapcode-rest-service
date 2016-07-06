@@ -41,12 +41,12 @@ import javax.ws.rs.ext.Provider;
 public class CorsFeature implements Feature {
 
     @Override
-    public boolean configure(@Nonnull final FeatureContext featureContext) {
+    public boolean configure(@Nonnull final FeatureContext context) {
 
         // Add the appropriate CORS header.
         final CorsFilter corsFilter = new CorsFilter();
         corsFilter.getAllowedOrigins().add("*");
-        featureContext.register(corsFilter);
+        context.register(corsFilter);
         return true;
     }
 }
