@@ -27,7 +27,7 @@
         <param-name>resteasy.guice.modules</param-name>
         <param-value>
             com.tomtom.speedtools.rest.ServicesModule,
-            com.mapcode.services.ServicesModule,
+            com.mapcode.services.ResourcesModule,
             com.mapcode.services.deployment.DeploymentModule
         </param-value>
     </context-param>

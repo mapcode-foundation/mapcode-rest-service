@@ -1,0 +1,146 @@
+/*
+ * Copyright (C) 2016 Stichting Mapcode Foundation (http://www.mapcode.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.mapcode.services.standalone;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.mapcode.services.ResourcesModule;
+import com.tomtom.speedtools.guice.GuiceConfigurationModule;
+import com.tomtom.speedtools.rest.ServicesModule;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.SimpleLayout;
+
+import javax.annotation.Nonnull;
+import java.io.File;
+
+@SuppressWarnings({"UseOfSystemOutOrSystemErr", "ConstantConditions"})
+public class CommandLine {
+    private static final String CMD_HELP = "--help";
+    private static final String CMD_PROPERTIES = "--properties";
+    private static final String CMD_SILENT = "--silent";
+    private static final String CMD_DEBUG = "--debug";
+
+    private CommandLine() {
+        // Prevent instantiation.
+    }
+
+    public static void main(final String[] args) {
+        String command = null;
+        String propertyFile = "classpath:mapcode-secret.properties";
+        boolean debug = false;
+
+        // Configure log4j.
+        final Logger rootLogger = Logger.getRootLogger();
+        rootLogger.setLevel(Level.INFO);
+
+        final ConsoleAppender consoleAppender = new ConsoleAppender(new SimpleLayout());
+        consoleAppender.setThreshold(Level.INFO);
+        rootLogger.addAppender(consoleAppender);
+
+        // Parse command-line arguments.
+        int index = 0;
+        while (index < args.length) {
+
+            switch (args[index]) {
+                case CMD_PROPERTIES:
+                    index++;
+                    if (index < args.length) {
+                        propertyFile = args[index];
+                    } else {
+                        System.out.println("Missing property file name.");
+                        printUsage();
+                        return;
+                    }
+                    break;
+
+                case CMD_SILENT:
+                    rootLogger.setLevel(Level.WARN);
+                    consoleAppender.setThreshold(Level.WARN);
+                    break;
+
+                case CMD_DEBUG:
+                    debug = true;
+                    break;
+
+                default:
+                    if (args[index].startsWith("-")) {
+                        System.out.println("Unknown option: " + args[index]);
+                        printUsage();
+                        return;
+                    }
+                    if (command != null) {
+                        System.out.println("Unknown argument: " + args[index]);
+                        printUsage();
+                        return;
+                    }
+                    command = args[index];
+                    break;
+            }
+            ++index;
+        }
+
+        if (debug) {
+            consoleAppender.setThreshold(Level.DEBUG);
+        }
+
+        // Create a url out of property file.
+        if (propertyFile.indexOf(':') < 0) {
+            propertyFile = new File(propertyFile).toURI().toString();
+        }
+
+        if ((command != null) && command.equals(CMD_HELP)) {
+            printUsage();
+        } else {
+            final Injector guice = createGuice(propertyFile);
+            final Server server = guice.getInstance(Server.class);
+            server.run();
+        }
+    }
+
+    /**
+     * Create the guice injector.
+     *
+     * @param propertyFile Property file to use.
+     * @return Guice injector.
+     */
+    private static Injector createGuice(@Nonnull final String propertyFile) {
+        assert propertyFile != null;
+        return Guice.createInjector(
+                new ServicesModule(),
+                new ResourcesModule(),
+                new StandaloneModule(),
+                new GuiceConfigurationModule(
+                        "classpath:speedtools.default.properties",      // Default set required by SpeedTools.
+                        "classpath:mapcode.properties",                 // Specific for mapcode service.
+                        propertyFile));                                 // Secret properties (not in WAR file).
+    }
+
+    private static void printUsage() {
+        System.out.println("Usage: java -jar <warfile>" +
+                " [" + CMD_PROPERTIES + " <property-file>]" +
+                " [" + CMD_SILENT + "] [" + CMD_DEBUG + ']');
+        System.out.println("       java -jar <warfile> " + CMD_HELP);
+    }
+
+    private static void endNotice(@Nonnull final String filename) {
+        assert filename != null;
+        System.out.println("(Note: the full output of this program is stored in: " + filename);
+        System.out.println("This file may grow very large. You may wish to remove it.)");
+    }
+}
