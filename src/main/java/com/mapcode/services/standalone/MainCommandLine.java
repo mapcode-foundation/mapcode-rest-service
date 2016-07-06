@@ -27,12 +27,10 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 
 import javax.annotation.Nonnull;
-import java.io.File;
 
 @SuppressWarnings({"UseOfSystemOutOrSystemErr", "ConstantConditions"})
 public class MainCommandLine {
     private static final String CMD_HELP = "--help";
-    private static final String CMD_PROPERTIES = "--properties";
     private static final String CMD_SILENT = "--silent";
     private static final String CMD_DEBUG = "--debug";
 
@@ -42,7 +40,6 @@ public class MainCommandLine {
 
     public static void execute(final String[] args) {
         String command = null;
-        String propertyFile = "classpath:mapcode-secret.properties";
         boolean debug = false;
 
         // Configure log4j.
@@ -58,17 +55,6 @@ public class MainCommandLine {
         while (index < args.length) {
 
             switch (args[index]) {
-                case CMD_PROPERTIES:
-                    index++;
-                    if (index < args.length) {
-                        propertyFile = args[index];
-                    } else {
-                        System.out.println("Missing property file name.");
-                        printUsage();
-                        return;
-                    }
-                    break;
-
                 case CMD_SILENT:
                     rootLogger.setLevel(Level.WARN);
                     consoleAppender.setThreshold(Level.WARN);
@@ -99,15 +85,10 @@ public class MainCommandLine {
             consoleAppender.setThreshold(Level.DEBUG);
         }
 
-        // Create a url out of property file.
-        if (propertyFile.indexOf(':') < 0) {
-            propertyFile = new File(propertyFile).toURI().toString();
-        }
-
         if ((command != null) && command.equals(CMD_HELP)) {
             printUsage();
         } else {
-            final Injector guice = createGuice(propertyFile);
+            final Injector guice = createGuice();
             final Server server = guice.getInstance(Server.class);
             server.run();
         }
@@ -116,11 +97,9 @@ public class MainCommandLine {
     /**
      * Create the guice injector.
      *
-     * @param propertyFile Property file to use.
      * @return Guice injector.
      */
-    private static Injector createGuice(@Nonnull final String propertyFile) {
-        assert propertyFile != null;
+    private static Injector createGuice() {
         return Guice.createInjector(
                 new ServicesModule(),
                 new StandaloneModule(),
@@ -128,12 +107,11 @@ public class MainCommandLine {
                 new GuiceConfigurationModule(
                         "classpath:speedtools.default.properties",      // Default set required by SpeedTools.
                         "classpath:mapcode.properties",                 // Specific for mapcode service.
-                        propertyFile));                                 // Secret properties (not in WAR file).
+                        "classpath:mapcode-secret.properties"));        // No tracing.
     }
 
     private static void printUsage() {
         System.out.println("Usage: java -jar <warfile>" +
-                " [" + CMD_PROPERTIES + " <property-file>]" +
                 " [" + CMD_SILENT + "] [" + CMD_DEBUG + ']');
         System.out.println("       java -jar <warfile> " + CMD_HELP);
     }

@@ -16,11 +16,17 @@
 
 package com.mapcode.services.standalone;
 
+import org.jboss.resteasy.plugins.server.tjws.TJWSEmbeddedJaxrsServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Server {
     private static final Logger LOG = LoggerFactory.getLogger(Server.class);
+
+    private static final int PORT = 8081;
+    private static final String HOST = "http://localhost:" + PORT;
+
+    private TJWSEmbeddedJaxrsServer server;
 
     public void run() {
         LOG.info("Server: started.");
