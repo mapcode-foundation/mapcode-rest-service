@@ -40,7 +40,7 @@ public class MainCommandLine {
         // Prevent instantiation.
     }
 
-    public static void main(final String[] args) {
+    public static void execute(final String[] args) {
         String command = null;
         String propertyFile = "classpath:mapcode-secret.properties";
         boolean debug = false;
@@ -123,8 +123,8 @@ public class MainCommandLine {
         assert propertyFile != null;
         return Guice.createInjector(
                 new ServicesModule(),
-                new ResourcesModule(),
                 new StandaloneModule(),
+                new ResourcesModule(),
                 new GuiceConfigurationModule(
                         "classpath:speedtools.default.properties",      // Default set required by SpeedTools.
                         "classpath:mapcode.properties",                 // Specific for mapcode service.

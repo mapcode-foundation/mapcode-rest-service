@@ -42,7 +42,6 @@ import javax.inject.Singleton;
  * The "speedtools.default.properties" is required, but its values may be overridden in other property files.
  */
 public class ResourcesModule implements Module {
-    private static final Logger LOG = LoggerFactory.getLogger(ResourcesModule.class);
 
     @Override
     public void configure(@Nonnull final Binder binder) {

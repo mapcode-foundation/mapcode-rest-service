@@ -34,7 +34,7 @@ import java.util.jar.JarFile;
  */
 public class MainEntryPoint {
     private static final String MAIN_CLASS_NAME = "com.mapcode.services.standalone.MainCommandLine";
-    private static final String MAIN_METHOD_NAME = "main";
+    private static final String MAIN_METHOD_NAME = "execute";
 
     private MainEntryPoint() {
         // Prevent instantiation.
