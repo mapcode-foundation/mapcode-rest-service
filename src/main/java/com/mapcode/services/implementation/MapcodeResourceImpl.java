@@ -118,7 +118,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Override
-    public void convertLatLonToMapcodeXml(@Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiInvalidFormatException {
+    public void convertLatLonToMapcodeXml(
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
         convertLatLonToMapcode(response);
     }
 
@@ -138,9 +139,14 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Override
     public void convertLatLonToMapcodeXml(
-            double paramLatDeg, double paramLonDeg, @DefaultValue("0") int paramPrecision,
-            @Nullable String paramTerritory, @Nullable String paramAlphabet, @DefaultValue("") @Nonnull String paramInclude,
-            @DefaultValue("false") @Nonnull String paramDebug, @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response)
+            final double paramLatDeg,
+            final double paramLonDeg,
+            @DefaultValue("0") final int paramPrecision,
+            @Nullable final String paramTerritory,
+            @Nullable final String paramAlphabet,
+            @DefaultValue("") @Nonnull final String paramInclude,
+            @DefaultValue("false") @Nonnull final String paramDebug,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull final AsynchronousResponse response)
             throws ApiInvalidFormatException {
         convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramPrecision, paramTerritory, paramAlphabet, paramInclude, paramDebug, response);
     }
@@ -350,9 +356,15 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Override
     public void convertLatLonToMapcodeXml(
-            double paramLatDeg, double paramLonDeg, @Nullable String paramType, @DefaultValue("0") int paramPrecision,
-            @Nullable String paramTerritory, @Nullable String paramAlphabet, @DefaultValue("") @Nonnull String paramInclude,
-            @DefaultValue("false") @Nonnull String paramDebug, @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response)
+            final double paramLatDeg,
+            final double paramLonDeg,
+            @Nullable final String paramType,
+            @DefaultValue("0") final int paramPrecision,
+            @Nullable final String paramTerritory,
+            @Nullable final String paramAlphabet,
+            @DefaultValue("") @Nonnull final String paramInclude,
+            @DefaultValue("false") @Nonnull final String paramDebug,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull final AsynchronousResponse response)
             throws ApiInvalidFormatException {
         convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramType, paramPrecision, paramTerritory, paramAlphabet, paramInclude, paramDebug, response);
     }
@@ -366,7 +378,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Override
-    public void convertMapcodeToLatLonXml(@Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response)
+    public void convertMapcodeToLatLonXml(
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull final AsynchronousResponse response)
             throws ApiNotFoundException, ApiInvalidFormatException {
         convertMapcodeToLatLon(response);
     }
@@ -435,8 +448,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Override
     public void convertMapcodeToLatLonXml(
-            @Nonnull String paramCode, @Nullable String paramContext, @DefaultValue("false") @Nonnull String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response)
+            @Nonnull final String paramCode,
+            @Nullable final String paramContext,
+            @DefaultValue("false") @Nonnull final String paramDebug,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull final AsynchronousResponse response)
             throws ApiNotFoundException, ApiInvalidFormatException {
         convertMapcodeToLatLon(paramCode, paramContext, paramDebug, response);
     }
@@ -465,7 +480,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final int nrTerritories = ALL_TERRITORY_DTO.size();
             final int fromIndex = (offset < 0) ? Math.max(0, nrTerritories + offset) : Math.min(nrTerritories, offset);
             final int toIndex = Math.min(nrTerritories, fromIndex + count);
-            final TerritoriesDTO result = new TerritoriesDTO(ALL_TERRITORY_DTO.subList(fromIndex, toIndex).toArray(new TerritoryDTO[0]));
+            final TerritoriesDTO result = new TerritoriesDTO(ALL_TERRITORY_DTO.subList(fromIndex, toIndex));
 
             // Validate the result (internal consistency check).
             result.validate();
@@ -478,8 +493,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Override
     public void getTerritoriesXml(
-            @DefaultValue(DEFAULT_OFFSET) int offset, @DefaultValue(DEFAULT_COUNT) int count,
-            @DefaultValue("false") @Nonnull String paramDebug, @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response)
+            @DefaultValue(DEFAULT_OFFSET) final int offset,
+            @DefaultValue(DEFAULT_COUNT) final int count,
+            @DefaultValue("false") @Nonnull final String paramDebug,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull final AsynchronousResponse response)
             throws ApiIntegerOutOfRangeException {
         getTerritories(offset, count, paramDebug, response);
     }
@@ -530,8 +547,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Override
     public void getTerritoryXml(
-            @Nonnull String paramTerritory, @Nullable String paramContext, @DefaultValue("false") @Nonnull String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response)
+            @Nonnull final String paramTerritory,
+            @Nullable final String paramContext,
+            @DefaultValue("false") @Nonnull final String paramDebug,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull final AsynchronousResponse response)
             throws ApiInvalidFormatException {
         getTerritory(paramTerritory, paramContext, paramDebug, response);
     }
@@ -560,7 +579,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final int nrAlphabets = ALL_ALPHABET_DTO.size();
             final int fromIndex = (offset < 0) ? Math.max(0, nrAlphabets + offset) : Math.min(nrAlphabets, offset);
             final int toIndex = Math.min(nrAlphabets, fromIndex + count);
-            final AlphabetsDTO result = new AlphabetsDTO(ALL_ALPHABET_DTO.subList(fromIndex, toIndex).toArray(new AlphabetDTO[0]));
+            final List<AlphabetDTO> alphabets = ALL_ALPHABET_DTO.subList(fromIndex, toIndex);
+            final AlphabetsDTO result = new AlphabetsDTO(alphabets);
 
             // Validate the result (internal consistency check).
             result.validate();
@@ -573,8 +593,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Override
     public void getAlphabetsXml(
-            @DefaultValue(DEFAULT_OFFSET) int offset, @DefaultValue(DEFAULT_COUNT) int count,
-            @DefaultValue("false") @Nonnull String paramDebug, @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response)
+            @DefaultValue(DEFAULT_OFFSET) final int offset,
+            @DefaultValue(DEFAULT_COUNT) final int count,
+            @DefaultValue("false") @Nonnull final String paramDebug,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull final AsynchronousResponse response)
             throws ApiIntegerOutOfRangeException {
         getAlphabets(offset, count, paramDebug, response);
     }
@@ -615,8 +637,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Override
     public void getAlphabetXml(
-            @Nonnull String paramAlphabet, @DefaultValue("false") @Nonnull String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response)
+            @Nonnull final String paramAlphabet,
+            @DefaultValue("false") @Nonnull final String paramDebug,
+            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull final AsynchronousResponse response)
             throws ApiInvalidFormatException {
         getAlphabet(paramAlphabet, paramDebug, response);
     }

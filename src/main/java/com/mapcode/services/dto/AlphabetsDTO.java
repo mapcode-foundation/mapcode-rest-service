@@ -35,8 +35,7 @@ package com.mapcode.services.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tomtom.speedtools.apivalidation.ApiDTO;
-import com.tomtom.speedtools.objects.Immutables;
+import com.tomtom.speedtools.apivalidation.ApiListDTO;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -47,30 +46,26 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "alphabets")
 @XmlAccessorType(XmlAccessType.FIELD)
-public final class AlphabetsDTO extends ApiDTO {
+public final class AlphabetsDTO extends ApiListDTO<AlphabetDTO> {
 
     @JsonProperty("alphabets")
     @XmlElement(name = "alphabet")
     @Nonnull
-    private AlphabetDTO[] alphabets;
+    private List<AlphabetDTO> alphabets;
 
     @Override
-    public void validate() {
-        validator().start();
-        validator().checkNotNull(true, "alphabets", alphabets);
-        //noinspection ConstantConditions
-        if (alphabets != null) {
-            validator().checkNotNull(true, "alphabets", Immutables.listOf(alphabets));
-        }
-        validator().done();
+    public void validateOne(@Nonnull final AlphabetDTO elm) {
+        validator().checkNotNullAndValidate(true, "alphabet", elm);
     }
 
-    public AlphabetsDTO(@Nonnull final AlphabetDTO[] alphabets) {
+    public AlphabetsDTO(@Nonnull final List<AlphabetDTO> alphabets) {
+        super(alphabets);
         this.alphabets = alphabets;
     }
 
@@ -82,12 +77,12 @@ public final class AlphabetsDTO extends ApiDTO {
     }
 
     @Nonnull
-    public AlphabetDTO[] getAlphabets() {
+    public List<AlphabetDTO> getAlphabets() {
         beforeGet();
         return alphabets;
     }
 
-    public void setAlphabets(@Nonnull final AlphabetDTO[] alphabets) {
+    public void setAlphabets(@Nonnull final List<AlphabetDTO> alphabets) {
         beforeSet();
         assert alphabets != null;
         this.alphabets = alphabets;

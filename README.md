@@ -198,6 +198,12 @@ Normally, one of our developers should be able to comment on them and fix.
 
 ## Release Notes
 
+* 2.2.3.15
+
+    Changed JSON API response for `/alphabets` and `/territories`: these no longer return a top-level
+    entity `alphabets` or `territories`; only the list of values, which is more in line with the
+    rest of the API.
+
 * 2.2.3.14
 
     Added help text.

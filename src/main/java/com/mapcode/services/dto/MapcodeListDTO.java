@@ -20,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tomtom.speedtools.apivalidation.ApiListDTO;
-import com.tomtom.speedtools.objects.Immutables;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -47,9 +46,9 @@ public final class MapcodeListDTO extends ApiListDTO<MapcodeDTO> {
         validator().checkNotNullAndValidate(true, "mapcode", elm);
     }
 
-    public MapcodeListDTO(@Nonnull final List<MapcodeDTO> list) {
-        super(list);
-        mapcodes = Immutables.listOf(list);
+    public MapcodeListDTO(@Nonnull final List<MapcodeDTO> mapcodes) {
+        super(mapcodes);
+        this.mapcodes = mapcodes;
     }
 
     @SuppressWarnings("UnusedDeclaration")

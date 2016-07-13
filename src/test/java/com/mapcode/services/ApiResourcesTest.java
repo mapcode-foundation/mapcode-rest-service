@@ -43,7 +43,7 @@ import javax.ws.rs.core.Response;
 public class ApiResourcesTest {
     private static final Logger LOG = LoggerFactory.getLogger(ApiResourcesTest.class);
 
-    private static final String TEST_POM_VERSION = "TEST-1";
+    private static final String TEST_POM_VERSION = "1.0.0-TEST";
 
     private static final Double TEST_LAT1 = 50.141706;
     private static final Double TEST_LON1 = 6.135864;
@@ -92,16 +92,19 @@ public class ApiResourcesTest {
         };
         final ResourceProcessor resourceProcessor = new ResourceProcessor(reactor);
 
+        final MavenProperties mavenProperties = new MavenProperties(TEST_POM_VERSION);
+        final SystemMetricsImpl metrics = new SystemMetricsImpl();
+
         // Add root resource.
         server.getDeployment().getResources().add(new RootResourceImpl(
-                new MavenProperties(TEST_POM_VERSION),
-                new SystemMetricsImpl()
+                mavenProperties,
+                metrics
         ));
 
         // Add mapcode resource.
         server.getDeployment().getResources().add(new MapcodeResourceImpl(
                 resourceProcessor,
-                new SystemMetricsImpl()
+                metrics
         ));
         server.start();
     }
@@ -133,7 +136,7 @@ public class ApiResourcesTest {
                 accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("{\"version\":\"TEST-1\"}",
+        Assert.assertEquals("{\"version\":\"1.0.0-TEST\"}",
                 response.readEntity(String.class));
     }
 
@@ -146,7 +149,7 @@ public class ApiResourcesTest {
                 accept(MediaType.APPLICATION_XML_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><version><version>TEST-1</version></version>",
+        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><version><version>1.0.0-TEST</version></version>",
                 response.readEntity(String.class));
     }
 
@@ -332,7 +335,7 @@ public class ApiResourcesTest {
                 response.readEntity(String.class));
     }
 
-    private void doCheckJson(@Nonnull final String alphabet, @Nonnull final String expected) {
+    private static void doCheckJson(@Nonnull final String alphabet, @Nonnull final String expected) {
         final Response response = new ResteasyClientBuilder().build().
                 target(HOST + "/mapcode/codes/" + TEST_LATLON1 + "?include=territory,alphabet&alphabet=" + alphabet).
                 request().
@@ -407,9 +410,9 @@ public class ApiResourcesTest {
         Assert.assertTrue(r.length() > 500);
         final String sub1 = r.substring(0, 500);
         final String sub2 = r.substring(r.length() - 500, r.length());
-        Assert.assertEquals("{\"territories\":[{\"aliases\":[\"US\"],\"fullNameAliases\":[\"United States of America\",\"America\"],\"alphaCode\":\"USA\",\"alphaCodeMinimalUnambiguous\":\"USA\",\"alphaCodeMinimal\":\"USA\",\"fullName\":\"USA\"},{\"aliases\":[\"IN\"],\"alphaCode\":\"IND\",\"alphaCodeMinimalUnambiguous\":\"IND\",\"alphaCodeMinimal\":\"IND\",\"fullName\":\"India\"},{\"aliases\":[\"CA\"],\"alphaCode\":\"CAN\",\"alphaCodeMinimalUnambiguous\":\"CAN\",\"alphaCodeMinimal\":\"CAN\",\"fullName\":\"Canada\"},{\"aliases\":[\"AU\"],\"alphaCode\":\"AUS\",\"alphaCodeMinimalUnambiguous\":\"AUS\",\"alph",
+        Assert.assertEquals("[{\"aliases\":[\"US\"],\"fullNameAliases\":[\"United States of America\",\"America\"],\"alphaCode\":\"USA\",\"alphaCodeMinimalUnambiguous\":\"USA\",\"alphaCodeMinimal\":\"USA\",\"fullName\":\"USA\"},{\"aliases\":[\"IN\"],\"alphaCode\":\"IND\",\"alphaCodeMinimalUnambiguous\":\"IND\",\"alphaCodeMinimal\":\"IND\",\"fullName\":\"India\"},{\"aliases\":[\"CA\"],\"alphaCode\":\"CAN\",\"alphaCodeMinimalUnambiguous\":\"CAN\",\"alphaCodeMinimal\":\"CAN\",\"fullName\":\"Canada\"},{\"aliases\":[\"AU\"],\"alphaCode\":\"AUS\",\"alphaCodeMinimalUnambiguous\":\"AUS\",\"alphaCodeMinimal\":\"",
                 sub1);
-        Assert.assertEquals("aCodeMinimal\":\"XJ\",\"fullName\":\"Xinjiang Uyghur\",\"parentTerritory\":\"CHN\"},{\"aliases\":[\"US-UM\",\"USA-UM\",\"JTN\"],\"alphaCode\":\"UMI\",\"alphaCodeMinimalUnambiguous\":\"UMI\",\"alphaCodeMinimal\":\"UMI\",\"fullName\":\"United States Minor Outlying Islands\"},{\"alphaCode\":\"CPT\",\"alphaCodeMinimalUnambiguous\":\"CPT\",\"alphaCodeMinimal\":\"CPT\",\"fullName\":\"Clipperton Island\"},{\"fullNameAliases\":[\"Worldwide\",\"Earth\"],\"alphaCode\":\"AAA\",\"alphaCodeMinimalUnambiguous\":\"AAA\",\"alphaCodeMinimal\":\"AAA\",\"fullName\":\"International\"}]}",
+        Assert.assertEquals("haCodeMinimal\":\"XJ\",\"fullName\":\"Xinjiang Uyghur\",\"parentTerritory\":\"CHN\"},{\"aliases\":[\"US-UM\",\"USA-UM\",\"JTN\"],\"alphaCode\":\"UMI\",\"alphaCodeMinimalUnambiguous\":\"UMI\",\"alphaCodeMinimal\":\"UMI\",\"fullName\":\"United States Minor Outlying Islands\"},{\"alphaCode\":\"CPT\",\"alphaCodeMinimalUnambiguous\":\"CPT\",\"alphaCodeMinimal\":\"CPT\",\"fullName\":\"Clipperton Island\"},{\"fullNameAliases\":[\"Worldwide\",\"Earth\"],\"alphaCode\":\"AAA\",\"alphaCodeMinimalUnambiguous\":\"AAA\",\"alphaCodeMinimal\":\"AAA\",\"fullName\":\"International\"}]",
                 sub2);
     }
 
@@ -467,7 +470,7 @@ public class ApiResourcesTest {
                 accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("{\"alphabets\":[{\"name\":\"ROMAN\"},{\"name\":\"GREEK\"},{\"name\":\"CYRILLIC\"},{\"name\":\"HEBREW\"},{\"name\":\"HINDI\"},{\"name\":\"MALAY\"},{\"name\":\"GEORGIAN\"},{\"name\":\"KATAKANA\"},{\"name\":\"THAI\"},{\"name\":\"LAO\"},{\"name\":\"ARMENIAN\"},{\"name\":\"BENGALI\"},{\"name\":\"GURMUKHI\"},{\"name\":\"TIBETAN\"}]}",
+        Assert.assertEquals("[{\"name\":\"ROMAN\"},{\"name\":\"GREEK\"},{\"name\":\"CYRILLIC\"},{\"name\":\"HEBREW\"},{\"name\":\"HINDI\"},{\"name\":\"MALAY\"},{\"name\":\"GEORGIAN\"},{\"name\":\"KATAKANA\"},{\"name\":\"THAI\"},{\"name\":\"LAO\"},{\"name\":\"ARMENIAN\"},{\"name\":\"BENGALI\"},{\"name\":\"GURMUKHI\"},{\"name\":\"TIBETAN\"}]",
                 response.readEntity(String.class));
     }
 
@@ -480,7 +483,7 @@ public class ApiResourcesTest {
                 accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("{\"alphabets\":[{\"name\":\"ROMAN\"},{\"name\":\"GREEK\"}]}",
+        Assert.assertEquals("[{\"name\":\"ROMAN\"},{\"name\":\"GREEK\"}]",
                 response.readEntity(String.class));
     }
 
@@ -506,7 +509,7 @@ public class ApiResourcesTest {
                 accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("{\"alphabets\":[{\"name\":\"GREEK\"}]}",
+        Assert.assertEquals("[{\"name\":\"GREEK\"}]",
                 response.readEntity(String.class));
     }
 
@@ -532,7 +535,7 @@ public class ApiResourcesTest {
                 accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("{\"alphabets\":[{\"name\":\"TIBETAN\"}]}",
+        Assert.assertEquals("[{\"name\":\"TIBETAN\"}]",
                 response.readEntity(String.class));
     }
 
