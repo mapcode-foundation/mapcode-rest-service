@@ -18,14 +18,6 @@ package com.mapcode.services.standalone;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
-import com.google.inject.Singleton;
-import com.mapcode.services.deployment.StartupCheck;
-import com.tomtom.speedtools.maven.MavenProperties;
-import com.tomtom.speedtools.tracer.LoggingTraceHandler;
-import com.tomtom.speedtools.tracer.TracerFactory;
-import com.tomtom.speedtools.tracer.mongo.MongoDBTraceHandler;
-import com.tomtom.speedtools.tracer.mongo.MongoDBTraceProperties;
-import com.tomtom.speedtools.tracer.mongo.MongoDBTraceStream;
 
 import javax.annotation.Nonnull;
 
@@ -37,14 +29,6 @@ public class StandaloneModule implements Module {
     @Override
     public void configure(@Nonnull final Binder binder) {
         assert binder != null;
-
-        TracerFactory.setEnabled(true);
-        binder.bind(MongoDBTraceProperties.class).asEagerSingleton();
-        binder.bind(MongoDBTraceStream.class);
-        binder.bind(MongoDBTraceHandler.class).asEagerSingleton();
-        binder.bind(LoggingTraceHandler.class).asEagerSingleton();
-        binder.bind(MavenProperties.class).in(Singleton.class);
-        binder.bind(StartupCheck.class).asEagerSingleton();
         binder.bind(Server.class).asEagerSingleton();
     }
 }

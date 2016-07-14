@@ -1,4 +1,4 @@
-src/main/resources/mapcode-secret.properties
+**/mapcode-secret.properties
 out/
 target/
 

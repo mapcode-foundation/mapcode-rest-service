@@ -100,7 +100,7 @@ You can use these URLs, for example, in Google Spreadsheets, using the **=IMPORT
 function, or in Microsoft Excel 2013 or 2016 (for Windows) using the **=FILTERXML(WEBSERVICE(url), xpath)**
 functions. This should make live integration of mapcode conversion with your spreadsheets a breeze.
 
-## Build and Run: `mapcode-secret.properties` File
+## Build and Run: Missing `mapcode-secret.properties` File
 
 To build and run the REST API, type:
 

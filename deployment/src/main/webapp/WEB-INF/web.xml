@@ -40,7 +40,7 @@
     <context-param>
         <param-name>resteasy.providers</param-name>
         <param-value>
-            com.mapcode.services.deployment.CorsFeature
+            com.mapcode.services.CorsFeature
         </param-value>
     </context-param>
 
