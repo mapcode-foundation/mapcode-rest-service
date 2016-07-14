@@ -44,7 +44,7 @@ public class StandaloneModule implements Module {
         binder.bind(MongoDBTraceHandler.class).asEagerSingleton();
         binder.bind(LoggingTraceHandler.class).asEagerSingleton();
         binder.bind(MavenProperties.class).in(Singleton.class);
-        binder.bind(Server.class).in(Singleton.class);
         binder.bind(StartupCheck.class).asEagerSingleton();
+        binder.bind(Server.class).asEagerSingleton();
     }
 }

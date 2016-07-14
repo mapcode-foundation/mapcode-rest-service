@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mapcode.services.standalone;
+package com.mapcode.services.cli;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,33 +32,32 @@ import java.util.jar.JarFile;
 /**
  * Stub to load cli main from war file.
  */
-public class MainEntryPoint {
+public class Main {
     private static final String MAIN_CLASS_NAME = "com.mapcode.services.standalone.MainCommandLine";
     private static final String MAIN_METHOD_NAME = "execute";
 
-    private MainEntryPoint() {
+    private Main() {
         // Prevent instantiation.
     }
 
     @SuppressWarnings("OverlyBroadThrowsClause")
-    public static void main(@Nonnull final String[] args) throws ClassNotFoundException,
-            NoSuchMethodException, IllegalAccessException, IOException {
+    public static void main(@Nonnull final String[] args)
+            throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IOException {
         assert args != null;
         final List<URL> newUrls = new ArrayList<URL>();
         URL.setURLStreamHandlerFactory(new NestedJarURLStreamHandlerFactory());
         final String warFile = getWarFile();
-        try (JarFile jarFile = new JarFile(warFile)) {
+        try (final JarFile jarFile = new JarFile(warFile)) {
+
             //noinspection ForLoopWithMissingComponent
-            for (final Enumeration<JarEntry> entryEnum = jarFile.entries(); entryEnum
-                    .hasMoreElements(); ) {
+            for (final Enumeration<JarEntry> entryEnum = jarFile.entries(); entryEnum.hasMoreElements(); ) {
                 final JarEntry entry = entryEnum.nextElement();
                 if (entry.getName().endsWith(".jar")) {
-                    newUrls.add(new URL(
-                            "jar:nestedjar:file:" + warFile + "~/" + entry.getName() + "!/"));
-
+                    newUrls.add(new URL("jar:nestedjar:file:" + warFile + "~/" + entry.getName() + "!/"));
                 }
             }
         }
+
         final URLClassLoader newClassLoader = new URLClassLoader(newUrls.toArray(new URL[newUrls.size()]));
         final Class<?> mainClass = newClassLoader.loadClass(MAIN_CLASS_NAME);
         final Method method = mainClass.getMethod(MAIN_METHOD_NAME, String[].class);
@@ -72,7 +71,7 @@ public class MainEntryPoint {
 
     @Nonnull
     private static String getWarFile() {
-        final URLClassLoader classLoader = (URLClassLoader) MainEntryPoint.class.getClassLoader();
+        final URLClassLoader classLoader = (URLClassLoader) Main.class.getClassLoader();
         for (final URL url : classLoader.getURLs()) {
             if (url.toString().endsWith(".war")) {
                 return url.getFile();

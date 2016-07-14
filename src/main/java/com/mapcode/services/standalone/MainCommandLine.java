@@ -90,7 +90,7 @@ public class MainCommandLine {
         } else {
             final Injector guice = createGuice();
             final Server server = guice.getInstance(Server.class);
-            server.run();
+            server.startServer();
         }
     }
 
@@ -107,12 +107,11 @@ public class MainCommandLine {
                 new GuiceConfigurationModule(
                         "classpath:speedtools.default.properties",      // Default set required by SpeedTools.
                         "classpath:mapcode.properties",                 // Specific for mapcode service.
-                        "classpath:mapcode-secret.properties"));        // No tracing.
+                        "classpath:mapcode-notrace.properties"));       // No tracing.
     }
 
     private static void printUsage() {
-        System.out.println("Usage: java -jar <warfile>" +
-                " [" + CMD_SILENT + "] [" + CMD_DEBUG + ']');
+        System.out.println("Usage: java -jar <warfile>" + " [" + CMD_SILENT + "] [" + CMD_DEBUG + ']');
         System.out.println("       java -jar <warfile> " + CMD_HELP);
     }
 

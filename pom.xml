@@ -175,7 +175,6 @@
             <groupId>com.tomtom.speedtools</groupId>
             <artifactId>testutils</artifactId>
             <version>${speedtools.version}</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -357,13 +356,6 @@
             <version>${resteasy.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>tjws</artifactId>
-            <version>${resteasy.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -453,7 +445,7 @@
                     <classesClassifier>classes</classesClassifier>
                     <archive>
                         <manifest>
-                            <mainClass>com.mapcode.services.standalone.MainEntryPoint</mainClass>
+                            <mainClass>com.mapcode.services.cli.Main</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>WEB-INF/lib/</classpathPrefix>
                         </manifest>
@@ -477,7 +469,7 @@
                             <tasks>
                                 <move todir="${project.basedir}/target/webapp/">
                                     <fileset dir="${project.build.directory}/classes/">
-                                        <include name="com/mapcode/services/standalone/Main*.class"/>
+                                        <include name="com/mapcode/services/cli/Main*.class"/>
                                     </fileset>
                                 </move>
                             </tasks>
@@ -488,7 +480,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
 
         <resources>
