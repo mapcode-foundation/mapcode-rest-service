@@ -37,7 +37,7 @@ This page is an example of how the mapcode REST API can be used from HTML/Javasc
 You can have a look at the source code of this page to see how the REST API is called,
 r you can try it out by simply entering some information in the dialog boxes and
 pressing the conversion/request buttons.
-
+<p/>
 <b>Copyright (C) 2016, Stichting Mapcode Foundation</b>, <a href="http://www.mapcode.com">http://www.mapcode.com</a>
 
 <hr/>
@@ -69,7 +69,7 @@ pressing the conversion/request buttons.
     // var apiBaseURL = "http://localhost:8080/mapcode";
 
     function onLoad() {
-        var url = apiBaseURL + "/version";
+        var url = apiBaseURL + "/version?debug=true";
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function () {
             if (xmlhttp.readyState == 4) {
@@ -139,7 +139,8 @@ pressing the conversion/request buttons.
         var url = apiBaseURL + "/codes/" + lat + "," + lon + "?include=territory,alphabet" +
                 ((territory && (territory.length != 0)) ? "&territory=" + territory : "") +
                 ((precision && (precision.length != 0)) ? "&precision=" + precision : "") +
-                ((alphabet && (alphabet.length != 0)) ? "&alphabet=" + alphabet : "");
+                ((alphabet && (alphabet.length != 0)) ? "&alphabet=" + alphabet : "") +
+                "&debug=true";
         document.getElementById("requestEncode").innerHTML = createRequestLine(url);
 
         /* Asynchronously request a solution, call encodeResponseReady when done. */
@@ -238,7 +239,7 @@ pressing the conversion/request buttons.
             context = "AAA";
         }
         var mapcode = document.getElementById("mapcode").value;
-        var url = apiBaseURL + "/coords/" + mapcode + "?context=" + context;
+    var url = apiBaseURL + "/coords/" + mapcode + "?context=" + context + "&debug=true";
 
         /* Update page. */
         document.getElementById("resultDecode").innerHTML = '<font color=grey>Waiting...</font>';
@@ -305,7 +306,8 @@ pressing the conversion/request buttons.
 
         var territory = document.getElementById("territory").value;
         var context = document.getElementById("context").value;
-        var url = apiBaseURL + "/territories" + (territory ? ('/' + territory) : "") + (context ? ("?context=" + context) : "");
+        var url = apiBaseURL + "/territories" + (territory ? ('/' + territory) : "") + "?debug=true" +
+                (context ? ("&context=" + context) : "");
         document.getElementById("requestTerritory").innerHTML = createRequestLine(url);
 
         /* Asynchronously request a solution, call encodeResponseReady when done. */
@@ -327,10 +329,10 @@ pressing the conversion/request buttons.
             var result = JSON.parse(response);
 
             var resultLines = "";
-            if (result.territories) {
-                resultLines += "<b><u>List all territories (" + result.territories.length + "):</u></b></u><br/><small>";
-                for (i = 0; i < result.territories.length; i++) {
-                    var territory = result.territories[i];
+            if (result.constructor === Array) {
+                resultLines += "<b><u>List all territories (" + result.length + "):</u></b></u><br/><small>";
+                for (i = 0; i < result.length; i++) {
+                    var territory = result[i];
                     resultLines += createTerritoryLine(territory) + "<br/>";
                 }
             }
@@ -380,7 +382,7 @@ pressing the conversion/request buttons.
         document.getElementById("resultAlphabet").innerHTML = '<font color=grey>Waiting...</font>';
 
         var alphabet = document.getElementById("alphabet").value;
-        var url = apiBaseURL + "/alphabets" + (alphabet ? ('/' + alphabet) : "");
+        var url = apiBaseURL + "/alphabets" + (alphabet ? ('/' + alphabet) : "") + "?debug=true";
         document.getElementById("requestAlphabet").innerHTML = createRequestLine(url);
 
         /* Asynchronously request a solution, call encodeResponseReady when done. */
@@ -402,10 +404,10 @@ pressing the conversion/request buttons.
             var result = JSON.parse(response);
 
             var resultLines = "";
-            if (result.alphabets) {
-                resultLines += "<b><u>List all alphabets (" + result.alphabets.length + "):</u></b></u><br/><small>";
-                for (i = 0; i < result.alphabets.length; i++) {
-                    var alphabet = result.alphabets[i];
+            if (result.constructor === Array) {
+                resultLines += "<b><u>List all alphabets (" + result.length + "):</u></b></u><br/><small>";
+                for (i = 0; i < result.length; i++) {
+                    var alphabet = result[i];
                     resultLines += createAlphabetLine(alphabet) + "<br/>";
                 }
             }
