@@ -38,12 +38,12 @@ public class Server {
     private static final int PORT = 8080;
     private static final String HOST = "http://localhost:" + PORT;
 
-    private TJWSEmbeddedJaxrsServer server;
+    private final TJWSEmbeddedJaxrsServer server;
 
     @Inject
     public Server(@Nonnull final MavenProperties mavenProperties) {
-        this.server = new TJWSEmbeddedJaxrsServer();
-        this.server.setPort(PORT);
+        server = new TJWSEmbeddedJaxrsServer();
+        server.setPort(PORT);
 
         // Create a simple ResourceProcessor, required for implementation of REST service using the SpeedTools framework.
         LOG.debug("Server: create execution context...");

@@ -345,6 +345,13 @@
             </dependency>
 
             <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-client</artifactId>
+                <version>${resteasy.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>commons-httpclient</groupId>
                 <artifactId>commons-httpclient</artifactId>
                 <version>${commons-httpclient.version}</version>
@@ -354,13 +361,6 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-client</artifactId>
-                <version>${resteasy.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

@@ -64,6 +64,7 @@ public class ApiResourcesTest {
 
     @Before
     public void startServer() {
+
         server = new TJWSEmbeddedJaxrsServer();
         server.setPort(PORT);
 
@@ -106,6 +107,7 @@ public class ApiResourcesTest {
                 resourceProcessor,
                 metrics
         ));
+
         server.start();
     }
 
@@ -133,7 +135,7 @@ public class ApiResourcesTest {
         final Response response = new ResteasyClientBuilder().build().
                 target(HOST + "/mapcode/version").
                 request().
-                accept(MediaType.APPLICATION_JSON_TYPE).get();
+                accept(MediaType.APPLICATION_JSON).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
         Assert.assertEquals("{\"version\":\"1.0.0-TEST\"}",

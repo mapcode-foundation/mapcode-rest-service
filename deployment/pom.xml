@@ -223,7 +223,6 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -246,15 +245,6 @@
                             <maxIdleTime>60000</maxIdleTime>
                         </connector>
                     </connectors>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>${maven-tomcat-plugin.version}</version>
-                <configuration>
-                    <path>${maven.httpserver.root}</path>
                 </configuration>
             </plugin>
 
