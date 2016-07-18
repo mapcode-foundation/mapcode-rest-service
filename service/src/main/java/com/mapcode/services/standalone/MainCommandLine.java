@@ -35,12 +35,14 @@ public class MainCommandLine {
     private static final String CMD_DEBUG = "--debug";
     private static final String CMD_PORT = "--port";
 
+    private static final int DEFAULT_PORT = 8080;
+
     private MainCommandLine() {
         // Prevent instantiation.
     }
 
     public static void execute(final String[] args) {
-        int port = 0;
+        int port = DEFAULT_PORT;
         String command = null;
         boolean debug = false;
 

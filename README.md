@@ -106,20 +106,32 @@ The service always runs from a WAR file.
 To build the WAR file, type
 
     cd <project-root>
-    mvn clean install
+    mvn clean package
 
 You can run the WAR file in 3 ways:
 
-* directly from **Maven** using `mvn jetty:run` (make sure your are in directory `deployment`, not the root!);
+1. directly from the **command-line**, using:
 
+
+    java -jar deployment/target/deployment-<version>.war [--port <port>] [--silent] [--debug] [--help]
+
+  This will start the service at `http://localhost:<port>/mapcode`. If `<port>` is not specified, the
+  default value is `8080`. If it is `0`, the server will choose any free port.
+
+2. directly from **Maven** using:
+ 
+ 
+     cd deployment
+     mvn jetty:run
+     
   This will start the service at `http://localhost:8080/mapcode`.
 
-* directly from the **command-line**, using `java -jar deployment/target/deployment-<version>.war`;
+3. in a **Tomcat server**, deploying the file `deployment/target/deployment-<version>.war` into
+your Tomcat instance.
 
-  This will start the service at `http://localhost:8080/mapcode`.
 
-* in a **Tomcat server**, simply deploying the file `deployment/target/deployment-<version>.war`.
-
+The first method, running the WAR file from the command-line, using `java` only is particularly
+useful if you wish use the XML services, for example, in a Microsoft Excel spreadsheet.
 
 ## Missing `mapcode-secret.properties` File
 
