@@ -213,6 +213,9 @@ Normally, one of our developers should be able to comment on them and fix.
     Completely refactored the source tree to create JARs for all classes in the WAR file. This
     was needed to allow running the service from the command-line using `java` only.
 
+    This version can be used to run the service stand-alone, without Tomcat, on a local machine.
+    This allows you, for example, to use the XML services from within your own local MS Excel sheet.
+
 * 2.2.3.15 - 2.2.3.16
 
     Changed JSON API response for `/alphabets` and `/territories`: these no longer return a top-level
