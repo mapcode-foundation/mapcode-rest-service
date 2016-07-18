@@ -33,12 +33,14 @@ public class MainCommandLine {
     private static final String CMD_HELP = "--help";
     private static final String CMD_SILENT = "--silent";
     private static final String CMD_DEBUG = "--debug";
+    private static final String CMD_PORT = "--port";
 
     private MainCommandLine() {
         // Prevent instantiation.
     }
 
     public static void execute(final String[] args) {
+        int port = 0;
         String command = null;
         boolean debug = false;
 
@@ -62,6 +64,16 @@ public class MainCommandLine {
 
                 case CMD_DEBUG:
                     debug = true;
+                    break;
+
+                case CMD_PORT:
+                    if (index >= args.length) {
+                        System.out.println("Missing port number");
+                        printUsage();
+                        return;
+                    }
+                    port = Integer.parseInt(args[index + 1]);
+                    ++index;
                     break;
 
                 default:
@@ -90,7 +102,7 @@ public class MainCommandLine {
         } else {
             final Injector guice = createGuice();
             final Server server = guice.getInstance(Server.class);
-            server.startServer();
+            server.startServer(port);
         }
     }
 
@@ -101,17 +113,17 @@ public class MainCommandLine {
      */
     private static Injector createGuice() {
         return Guice.createInjector(
-                new ServicesModule(),
-                new StandaloneModule(),
-                new ResourcesModule(),
                 new GuiceConfigurationModule(
                         "classpath:speedtools.default.properties",      // Default set required by SpeedTools.
                         "classpath:mapcode.properties",                 // Specific for mapcode service.
-                        "classpath:mapcode-notrace.properties"));       // No tracing.
+                        "classpath:mapcode-notrace.properties"),        // No tracing.
+                new ServicesModule(),
+                new ResourcesModule(),
+                new StandaloneModule());
     }
 
     private static void printUsage() {
-        System.out.println("Usage: java -jar <warfile>" + " [" + CMD_SILENT + "] [" + CMD_DEBUG + ']');
+        System.out.println("Usage: java -jar <warfile>" + " [" + CMD_PORT + " <port>] [" + CMD_SILENT + "] [" + CMD_DEBUG + ']');
         System.out.println("       java -jar <warfile> " + CMD_HELP);
     }
 

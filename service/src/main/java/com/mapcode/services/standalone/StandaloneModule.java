@@ -22,7 +22,8 @@ import com.google.inject.Module;
 import javax.annotation.Nonnull;
 
 /**
- * Google Guice Module that contains the binding for the CheckDB class.
+ * This module is used only in stand-alone (CLI) mode. It inserts a default properties
+ * file into the server.
  */
 public class StandaloneModule implements Module {
 
