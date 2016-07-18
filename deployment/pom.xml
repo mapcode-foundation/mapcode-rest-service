@@ -295,13 +295,5 @@
                 </executions>
             </plugin>
         </plugins>
-
-        <resources>
-            <resource>
-                <!-- Let Maven change these files, to enter POM version and such. -->
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
     </build>
 </project>
