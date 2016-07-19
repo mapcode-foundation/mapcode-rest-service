@@ -77,14 +77,14 @@ The available REST API methods are:
        offset            : Return list from 'offset' (negative value start counting from end).
        count             : Return 'count' items at most.
 
-## Supporting XML Tools (e.g. Google Spreadsheets, Microsoft Excel)
+## Supporting XML-only Tools (e.g. Google Spreadsheets, Microsoft Excel)
 
-The REST API methods defined above obey the HTTP "Accept:" header. To retrieve JSON responses,
+The REST API methods defined above obey the HTTP `Accept:` header. To retrieve JSON responses,
 use **Accept:application/json**, to retrieve XML responses, use **Accept:application/xml**.
 The default response type, if no header is specified, is **JSON**.
 
 Some tools, like Google Spreadheets and Microsoft Excel, can only handle XML responses, but do
-not provide the correct HTTP "Accept:" header. In these cases you can alternatively
+not provide the correct HTTP `Accept:` header. In these cases you can alternatively
 retrieve **XML** responses with these alias URLs (note the "/xml" in the URLs):
 
     GET /mapcode/xml/version
@@ -94,33 +94,63 @@ retrieve **XML** responses with these alias URLs (note the "/xml" in the URLs):
     GET /mapcode/xml/territories
     GET /mapcode/xml/alphabets
 
-These URLs only provide XML responses, with or without the HTTP "Accept:" header.
+These URLs only provide XML responses, with or without the HTTP `Accept:` header.
 
 You can use these URLs, for example, in Google Spreadsheets, using the **=IMPORTXML(url, xpath)**
 function, or in Microsoft Excel 2013 or 2016 (for Windows) using the **=FILTERXML(WEBSERVICE(url), xpath)**
 functions. This should make live integration of mapcode conversion with your spreadsheets a breeze.
 
-## Build and Run: `mapcode-secret.properties` File
+## Build and Run
 
-To build and run the REST API, type:
+The service always runs from a WAR file.
+To build the WAR file, type
 
-    mvn clean install
-    mvn jetty:run           (alternatively, you can use: mvn tomcat7:run)
+    cd <project-root>
+    mvn clean package
 
-Or deploy the WAR file (in `target`) on in your Tomcat instance.
+You can run the WAR file in 3 ways:
+
+1. directly from the **command-line**, using:
+
+
+    java -jar deployment/target/deployment-<version>.war [--port <port>] [--silent] [--debug] [--help]
+
+  This will start the service at `http://localhost:<port>/mapcode`. If `<port>` is not specified, the
+  default value is `8080`. If it is `0`, the server will choose any free port.
+
+2. directly from **Maven** using:
+ 
+ 
+     cd deployment
+     mvn jetty:run
+     
+  This will start the service at `http://localhost:8080/mapcode`.
+
+3. in a **Tomcat server**, deploying the file `deployment/target/deployment-<version>.war` into
+your Tomcat instance.
+
+
+The first method, running the WAR file from the command-line, using `java` only is particularly
+useful if you wish use the XML services, for example, in a Microsoft Excel spreadsheet.
+
+## Missing `mapcode-secret.properties` File
 
 The service requires a file called `mapcode-secret.properties` to be present on the
-classpath. If you get a start-up error complaining about a missing `mapcode-secret.properties` file,
-make sure you add it to the classpath (or add it to `src/main/resources`) before building.
-
-By default, you can simply use an empty `mapcode-secret.properties` file.
-
-The properties file `mapcode-secret.properties` contains the username and password for
+classpath.  The properties file `mapcode-secret.properties` contains the username and password for
 your MongDB database server for tracing, should you wish to use that.
 
+If you get a start-up error complaining about a missing `mapcode-secret.properties` file,
+make sure you add it to the classpath (or add it to `src/main/resources`) before building.
+
+By default, you can simply use an empty `mapcode-secret.properties` file. So, you may want to
+just create an empty file by executing:
+
+    touch src/main/resource/mapcode-secret.properties
+
+Note that the file `mapcode-secret.properties` is ignored by Git in `.gitignore`.
+
 If you wish to use MongoDB tracing, will need to provide your own local
-*secret* properties file, called `mapcode-secret.properties`, for example
-in `src/main/resources` which override the following properties:
+`mapcode-secret.properties`, which override the following properties:
 
     MongoDBTrace.writeEnabled = true
     MongoDBTrace.servers = your-server:27017 (eg. localhost:27017)
@@ -128,7 +158,7 @@ in `src/main/resources` which override the following properties:
     MongoDBTrace.userName = your-username
     MongoDBTrace.password = your-password
 
-The service will work without this, but will not trace events to the
+The service will work with an empty file as well, but will not trace events to the
 database.
 
 
@@ -146,23 +176,15 @@ Try out if the web services work by entering the following URL in your web brows
 (this should show you a HTML help page):
 
     http://localhost:8080/mapcode
-    http://localhost:8080/mapcode/codes/50,5
+    http://localhost:8080/mapcode/codes/50.2,4.9
 
 Or use a tool like cURL:
 
     curl -X GET http://localhost:8080/mapcode
-    curl -X GET http://localhost:8080/mapcode/codes/50,5
-
+    curl -X GET http://localhost:8080/mapcode/codes/50.2,4.9
 
 There's also an example HTML page in the `examples/index.html` for HTML/Javascript developers.
 
-# Creating Docker image
-
-To create a docker image of Mapcode you have to specify the `docker` profile within the maven build:
-
-    mvn -P docker clean install
-
-**NOTE:** It is assumed that you have installed docker on the machine AND that you are building within the docker VM.
 
 # Using Git and `.gitignore`
 
@@ -198,6 +220,14 @@ Normally, one of our developers should be able to comment on them and fix.
 
 ## Release Notes
 
+* 2.2.3.17
+
+    Completely refactored the source tree to create JARs for all classes in the WAR file. This
+    was needed to allow running the service from the command-line using `java` only.
+
+    This version can be used to run the service stand-alone, without Tomcat, on a local machine.
+    This allows you, for example, to use the XML services from within your own local MS Excel sheet.
+
 * 2.2.3.15 - 2.2.3.16
 
     Changed JSON API response for `/alphabets` and `/territories`: these no longer return a top-level
@@ -207,6 +237,9 @@ Normally, one of our developers should be able to comment on them and fix.
 * 2.2.3.14
 
     Added help text.
+
+    Removed Docker profile for now (might be re-added later), as it caused some issues building the
+    service.
 
 * 2.2.3.13
 

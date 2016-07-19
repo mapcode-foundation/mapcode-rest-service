@@ -22,8 +22,8 @@
     <groupId>com.mapcode</groupId>
     <artifactId>mapcode-rest-service</artifactId>
 
-    <packaging>war</packaging>
-    <version>2.2.3.16</version>
+    <packaging>pom</packaging>
+    <version>2.2.3.17</version>
 
     <name>Mapcode REST API Web Service</name>
     <description>
@@ -38,15 +38,9 @@
 
     <developers>
         <developer>
-            <id>pieter</id>
-            <name>Pieter Geelen</name>
-            <organization>Mapcode</organization>
-        </developer>
-
-        <developer>
             <id>rijn</id>
             <name>Rijn Buve</name>
-            <organization>Mapcode</organization>
+            <organization>Mapcode Foundation</organization>
         </developer>
     </developers>
 
@@ -63,6 +57,11 @@
     <scm>
         <url>http://github.com/mapcode-foundation/mapcode-rest-service</url>
     </scm>
+
+    <modules>
+        <module>service</module>
+        <module>deployment</module>
+    </modules>
 
     <!-- Dependencies on other packages. -->
     <properties>
@@ -90,6 +89,7 @@
         <resteasy.version>3.0.12.Final</resteasy.version>
         <slf4j.version>1.7.13</slf4j.version>
 
+        <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
@@ -97,6 +97,7 @@
         <maven-tomcat-plugin.version>2.2</maven-tomcat-plugin.version>
         <maven-resource-plugin.version>2.7</maven-resource-plugin.version>
         <maven-source-plugin.version>2.4</maven-source-plugin.version>
+        <maven-war-plugin.version>2.6</maven-war-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.6</nexus-staging-maven-plugin.version>
 
         <maven.httpserver.port>8080</maven.httpserver.port>
@@ -109,254 +110,256 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
-    <dependencies>
 
-        <!--
-            SpeedTools modules; normally you should specify a specific version
-            instead of project.version.
-        -->
-        <dependency>
-            <groupId>com.tomtom.speedtools</groupId>
-            <artifactId>apivalidation</artifactId>
-            <version>${speedtools.version}</version>
-        </dependency>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.tomtom.speedtools</groupId>
-            <artifactId>core</artifactId>
-            <version>${speedtools.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>apivalidation</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.tomtom.speedtools</groupId>
-            <artifactId>json</artifactId>
-            <version>${speedtools.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>core</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.tomtom.speedtools</groupId>
-            <artifactId>geo</artifactId>
-            <version>${speedtools.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>json</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.tomtom.speedtools</groupId>
-            <artifactId>guice</artifactId>
-            <version>${speedtools.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>geo</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.tomtom.speedtools</groupId>
-            <artifactId>metrics</artifactId>
-            <version>${speedtools.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>guice</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.tomtom.speedtools</groupId>
-            <artifactId>resources</artifactId>
-            <version>${speedtools.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>metrics</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.tomtom.speedtools</groupId>
-            <artifactId>rest</artifactId>
-            <version>${speedtools.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>resources</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.tomtom.speedtools</groupId>
-            <artifactId>mongodb</artifactId>
-            <version>${speedtools.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>rest</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.tomtom.speedtools</groupId>
-            <artifactId>testutils</artifactId>
-            <version>${speedtools.version}</version>
-            <scope>test</scope>
-        </dependency>
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>mongodb</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.mapcode</groupId>
-            <artifactId>mapcode</artifactId>
-            <version>${mapcode.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>testutils</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>com.mapcode</groupId>
+                <artifactId>mapcode</artifactId>
+                <version>${mapcode.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <version>${jsr305.version}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${apache-commons-lang.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>${jsr305.version}</version>
+                <type>jar</type>
+                <scope>provided</scope>
+                <optional>true</optional>
+            </dependency>
 
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <version>${javax.inject.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${apache-commons-lang.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>${javax.servlet-api.version}</version>
-            <scope>provided</scope>
-        </dependency>
+            <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>${javax.inject.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>${guice.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${javax.servlet-api.version}</version>
+                <scope>provided</scope>
+            </dependency>
 
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>com.google.inject</groupId>
+                <artifactId>guice</artifactId>
+                <version>${guice.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>${joda-time.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.jolokia</groupId>
-            <artifactId>jolokia-core</artifactId>
-            <version>${jolokia.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>${joda-time.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>org.jolokia</groupId>
+                <artifactId>jolokia-core</artifactId>
+                <version>${jolokia.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-jaxb-annotations</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxb-provider</artifactId>
-            <version>${resteasy.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.xml.stream</groupId>
-                    <artifactId>stax-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-jaxb-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxrs</artifactId>
-            <version>${resteasy.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jaxb-provider</artifactId>
+                <version>${resteasy.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.xml.stream</groupId>
+                        <artifactId>stax-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>jaxrs-api</artifactId>
-            <version>${resteasy.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jaxrs</artifactId>
+                <version>${resteasy.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jackson2-provider</artifactId>
-            <version>${resteasy.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>jaxrs-api</artifactId>
+                <version>${resteasy.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-guice</artifactId>
-            <version>${resteasy.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.code.guice</groupId>
-                    <artifactId>guice</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jackson2-provider</artifactId>
+                <version>${resteasy.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-multipart-provider</artifactId>
-            <version>${resteasy.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-guice</artifactId>
+                <version>${resteasy.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.code.guice</groupId>
+                        <artifactId>guice</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>async-http-servlet-3.0</artifactId>
-            <version>${resteasy.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-multipart-provider</artifactId>
+                <version>${resteasy.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>servlet-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>${commons-httpclient.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>async-http-servlet-3.0</artifactId>
+                <version>${resteasy.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>tjws</artifactId>
+                <version>${resteasy.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client</artifactId>
-            <version>${resteasy.version}</version>
-            <scope>test</scope>
-        </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-client</artifactId>
+                <version>${resteasy.version}</version>
+                <scope>test</scope>
+            </dependency>
 
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>tjws</artifactId>
-            <version>${resteasy.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>${commons-httpclient.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
@@ -407,42 +410,6 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>${maven-jetty-plugin.version}</version>
-                <configuration>
-                    <webApp>
-                        <contextPath>${maven.httpserver.root}</contextPath>
-                    </webApp>
-                    <scanIntervalSeconds>10</scanIntervalSeconds>
-                    <stopKey>stop</stopKey>
-                    <stopPort>9999</stopPort>
-                    <connectors>
-                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-                            <port>${maven.httpserver.port}</port>
-                            <maxIdleTime>60000</maxIdleTime>
-                        </connector>
-                    </connectors>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>${maven-tomcat-plugin.version}</version>
-                <configuration>
-                    <path>${maven.httpserver.root}</path>
-                </configuration>
-            </plugin>
         </plugins>
-
-        <resources>
-            <resource>
-                <!-- Let Maven change these files, to enter POM version and such. -->
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-   </build>
+    </build>
 </project>

@@ -25,26 +25,14 @@
         </layout>
     </appender>
 
-    <!-- This can be uncommented out to route the log to a file as well:
-    <appender name="file" class="org.apache.log4j.FileAppender">
-        <param name="File" value="speedtools.log"/>
-        <param name="Threshold" value="trace"/>
-        <param name="Append" value="false"/>
-        <param name="ImmediateFlush" value="true"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="# %d{yyyy-MM-dd HH:mm:ss.SSS} [%-5p] %22.22t | %42.42c | %m%n"/>
-        </layout>
-    </appender>
-    -->
-
     <!-- The Mapcode services. -->
-    <logger name="com.mapcode">
-        <level value="info"/>
+    <logger name="com.mapcode.services">
+        <level value="debug"/>
     </logger>
 
     <!-- The SpeedTools framework. -->
     <logger name="com.tomtom.speedtools">
-        <level value="warn"/>
+        <level value="info"/>
     </logger>
 
     <!-- The JSON mapper shows a bit too much logging info sometimes, set it to warn. -->

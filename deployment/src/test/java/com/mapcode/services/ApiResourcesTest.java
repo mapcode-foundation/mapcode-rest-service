@@ -25,6 +25,7 @@ import com.tomtom.speedtools.rest.Reactor;
 import com.tomtom.speedtools.rest.ResourceProcessor;
 import com.tomtom.speedtools.testutils.akka.SimpleExecutionContext;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.core.ExceptionAdapter;
 import org.jboss.resteasy.plugins.server.tjws.TJWSEmbeddedJaxrsServer;
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -63,7 +64,8 @@ public class ApiResourcesTest {
     private TJWSEmbeddedJaxrsServer server;
 
     @Before
-    public void startServer() {
+    public void startServer() throws Exception {
+
         server = new TJWSEmbeddedJaxrsServer();
         server.setPort(PORT);
 
@@ -106,6 +108,7 @@ public class ApiResourcesTest {
                 resourceProcessor,
                 metrics
         ));
+
         server.start();
     }
 
@@ -133,7 +136,7 @@ public class ApiResourcesTest {
         final Response response = new ResteasyClientBuilder().build().
                 target(HOST + "/mapcode/version").
                 request().
-                accept(MediaType.APPLICATION_JSON_TYPE).get();
+                accept(MediaType.APPLICATION_JSON).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
         Assert.assertEquals("{\"version\":\"1.0.0-TEST\"}",
