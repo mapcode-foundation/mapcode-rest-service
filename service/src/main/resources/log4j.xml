@@ -27,12 +27,12 @@
 
     <!-- The Mapcode services. -->
     <logger name="com.mapcode.services">
-        <level value="debug"/>
+        <level value="info"/>
     </logger>
 
     <!-- The SpeedTools framework. -->
     <logger name="com.tomtom.speedtools">
-        <level value="info"/>
+        <level value="warn"/>
     </logger>
 
     <!-- The JSON mapper shows a bit too much logging info sometimes, set it to warn. -->
