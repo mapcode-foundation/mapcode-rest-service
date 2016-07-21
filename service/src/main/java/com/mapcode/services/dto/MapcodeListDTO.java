@@ -58,15 +58,6 @@ public final class MapcodeListDTO extends ApiListDTO<MapcodeDTO> {
         super();
     }
 
-    @Nonnull
-    public List<MapcodeDTO> getMapcodes() {
-        return mapcodes;
-    }
-
-    public void setMapcodes(@Nonnull final List<MapcodeDTO> mapcodes) {
-        this.mapcodes = mapcodes;
-    }
-
     @Override
     @Nonnull
     public String toString() {
