@@ -220,6 +220,11 @@ Normally, one of our developers should be able to comment on them and fix.
 
 ## Release Notes
 
+* 2.2.3.18
+
+    Reworked responses for `/alphabets` and `/territories`, returning to older format and including
+    a `total` attribute to indicate total number of items in list (for paging).
+    
 * 2.2.3.17
 
     Completely refactored the source tree to create JARs for all classes in the WAR file. This

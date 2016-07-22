@@ -431,7 +431,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 // Decode the actual mapcode.
                 final Point point;
                 point = MapcodeCodec.decode(paramCode, territoryContext);
-                result = new PointDTO(point.getLatDeg(), point.getLonDeg());
+                result = new CoordinatesDTO(point.getLatDeg(), point.getLonDeg());
             } catch (final UnknownMapcodeException ignored) {
                 throw new ApiNotFoundException("No mapcode found for mapcode='" + paramCode + "', context=" + territoryContext);
             }
@@ -480,7 +480,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final int nrTerritories = ALL_TERRITORY_DTO.size();
             final int fromIndex = (offset < 0) ? Math.max(0, nrTerritories + offset) : Math.min(nrTerritories, offset);
             final int toIndex = Math.min(nrTerritories, fromIndex + count);
-            final TerritoriesDTO result = new TerritoriesDTO(ALL_TERRITORY_DTO.subList(fromIndex, toIndex));
+            final TerritoryListDTO territoryList = new TerritoryListDTO(ALL_TERRITORY_DTO.subList(fromIndex, toIndex));
+            final TerritoriesDTO result = new TerritoriesDTO(ALL_TERRITORY_DTO.size(), territoryList);
 
             // Validate the result (internal consistency check).
             result.validate();
@@ -579,8 +580,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final int nrAlphabets = ALL_ALPHABET_DTO.size();
             final int fromIndex = (offset < 0) ? Math.max(0, nrAlphabets + offset) : Math.min(nrAlphabets, offset);
             final int toIndex = Math.min(nrAlphabets, fromIndex + count);
-            final List<AlphabetDTO> alphabets = ALL_ALPHABET_DTO.subList(fromIndex, toIndex);
-            final AlphabetsDTO result = new AlphabetsDTO(alphabets);
+            final AlphabetListDTO alphabetList = new AlphabetListDTO(ALL_ALPHABET_DTO.subList(fromIndex, toIndex));
+            final AlphabetsDTO result = new AlphabetsDTO(ALL_ALPHABET_DTO.size(), alphabetList);
 
             // Validate the result (internal consistency check).
             result.validate();

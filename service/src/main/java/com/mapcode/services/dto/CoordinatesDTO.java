@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "point")
 @XmlAccessorType(XmlAccessType.FIELD)
-public final class PointDTO extends ApiDTO {
+public final class CoordinatesDTO extends ApiDTO {
 
     @XmlElement(name = "latDeg")
     @Nonnull
@@ -53,7 +53,7 @@ public final class PointDTO extends ApiDTO {
         validator().done();
     }
 
-    public PointDTO(
+    public CoordinatesDTO(
             @Nonnull final Double latDeg,
             @Nonnull final Double lonDeg) {
         this.latDeg = latDeg;
@@ -62,7 +62,7 @@ public final class PointDTO extends ApiDTO {
 
     @SuppressWarnings("UnusedDeclaration")
     @Deprecated
-    private PointDTO() {
+    private CoordinatesDTO() {
         // Default constructor required by JAX-B.
         super();
     }

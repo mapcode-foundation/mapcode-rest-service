@@ -18,10 +18,8 @@ package com.mapcode.services;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +45,8 @@ public class ApiTerritoriesTest {
     }
 
     @Test
-    public void checkTerritoriesJson() {
-        LOG.info("checkTerritoriesJson");
+    public void checkTerritories1Json() {
+        LOG.info("checkTerritories1Json");
         final Response response = new ResteasyClientBuilder().build().
                 target(server.url("/mapcode/territories")).
                 request().
@@ -59,15 +57,15 @@ public class ApiTerritoriesTest {
         Assert.assertTrue(r.length() > 500);
         final String sub1 = r.substring(0, 500);
         final String sub2 = r.substring(r.length() - 500, r.length());
-        Assert.assertEquals("[{\"aliases\":[\"US\"],\"fullNameAliases\":[\"United States of America\",\"America\"],\"alphaCode\":\"USA\",\"alphaCodeMinimalUnambiguous\":\"USA\",\"alphaCodeMinimal\":\"USA\",\"fullName\":\"USA\"},{\"aliases\":[\"IN\"],\"alphaCode\":\"IND\",\"alphaCodeMinimalUnambiguous\":\"IND\",\"alphaCodeMinimal\":\"IND\",\"fullName\":\"India\"},{\"aliases\":[\"CA\"],\"alphaCode\":\"CAN\",\"alphaCodeMinimalUnambiguous\":\"CAN\",\"alphaCodeMinimal\":\"CAN\",\"fullName\":\"Canada\"},{\"aliases\":[\"AU\"],\"alphaCode\":\"AUS\",\"alphaCodeMinimalUnambiguous\":\"AUS\",\"alphaCodeMinimal\":\"",
+        Assert.assertEquals("{\"total\":533,\"territories\":[{\"aliases\":[\"US\"],\"fullNameAliases\":[\"United States of America\",\"America\"],\"alphaCode\":\"USA\",\"alphaCodeMinimalUnambiguous\":\"USA\",\"alphaCodeMinimal\":\"USA\",\"fullName\":\"USA\"},{\"aliases\":[\"IN\"],\"alphaCode\":\"IND\",\"alphaCodeMinimalUnambiguous\":\"IND\",\"alphaCodeMinimal\":\"IND\",\"fullName\":\"India\"},{\"aliases\":[\"CA\"],\"alphaCode\":\"CAN\",\"alphaCodeMinimalUnambiguous\":\"CAN\",\"alphaCodeMinimal\":\"CAN\",\"fullName\":\"Canada\"},{\"aliases\":[\"AU\"],\"alphaCode\":\"AUS\",\"alphaCodeMinimalUnambiguous\"",
                 sub1);
-        Assert.assertEquals("haCodeMinimal\":\"XJ\",\"fullName\":\"Xinjiang Uyghur\",\"parentTerritory\":\"CHN\"},{\"aliases\":[\"US-UM\",\"USA-UM\",\"JTN\"],\"alphaCode\":\"UMI\",\"alphaCodeMinimalUnambiguous\":\"UMI\",\"alphaCodeMinimal\":\"UMI\",\"fullName\":\"United States Minor Outlying Islands\"},{\"alphaCode\":\"CPT\",\"alphaCodeMinimalUnambiguous\":\"CPT\",\"alphaCodeMinimal\":\"CPT\",\"fullName\":\"Clipperton Island\"},{\"fullNameAliases\":[\"Worldwide\",\"Earth\"],\"alphaCode\":\"AAA\",\"alphaCodeMinimalUnambiguous\":\"AAA\",\"alphaCodeMinimal\":\"AAA\",\"fullName\":\"International\"}]",
+        Assert.assertEquals("aCodeMinimal\":\"XJ\",\"fullName\":\"Xinjiang Uyghur\",\"parentTerritory\":\"CHN\"},{\"aliases\":[\"US-UM\",\"USA-UM\",\"JTN\"],\"alphaCode\":\"UMI\",\"alphaCodeMinimalUnambiguous\":\"UMI\",\"alphaCodeMinimal\":\"UMI\",\"fullName\":\"United States Minor Outlying Islands\"},{\"alphaCode\":\"CPT\",\"alphaCodeMinimalUnambiguous\":\"CPT\",\"alphaCodeMinimal\":\"CPT\",\"fullName\":\"Clipperton Island\"},{\"fullNameAliases\":[\"Worldwide\",\"Earth\"],\"alphaCode\":\"AAA\",\"alphaCodeMinimalUnambiguous\":\"AAA\",\"alphaCodeMinimal\":\"AAA\",\"fullName\":\"International\"}]}",
                 sub2);
     }
 
     @Test
-    public void checkTerritoriesXml() {
-        LOG.info("checkTerritoriesXml");
+    public void checkTerritories1Xml() {
+        LOG.info("checkTerritories1Xml");
         final Response response = new ResteasyClientBuilder().build().
                 target(server.url("/mapcode/territories")).
                 request().
@@ -78,10 +76,38 @@ public class ApiTerritoriesTest {
         Assert.assertTrue(r.length() > 500);
         final String sub1 = r.substring(0, 500);
         final String sub2 = r.substring(r.length() - 500, r.length());
-        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><territories><territory><alphaCode>USA</alphaCode><alphaCodeMinimalUnambiguous>USA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>USA</alphaCodeMinimal><fullName>USA</fullName><aliases><alias>US</alias></aliases><fullNameAliases><fullNameAlias>United States of America</fullNameAlias><fullNameAlias>America</fullNameAlias></fullNameAliases></territory><territory><alphaCode>IND</alphaCode><alphaCodeMinimalUnambiguous>IND</alphaCodeMinimalUnambi",
+        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><territories><total>533</total><territory><alphaCode>USA</alphaCode><alphaCodeMinimalUnambiguous>USA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>USA</alphaCodeMinimal><fullName>USA</fullName><aliases><alias>US</alias></aliases><fullNameAliases><fullNameAlias>United States of America</fullNameAlias><fullNameAlias>America</fullNameAlias></fullNameAliases></territory><territory><alphaCode>IND</alphaCode><alphaCodeMinimalUnambiguous>IND</alph",
                 sub1);
         Assert.assertEquals("<alphaCodeMinimalUnambiguous>CPT</alphaCodeMinimalUnambiguous><alphaCodeMinimal>CPT</alphaCodeMinimal><fullName>Clipperton Island</fullName><aliases/><fullNameAliases/></territory><territory><alphaCode>AAA</alphaCode><alphaCodeMinimalUnambiguous>AAA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>AAA</alphaCodeMinimal><fullName>International</fullName><aliases/><fullNameAliases><fullNameAlias>Worldwide</fullNameAlias><fullNameAlias>Earth</fullNameAlias></fullNameAliases></territory></territories>",
                 sub2);
+    }
+
+    @Test
+    public void checkTerritories2Json() {
+        LOG.info("checkTerritories2Json");
+        final Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/territories?count=1&offset=-1")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        final String r = response.readEntity(String.class);
+        Assert.assertEquals("{\"total\":533,\"territories\":[{\"fullNameAliases\":[\"Worldwide\",\"Earth\"],\"alphaCode\":\"AAA\",\"alphaCodeMinimalUnambiguous\":\"AAA\",\"alphaCodeMinimal\":\"AAA\",\"fullName\":\"International\"}]}",
+                r);
+    }
+
+    @Test
+    public void checkTerritories2Xml() {
+        LOG.info("checkTerritories2Xml");
+        final Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/territories?count=1&offset=-1")).
+                request().
+                accept(MediaType.APPLICATION_XML_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        final String r = response.readEntity(String.class);
+        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><territories><total>533</total><territory><alphaCode>AAA</alphaCode><alphaCodeMinimalUnambiguous>AAA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>AAA</alphaCodeMinimal><fullName>International</fullName><aliases/><fullNameAliases><fullNameAlias>Worldwide</fullNameAlias><fullNameAlias>Earth</fullNameAlias></fullNameAliases></territory></territories>",
+                r);
     }
 
     @Test

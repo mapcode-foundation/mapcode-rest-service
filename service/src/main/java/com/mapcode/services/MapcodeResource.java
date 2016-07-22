@@ -16,6 +16,10 @@
 
 package com.mapcode.services;
 
+import com.mapcode.services.dto.AlphabetListDTO;
+import com.mapcode.services.dto.CoordinatesDTO;
+import com.mapcode.services.dto.MapcodesDTO;
+import com.mapcode.services.dto.TerritoryListDTO;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiException;
 import org.jboss.resteasy.annotations.Suspend;
 import org.jboss.resteasy.spi.AsynchronousResponse;
@@ -89,7 +93,7 @@ public interface MapcodeResource {
      *                       Range: {@link ParamInclude}.
      * @param paramDebug     True for debugging purposes. Default is false.
      * @param response       One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
-     *                       INTERNATIONAL and {@link com.mapcode.services.dto.MapcodesDTO} for ALL.
+     *                       INTERNATIONAL and {@link MapcodesDTO} for ALL.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -134,7 +138,7 @@ public interface MapcodeResource {
      *                       Range: {@link ParamInclude}.
      * @param paramDebug     True for debugging purposes. Default is false.
      * @param response       One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
-     *                       INTERNATIONAL and {@link com.mapcode.services.dto.MapcodesDTO} for ALL.
+     *                       INTERNATIONAL and {@link MapcodesDTO} for ALL.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -185,7 +189,7 @@ public interface MapcodeResource {
      * @param paramContext Specifies a territory context for interpretation of the mapcode.
      *                     Range: any valid territory.
      * @param paramDebug   True for debugging purposes. Default is false.
-     * @param response     Lat/lon. Format: {@link com.mapcode.services.dto.PointDTO}.
+     * @param response     Lat/lon. Format: {@link CoordinatesDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -212,7 +216,7 @@ public interface MapcodeResource {
      * @param offset     Return values from 'offset'. Range: &gt;= 0 counts from start, &lt; 0 counts from end.
      * @param count      Return 'count' values at most. Range: &gt;= 0.
      * @param paramDebug True for debugging purposes. Default is false.
-     * @param response   Territory codes and information. Format: {@link com.mapcode.services.dto.TerritoriesDTO}.
+     * @param response   Territory codes and information. Format: {@link TerritoryListDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -266,7 +270,7 @@ public interface MapcodeResource {
      * @param offset     Return values from 'offset'. Range: &gt;= 0 counts from start, &lt; 0 counts from end.
      * @param count      Return 'count' values at most. Range: &gt;= 0.
      * @param paramDebug True for debugging purposes. Default is false.
-     * @param response   Alphabet codes and information. Format: {@link com.mapcode.services.dto.AlphabetsDTO}.
+     * @param response   Alphabet codes and information. Format: {@link AlphabetListDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET

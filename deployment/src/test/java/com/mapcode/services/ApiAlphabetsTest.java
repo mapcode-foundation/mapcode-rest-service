@@ -59,7 +59,7 @@ public class ApiAlphabetsTest {
                 accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("[{\"name\":\"ROMAN\"},{\"name\":\"GREEK\"},{\"name\":\"CYRILLIC\"},{\"name\":\"HEBREW\"},{\"name\":\"HINDI\"},{\"name\":\"MALAY\"},{\"name\":\"GEORGIAN\"},{\"name\":\"KATAKANA\"},{\"name\":\"THAI\"},{\"name\":\"LAO\"},{\"name\":\"ARMENIAN\"},{\"name\":\"BENGALI\"},{\"name\":\"GURMUKHI\"},{\"name\":\"TIBETAN\"}]",
+        Assert.assertEquals("{\"total\":14,\"alphabets\":[{\"name\":\"ROMAN\"},{\"name\":\"GREEK\"},{\"name\":\"CYRILLIC\"},{\"name\":\"HEBREW\"},{\"name\":\"HINDI\"},{\"name\":\"MALAY\"},{\"name\":\"GEORGIAN\"},{\"name\":\"KATAKANA\"},{\"name\":\"THAI\"},{\"name\":\"LAO\"},{\"name\":\"ARMENIAN\"},{\"name\":\"BENGALI\"},{\"name\":\"GURMUKHI\"},{\"name\":\"TIBETAN\"}]}",
                 response.readEntity(String.class));
     }
 
@@ -72,7 +72,7 @@ public class ApiAlphabetsTest {
                 accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("[{\"name\":\"ROMAN\"},{\"name\":\"GREEK\"}]",
+        Assert.assertEquals("{\"total\":14,\"alphabets\":[{\"name\":\"ROMAN\"},{\"name\":\"GREEK\"}]}",
                 response.readEntity(String.class));
     }
 
@@ -85,7 +85,7 @@ public class ApiAlphabetsTest {
                 accept(MediaType.APPLICATION_XML_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><alphabets><alphabet><name>ROMAN</name></alphabet><alphabet><name>GREEK</name></alphabet></alphabets>",
+        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><alphabets><total>14</total><alphabet><name>ROMAN</name></alphabet><alphabet><name>GREEK</name></alphabet></alphabets>",
                 response.readEntity(String.class));
     }
 
@@ -98,7 +98,7 @@ public class ApiAlphabetsTest {
                 accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("[{\"name\":\"GREEK\"}]",
+        Assert.assertEquals("{\"total\":14,\"alphabets\":[{\"name\":\"GREEK\"}]}",
                 response.readEntity(String.class));
     }
 
@@ -111,7 +111,7 @@ public class ApiAlphabetsTest {
                 accept(MediaType.APPLICATION_XML_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><alphabets><alphabet><name>GREEK</name></alphabet></alphabets>",
+        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><alphabets><total>14</total><alphabet><name>GREEK</name></alphabet></alphabets>",
                 response.readEntity(String.class));
     }
 
@@ -124,7 +124,7 @@ public class ApiAlphabetsTest {
                 accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("[{\"name\":\"TIBETAN\"}]",
+        Assert.assertEquals("{\"total\":14,\"alphabets\":[{\"name\":\"TIBETAN\"}]}",
                 response.readEntity(String.class));
     }
 
@@ -137,7 +137,7 @@ public class ApiAlphabetsTest {
                 accept(MediaType.APPLICATION_XML_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><alphabets><alphabet><name>TIBETAN</name></alphabet></alphabets>",
+        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><alphabets><total>14</total><alphabet><name>TIBETAN</name></alphabet></alphabets>",
                 response.readEntity(String.class));
     }
 
