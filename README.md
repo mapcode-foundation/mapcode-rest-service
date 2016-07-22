@@ -222,8 +222,8 @@ Normally, one of our developers should be able to comment on them and fix.
 
 * 2.2.3.18
 
-    Reworked responses for `/alphabets` and `/territories`, returning to older format and including
-    a `total` attribute to indicate total number of items in list (for paging).
+    Reworked responses for `/alphabets` and `/territories`, returning to older format (also easier for
+    client parsing) and including a `total` attribute to indicate total number of items in list (for paging).
     
 * 2.2.3.17
 
