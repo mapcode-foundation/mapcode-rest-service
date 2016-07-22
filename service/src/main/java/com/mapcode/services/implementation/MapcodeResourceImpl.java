@@ -469,6 +469,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final boolean debug = paramDebug.equalsIgnoreCase("true");
 
             LOG.info("getTerritories{}", debug ? " (DEBUG)" : "");
+            metricsCollector.addOneTerritoryRequest();
 
             // Check value of count.
             if (count < 0) {
@@ -516,6 +517,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final boolean debug = paramDebug.equalsIgnoreCase("true");
 
             LOG.info("getTerritory: territory={}, context={}{}", paramTerritory, paramContext, debug ? " (DEBUG)" : "");
+            metricsCollector.addOneTerritoryRequest();
 
             // Get the territory from the URL.
             final Territory territory;
@@ -567,6 +569,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
         processor.process("getAlphabets", LOG, response, () -> {
             // Get debug mode.
             final boolean debug = paramDebug.equalsIgnoreCase("true");
+            metricsCollector.addOneAlphabetRequest();
 
             LOG.info("getAlphabets{}", debug ? " (DEBUG)" : "");
 
@@ -615,6 +618,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final boolean debug = paramDebug.equalsIgnoreCase("true");
 
             LOG.info("getAlphabet: alphabet={}{}", paramAlphabet, debug ? " (DEBUG)" : "");
+            metricsCollector.addOneAlphabetRequest();
 
             // Get the territory from the URL.
             final Alphabet alphabet;

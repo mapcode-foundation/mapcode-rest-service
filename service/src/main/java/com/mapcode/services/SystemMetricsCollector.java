@@ -30,4 +30,14 @@ public interface SystemMetricsCollector {
      * Called whenever a successful lat/lon to mapcode request is made.
      */
     public void addOneValidLatLonToMapcodeRequest();
+
+    /**
+     * Called whenever a alphabet request is made.
+     */
+    public void addOneAlphabetRequest();
+
+    /**
+     * Called whenever a territory request is made.
+     */
+    public void addOneTerritoryRequest();
 }

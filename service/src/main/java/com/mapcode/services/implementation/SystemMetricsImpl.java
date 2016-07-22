@@ -39,6 +39,8 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
     private final MultiMetricsCollector validMapcodeToLatLonRequests = MultiMetricsCollector.all();
     private final MultiMetricsCollector allLatLonToMapcodeRequests = MultiMetricsCollector.all();
     private final MultiMetricsCollector validLatLonToMapcodeRequests = MultiMetricsCollector.all();
+    private final MultiMetricsCollector allAlphabetRequests = MultiMetricsCollector.all();
+    private final MultiMetricsCollector allTerritoryRequests = MultiMetricsCollector.all();
     private final MultiMetricsCollector warningsAndErrors = MultiMetricsCollector.all();
 
     @Nonnull
@@ -48,6 +50,8 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
                 put(Metric.VALID_MAPCODE_TO_LATLON_REQUESTS, validMapcodeToLatLonRequests);
                 put(Metric.ALL_LATLON_TO_MAPCODE_REQUESTS, allLatLonToMapcodeRequests);
                 put(Metric.VALID_LATLON_TO_MAPCODE_REQUESTS, validLatLonToMapcodeRequests);
+                put(Metric.ALL_ALPHABET_REQUESTS, allAlphabetRequests);
+                put(Metric.ALL_TERRITORY_REQUESTS, allTerritoryRequests);
                 put(Metric.WARNINGS_AND_ERRORS, warningsAndErrors);
             }};
 
@@ -118,6 +122,18 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
 
     @Nonnull
     @Override
+    public MultiMetricsData getTotalAlphabetRequests() {
+        return allAlphabetRequests;
+    }
+
+    @Nonnull
+    @Override
+    public MultiMetricsData getTotalTerritoryRequests() {
+        return allTerritoryRequests;
+    }
+
+    @Nonnull
+    @Override
     public MultiMetricsData getWarningsAndErrors() {
         return warningsAndErrors;
     }
@@ -140,5 +156,15 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
     @Override
     public void addOneValidLatLonToMapcodeRequest() {
         validLatLonToMapcodeRequests.addValue(1);
+    }
+
+    @Override
+    public void addOneAlphabetRequest() {
+        allAlphabetRequests.addValue(1);
+    }
+
+    @Override
+    public void addOneTerritoryRequest() {
+        allTerritoryRequests.addValue(1);
     }
 }

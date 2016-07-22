@@ -81,6 +81,8 @@ $(document).ready(function () {
     stdgraph("#validMapcodeToLatLonRequestsSum", "Valid requests: mapcode > coord", "ValidMapcodeToLatLonRequests", "sum");
     stdgraph("#totalLatLonToMapcodeRequestsSum", "Total requests: coord > mapcode", "TotalLatLonToMapcodeRequests", "sum");
     stdgraph("#validLatLonToMapcodeRequestsSum", "Valid requests: coord > mapcode", "ValidLatLonToMapcodeRequests", "sum");
+    stdgraph("#totalAlphabetRequestsSum", "Alphabet requests:", "TotalAlphabetRequests", "sum");
+    stdgraph("#totalTerritoryRequestsSum", "Territory requests:", "TotalTerritoryRequests", "sum");
     stdgraph("#warningsAndErrorsSum", "Warnings and Errors", "WarningsAndErrors", "sum");
 
     var value = jolokiaConnector.getAttribute("java.lang:type=Memory", "HeapMemoryUsage", "used") / (1024 * 1024);

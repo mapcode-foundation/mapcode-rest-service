@@ -39,6 +39,8 @@ public interface SystemMetrics {
         VALID_MAPCODE_TO_LATLON_REQUESTS,
         ALL_LATLON_TO_MAPCODE_REQUESTS,
         VALID_LATLON_TO_MAPCODE_REQUESTS,
+        ALL_ALPHABET_REQUESTS,
+        ALL_TERRITORY_REQUESTS,
         WARNINGS_AND_ERRORS
     }
 
@@ -74,6 +76,18 @@ public interface SystemMetrics {
      */
     @Nonnull
     MultiMetricsData getValidLatLonToMapcodeRequests();
+
+    /**
+     * @return The total number of requests for alphabets.
+     */
+    @Nonnull
+    MultiMetricsData getTotalAlphabetRequests();
+
+    /**
+     * @return The total number of requests for territories.
+     */
+    @Nonnull
+    MultiMetricsData getTotalTerritoryRequests();
 
     /**
      * @return The number of warnings and errors that were logged through log4j.
