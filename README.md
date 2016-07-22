@@ -224,6 +224,8 @@ Normally, one of our developers should be able to comment on them and fix.
 
     Reworked responses for `/alphabets` and `/territories`, returning to older format (also easier for
     client parsing) and including a `total` attribute to indicate total number of items in list (for paging).
+
+    Added metrics for `alphabets` and `territories` methods.
     
 * 2.2.3.17
 
