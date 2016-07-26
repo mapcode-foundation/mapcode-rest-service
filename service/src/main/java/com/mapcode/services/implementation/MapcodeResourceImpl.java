@@ -37,8 +37,6 @@ import com.tomtom.speedtools.tracer.Traceable;
 import com.tomtom.speedtools.tracer.TracerFactory;
 import com.tomtom.speedtools.utils.MathUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.jboss.resteasy.annotations.Suspend;
-import org.jboss.resteasy.spi.AsynchronousResponse;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +45,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.List;
@@ -111,7 +111,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Override
     public void convertLatLonToMapcode(
-            @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
+            @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
 
         // This method is forbidden. In REST terms, this should return ALL potential mapcodes - intractable.
         throw new ApiForbiddenException("Missing URL path parameters: /{lat,lon}/{" + API_ERROR_VALID_TYPES.toLowerCase() + '}');
@@ -119,7 +119,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Override
     public void convertLatLonToMapcodeXml(
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
+            @Suspended @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
         convertLatLonToMapcode(response);
     }
 
@@ -132,7 +132,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramAlphabet,
             @Nonnull final String paramInclude,
             @Nonnull final String paramDebug,
-            @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
+            @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
         convertLatLonToMapcode(paramLatDeg, paramLonDeg, null, paramPrecision, paramTerritory, paramAlphabet,
                 paramInclude, paramDebug, response);
     }
@@ -146,7 +146,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramAlphabet,
             @DefaultValue("") @Nonnull final String paramInclude,
             @DefaultValue("false") @Nonnull final String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull final AsynchronousResponse response)
+            @Suspended @Nonnull final AsyncResponse response)
             throws ApiInvalidFormatException {
         convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramPrecision, paramTerritory, paramAlphabet, paramInclude, paramDebug, response);
     }
@@ -161,7 +161,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramAlphabet,
             @Nonnull final String paramInclude,
             @Nonnull final String paramDebug,
-            @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
+            @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
         assert response != null;
 
         processor.process("convertLatLonToMapcode", LOG, response, () -> {
@@ -342,7 +342,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 // Validate the DTO before returning it, to make sure it's valid (internal consistency check).
                 result.validate();
                 metricsCollector.addOneValidLatLonToMapcodeRequest();
-                response.setResponse(Response.ok(result).build());
+                response.resume(Response.ok(result).build());
             } catch (final UnknownMapcodeException ignored) {
 
                 // The mapcode conversion failed.
@@ -364,14 +364,14 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramAlphabet,
             @DefaultValue("") @Nonnull final String paramInclude,
             @DefaultValue("false") @Nonnull final String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull final AsynchronousResponse response)
+            @Suspended @Nonnull final AsyncResponse response)
             throws ApiInvalidFormatException {
         convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramType, paramPrecision, paramTerritory, paramAlphabet, paramInclude, paramDebug, response);
     }
 
     @Override
     public void convertMapcodeToLatLon(
-            @Nonnull final AsynchronousResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
+            @Nonnull final AsyncResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
 
         // This method is forbidden. In REST terms, this would return all world coordinates - intractable.
         throw new ApiForbiddenException("Missing URL path parameters: /{mapcode}");
@@ -379,7 +379,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Override
     public void convertMapcodeToLatLonXml(
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull final AsynchronousResponse response)
+            @Suspended @Nonnull final AsyncResponse response)
             throws ApiNotFoundException, ApiInvalidFormatException {
         convertMapcodeToLatLon(response);
     }
@@ -389,7 +389,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nonnull final String paramCode,
             @Nullable final String paramContext,
             @Nonnull final String paramDebug,
-            @Nonnull final AsynchronousResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
+            @Nonnull final AsyncResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
         assert paramCode != null;
         assert response != null;
 
@@ -439,7 +439,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             // Validate the result (internal consistency check).
             result.validate();
             metricsCollector.addOneValidMapcodeToLatLonRequest();
-            response.setResponse(Response.ok(result).build());
+            response.resume(Response.ok(result).build());
 
             // The response is already set within this method body.
             return Futures.successful(null);
@@ -451,7 +451,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nonnull final String paramCode,
             @Nullable final String paramContext,
             @DefaultValue("false") @Nonnull final String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull final AsynchronousResponse response)
+            @Suspended @Nonnull final AsyncResponse response)
             throws ApiNotFoundException, ApiInvalidFormatException {
         convertMapcodeToLatLon(paramCode, paramContext, paramDebug, response);
     }
@@ -461,7 +461,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final int offset,
             final int count,
             @Nonnull final String paramDebug,
-            @Nonnull final AsynchronousResponse response) throws ApiIntegerOutOfRangeException {
+            @Nonnull final AsyncResponse response) throws ApiIntegerOutOfRangeException {
         assert response != null;
 
         processor.process("getTerritories", LOG, response, () -> {
@@ -486,7 +486,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
             // Validate the result (internal consistency check).
             result.validate();
-            response.setResponse(Response.ok(result).build());
+            response.resume(Response.ok(result).build());
 
             // The response is already set within this method body.
             return Futures.successful(null);
@@ -498,7 +498,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @DefaultValue(DEFAULT_OFFSET) final int offset,
             @DefaultValue(DEFAULT_COUNT) final int count,
             @DefaultValue("false") @Nonnull final String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull final AsynchronousResponse response)
+            @Suspended @Nonnull final AsyncResponse response)
             throws ApiIntegerOutOfRangeException {
         getTerritories(offset, count, paramDebug, response);
     }
@@ -508,7 +508,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nonnull final String paramTerritory,
             @Nullable final String paramContext,
             @Nonnull final String paramDebug,
-            @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
+            @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
         assert paramTerritory != null;
         assert response != null;
 
@@ -541,7 +541,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
             // Validate the result (internal consistency check).
             result.validate();
-            response.setResponse(Response.ok(result).build());
+            response.resume(Response.ok(result).build());
 
             // The response is already set within this method body.
             return Futures.successful(null);
@@ -553,7 +553,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nonnull final String paramTerritory,
             @Nullable final String paramContext,
             @DefaultValue("false") @Nonnull final String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull final AsynchronousResponse response)
+            @Suspended @Nonnull final AsyncResponse response)
             throws ApiInvalidFormatException {
         getTerritory(paramTerritory, paramContext, paramDebug, response);
     }
@@ -563,7 +563,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final int offset,
             final int count,
             @Nonnull final String paramDebug,
-            @Nonnull final AsynchronousResponse response) throws ApiIntegerOutOfRangeException {
+            @Nonnull final AsyncResponse response) throws ApiIntegerOutOfRangeException {
         assert response != null;
 
         processor.process("getAlphabets", LOG, response, () -> {
@@ -588,7 +588,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
             // Validate the result (internal consistency check).
             result.validate();
-            response.setResponse(Response.ok(result).build());
+            response.resume(Response.ok(result).build());
 
             // The response is already set within this method body.
             return Futures.successful(null);
@@ -600,7 +600,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @DefaultValue(DEFAULT_OFFSET) final int offset,
             @DefaultValue(DEFAULT_COUNT) final int count,
             @DefaultValue("false") @Nonnull final String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull final AsynchronousResponse response)
+            @Suspended @Nonnull final AsyncResponse response)
             throws ApiIntegerOutOfRangeException {
         getAlphabets(offset, count, paramDebug, response);
     }
@@ -609,7 +609,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void getAlphabet(
             @Nonnull final String paramAlphabet,
             @Nonnull final String paramDebug,
-            @Nonnull final AsynchronousResponse response) throws ApiInvalidFormatException {
+            @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
         assert paramAlphabet != null;
         assert response != null;
 
@@ -633,7 +633,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
             // Validate the result (internal consistency check).
             result.validate();
-            response.setResponse(Response.ok(result).build());
+            response.resume(Response.ok(result).build());
 
             // The response is already set within this method body.
             return Futures.successful(null);
@@ -644,7 +644,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void getAlphabetXml(
             @Nonnull final String paramAlphabet,
             @DefaultValue("false") @Nonnull final String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull final AsynchronousResponse response)
+            @Suspended @Nonnull final AsyncResponse response)
             throws ApiInvalidFormatException {
         getAlphabet(paramAlphabet, paramDebug, response);
     }

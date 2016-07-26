@@ -16,19 +16,18 @@
 
 package com.mapcode.services.implementation;
 
-import com.mapcode.services.ApiConstants;
 import com.mapcode.services.RootResource;
 import com.mapcode.services.SystemMetrics;
 import com.mapcode.services.dto.VersionDTO;
 import com.tomtom.speedtools.json.Json;
 import com.tomtom.speedtools.maven.MavenProperties;
-import org.jboss.resteasy.annotations.Suspend;
-import org.jboss.resteasy.spi.AsynchronousResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Response;
 
 /**
@@ -157,7 +156,7 @@ public class RootResourceImpl implements RootResource {
     }
 
     @Override
-    public void getVersion(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) final AsynchronousResponse response) {
+    public void getVersion(@Suspended @Nonnull final AsyncResponse response) {
         assert response != null;
 
         // No input validation required. Just return version number.
@@ -170,33 +169,33 @@ public class RootResourceImpl implements RootResource {
         result.validate();                                    // You must validate it before using it.
 
         // Build the response and return it.
-        response.setResponse(Response.ok(result).build());
+        response.resume(Response.ok(result).build());
     }
 
     @Override
-    public void getVersionXml(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response) {
+    public void getVersionXml(@Suspended @Nonnull AsyncResponse response) {
         getVersion(response);
     }
 
     @Override
-    public void getStatus(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) final AsynchronousResponse response) {
+    public void getStatus(@Suspended @Nonnull final AsyncResponse response) {
         assert response != null;
         LOG.info("getStatus: get status");
-        response.setResponse(Response.ok().build());
+        response.resume(Response.ok().build());
     }
 
     @Override
-    public void getStatusXml(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response) {
+    public void getStatusXml(@Suspended @Nonnull AsyncResponse response) {
         getStatus(response);
     }
 
     @Override
-    public void getMetrics(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) final AsynchronousResponse response) {
+    public void getMetrics(@Suspended @Nonnull final AsyncResponse response) {
         assert response != null;
         LOG.info("getMetrics");
 
         // No input validation required. Just return metrics as a plain JSON string.
         final String json = Json.toJson(metrics);
-        response.setResponse(Response.ok(json).build());
+        response.resume(Response.ok(json).build());
     }
 }

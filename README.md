@@ -220,6 +220,10 @@ Normally, one of our developers should be able to comment on them and fix.
 
 ## Release Notes
 
+* 2.2.3.19
+
+    Updated to SpeedTools 3.0.21 which uses a more recent JBoss RESTEasy framework.
+    
 * 2.2.3.18
 
     Reworked responses for `/alphabets` and `/territories`, returning to older format (also easier for

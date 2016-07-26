@@ -16,13 +16,12 @@
 
 package com.mapcode.services;
 
-import org.jboss.resteasy.annotations.Suspend;
-import org.jboss.resteasy.spi.AsynchronousResponse;
-
 import javax.annotation.Nonnull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 
 @Path("/mapcode")
@@ -47,12 +46,12 @@ public interface RootResource {
     @Path("version")
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    void getVersion(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response);
+    void getVersion(@Suspended @Nonnull AsyncResponse response);
 
     @Path("xml/version")
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    void getVersionXml(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response);
+    void getVersionXml(@Suspended @Nonnull AsyncResponse response);
 
     /**
      * This method returns whether the service is operational or not (status code 200 is OK).
@@ -62,12 +61,12 @@ public interface RootResource {
     @Path("status")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @GET
-    void getStatus(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response);
+    void getStatus(@Suspended @Nonnull AsyncResponse response);
 
     @Path("xml/status")
     @Produces(MediaType.APPLICATION_XML)
     @GET
-    void getStatusXml(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response);
+    void getStatusXml(@Suspended @Nonnull AsyncResponse response);
 
     /**
      * This method returns system metrics.
@@ -77,5 +76,5 @@ public interface RootResource {
     @Path("metrics")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    void getMetrics(@Nonnull @Suspend(ApiConstants.SUSPEND_TIMEOUT) AsynchronousResponse response);
+    void getMetrics(@Suspended @Nonnull AsyncResponse response);
 }

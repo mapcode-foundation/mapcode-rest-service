@@ -21,12 +21,12 @@ import com.mapcode.services.dto.CoordinatesDTO;
 import com.mapcode.services.dto.MapcodesDTO;
 import com.mapcode.services.dto.TerritoryListDTO;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiException;
-import org.jboss.resteasy.annotations.Suspend;
-import org.jboss.resteasy.spi.AsynchronousResponse;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -71,13 +71,13 @@ public interface MapcodeResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("codes")
     void convertLatLonToMapcode(
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
     @Path("xml/codes")
     void convertLatLonToMapcodeXml(
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     /**
      * Convert a lat/lon to one or more mapcodes. All possible mapcodes are returned.
@@ -107,7 +107,7 @@ public interface MapcodeResource {
             @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -120,7 +120,7 @@ public interface MapcodeResource {
             @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     /**
      * Convert a lat/lon to one or more mapcodes.
@@ -153,7 +153,7 @@ public interface MapcodeResource {
             @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -167,20 +167,20 @@ public interface MapcodeResource {
             @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     // Unsupported operation.
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("coords")
     void convertMapcodeToLatLon(
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
     @Path("xml/coords")
     void convertMapcodeToLatLonXml(
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     /**
      * Convert a mapcode into a lat/lon pair.
@@ -199,7 +199,7 @@ public interface MapcodeResource {
             @PathParam(PARAM_CODE) @Nonnull String paramCode,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -208,7 +208,7 @@ public interface MapcodeResource {
             @PathParam(PARAM_CODE) @Nonnull String paramCode,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     /**
      * Get a list of all valid territory codes.
@@ -226,7 +226,7 @@ public interface MapcodeResource {
             @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
             @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -235,7 +235,7 @@ public interface MapcodeResource {
             @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
             @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     /**
      * Get info for a specific territory.
@@ -253,7 +253,7 @@ public interface MapcodeResource {
             @PathParam(PARAM_TERRITORY) @Nonnull String paramTerritory,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -262,7 +262,7 @@ public interface MapcodeResource {
             @PathParam(PARAM_TERRITORY) @Nonnull String paramTerritory,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     /**
      * Get a list of all valid alphabet codes.
@@ -280,7 +280,7 @@ public interface MapcodeResource {
             @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
             @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -289,7 +289,7 @@ public interface MapcodeResource {
             @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
             @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     /**
      * Get info for a specific alphabet.
@@ -305,7 +305,7 @@ public interface MapcodeResource {
     void getAlphabet(
             @PathParam(PARAM_ALPHABET) @Nonnull String paramAlphabet,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -313,5 +313,5 @@ public interface MapcodeResource {
     void getAlphabetXml(
             @PathParam(PARAM_ALPHABET) @Nonnull String paramAlphabet,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
-            @Suspend(ApiConstants.SUSPEND_TIMEOUT) @Nonnull AsynchronousResponse response) throws ApiException;
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
 }
