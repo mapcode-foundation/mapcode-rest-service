@@ -1,6 +1,10 @@
 # README for Mapcode REST API Web Services
 
-Copyright (C) 2014-2016 Stichting Mapcode Foundation (http://www.mapcode.com)
+[![Build Status](https://img.shields.io/travis/mapcode-foundation/mapcode-rest-service.svg)](https://travis-ci.org/mapcode-foundation/mapcode-rest-service)
+[![Coverage Status](https://coveralls.io/repos/github/mapcode-foundation/mapcode-rest-service/badge.svg)](https://coveralls.io/github/mapcode-foundation/mapcode-rest-service)
+[![Release](https://img.shields.io/github/release/mapcode-foundation/mapcode-rest-service.svg)](https://github.com/mapcode-foundation/mapcode-rest-service/releases)
+
+**Copyright (C) 2014-2016 Stichting Mapcode Foundation (http://www.mapcode.com)**
 
 This application provides a REST API for mapcodes. It uses the Java Library for Mapcodes
 extensively. The API supports both XML and JSON (default) responses.
