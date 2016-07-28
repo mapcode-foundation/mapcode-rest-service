@@ -335,3 +335,4 @@ Normally, one of our developers should be able to comment on them and fix.
 * 1.50.0
 
     First release of the REST API, based on the Mapcode Java library, version 1.50.0.
+
