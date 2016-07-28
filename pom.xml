@@ -69,16 +69,11 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jdk.version>1.8</jdk.version>
 
-        <!-- Repo token for Coveralls. -->
-        <coveralls-maven-plugin.repoToken>lh3CwMKGphMxYxTdyCcGtv6MnEiSYCijw</coveralls-maven-plugin.repoToken>
-
         <!-- Mapcode and SpeedTools libraries. -->
         <mapcode.version>2.2.3</mapcode.version>
         <speedtools.version>3.0.21</speedtools.version>
 
         <!-- Maven plugins. -->
-        <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
-        <coveralls-maven-plugin.version>4.2.0</coveralls-maven-plugin.version>
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
         <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
@@ -361,31 +356,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>${cobertura-maven-plugin.version}</version>
-                <configuration>
-                    <check>
-                    </check>
-                    <formats>
-                        <format>xml</format>
-                        <format>html</format>
-                    </formats>
-                    <maxmem>256m</maxmem>
-                    <aggregate>true</aggregate>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.eluder.coveralls</groupId>
-                <artifactId>coveralls-maven-plugin</artifactId>
-                <version>${coveralls-maven-plugin.version}</version>
-                <configuration>
-                    <repoToken>${coveralls-maven-plugin.repoToken}</repoToken>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
