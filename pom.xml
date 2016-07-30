@@ -74,7 +74,7 @@
         <speedtools.version>3.0.21</speedtools.version>
 
         <!-- Repo token for Coveralls. -->
-        <coveralls-maven-plugin.repoToken>RLwZjbGmKFYBnpizVNbcqYxTQsxpZVe2i</coveralls-maven-plugin.repoToken>
+        <coveralls-maven-plugin.repoToken>tfo3vtPLdgpqyUYhKTVW</coveralls-maven-plugin.repoToken>
 
         <!-- Maven plugins. -->
         <coveralls-maven-plugin.version>4.2.0</coveralls-maven-plugin.version>
