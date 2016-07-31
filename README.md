@@ -2,7 +2,7 @@
 
 [![Build Status](https://img.shields.io/travis/mapcode-foundation/mapcode-rest-service.svg)](https://travis-ci.org/mapcode-foundation/mapcode-rest-service)
 [![Coverage Status](https://coveralls.io/repos/github/mapcode-foundation/mapcode-rest-service/badge.svg?branch=master)](https://coveralls.io/github/mapcode-foundation/mapcode-rest-service?branch=master)
-[![License](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)]()
+[![License](http://img.shields.io/badge/license-APACHE2-blue.svg)]()
 [![Release](https://img.shields.io/github/release/mapcode-foundation/mapcode-rest-service.svg?maxAge=2592000)](https://github.com/mapcode-foundation/mapcode-rest-service/releases)
 
 **Copyright (C) 2014-2016 Stichting Mapcode Foundation (http://www.mapcode.com)**
