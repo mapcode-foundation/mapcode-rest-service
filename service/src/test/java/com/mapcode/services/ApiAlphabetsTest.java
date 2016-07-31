@@ -16,7 +16,12 @@
 
 package com.mapcode.services;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mapcode.Alphabet;
+import com.mapcode.services.dto.AlphabetsDTO;
+import com.mapcode.services.dto.VersionDTO;
+import com.tomtom.speedtools.json.Json;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.junit.After;
 import org.junit.Assert;
@@ -59,8 +64,14 @@ public class ApiAlphabetsTest {
                 accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
+        final String s = response.readEntity(String.class);
         Assert.assertEquals("{\"total\":14,\"alphabets\":[{\"name\":\"ROMAN\"},{\"name\":\"GREEK\"},{\"name\":\"CYRILLIC\"},{\"name\":\"HEBREW\"},{\"name\":\"HINDI\"},{\"name\":\"MALAY\"},{\"name\":\"GEORGIAN\"},{\"name\":\"KATAKANA\"},{\"name\":\"THAI\"},{\"name\":\"LAO\"},{\"name\":\"ARMENIAN\"},{\"name\":\"BENGALI\"},{\"name\":\"GURMUKHI\"},{\"name\":\"TIBETAN\"}]}",
-                response.readEntity(String.class));
+                s);
+
+        final AlphabetsDTO x = new Gson().fromJson(s, AlphabetsDTO.class);
+        Assert.assertNotNull(x);
+        Assert.assertEquals(14, x.getTotal());
+        Assert.assertEquals("ROMAN", x.getAlphabets().get(0).getName());
     }
 
     @Test

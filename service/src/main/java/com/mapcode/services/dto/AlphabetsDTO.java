@@ -77,15 +77,15 @@ public final class AlphabetsDTO extends ApiDTO {
         return total;
     }
 
+    public void setTotal(final int total) {
+        beforeSet();
+        this.total = total;
+    }
+
     @Nonnull
     public AlphabetListDTO getAlphabets() {
         beforeGet();
         return alphabets;
-    }
-
-    public void setTotal(final int total) {
-        beforeSet();
-        this.total = total;
     }
 
     public void setAlphabets(@Nonnull final AlphabetListDTO alphabets) {

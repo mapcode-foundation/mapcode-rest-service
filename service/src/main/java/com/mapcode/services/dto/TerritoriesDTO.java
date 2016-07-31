@@ -77,15 +77,15 @@ public final class TerritoriesDTO extends ApiDTO {
         return total;
     }
 
+    public void setTotal(final int total) {
+        beforeSet();
+        this.total = total;
+    }
+
     @Nonnull
     public TerritoryListDTO getTerritories() {
         beforeGet();
         return territories;
-    }
-
-    public void setTotal(final int total) {
-        beforeSet();
-        this.total = total;
     }
 
     public void setTerritories(@Nonnull final TerritoryListDTO territories) {

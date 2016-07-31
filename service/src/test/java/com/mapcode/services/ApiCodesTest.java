@@ -16,6 +16,9 @@
 
 package com.mapcode.services;
 
+import com.google.gson.Gson;
+import com.mapcode.services.dto.MapcodeDTO;
+import com.mapcode.services.dto.MapcodesDTO;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.junit.After;
 import org.junit.Assert;
@@ -27,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @SuppressWarnings("JUnitTestMethodWithNoAssertions")
 public class ApiCodesTest {
@@ -62,8 +66,17 @@ public class ApiCodesTest {
                 accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
+        final String s = response.readEntity(String.class);
         Assert.assertEquals("{\"international\":{\"mapcode\":\"VJ0L6.9PNQ\"},\"mapcodes\":[{\"mapcode\":\"JL0.KP\",\"territory\":\"LUX\"},{\"mapcode\":\"R8RN.07Z\",\"territory\":\"LUX\"},{\"mapcode\":\"SQB.NR3\",\"territory\":\"BEL\"},{\"mapcode\":\"R8RN.07Z\",\"territory\":\"BEL\"},{\"mapcode\":\"0L46.LG9\",\"territory\":\"DEU\"},{\"mapcode\":\"R8RN.07Z\",\"territory\":\"FRA\"},{\"mapcode\":\"VJ0L6.9PNQ\"}]}",
-                response.readEntity(String.class));
+                s);
+        final MapcodesDTO x = new Gson().fromJson(s, MapcodesDTO.class);
+        Assert.assertNotNull(x);
+        Assert.assertEquals("VJ0L6.9PNQ", x.getInternational().getMapcode());
+        Assert.assertNull(x.getLocal());
+        final List<MapcodeDTO> mapcodes = x.getMapcodes();
+        Assert.assertEquals(7, mapcodes.size());
+        Assert.assertEquals("JL0.KP", mapcodes.get(0).getMapcode());
+        Assert.assertEquals("LUX", mapcodes.get(0).getTerritory());
     }
 
     @Test

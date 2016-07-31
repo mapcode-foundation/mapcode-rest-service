@@ -87,27 +87,27 @@ public final class MapcodesDTO extends ApiDTO {
         return local;
     }
 
+    public void setLocal(@Nullable final MapcodeDTO local) {
+        beforeSet();
+        this.local = local;
+    }
+
     @Nonnull
     public MapcodeDTO getInternational() {
         beforeGet();
         return international;
     }
 
-    @Nonnull
-    public List<MapcodeDTO> getMapcodes() {
-        beforeGet();
-        return mapcodes;
-    }
-
-    public void setLocal(@Nullable final MapcodeDTO local) {
-        beforeSet();
-        this.local = local;
-    }
-
     public void setInternational(@Nonnull final MapcodeDTO international) {
         beforeSet();
         assert international != null;
         this.local = international;
+    }
+
+    @Nonnull
+    public List<MapcodeDTO> getMapcodes() {
+        beforeGet();
+        return mapcodes;
     }
 
     public void setMapcodes(@Nonnull final MapcodeListDTO mapcodes) {

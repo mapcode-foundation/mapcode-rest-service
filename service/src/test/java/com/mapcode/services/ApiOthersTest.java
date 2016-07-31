@@ -16,6 +16,9 @@
 
 package com.mapcode.services;
 
+import com.google.gson.Gson;
+import com.mapcode.services.dto.VersionDTO;
+import com.tomtom.speedtools.json.Json;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -50,13 +53,27 @@ public class ApiOthersTest {
     public void checkStatus() {
         LOG.info("checkStatus");
         final Response r = new ResteasyClientBuilder().build().
-                target(server.url("/mapcode/version")).
+                target(server.url("/mapcode/status")).
                 request().
                 get();
         Assert.assertNotNull(r);
         final int status = r.getStatus();
         LOG.info("status = {}", status);
         Assert.assertEquals(200, status);
+    }
+
+    @Test
+    public void getHelp() {
+        LOG.info("getHelp");
+        final Response r = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode")).
+                request().
+                get();
+        Assert.assertNotNull(r);
+        final int status = r.getStatus();
+        LOG.info("status = {}", status);
+        Assert.assertEquals(200, status);
+        Assert.assertEquals("<html>", r.readEntity(String.class).substring(0, 6));
     }
 
     @Test
@@ -68,8 +85,12 @@ public class ApiOthersTest {
                 accept(MediaType.APPLICATION_JSON).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
+        final String s = response.readEntity(String.class);
         Assert.assertEquals("{\"version\":\"1.0\"}",
-                response.readEntity(String.class));
+                s);
+        final VersionDTO x = new Gson().fromJson(s, VersionDTO.class);
+        Assert.assertNotNull(x);
+        Assert.assertEquals("1.0", x.getVersion());
     }
 
     @Test

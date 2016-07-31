@@ -2,7 +2,8 @@
 
 [![Build Status](https://img.shields.io/travis/mapcode-foundation/mapcode-rest-service.svg)](https://travis-ci.org/mapcode-foundation/mapcode-rest-service)
 [![Coverage Status](https://coveralls.io/repos/github/mapcode-foundation/mapcode-rest-service/badge.svg?branch=master)](https://coveralls.io/github/mapcode-foundation/mapcode-rest-service?branch=master)
-[![Release](https://img.shields.io/github/release/mapcode-foundation/mapcode-rest-service.svg)](https://github.com/mapcode-foundation/mapcode-rest-service/releases)
+[![License](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)]()
+[![Release](https://img.shields.io/github/release/mapcode-foundation/mapcode-rest-service.svg?maxAge=2592000)](https://github.com/mapcode-foundation/mapcode-rest-service/releases)
 
 **Copyright (C) 2014-2016 Stichting Mapcode Foundation (http://www.mapcode.com)**
 
@@ -224,6 +225,12 @@ Normally, one of our developers should be able to comment on them and fix.
 
 ## Release Notes
 
+* 2.2.3.20 
+
+    Added Travis CI and Coveralls badges to `README.md`.
+    
+    Increase test coverage, added unit tests.
+    
 * 2.2.3.19
 
     Updated to SpeedTools 3.0.21 which uses a more recent JBoss RESTEasy framework.
