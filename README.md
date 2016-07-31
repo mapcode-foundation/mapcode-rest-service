@@ -225,121 +225,121 @@ Normally, one of our developers should be able to comment on them and fix.
 
 ## Release Notes
 
-* 2.2.3.20 
+### 2.2.3.20 
 
-    Added Travis CI and Coveralls badges to `README.md`.
-    
-    Increase test coverage, added unit tests.
-    
-* 2.2.3.19
+* Added Travis CI and Coveralls badges to `README.md`.
 
-    Updated to SpeedTools 3.0.21 which uses a more recent JBoss RESTEasy framework.
-    
-* 2.2.3.18
+* Increase test coverage, added unit tests.
 
-    Reworked responses for `/alphabets` and `/territories`, returning to older format (also easier for
-    client parsing) and including a `total` attribute to indicate total number of items in list (for paging).
+### 2.2.3.19
 
-    Added metrics for `alphabets` and `territories` methods.
-    
-* 2.2.3.17
+* Updated to SpeedTools 3.0.21 which uses a more recent JBoss RESTEasy framework.
 
-    Completely refactored the source tree to create JARs for all classes in the WAR file. This
-    was needed to allow running the service from the command-line using `java` only.
+### 2.2.3.18
 
-    This version can be used to run the service stand-alone, without Tomcat, on a local machine.
-    This allows you, for example, to use the XML services from within your own local MS Excel sheet.
+* Reworked responses for `/alphabets` and `/territories`, returning to older format (also easier for
+client parsing) and including a `total` attribute to indicate total number of items in list (for paging).
 
-* 2.2.3.15 - 2.2.3.16
+* Added metrics for `alphabets` and `territories` methods.
 
-    Changed JSON API response for `/alphabets` and `/territories`: these no longer return a top-level
-    entity `alphabets` or `territories`; only the list of values, which is more in line with the
-    rest of the API.
+### 2.2.3.17
 
-* 2.2.3.14
+* Completely refactored the source tree to create JARs for all classes in the WAR file. This
+was needed to allow running the service from the command-line using `java` only.
 
-    Added help text.
+* This version can be used to run the service stand-alone, without Tomcat, on a local machine.
+This allows you, for example, to use the XML services from within your own local MS Excel sheet.
 
-    Removed Docker profile for now (might be re-added later), as it caused some issues building the
-    service.
+### 2.2.3.15 - 2.2.3.16
 
-* 2.2.3.13
+* Changed JSON API response for `/alphabets` and `/territories`: these no longer return a top-level
+entity `alphabets` or `territories`; only the list of values, which is more in line with the
+rest of the API.
 
-    Added additional XML support. You can prefix methods now with xml, to make
-    the default output XML, rather than JSON. This is particularly useful if you
-    need to use an XML service, but you can't specify the correct HTTP header.
+### 2.2.3.14
 
-    Works with Google spreadsheets and Microsoft Excel.
+* Added help text.
 
-    In Google spreadsheets use the =IMPORTXML function, e.g.
-    =IMPORTXML("http://api.mapcode.com/mapcode/xml/codes/52.376514,4.908543";"//local")
+* Removed Docker profile for now (might be re-added later), as it caused some issues building the
+service.
 
-    In Microsoft Excel, use the =WEBSERVICE function.
+### 2.2.3.13
 
-* 2.2.3.12
+* Added additional XML support. You can prefix methods now with xml, to make
+the default output XML, rather than JSON. This is particularly useful if you
+need to use an XML service, but you can't specify the correct HTTP header.
 
-    Added full XML support, next to JSON. Use the HTTP Accept header to specify
-    the expected format: application/json or application/xml. (This features allows
-    users of MS Excel to use the "=WEBSERVICE()" function, on Windows.)
+* Works with Google spreadsheets and Microsoft Excel.
 
-    Added unit tests to test the REST services.
+* In Google spreadsheets use the =IMPORTXML function, e.g.
+=`IMPORTXML("http://api.mapcode.com/mapcode/xml/codes/52.376514,4.908543";"//local")`
 
-* 2.2.3.11
+* In Microsoft Excel, use the =WEBSERVICE function.
 
-    Added debug mode, which prevents writing to the trace database.
+### 2.2.3.12
 
-* 2.2.3.10
+* Added full XML support, next to JSON. Use the HTTP Accept header to specify
+the expected format: `application/json` or `application/xml`. (This features allows
+users of MS Excel to use the `=WEBSERVICE()` function, on Windows.)
 
-    Fixed content type on GET operations to accept anything.
+* Added unit tests to test the REST services.
 
-* 2.2.1.0 - 2.2.3.9
+### 2.2.3.11
 
-    Based on new version of the Java library. Includes high-precision codes, up to precision 8.
+* Added debug mode, which prevents writing to the trace database.
 
-* 2.0.2.0
+### 2.2.3.10
 
-    Based on version 2.0.2 of the Java library.
+* Fixed content type on GET operations to accept anything.
 
-* 2.0.1.0
+### 2.2.1.0 - 2.2.3.9
 
-    Based on version 2.0.1 of the Java library (which is Java 6 again, from Java 8).
+* Based on new version of the Java library. Includes high-precision codes, up to precision 8.
 
-    Typo in startup LOG message fixed.
+### 2.0.2.0
 
-    Allows to use territory names, as well as territory codes.
+* Based on version 2.0.2 of the Java library.
 
-* 2.0.0.0
+### 2.0.1.0
 
-    Based version 2.0.0 of the Java library.
+* Based on version 2.0.1 of the Java library (which is Java 6 again, from Java 8).
 
-    Includes fixes and enhancements to data. For a complete description, read the Word file that ships with
-    the C version of the library (on Github).
+* Typo in startup LOG message fixed.
 
-    This version no longer supports numeric codes for territories and alphabets.
+* Allows to use territory names, as well as territory codes.
 
-* 1.50.3.0
+### 2.0.0.0
 
-    Changed property names in REST API for territories: `code` is renamed to `number`, `name` is renamed to `alphaCode`.
+* Based version 2.0.0 of the Java library.
 
-    The decode service now only returns local mapcode if all local mapcodes are within the same territory.
+* Includes fixes and enhancements to data. For a complete description, read the Word file that ships with
+the C version of the library (on Github).
 
-    The decode service produces a 404 if you ask for a local code exists and none exists, or multiple exist in
-    different territories.
+* This version no longer supports numeric codes for territories and alphabets.
 
-* 1.50.2.0 - 1.50.2.1
+### 1.50.3.0
 
-    Updated Java library for Mapcode.
+* Changed property names in REST API for territories: `code` is renamed to `number`, `name` is renamed to `alphaCode`.
 
-* 1.50.1.3
+* The decode service now only returns local mapcode if all local mapcodes are within the same territory.
 
-    Added "?include=alphabet" option to always include mapcodeInAlphabet or territoryInAlphabet even if the same
-    as the original (default is now these are only output if different).
+* The decode service produces a 404 if you ask for a local code exists and none exists, or multiple exist in
+different territories.
 
-* 1.50.1.0 - 1.50.1.2
+### 1.50.2.0 - 1.50.2.1
 
-    Bug fix for state IN-DD (in India).
+* Updated Java library for Mapcode.
 
-* 1.50.0
+### 1.50.1.3
 
-    First release of the REST API, based on the Mapcode Java library, version 1.50.0.
+* Added `include=alphabet` option to always include `mapcodeInAlphabet` or `territoryInAlphabet` even if the same
+as the original (default is now these are only output if different).
+
+### 1.50.1.0 - 1.50.1.2
+
+* Bug fix for state IN-DD (in India).
+
+### 1.50.0
+
+* First release of the REST API, based on the Mapcode Java library, version 1.50.0.
 

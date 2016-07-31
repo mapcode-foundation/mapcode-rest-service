@@ -188,20 +188,4 @@ public final class TerritoryDTO extends ApiDTO {
         assert fullNameAliases != null;
         this.fullNameAliases = fullNameAliases;
     }
-
-    @Override
-    @Nonnull
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
-    @Override
-    public boolean equals(@Nullable final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj, false);
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this, false);
-    }
 }
