@@ -23,8 +23,6 @@ import com.mapcode.services.implementation.MapcodeResourceImpl;
 import com.mapcode.services.implementation.RootResourceImpl;
 import com.mapcode.services.implementation.SystemMetricsImpl;
 import com.mapcode.services.jmx.SystemMetricsAgent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.inject.Singleton;

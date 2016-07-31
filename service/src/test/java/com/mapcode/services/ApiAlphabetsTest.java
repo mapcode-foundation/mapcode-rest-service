@@ -17,11 +17,8 @@
 package com.mapcode.services;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mapcode.Alphabet;
 import com.mapcode.services.dto.AlphabetsDTO;
-import com.mapcode.services.dto.VersionDTO;
-import com.tomtom.speedtools.json.Json;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.junit.After;
 import org.junit.Assert;
