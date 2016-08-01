@@ -225,11 +225,13 @@ Normally, one of our developers should be able to comment on them and fix.
 
 ## Release Notes
 
-### 2.2.3.20 
+### 2.2.4.0
 
 * Added Travis CI and Coveralls badges to `README.md`.
 
 * Increase test coverage, added unit tests.
+
+* Updated to Java library 2.2.4.
 
 ### 2.2.3.19
 
@@ -342,4 +344,3 @@ as the original (default is now these are only output if different).
 ### 1.50.0
 
 * First release of the REST API, based on the Mapcode Java library, version 1.50.0.
-
