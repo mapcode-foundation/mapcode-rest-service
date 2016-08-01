@@ -87,18 +87,19 @@ public interface MapcodeResource {
     /**
      * Convert a lat/lon to one or more mapcodes. All possible mapcodes are returned.
      *
-     * @param paramLatDeg    Latitude. Range: [-90, 90].
-     * @param paramLonDeg    Longitude. Range: Any double, wrapped along the earth to [-180, 180].
-     * @param paramPrecision Precision specifier; specifies additional mapcode digits. Range: [0, 2].
-     * @param paramTerritory Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
-     *                       If the mapcode cannot be created for the territory, an exception is thrown.
-     *                       Range: any valid territory code, alpha or numeric.
-     * @param paramAlphabet  Alphabet. Range: any valid alphabet code, alpha or numeric.
-     * @param paramInclude   Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
-     *                       Range: {@link ParamInclude}.
-     * @param paramDebug     True for debugging purposes. Default is false.
-     * @param response       One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
-     *                       INTERNATIONAL and {@link MapcodesDTO} for ALL.
+     * @param paramLatDeg            Latitude. Range: [-90, 90].
+     * @param paramLonDeg            Longitude. Range: Any double, wrapped along the earth to [-180, 180].
+     * @param paramPrecision         Precision specifier; specifies additional mapcode digits. Range: [0, 2].
+     * @param paramTerritory         Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
+     *                               If the mapcode cannot be created for the territory, an exception is thrown.
+     *                               Range: any valid territory code, alpha or numeric.
+     * @param paramAlphabet          Alphabet. Range: any valid alphabet code, alpha or numeric.
+     * @param paramInclude           Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
+     *                               Range: {@link ParamInclude}.
+     * @param paramContextMustBeNull Must not be used (added to allow check for incorrect usage).
+     * @param paramDebug             True for debugging purposes. Default is false.
+     * @param response               One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
+     *                               INTERNATIONAL and {@link MapcodesDTO} for ALL.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -109,6 +110,7 @@ public interface MapcodeResource {
             @PathParam(PARAM_LON_DEG) double paramLonDeg,
             @QueryParam(PARAM_PRECISION) @DefaultValue("0") int paramPrecision,
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritory,
+            @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,
             @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
@@ -122,6 +124,7 @@ public interface MapcodeResource {
             @PathParam(PARAM_LON_DEG) double paramLonDeg,
             @QueryParam(PARAM_PRECISION) @DefaultValue("0") int paramPrecision,
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritory,
+            @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,
             @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
@@ -130,20 +133,21 @@ public interface MapcodeResource {
     /**
      * Convert a lat/lon to one or more mapcodes.
      *
-     * @param paramLatDeg    Latitude. Range: [-90, 90].
-     * @param paramLonDeg    Longitude. Range: Any double, wrapped along the earth to [-180, 180].
-     * @param paramType      Specifies whether to return only the shortest local, the international, or all mapcodes.
-     *                       Range: {@link ParamType}, if null, no type is supplied.
-     * @param paramPrecision Precision specifier; specifies additional mapcode digits. Range: [0, 2].
-     * @param paramTerritory Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
-     *                       If the mapcode cannot be created for the territory, an exception is thrown.
-     *                       Range: any valid territory code, alpha or numeric.
-     * @param paramAlphabet  Alphabet. Range: any valid alphabet code, alpha or numeric.
-     * @param paramInclude   Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
-     *                       Range: {@link ParamInclude}.
-     * @param paramDebug     True for debugging purposes. Default is false.
-     * @param response       One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
-     *                       INTERNATIONAL and {@link MapcodesDTO} for ALL.
+     * @param paramLatDeg            Latitude. Range: [-90, 90].
+     * @param paramLonDeg            Longitude. Range: Any double, wrapped along the earth to [-180, 180].
+     * @param paramType              Specifies whether to return only the shortest local, the international, or all mapcodes.
+     *                               Range: {@link ParamType}, if null, no type is supplied.
+     * @param paramPrecision         Precision specifier; specifies additional mapcode digits. Range: [0, 2].
+     * @param paramTerritory         Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
+     *                               If the mapcode cannot be created for the territory, an exception is thrown.
+     *                               Range: any valid territory code, alpha or numeric.
+     * @param paramAlphabet          Alphabet. Range: any valid alphabet code, alpha or numeric.
+     * @param paramInclude           Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
+     *                               Range: {@link ParamInclude}.
+     * @param paramContextMustBeNull Must not be used (added to allow check for incorrect usage).
+     * @param paramDebug             True for debugging purposes. Default is false.
+     * @param response               One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
+     *                               INTERNATIONAL and {@link MapcodesDTO} for ALL.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -155,6 +159,7 @@ public interface MapcodeResource {
             @PathParam(PARAM_TYPE) @Nullable String paramType,
             @QueryParam(PARAM_PRECISION) @DefaultValue("0") int paramPrecision,
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritory,
+            @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,
             @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
@@ -169,6 +174,7 @@ public interface MapcodeResource {
             @PathParam(PARAM_TYPE) @Nullable String paramType,
             @QueryParam(PARAM_PRECISION) @DefaultValue("0") int paramPrecision,
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritory,
+            @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,
             @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
@@ -190,11 +196,12 @@ public interface MapcodeResource {
     /**
      * Convert a mapcode into a lat/lon pair.
      *
-     * @param paramCode    Mapcode to convert.
-     * @param paramContext Specifies a territory context for interpretation of the mapcode.
-     *                     Range: any valid territory.
-     * @param paramDebug   True for debugging purposes. Default is false.
-     * @param response     Lat/lon. Format: {@link CoordinatesDTO}.
+     * @param paramCode              Mapcode to convert.
+     * @param paramContext           Specifies a territory context for interpretation of the mapcode.
+     *                               Range: any valid territory.
+     * @param paramDebug             True for debugging purposes. Default is false.
+     * @param paramIncludeMustBeNull Must not be used (added to allow check for incorrect usage).
+     * @param response               Lat/lon. Format: {@link CoordinatesDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -203,6 +210,7 @@ public interface MapcodeResource {
     void convertMapcodeToLatLon(
             @PathParam(PARAM_CODE) @Nonnull String paramCode,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
+            @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritoryMustBeNull,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
@@ -212,6 +220,7 @@ public interface MapcodeResource {
     void convertMapcodeToLatLonXml(
             @PathParam(PARAM_CODE) @Nonnull String paramCode,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
+            @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritoryMustBeNull,
             @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 

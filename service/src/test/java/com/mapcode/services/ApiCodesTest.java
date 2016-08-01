@@ -58,15 +58,94 @@ public class ApiCodesTest {
     }
 
     @Test
+    public void checkCodesNoLatLon() {
+        LOG.info("checkCodesNoLatLon");
+        final Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(403, response.getStatus());
+    }
+
+    @Test
+    public void checkCodesUseOfContext() {
+        LOG.info("checkCodesUseOfContext");
+        final Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/52,5?context=NLD")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
+    }
+
+    @Test
+    public void checkCoordsUseOfTerritory() {
+        LOG.info("checkCoordsUseOfTerritory");
+        final Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/coords/XX.XX?territory=NLD")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
+    }
+
+    @Test
+    public void checkCodesCheckLatLon() {
+        LOG.info("checkCodesCheckLatLon");
+        Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/90,180")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/-90,-180")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/-91,0")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/91,0")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/0,-181")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/0,181")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+    }
+
+    @Test
     public void checkCodesJson() {
         LOG.info("checkCodesJson");
-        final Response response = new ResteasyClientBuilder().build().
+        Response response = new ResteasyClientBuilder().build().
                 target(server.url("/mapcode/codes/" + TEST_LATLON1)).
                 request().
                 accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        final String s = response.readEntity(String.class);
+        String s = response.readEntity(String.class);
         Assert.assertEquals("{\"international\":{\"mapcode\":\"VJ0L6.9PNQ\"},\"mapcodes\":[{\"mapcode\":\"JL0.KP\",\"territory\":\"LUX\"},{\"mapcode\":\"R8RN.07Z\",\"territory\":\"LUX\"},{\"mapcode\":\"SQB.NR3\",\"territory\":\"BEL\"},{\"mapcode\":\"R8RN.07Z\",\"territory\":\"BEL\"},{\"mapcode\":\"0L46.LG9\",\"territory\":\"DEU\"},{\"mapcode\":\"R8RN.07Z\",\"territory\":\"FRA\"},{\"mapcode\":\"VJ0L6.9PNQ\"}]}",
                 s);
         final MapcodesDTO x = new Gson().fromJson(s, MapcodesDTO.class);
@@ -77,6 +156,19 @@ public class ApiCodesTest {
         Assert.assertEquals(7, mapcodes.size());
         Assert.assertEquals("JL0.KP", mapcodes.get(0).getMapcode());
         Assert.assertEquals("LUX", mapcodes.get(0).getTerritory());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/" + TEST_LATLON1 + "?territory=LUX")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        s = response.readEntity(String.class);
+        Assert.assertEquals("{\"local\":{\"mapcode\":\"JL0.KP\",\"territory\":\"LUX\"},\"international\":{\"mapcode\":\"VJ0L6.9PNQ\"},\"mapcodes\":[{\"mapcode\":\"JL0.KP\",\"territory\":\"LUX\"},{\"mapcode\":\"R8RN.07Z\",\"territory\":\"LUX\"}]}",
+                s);
+        final MapcodesDTO y = new Gson().fromJson(s, MapcodesDTO.class);
+        Assert.assertNotNull(y);
+        Assert.assertEquals("JL0.KP", y.getLocal().getMapcode());
     }
 
     @Test
@@ -95,13 +187,22 @@ public class ApiCodesTest {
     @Test
     public void checkCodesPrecision0Json() {
         LOG.info("checkCodesPrecision0Json");
-        final Response response = new ResteasyClientBuilder().build().
+        Response response = new ResteasyClientBuilder().build().
                 target(server.url("/mapcode/codes/" + TEST_LATLON1 + "?precision=0")).
                 request().
                 accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
         Assert.assertEquals("{\"international\":{\"mapcode\":\"VJ0L6.9PNQ\"},\"mapcodes\":[{\"mapcode\":\"JL0.KP\",\"territory\":\"LUX\"},{\"mapcode\":\"R8RN.07Z\",\"territory\":\"LUX\"},{\"mapcode\":\"SQB.NR3\",\"territory\":\"BEL\"},{\"mapcode\":\"R8RN.07Z\",\"territory\":\"BEL\"},{\"mapcode\":\"0L46.LG9\",\"territory\":\"DEU\"},{\"mapcode\":\"R8RN.07Z\",\"territory\":\"FRA\"},{\"mapcode\":\"VJ0L6.9PNQ\"}]}",
+                response.readEntity(String.class));
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/xml/codes/" + TEST_LATLON1 + "?precision=0")).
+                request().
+                get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><mapcodes><international><mapcode>VJ0L6.9PNQ</mapcode></international><mapcodes><mapcode><mapcode>JL0.KP</mapcode><territory>LUX</territory></mapcode><mapcode><mapcode>R8RN.07Z</mapcode><territory>LUX</territory></mapcode><mapcode><mapcode>SQB.NR3</mapcode><territory>BEL</territory></mapcode><mapcode><mapcode>R8RN.07Z</mapcode><territory>BEL</territory></mapcode><mapcode><mapcode>0L46.LG9</mapcode><territory>DEU</territory></mapcode><mapcode><mapcode>R8RN.07Z</mapcode><territory>FRA</territory></mapcode><mapcode><mapcode>VJ0L6.9PNQ</mapcode></mapcode></mapcodes></mapcodes>",
                 response.readEntity(String.class));
     }
 

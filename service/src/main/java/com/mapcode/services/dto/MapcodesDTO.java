@@ -105,7 +105,7 @@ public final class MapcodesDTO extends ApiDTO {
     public void setInternational(@Nonnull final MapcodeDTO international) {
         beforeSet();
         assert international != null;
-        this.local = international;
+        this.international = international;
     }
 
     @Nonnull

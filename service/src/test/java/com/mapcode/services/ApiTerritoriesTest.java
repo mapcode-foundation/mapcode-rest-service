@@ -66,20 +66,48 @@ public class ApiTerritoriesTest {
     @Test
     public void checkTerritories1Xml() {
         LOG.info("checkTerritories1Xml");
-        final Response response = new ResteasyClientBuilder().build().
+        final String expected1 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><territories><total>533</total><territory><alphaCode>USA</alphaCode><alphaCodeMinimalUnambiguous>USA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>USA</alphaCodeMinimal><fullName>USA</fullName><aliases><alias>US</alias></aliases><fullNameAliases><fullNameAlias>United States of America</fullNameAlias><fullNameAlias>America</fullNameAlias></fullNameAliases></territory><territory><alphaCode>IND</alphaCode><alphaCodeMinimalUnambiguous>IND</alph";
+        final String expected2 = "<alphaCodeMinimalUnambiguous>CPT</alphaCodeMinimalUnambiguous><alphaCodeMinimal>CPT</alphaCodeMinimal><fullName>Clipperton Island</fullName><aliases/><fullNameAliases/></territory><territory><alphaCode>AAA</alphaCode><alphaCodeMinimalUnambiguous>AAA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>AAA</alphaCodeMinimal><fullName>International</fullName><aliases/><fullNameAliases><fullNameAlias>Worldwide</fullNameAlias><fullNameAlias>Earth</fullNameAlias></fullNameAliases></territory></territories>";
+        Response response = new ResteasyClientBuilder().build().
                 target(server.url("/mapcode/territories")).
                 request().
                 accept(MediaType.APPLICATION_XML_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        final String r = response.readEntity(String.class);
+        String r = response.readEntity(String.class);
         Assert.assertTrue(r.length() > 500);
-        final String sub1 = r.substring(0, 500);
-        final String sub2 = r.substring(r.length() - 500, r.length());
-        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><territories><total>533</total><territory><alphaCode>USA</alphaCode><alphaCodeMinimalUnambiguous>USA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>USA</alphaCodeMinimal><fullName>USA</fullName><aliases><alias>US</alias></aliases><fullNameAliases><fullNameAlias>United States of America</fullNameAlias><fullNameAlias>America</fullNameAlias></fullNameAliases></territory><territory><alphaCode>IND</alphaCode><alphaCodeMinimalUnambiguous>IND</alph",
+        String sub1 = r.substring(0, 500);
+        String sub2 = r.substring(r.length() - 500, r.length());
+        Assert.assertEquals(expected1,
                 sub1);
-        Assert.assertEquals("<alphaCodeMinimalUnambiguous>CPT</alphaCodeMinimalUnambiguous><alphaCodeMinimal>CPT</alphaCodeMinimal><fullName>Clipperton Island</fullName><aliases/><fullNameAliases/></territory><territory><alphaCode>AAA</alphaCode><alphaCodeMinimalUnambiguous>AAA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>AAA</alphaCodeMinimal><fullName>International</fullName><aliases/><fullNameAliases><fullNameAlias>Worldwide</fullNameAlias><fullNameAlias>Earth</fullNameAlias></fullNameAliases></territory></territories>",
+        Assert.assertEquals(expected2,
                 sub2);
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/xml/territories")).
+                request().
+                get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        r = response.readEntity(String.class);
+        Assert.assertTrue(r.length() > 500);
+        sub1 = r.substring(0, 500);
+        sub2 = r.substring(r.length() - 500, r.length());
+        Assert.assertEquals(expected1,
+                sub1);
+        Assert.assertEquals(expected2,
+                sub2);
+    }
+
+    @Test
+    public void checkTerritoriesCountJsonError() {
+        LOG.info("checkTerritoriesCountJsonError");
+        final Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/territories?count=-1")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
     }
 
     @Test
@@ -111,6 +139,17 @@ public class ApiTerritoriesTest {
     }
 
     @Test
+    public void checkTerritoryJsonError() {
+        LOG.info("checkTerritoryJsonError");
+        final Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/territories/xyz")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
+    }
+
+    @Test
     public void checkTerritoryJson() {
         LOG.info("checkTerritoryJson");
         final Response response = new ResteasyClientBuilder().build().
@@ -126,13 +165,75 @@ public class ApiTerritoriesTest {
     @Test
     public void checkTerritoryXml() {
         LOG.info("checkTerritoryXml");
-        final Response response = new ResteasyClientBuilder().build().
+        final String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><territory><alphaCode>NLD</alphaCode><alphaCodeMinimalUnambiguous>NLD</alphaCodeMinimalUnambiguous><alphaCodeMinimal>NLD</alphaCodeMinimal><fullName>Netherlands</fullName><aliases/><fullNameAliases/></territory>";
+        Response response = new ResteasyClientBuilder().build().
                 target(server.url("/mapcode/territories/nld")).
                 request().
                 accept(MediaType.APPLICATION_XML_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><territory><alphaCode>NLD</alphaCode><alphaCodeMinimalUnambiguous>NLD</alphaCodeMinimalUnambiguous><alphaCodeMinimal>NLD</alphaCodeMinimal><fullName>Netherlands</fullName><aliases/><fullNameAliases/></territory>",
+        Assert.assertEquals(expected,
+                response.readEntity(String.class));
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/xml/territories/nld")).
+                request().
+                get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals(expected,
+                response.readEntity(String.class));
+    }
+
+    @Test
+    public void checkTerritoryStateJson() {
+        LOG.info("checkTerritoryStateJson");
+        final String usIn = "{\"alphaCode\":\"US-IN\",\"alphaCodeMinimalUnambiguous\":\"US-IN\",\"alphaCodeMinimal\":\"IN\",\"fullName\":\"Indiana\",\"parentTerritory\":\"USA\"}";
+        Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/territories/in")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals(usIn, response.readEntity(String.class));
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/territories/in?context=xyz")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/territories/in?context=nld")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/territories/in?context=ind")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals(usIn, response.readEntity(String.class));
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/territories/in?context=us")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals(usIn, response.readEntity(String.class));
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/territories/in?context=ru")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals("{\"alphaCode\":\"RU-IN\",\"alphaCodeMinimalUnambiguous\":\"RU-IN\",\"alphaCodeMinimal\":\"IN\",\"fullName\":\"Ingushetia Republic\",\"parentTerritory\":\"RUS\"}",
                 response.readEntity(String.class));
     }
 }

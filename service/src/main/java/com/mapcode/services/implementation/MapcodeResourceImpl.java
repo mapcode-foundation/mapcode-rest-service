@@ -120,7 +120,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
 
         // This method is forbidden. In REST terms, this should return ALL potential mapcodes - intractable.
-        throw new ApiForbiddenException("Missing URL path parameters: /{lat,lon}/{" + API_ERROR_VALID_TYPES.toLowerCase() + '}');
+        processor.process("convertLatLonToMapcode", LOG, response, () -> {
+            throw new ApiForbiddenException("Missing URL path parameters: /{lat,lon}/{" + API_ERROR_VALID_TYPES.toLowerCase() + '}');
+        });
     }
 
     @Override
@@ -135,26 +137,29 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final double paramLonDeg,
             final int paramPrecision,
             @Nullable final String paramTerritory,
+            @Nullable final String paramContextMustBeNull,
             @Nullable final String paramAlphabet,
-            @Nonnull final String paramInclude,
+            @Nullable final String paramInclude,
             @Nonnull final String paramDebug,
             @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
-        convertLatLonToMapcode(paramLatDeg, paramLonDeg, null, paramPrecision, paramTerritory, paramAlphabet,
-                paramInclude, paramDebug, response);
+        convertLatLonToMapcode(paramLatDeg, paramLonDeg, null, paramPrecision, paramTerritory, paramContextMustBeNull,
+                paramAlphabet, paramInclude, paramDebug, response);
     }
 
     @Override
     public void convertLatLonToMapcodeXml(
             final double paramLatDeg,
             final double paramLonDeg,
-            @DefaultValue("0") final int paramPrecision,
+            final int paramPrecision,
             @Nullable final String paramTerritory,
+            @Nullable final String paramContextMustBeNull,
             @Nullable final String paramAlphabet,
-            @DefaultValue("") @Nonnull final String paramInclude,
-            @DefaultValue("false") @Nonnull final String paramDebug,
+            @Nullable final String paramInclude,
+            @Nonnull final String paramDebug,
             @Suspended @Nonnull final AsyncResponse response)
             throws ApiInvalidFormatException {
-        convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramPrecision, paramTerritory, paramAlphabet, paramInclude, paramDebug, response);
+        convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramPrecision, paramTerritory, paramContextMustBeNull,
+                paramAlphabet, paramInclude, paramDebug, response);
     }
 
     @Override
@@ -164,8 +169,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramType,
             final int paramPrecision,
             @Nullable final String paramTerritory,
+            @Nullable final String paramContextMustBeNull,
             @Nullable final String paramAlphabet,
-            @Nonnull final String paramInclude,
+            @Nullable final String paramInclude,
             @Nonnull final String paramDebug,
             @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
         assert response != null;
@@ -178,6 +184,11 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     paramLatDeg, paramLonDeg, paramPrecision, paramType, paramTerritory, paramAlphabet, paramInclude,
                     debug ? " (DEBUG)" : "");
             metricsCollector.addOneLatLonToMapcodeRequest();
+
+            // Prevent 'context' from inadvertently being specified.
+            if (paramContextMustBeNull != null) {
+                throw new ApiInvalidFormatException(PARAM_CONTEXT, paramContextMustBeNull, "null");
+            }
 
             // Check lat range.
             final double latDeg = paramLatDeg;
@@ -301,12 +312,12 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     // No type was supplied, so we need to return the local, international and all mapcodes.
                     result = new MapcodesDTO(
                             (mapcodeLocal == null) ? null :
-                                    getMapcodeDTO(mapcodeLocal, precision, alphabet, includeOffset, includeTerritory, includeAlphabet,
+                                    createMapcodeDTO(mapcodeLocal, precision, alphabet, includeOffset, includeTerritory, includeAlphabet,
                                             latDeg, lonDeg),
-                            getMapcodeDTO(mapcodeInternational, precision, alphabet, includeOffset, includeTerritory, includeAlphabet,
+                            createMapcodeDTO(mapcodeInternational, precision, alphabet, includeOffset, includeTerritory, includeAlphabet,
                                     latDeg, lonDeg),
                             mapcodesAll.stream().
-                                    map(mapcode -> getMapcodeDTO(mapcode, precision, alphabet, includeOffset, includeTerritory,
+                                    map(mapcode -> createMapcodeDTO(mapcode, precision, alphabet, includeOffset, includeTerritory,
                                             includeAlphabet, latDeg, lonDeg)).
                                     collect(Collectors.toList()));
                 } else {
@@ -320,20 +331,20 @@ public class MapcodeResourceImpl implements MapcodeResource {
                                         "Only an international mapcode exists") +
                                         " for (" + latDeg + ", " + lonDeg + ')');
                             }
-                            result = getMapcodeDTO(mapcodeLocal, precision, alphabet, includeOffset, includeTerritory, includeAlphabet,
+                            result = createMapcodeDTO(mapcodeLocal, precision, alphabet, includeOffset, includeTerritory, includeAlphabet,
                                     latDeg, lonDeg);
                             break;
                         }
 
                         case INTERNATIONAL: {
-                            result = getMapcodeDTO(mapcodeInternational, precision, alphabet, includeOffset, includeTerritory, includeAlphabet,
+                            result = createMapcodeDTO(mapcodeInternational, precision, alphabet, includeOffset, includeTerritory, includeAlphabet,
                                     latDeg, lonDeg);
                             break;
                         }
 
                         case MAPCODES: {
                             result = new MapcodeListDTO(mapcodesAll.stream().
-                                    map(mapcode -> getMapcodeDTO(mapcode, precision, alphabet, includeOffset, includeTerritory, includeAlphabet,
+                                    map(mapcode -> createMapcodeDTO(mapcode, precision, alphabet, includeOffset, includeTerritory, includeAlphabet,
                                             latDeg, lonDeg)).
                                     collect(Collectors.toList()));
                             break;
@@ -367,12 +378,14 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramType,
             @DefaultValue("0") final int paramPrecision,
             @Nullable final String paramTerritory,
+            @Nullable final String paramContextMustBeNull,
             @Nullable final String paramAlphabet,
             @DefaultValue("") @Nonnull final String paramInclude,
             @DefaultValue("false") @Nonnull final String paramDebug,
             @Suspended @Nonnull final AsyncResponse response)
             throws ApiInvalidFormatException {
-        convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramType, paramPrecision, paramTerritory, paramAlphabet, paramInclude, paramDebug, response);
+        convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramType, paramPrecision, paramTerritory, paramContextMustBeNull,
+                paramAlphabet, paramInclude, paramDebug, response);
     }
 
     @Override
@@ -380,7 +393,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nonnull final AsyncResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
 
         // This method is forbidden. In REST terms, this would return all world coordinates - intractable.
-        throw new ApiForbiddenException("Missing URL path parameters: /{mapcode}");
+        processor.process("convertLatLonToMapcode", LOG, response, () -> {
+            throw new ApiForbiddenException("Missing URL path parameters: /{mapcode}");
+        });
     }
 
     @Override
@@ -394,6 +409,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void convertMapcodeToLatLon(
             @Nonnull final String paramCode,
             @Nullable final String paramContext,
+            @Nullable final String paramTerritoryMustBeNull,
             @Nonnull final String paramDebug,
             @Nonnull final AsyncResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
         assert paramCode != null;
@@ -405,6 +421,11 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
             LOG.info("convertMapcodeToLatLon: code={}, territory={}{}", paramCode, paramContext, debug ? " (DEBUG)" : "");
             metricsCollector.addOneMapcodeToLatLonRequest();
+
+            // Prevent 'territory' from inadvertently being specified.
+            if (paramTerritoryMustBeNull != null) {
+                throw new ApiInvalidFormatException(PARAM_TERRITORY, paramTerritoryMustBeNull, "null");
+            }
 
             // Get the territory from the path (if specified).
             final Territory territoryContext;
@@ -456,10 +477,11 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void convertMapcodeToLatLonXml(
             @Nonnull final String paramCode,
             @Nullable final String paramContext,
+            @Nullable final String paramTerritoryMustBeNull,
             @DefaultValue("false") @Nonnull final String paramDebug,
             @Suspended @Nonnull final AsyncResponse response)
             throws ApiNotFoundException, ApiInvalidFormatException {
-        convertMapcodeToLatLon(paramCode, paramContext, paramDebug, response);
+        convertMapcodeToLatLon(paramCode, paramContext, paramTerritoryMustBeNull, paramDebug, response);
     }
 
     @Override
@@ -714,10 +736,10 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Nonnull
-    private static MapcodeDTO getMapcodeDTO(@Nonnull final Mapcode mapcode, final int precision,
-                                            @Nullable final Alphabet alphabet, final boolean includeOffset,
-                                            final boolean includeTerritory, final boolean includeAlphabet,
-                                            final double latDeg, final double lonDeg) {
+    private static MapcodeDTO createMapcodeDTO(@Nonnull final Mapcode mapcode, final int precision,
+                                               @Nullable final Alphabet alphabet, final boolean includeOffset,
+                                               final boolean includeTerritory, final boolean includeAlphabet,
+                                               final double latDeg, final double lonDeg) {
         final String code = mapcode.getCode(precision);
         final String codeInAlphabet = mapcode.getCode(precision, alphabet);
         final String territory = mapcode.getTerritory().toString();
@@ -763,4 +785,3 @@ public class MapcodeResourceImpl implements MapcodeResource {
         void eventMapcodeToLatLon(@Nonnull String code, @Nullable Territory territory, @Nonnull DateTime now);
     }
 }
-

@@ -72,6 +72,29 @@ public class ApiAlphabetsTest {
     }
 
     @Test
+    public void checkAlphabetsXml() {
+        LOG.info("checkAlphabetsXml");
+        final String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><alphabets><total>14</total><alphabet><name>ROMAN</name></alphabet><alphabet><name>GREEK</name></alphabet><alphabet><name>CYRILLIC</name></alphabet><alphabet><name>HEBREW</name></alphabet><alphabet><name>HINDI</name></alphabet><alphabet><name>MALAY</name></alphabet><alphabet><name>GEORGIAN</name></alphabet><alphabet><name>KATAKANA</name></alphabet><alphabet><name>THAI</name></alphabet><alphabet><name>LAO</name></alphabet><alphabet><name>ARMENIAN</name></alphabet><alphabet><name>BENGALI</name></alphabet><alphabet><name>GURMUKHI</name></alphabet><alphabet><name>TIBETAN</name></alphabet></alphabets>";
+        Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/alphabets")).
+                request().
+                accept(MediaType.APPLICATION_XML_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals(expected,
+                response.readEntity(String.class));
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/xml/alphabets")).
+                request().
+                get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals(expected,
+                response.readEntity(String.class));
+    }
+
+    @Test
     public void checkAlphabetsCountJson() {
         LOG.info("checkAlphabetsCountJson");
         final Response response = new ResteasyClientBuilder().build().
@@ -82,6 +105,17 @@ public class ApiAlphabetsTest {
         Assert.assertEquals(200, response.getStatus());
         Assert.assertEquals("{\"total\":14,\"alphabets\":[{\"name\":\"ROMAN\"},{\"name\":\"GREEK\"}]}",
                 response.readEntity(String.class));
+    }
+
+    @Test
+    public void checkAlphabetsCountJsonError() {
+        LOG.info("checkAlphabetsCountJsonError");
+        final Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/alphabets?count=-2")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
     }
 
     @Test
@@ -163,15 +197,36 @@ public class ApiAlphabetsTest {
     }
 
     @Test
+    public void checkAlphabetJsonError() {
+        LOG.info("checkAlphabetJsonError");
+        final Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/alphabets/mozart")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
+    }
+
+    @Test
     public void checkAlphabetXml() {
         LOG.info("checkAlphabetXml");
-        final Response response = new ResteasyClientBuilder().build().
+        final String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><alphabet><name>GREEK</name></alphabet>";
+        Response response = new ResteasyClientBuilder().build().
                 target(server.url("/mapcode/alphabets/greek")).
                 request().
                 accept(MediaType.APPLICATION_XML_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><alphabet><name>GREEK</name></alphabet>",
+        Assert.assertEquals(expected,
+                response.readEntity(String.class));
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/xml/alphabets/greek")).
+                request().
+                get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals(expected,
                 response.readEntity(String.class));
     }
 

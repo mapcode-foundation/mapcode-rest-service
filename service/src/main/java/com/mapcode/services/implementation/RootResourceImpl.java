@@ -96,7 +96,8 @@ public class RootResourceImpl implements RootResource {
             "     territory       : Territory to get info for (name or alphacode).\n\n" +
 
             "   Query parameters:\n" +
-            "     context         : Territory context (optional, for disambiguation, name or alphacode).\n\n" +
+            "     context         : Territory context (optional, for disambiguation, name or alphacode).\n" +
+            "                       The context can only be: USA IND CAN AUS MEX BRA RUS CHN ATA\n\n" +
 
             "GET /mapcode/alphabets [?offset={offset}&count={count}]\n" +
             "   Return a list of all alphabet codes.\n\n" +
