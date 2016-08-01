@@ -196,12 +196,12 @@ public interface MapcodeResource {
     /**
      * Convert a mapcode into a lat/lon pair.
      *
-     * @param paramCode              Mapcode to convert.
-     * @param paramContext           Specifies a territory context for interpretation of the mapcode.
-     *                               Range: any valid territory.
-     * @param paramDebug             True for debugging purposes. Default is false.
-     * @param paramIncludeMustBeNull Must not be used (added to allow check for incorrect usage).
-     * @param response               Lat/lon. Format: {@link CoordinatesDTO}.
+     * @param paramCode                Mapcode to convert.
+     * @param paramContext             Specifies a territory context for interpretation of the mapcode.
+     *                                 Range: any valid territory.
+     * @param paramDebug               True for debugging purposes. Default is false.
+     * @param paramTerritoryMustBeNull Must not be used (added to allow check for incorrect usage).
+     * @param response                 Lat/lon. Format: {@link CoordinatesDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET

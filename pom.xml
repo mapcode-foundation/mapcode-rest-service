@@ -23,7 +23,7 @@
     <artifactId>mapcode-rest-service</artifactId>
 
     <packaging>pom</packaging>
-    <version>2.2.3.20-SNAPSHOT</version>
+    <version>2.2.3.20</version>
 
     <name>Mapcode REST API Web Service</name>
     <description>
@@ -84,6 +84,7 @@
         <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
         <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
         <maven-jetty-plugin.version>8.1.9.v20130131</maven-jetty-plugin.version>
+        <maven-project-info-reports-plugin.version>2.9</maven-project-info-reports-plugin.version>
         <maven-tomcat-plugin.version>2.2</maven-tomcat-plugin.version>
         <maven-resource-plugin.version>2.7</maven-resource-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
@@ -439,6 +440,12 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>${maven-project-info-reports-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${maven-javadoc-plugin.version}</version>
                 <executions>
@@ -462,4 +469,27 @@
             </plugin>
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <configuration>
+                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>
