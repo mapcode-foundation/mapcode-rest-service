@@ -344,3 +344,4 @@ as the original (default is now these are only output if different).
 ### 1.50.0
 
 * First release of the REST API, based on the Mapcode Java library, version 1.50.0.
+
