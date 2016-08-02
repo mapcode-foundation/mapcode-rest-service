@@ -127,142 +127,6 @@
             </dependency>
 
             <dependency>
-                <groupId>com.tomtom.speedtools</groupId>
-                <artifactId>apivalidation</artifactId>
-                <version>${speedtools.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.tomtom.speedtools</groupId>
-                <artifactId>core</artifactId>
-                <version>${speedtools.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.tomtom.speedtools</groupId>
-                <artifactId>json</artifactId>
-                <version>${speedtools.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.tomtom.speedtools</groupId>
-                <artifactId>geo</artifactId>
-                <version>${speedtools.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.tomtom.speedtools</groupId>
-                <artifactId>guice</artifactId>
-                <version>${speedtools.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.tomtom.speedtools</groupId>
-                <artifactId>metrics</artifactId>
-                <version>${speedtools.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.tomtom.speedtools</groupId>
-                <artifactId>resources</artifactId>
-                <version>${speedtools.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.tomtom.speedtools</groupId>
-                <artifactId>rest</artifactId>
-                <version>${speedtools.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.tomtom.speedtools</groupId>
-                <artifactId>mongodb</artifactId>
-                <version>${speedtools.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.tomtom.speedtools</groupId>
-                <artifactId>testutils</artifactId>
-                <version>${speedtools.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.mapcode</groupId>
-                <artifactId>mapcode</artifactId>
-                <version>${mapcode.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>${log4j.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.code.findbugs</groupId>
-                <artifactId>jsr305</artifactId>
-                <version>${jsr305.version}</version>
-                <type>jar</type>
-                <scope>provided</scope>
-                <optional>true</optional>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${apache-commons-lang.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>javax.inject</groupId>
-                <artifactId>javax.inject</artifactId>
-                <version>${javax.inject.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>${javax.servlet-api.version}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.inject</groupId>
-                <artifactId>guice</artifactId>
-                <version>${guice.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>joda-time</groupId>
-                <artifactId>joda-time</artifactId>
-                <version>${joda-time.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jolokia</groupId>
-                <artifactId>jolokia-core</artifactId>
-                <version>${jolokia.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
                 <version>${jackson.version}</version>
@@ -281,6 +145,53 @@
             </dependency>
 
             <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>${jsr305.version}</version>
+                <type>jar</type>
+                <scope>provided</scope>
+                <optional>true</optional>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.inject</groupId>
+                <artifactId>guice</artifactId>
+                <version>${guice.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.mapcode</groupId>
+                <artifactId>mapcode</artifactId>
+                <version>${mapcode.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>async-http-servlet-3.0</artifactId>
+                <version>${resteasy.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-client</artifactId>
+                <version>${resteasy.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxb-provider</artifactId>
                 <version>${resteasy.version}</version>
@@ -294,13 +205,13 @@
 
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-jaxrs</artifactId>
+                <artifactId>resteasy-jackson2-provider</artifactId>
                 <version>${resteasy.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-jackson2-provider</artifactId>
+                <artifactId>resteasy-jaxrs</artifactId>
                 <version>${resteasy.version}</version>
             </dependency>
 
@@ -330,27 +241,93 @@
 
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
-                <artifactId>async-http-servlet-3.0</artifactId>
-                <version>${resteasy.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
                 <artifactId>tjws</artifactId>
                 <version>${resteasy.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-client</artifactId>
-                <version>${resteasy.version}</version>
-                <scope>test</scope>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>apivalidation</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>core</artifactId>
+                <version>${speedtools.version}</version>
+                </dependency>
+
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>geo</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>guice</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
+
+            <dependency>
+            <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>json</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>metrics</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>mongodb</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>resources</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>rest</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>testutils</artifactId>
+                <version>${speedtools.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>commons-httpclient</groupId>
                 <artifactId>commons-httpclient</artifactId>
                 <version>${commons-httpclient.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>${javax.inject.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${javax.servlet-api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>${joda-time.version}</version>
             </dependency>
 
             <dependency>
@@ -361,16 +338,52 @@
             </dependency>
 
             <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>${gson.version}</version>
-                <scope>test</scope>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${apache-commons-lang.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jolokia</groupId>
+                <artifactId>jolokia-core</artifactId>
+                <version>${jolokia.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
     <build>
         <plugins>
+
+            <!-- Java compiler. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                </configuration>
+            </plugin>
+
+            <!-- Code coverage using JaCoCo. -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -394,6 +407,7 @@
                 </executions>
             </plugin>
 
+            <!-- Code coverage collection using Coveralls.io. -->
             <plugin>
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
@@ -403,6 +417,7 @@
                 </configuration>
             </plugin>
 
+            <!-- Unit tests using SureFire. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -411,10 +426,11 @@
                     <forkCount>1</forkCount>
                     <reuseForks>true</reuseForks>
                     <!--suppress MavenModelInspection -->
-                    <argLine>${argLine} -Xmx1024m</argLine>
+                    <argLine>${argLine} -Xmx1024m -ea</argLine>
                 </configuration>
             </plugin>
 
+            <!-- Bundle resources. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -424,6 +440,7 @@
                 </configuration>
             </plugin>
 
+            <!-- Bundle sources in JAR. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -438,12 +455,14 @@
                 </executions>
             </plugin>
 
+            <!-- Project reports. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
                 <version>${maven-project-info-reports-plugin.version}</version>
             </plugin>
 
+            <!-- JavaDoc reports. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -457,38 +476,34 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
     <reporting>
         <plugins>
+
+            <!-- Coverage reports using JaCoCo. -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco-maven-plugin.version}</version>
             </plugin>
 
+            <!-- Project reports. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>${maven-project-info-reports-plugin.version}</version>
                 <configuration>
                     <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
                 </configuration>
             </plugin>
 
+            <!-- JavaDoc reports. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
             </plugin>
         </plugins>
     </reporting>
