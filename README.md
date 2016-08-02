@@ -233,6 +233,8 @@ Normally, one of our developers should be able to comment on them and fix.
 
 * Updated to Java library 2.2.4.
 
+* Cleaned up POM, sorted dependencies.
+
 ### 2.2.3.19
 
 * Updated to SpeedTools 3.0.21 which uses a more recent JBoss RESTEasy framework.
