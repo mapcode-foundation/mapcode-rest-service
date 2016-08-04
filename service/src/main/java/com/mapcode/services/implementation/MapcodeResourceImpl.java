@@ -139,7 +139,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramTerritory,
             @Nullable final String paramContextMustBeNull,
             @Nullable final String paramAlphabet,
-            @Nullable final String paramInclude,
+            @Nonnull final String paramInclude,
             @Nonnull final String paramDebug,
             @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
         convertLatLonToMapcode(paramLatDeg, paramLonDeg, null, paramPrecision, paramTerritory, paramContextMustBeNull,
@@ -154,7 +154,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramTerritory,
             @Nullable final String paramContextMustBeNull,
             @Nullable final String paramAlphabet,
-            @Nullable final String paramInclude,
+            @Nonnull final String paramInclude,
             @Nonnull final String paramDebug,
             @Suspended @Nonnull final AsyncResponse response)
             throws ApiInvalidFormatException {
@@ -171,7 +171,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramTerritory,
             @Nullable final String paramContextMustBeNull,
             @Nullable final String paramAlphabet,
-            @Nullable final String paramInclude,
+            @Nonnull final String paramInclude,
             @Nonnull final String paramDebug,
             @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
         assert response != null;
@@ -285,20 +285,24 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     // A territory was provided, so simply use first.
                     mapcodeLocal = MapcodeCodec.encodeToShortest(latDeg, lonDeg, territory);
                 } else {
+
+                    // Get the shortest code.
                     Territory localTerritory = null;
                     for (final Mapcode mapcode : mapcodesAll) {
                         if (mapcode.getTerritory() != Territory.AAA) {
                             if (localTerritory == null) {
 
-                                // First local territory found. Use a local mapcode, unless another territory is found/
+                                // First local territory found. Use a local mapcode, unless another territory is found.
                                 localTerritory = mapcode.getTerritory();
                                 mapcodeLocal = mapcode;
                             } else {
                                 if (localTerritory != mapcode.getTerritory()) {
+
                                     // Found another local territory; reset local mapcode.
-                                    mapcodeLocal = null;
-                                    reasonMultipleTerritories = true;
-                                    break;
+                                    if (mapcode.getCode().length() < mapcodeLocal.getCode().length()) {
+                                        mapcodeLocal = mapcode;
+                                        localTerritory = mapcode.getTerritory();
+                                    }
                                 }
                             }
                         }
@@ -325,12 +329,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     // Return only the local, international or all mapcodes.
                     switch (type) {
                         case LOCAL: {
-                            if (mapcodeLocal == null) {
-                                throw new ApiNotFoundException((reasonMultipleTerritories ?
-                                        "Local mapcodes for multiple territories exist" :
-                                        "Only an international mapcode exists") +
-                                        " for (" + latDeg + ", " + lonDeg + ')');
-                            }
                             result = createMapcodeDTO(mapcodeLocal, precision, alphabet, includeOffset, includeTerritory, includeAlphabet,
                                     latDeg, lonDeg);
                             break;

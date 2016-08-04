@@ -21,7 +21,7 @@ The available REST API methods are:
     GET /mapcode/metrics Returns some system metrics (also available from JMX).
     GET /mapcode/status  Returns 200 if the service OK.
 
-    GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]
+    GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|shortest|international]]
          [?precision=[0|1|2] & territory={restrictToTerritory} & alphabet={alphabet} & include={offset|territory|alphabet}]
 
        Convert latitude/longitude to one or more mapcodes.
@@ -31,7 +31,8 @@ The available REST API methods are:
 
        An additional filter can be specified to limit the results:
          all             : Same as without specifying a filter, returns all mapcodes.
-         local           : Return the shortest local mapcode.
+         local           : Return the shortest local mapcode (only if there's no ambiguity in territory).
+         shortest        : Return the shortest local mapcode (even if there are mutiple territories).
          international   : Return the international mapcode.
 
        Query parameters:
@@ -224,6 +225,11 @@ Normally, one of our developers should be able to comment on them and fix.
 
 
 ## Release Notes
+
+### 2.2.4.1
+
+* Changed semantics of `/mapcode/codes/{lat,lon}/local` to always get the shortest code, even if the
+territory may be ambiguous.
 
 ### 2.2.4.0
 

@@ -60,7 +60,7 @@ public class RootResourceImpl implements RootResource {
 
             "   An additional filter can be specified to limit the results:\n" +
             "     mapcodes        : Same as without specifying a filter, returns all mapcodes.\n" +
-            "     local           : Return the shortest local mapcode. This produces a 404 if no (unambiguous) local mapcode exists.\n" +
+            "     local           : Return the shortest local mapcode.\n" +
             "     international   : Return the international mapcode.\n\n" +
 
             "   Query parameters:\n" +
