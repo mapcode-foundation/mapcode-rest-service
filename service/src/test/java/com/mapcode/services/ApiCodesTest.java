@@ -275,14 +275,45 @@ public class ApiCodesTest {
     @Test
     public void checkCodesLocalJson() {
         LOG.info("checkCodesLocalJson");
-        final Response response = new ResteasyClientBuilder().build().
+        Response response = new ResteasyClientBuilder().build().
                 target(server.url("/mapcode/codes/" + TEST_LATLON2 + "/local")).
                 request().
                 accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
+        String x = response.readEntity(String.class);
         Assert.assertEquals("{\"mapcode\":\"QKM.N4\",\"territory\":\"NLD\"}",
-                response.readEntity(String.class));
+                x);
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/51.427804,5.488075125/local")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        x = response.readEntity(String.class);
+        Assert.assertEquals("{\"mapcode\":\"XX.XV\",\"territory\":\"NLD\"}",
+                x);
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/51.427804,5.488075125/local?territory=NLD")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        x = response.readEntity(String.class);
+        Assert.assertEquals("{\"mapcode\":\"XX.XV\",\"territory\":\"NLD\"}",
+                x);
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/51.427804,5.488075125/local?territory=BEL")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        x = response.readEntity(String.class);
+        Assert.assertEquals("{\"mapcode\":\"5S6.4G2\",\"territory\":\"BEL\"}",
+                x);
     }
 
     @Test
