@@ -231,6 +231,8 @@ Normally, one of our developers should be able to comment on them and fix.
 * Changed semantics of `/mapcode/codes/{lat,lon}/local` to always get the shortest code, even if the
 territory may be ambiguous.
 
+* Added explanatory text in help text for REST API.
+
 ### 2.2.4.0
 
 * Added Travis CI and Coveralls badges to `README.md`.

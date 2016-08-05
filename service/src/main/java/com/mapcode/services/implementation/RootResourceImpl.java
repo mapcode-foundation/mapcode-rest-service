@@ -39,9 +39,23 @@ public class RootResourceImpl implements RootResource {
 
     @Nonnull
     private static final String HELP_TEXT = "" +
+            "IMPORTANT NOTICE: The Mapcode Foundation provides an implementation of the Mapcode REST API at:\n" +
+            "----------------- http://api.mapcode.com/mapcode\n\n" +
+
+            "                  This free online service is provided for demonstration purposes only and the Mapcode\n" +
+            "                  Foundation accepts no claims on its availability or reliability, although we'll try hard\n" +
+            "                  to provide a stable and decent service. Note that usage or log data may be collected, only\n" +
+            "                  to further improve service (never for commercial purposes). If you are interested in using\n" +
+            "                  the service for professional purposes, or in high-availability or high-demands contexts,\n" +
+            "                  you may wish to consider self-hosting this service. The source code is open-source and\n" +
+            "                  available at: https://github.com/mapcode-foundation/mapcode-rest-service\n\n" +
+
+            "The REST API Methods\n" +
+            "--------------------\n\n" +
+
             "All REST services (except 'metrics') are able to return both JSON and XML. Use the HTTP\n" +
             "'Accept:' header to specify the expected format: application/json or application/xml\n" +
-            "If the 'Accept:' header is omitted, JSON is assumed." +
+            "If the 'Accept:' header is omitted, JSON is assumed.\n\n" +
 
             "GET /mapcode         Returns this help page.\n" +
             "GET /mapcode/version Returns the software version.\n" +
@@ -60,7 +74,11 @@ public class RootResourceImpl implements RootResource {
 
             "   An additional filter can be specified to limit the results:\n" +
             "     mapcodes        : Same as without specifying a filter, returns all mapcodes.\n" +
-            "     local           : Return the shortest local mapcode (also if there are multiple territories).\n" +
+            "     local           : Return the shortest local mapcode (not an international code). Note that multiple local\n" +
+            "                       mapcodes may exist for a location, with different territories. This method returns the\n" +
+            "                       shortest code. It does not check if the territory is the 'geographically correct' one\n" +
+            "                       for the coordinates. To get the shortest code for a specific territory, you need to explicitly\n" +
+            "                       specify the territory with 'territory=' parameter in the query.\n" +
             "     international   : Return the international mapcode.\n\n" +
 
             "   Query parameters:\n" +
@@ -81,10 +99,14 @@ public class RootResourceImpl implements RootResource {
             "   Convert a mapcode into a latitude/longitude pair.\n\n" +
 
             "   Path parameters:\n" +
-            "     code            : Mapcode code (local or international).\n" +
+            "     code            : Mapcode code (local or international). You can specify the territory in the code itself,\n" +
+            "                       like 'NLD%20XX.XX' (note that the space is URL-encoded to '%20'), or you specifty the\n" +
+            "                       territory separately in the 'context=' parameter, like 'XX.XX?context-NLD'.\n" +
 
             "   Query parameters:\n" +
-            "     context         : Optional mapcode territory context (name or alphacode).\n\n" +
+            "     context         : Optional mapcode territory context (name or alphacode). The context is only used if the\n\n" +
+            "                       code is ambiguous without it, otherwise it is ignored. For example, the context is ignored\n" +
+            "                       when converting an international code (but it is not considered an error to provide it).\n\n" +
 
             "GET /mapcode/territories [?offset={offset}&count={count}]\n" +
             "   Return a list of all territories.\n\n" +
@@ -112,12 +134,15 @@ public class RootResourceImpl implements RootResource {
             "   offset            : Return list from 'offset' (negative value start counting from end).\n" +
             "   count             : Return 'count' items at most.\n\n" +
 
+            "JSON and XML Responses\n" +
+            "----------------------\n\n" +
+
             "The REST API methods defined above obey the HTTP \"Accept:\" header. To retrieve JSON responses,\n" +
             "use \"Accept:application/json\", to retrieve XML responses, use \"Accept:application/xml\".\n\n" +
 
-            "The default response type is **JSON**, if no \"Accept:\" header is specified.\n\n" +
+            "The default response type is JSON, if no \"Accept:\" header is specified.\n\n" +
 
-            "Alternatively, to retrieve **XML** responses if no \"Accept:\" header is specified, you can add \"/xml\"\n" +
+            "Alternatively, to retrieve XML responses if no \"Accept:\" header is specified, you can add \"/xml\"\n" +
             "in the URL, directly after \"/mapcode\".\n\n" +
 
             "So, the following methods are supported as well and return XML by default:\n\n" +
