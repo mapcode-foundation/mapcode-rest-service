@@ -35,13 +35,30 @@ import javax.management.MXBean;
 public interface SystemMetrics {
 
     enum Metric {
-        ALL_MAPCODE_TO_LATLON_REQUESTS,
+        ALL_MAPCODE_TO_LATLON_REQUESTS,                 // All requests.
+        ALL_CLIENT_NONE_MAPCODE_TO_LATLON_REQUESTS,     // Request per client type.
+        ALL_CLIENT_IOS_MAPCODE_TO_LATLON_REQUESTS,
+        ALL_CLIENT_ANDROID_MAPCODE_TO_LATLON_REQUESTS,
+        ALL_CLIENT_WEB_MAPCODE_TO_LATLON_REQUESTS,
         VALID_MAPCODE_TO_LATLON_REQUESTS,
-        ALL_LATLON_TO_MAPCODE_REQUESTS,
+
+        ALL_LATLON_TO_MAPCODE_REQUESTS,                 // Requests.
+        ALL_CLIENT_NONE_LATLON_TO_MAPCODE_REQUESTS,     // Requests per client type.
+        ALL_CLIENT_IOS_LATLON_TO_MAPCODE_REQUESTS,
+        ALL_CLIENT_ANDROID_LATLON_TO_MAPCODE_REQUESTS,
+        ALL_CLIENT_WEB_LATLON_TO_MAPCODE_REQUESTS,
         VALID_LATLON_TO_MAPCODE_REQUESTS,
+
         ALL_ALPHABET_REQUESTS,
         ALL_TERRITORY_REQUESTS,
         WARNINGS_AND_ERRORS
+    }
+
+    enum Client {
+        NONE,       // No client specified.
+        IOS,        // iOS app.
+        ANDROID,    // Android app.
+        WEB         // Mapcode Foundation web page.
     }
 
     /**
@@ -57,7 +74,15 @@ public interface SystemMetrics {
      * @return The total number of requests for mapcode to lat/lon.
      */
     @Nonnull
-    MultiMetricsData getTotalMapcodeToLatLonRequests();
+    MultiMetricsData getAllMapcodeToLatLonRequests();
+
+    MultiMetricsData getAllClientNoneMapcodeToLatLonRequests();
+
+    MultiMetricsData getAllClientIOSMapcodeToLatLonRequests();
+
+    MultiMetricsData getAllClientAndroidMapcodeToLatLonRequests();
+
+    MultiMetricsData getAllClientWebMapcodeToLatLonRequests();
 
     /**
      * @return The number of valid requests for mapcode to lat/lon.
@@ -69,7 +94,15 @@ public interface SystemMetrics {
      * @return The total number of requests for lat/lon to mapcode.
      */
     @Nonnull
-    MultiMetricsData getTotalLatLonToMapcodeRequests();
+    MultiMetricsData getAllLatLonToMapcodeRequests();
+
+    MultiMetricsData getAllClientNoneLatLonToMapcodeRequests();
+
+    MultiMetricsData getAllClientIOSLatLonToMapcodeRequests();
+
+    MultiMetricsData getAllClientAndroidLatLonToMapcodeRequests();
+
+    MultiMetricsData getAllClientWebLatLonToMapcodeRequests();
 
     /**
      * @return The number of valid requests for lat/lon to mapcode.
@@ -81,13 +114,13 @@ public interface SystemMetrics {
      * @return The total number of requests for alphabets.
      */
     @Nonnull
-    MultiMetricsData getTotalAlphabetRequests();
+    MultiMetricsData getAllAlphabetRequests();
 
     /**
      * @return The total number of requests for territories.
      */
     @Nonnull
-    MultiMetricsData getTotalTerritoryRequests();
+    MultiMetricsData getAllTerritoryRequests();
 
     /**
      * @return The number of warnings and errors that were logged through log4j.

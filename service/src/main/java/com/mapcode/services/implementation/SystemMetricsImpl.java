@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.EnumMap;
 
@@ -36,9 +37,19 @@ import java.util.EnumMap;
  */
 public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector {
     private final MultiMetricsCollector allMapcodeToLatLonRequests = MultiMetricsCollector.all();
+    private final MultiMetricsCollector allClientNoneMapcodeToLatLonRequests = MultiMetricsCollector.all();
+    private final MultiMetricsCollector allClientIOSMapcodeToLatLonRequests = MultiMetricsCollector.all();
+    private final MultiMetricsCollector allClientAndroidMapcodeToLatLonRequests = MultiMetricsCollector.all();
+    private final MultiMetricsCollector allClientWebMapcodeToLatLonRequests = MultiMetricsCollector.all();
     private final MultiMetricsCollector validMapcodeToLatLonRequests = MultiMetricsCollector.all();
+
     private final MultiMetricsCollector allLatLonToMapcodeRequests = MultiMetricsCollector.all();
+    private final MultiMetricsCollector allClientNoneLatLonToMapcodeRequests = MultiMetricsCollector.all();
+    private final MultiMetricsCollector allClientIOSLatLonToMapcodeRequests = MultiMetricsCollector.all();
+    private final MultiMetricsCollector allClientAndroidLatLonToMapcodeRequests = MultiMetricsCollector.all();
+    private final MultiMetricsCollector allClientWebLatLonToMapcodeRequests = MultiMetricsCollector.all();
     private final MultiMetricsCollector validLatLonToMapcodeRequests = MultiMetricsCollector.all();
+
     private final MultiMetricsCollector allAlphabetRequests = MultiMetricsCollector.all();
     private final MultiMetricsCollector allTerritoryRequests = MultiMetricsCollector.all();
     private final MultiMetricsCollector warningsAndErrors = MultiMetricsCollector.all();
@@ -47,9 +58,19 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
     private final EnumMap<Metric, MultiMetricsCollector> all =
             new EnumMap<Metric, MultiMetricsCollector>(Metric.class) {{
                 put(Metric.ALL_MAPCODE_TO_LATLON_REQUESTS, allMapcodeToLatLonRequests);
+                put(Metric.ALL_CLIENT_NONE_MAPCODE_TO_LATLON_REQUESTS, allMapcodeToLatLonRequests);
+                put(Metric.ALL_CLIENT_IOS_MAPCODE_TO_LATLON_REQUESTS, allMapcodeToLatLonRequests);
+                put(Metric.ALL_CLIENT_ANDROID_MAPCODE_TO_LATLON_REQUESTS, allMapcodeToLatLonRequests);
+                put(Metric.ALL_CLIENT_WEB_MAPCODE_TO_LATLON_REQUESTS, allMapcodeToLatLonRequests);
                 put(Metric.VALID_MAPCODE_TO_LATLON_REQUESTS, validMapcodeToLatLonRequests);
+
                 put(Metric.ALL_LATLON_TO_MAPCODE_REQUESTS, allLatLonToMapcodeRequests);
+                put(Metric.ALL_CLIENT_NONE_LATLON_TO_MAPCODE_REQUESTS, allLatLonToMapcodeRequests);
+                put(Metric.ALL_CLIENT_IOS_LATLON_TO_MAPCODE_REQUESTS, allLatLonToMapcodeRequests);
+                put(Metric.ALL_CLIENT_ANDROID_LATLON_TO_MAPCODE_REQUESTS, allLatLonToMapcodeRequests);
+                put(Metric.ALL_CLIENT_WEB_LATLON_TO_MAPCODE_REQUESTS, allLatLonToMapcodeRequests);
                 put(Metric.VALID_LATLON_TO_MAPCODE_REQUESTS, validLatLonToMapcodeRequests);
+
                 put(Metric.ALL_ALPHABET_REQUESTS, allAlphabetRequests);
                 put(Metric.ALL_TERRITORY_REQUESTS, allTerritoryRequests);
                 put(Metric.WARNINGS_AND_ERRORS, warningsAndErrors);
@@ -98,7 +119,7 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
 
     @Nonnull
     @Override
-    public MultiMetricsData getTotalMapcodeToLatLonRequests() {
+    public MultiMetricsData getAllMapcodeToLatLonRequests() {
         return allMapcodeToLatLonRequests;
     }
 
@@ -110,7 +131,31 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
 
     @Nonnull
     @Override
-    public MultiMetricsData getTotalLatLonToMapcodeRequests() {
+    public MultiMetricsData getAllClientNoneMapcodeToLatLonRequests() {
+        return allClientNoneMapcodeToLatLonRequests;
+    }
+
+    @Nonnull
+    @Override
+    public MultiMetricsData getAllClientIOSMapcodeToLatLonRequests() {
+        return allClientIOSMapcodeToLatLonRequests;
+    }
+
+    @Nonnull
+    @Override
+    public MultiMetricsData getAllClientAndroidMapcodeToLatLonRequests() {
+        return allClientAndroidMapcodeToLatLonRequests;
+    }
+
+    @Nonnull
+    @Override
+    public MultiMetricsData getAllClientWebMapcodeToLatLonRequests() {
+        return allClientWebMapcodeToLatLonRequests;
+    }
+
+    @Nonnull
+    @Override
+    public MultiMetricsData getAllLatLonToMapcodeRequests() {
         return allLatLonToMapcodeRequests;
     }
 
@@ -122,13 +167,37 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
 
     @Nonnull
     @Override
-    public MultiMetricsData getTotalAlphabetRequests() {
+    public MultiMetricsData getAllClientNoneLatLonToMapcodeRequests() {
+        return allClientNoneLatLonToMapcodeRequests;
+    }
+
+    @Nonnull
+    @Override
+    public MultiMetricsData getAllClientIOSLatLonToMapcodeRequests() {
+        return allClientIOSLatLonToMapcodeRequests;
+    }
+
+    @Nonnull
+    @Override
+    public MultiMetricsData getAllClientAndroidLatLonToMapcodeRequests() {
+        return allClientAndroidLatLonToMapcodeRequests;
+    }
+
+    @Nonnull
+    @Override
+    public MultiMetricsData getAllClientWebLatLonToMapcodeRequests() {
+        return allClientWebLatLonToMapcodeRequests;
+    }
+
+    @Nonnull
+    @Override
+    public MultiMetricsData getAllAlphabetRequests() {
         return allAlphabetRequests;
     }
 
     @Nonnull
     @Override
-    public MultiMetricsData getTotalTerritoryRequests() {
+    public MultiMetricsData getAllTerritoryRequests() {
         return allTerritoryRequests;
     }
 
@@ -139,32 +208,93 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
     }
 
     @Override
-    public void addOneMapcodeToLatLonRequest() {
+    public void addOneMapcodeToLatLonRequest(@Nullable final String client) {
         allMapcodeToLatLonRequests.addValue(1);
+        switch (getClient(client)) {
+
+            case NONE:
+                allClientNoneMapcodeToLatLonRequests.addValue(1);
+                break;
+
+            case IOS:
+                allClientIOSMapcodeToLatLonRequests.addValue(1);
+                break;
+
+            case ANDROID:
+                allClientAndroidMapcodeToLatLonRequests.addValue(1);
+                break;
+
+            case WEB:
+                allClientWebMapcodeToLatLonRequests.addValue(1);
+                break;
+
+            default:
+                assert false;
+                break;
+        }
     }
 
     @Override
-    public void addOneValidMapcodeToLatLonRequest() {
+    public void addOneValidMapcodeToLatLonRequest(@Nullable final String client) {
         validMapcodeToLatLonRequests.addValue(1);
     }
 
     @Override
-    public void addOneLatLonToMapcodeRequest() {
+    public void addOneLatLonToMapcodeRequest(@Nullable final String client) {
         allLatLonToMapcodeRequests.addValue(1);
+
+        switch (getClient(client)) {
+
+            case NONE:
+                allClientNoneLatLonToMapcodeRequests.addValue(1);
+                break;
+
+            case IOS:
+                allClientIOSLatLonToMapcodeRequests.addValue(1);
+                break;
+
+            case ANDROID:
+                allClientAndroidLatLonToMapcodeRequests.addValue(1);
+                break;
+
+            case WEB:
+                allClientWebLatLonToMapcodeRequests.addValue(1);
+                break;
+
+            default:
+                assert false;
+                break;
+        }
     }
 
     @Override
-    public void addOneValidLatLonToMapcodeRequest() {
+    public void addOneValidLatLonToMapcodeRequest(@Nullable final String client) {
         validLatLonToMapcodeRequests.addValue(1);
     }
 
     @Override
-    public void addOneAlphabetRequest() {
+    public void addOneAlphabetRequest(@Nullable final String client) {
         allAlphabetRequests.addValue(1);
     }
 
     @Override
-    public void addOneTerritoryRequest() {
+    public void addOneTerritoryRequest(@Nullable final String client) {
         allTerritoryRequests.addValue(1);
+    }
+
+    private static Client getClient(@Nullable final String client) {
+        final Client id;
+        if (client == null) {
+            id = Client.NONE;
+        } else if (client.equalsIgnoreCase(Client.IOS.toString())) {
+            id = Client.IOS;
+        } else if (client.equalsIgnoreCase(Client.ANDROID.toString())) {
+            id = Client.ANDROID;
+        } else if (client.equalsIgnoreCase(Client.WEB.toString())) {
+            id = Client.WEB;
+        } else {
+            id = Client.NONE;
+        }
+        return id;
     }
 }

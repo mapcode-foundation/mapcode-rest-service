@@ -18,14 +18,8 @@ package com.mapcode.services.implementation;
 
 import akka.dispatch.Futures;
 import com.google.common.base.Joiner;
-import com.mapcode.Alphabet;
-import com.mapcode.Mapcode;
-import com.mapcode.MapcodeCodec;
-import com.mapcode.Point;
-import com.mapcode.Territory;
+import com.mapcode.*;
 import com.mapcode.Territory.AlphaCodeFormat;
-import com.mapcode.UnknownMapcodeException;
-import com.mapcode.UnknownTerritoryException;
 import com.mapcode.services.ApiConstants;
 import com.mapcode.services.MapcodeResource;
 import com.mapcode.services.SystemMetricsCollector;
@@ -50,7 +44,6 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Response;
@@ -140,10 +133,11 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramContextMustBeNull,
             @Nullable final String paramAlphabet,
             @Nonnull final String paramInclude,
-            @Nonnull final String paramDebug,
+            @Nonnull final String paramClient,
+            @Nonnull final String paramAllowLog,
             @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
         convertLatLonToMapcode(paramLatDeg, paramLonDeg, null, paramPrecision, paramTerritory, paramContextMustBeNull,
-                paramAlphabet, paramInclude, paramDebug, response);
+                paramAlphabet, paramInclude, paramClient, paramAllowLog, response);
     }
 
     @Override
@@ -155,11 +149,12 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramContextMustBeNull,
             @Nullable final String paramAlphabet,
             @Nonnull final String paramInclude,
-            @Nonnull final String paramDebug,
+            @Nonnull final String paramClient,
+            @Nonnull final String paramAllowLog,
             @Suspended @Nonnull final AsyncResponse response)
             throws ApiInvalidFormatException {
         convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramPrecision, paramTerritory, paramContextMustBeNull,
-                paramAlphabet, paramInclude, paramDebug, response);
+                paramAlphabet, paramInclude, paramClient, paramAllowLog, response);
     }
 
     @Override
@@ -172,18 +167,18 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramContextMustBeNull,
             @Nullable final String paramAlphabet,
             @Nonnull final String paramInclude,
-            @Nonnull final String paramDebug,
+            @Nonnull final String paramClient,
+            @Nonnull final String paramAllowLog,
             @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
         assert response != null;
 
         processor.process("convertLatLonToMapcode", LOG, response, () -> {
             // Get debug mode.
-            final boolean debug = paramDebug.equalsIgnoreCase("true");
+            final boolean allowLog = "true".equalsIgnoreCase(paramAllowLog);
 
-            LOG.info("convertLatLonToMapcode: lat={}, lon={}, precision={}, type={}, context={}, alphabet={}, include={}{}",
-                    paramLatDeg, paramLonDeg, paramPrecision, paramType, paramTerritory, paramAlphabet, paramInclude,
-                    debug ? " (DEBUG)" : "");
-            metricsCollector.addOneLatLonToMapcodeRequest();
+            LOG.info("convertLatLonToMapcode: lat={}, lon={}, precision={}, type={}, context={}, alphabet={}, include={}, client={}, allowLog={}",
+                    paramLatDeg, paramLonDeg, paramPrecision, paramType, paramTerritory, paramAlphabet, paramInclude, paramClient, paramAllowLog);
+            metricsCollector.addOneLatLonToMapcodeRequest(paramClient);
 
             // Prevent 'context' from inadvertently being specified.
             if (paramContextMustBeNull != null) {
@@ -257,9 +252,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final boolean includeAlphabet = foundIncludeAlphabet;
 
             // Send a trace event with the lat/lon and other parameters.
-            if (!debug) {
+            if (allowLog) {
                 TRACER.eventLatLonToMapcode(latDeg, lonDeg, territory, precision, paramType,
-                        paramAlphabet, paramInclude, UTCTime.now());
+                        paramAlphabet, paramInclude, UTCTime.now(), paramClient);
             }
 
             try {
@@ -278,7 +273,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 final Mapcode mapcodeInternational = MapcodeCodec.encodeToInternational(latDeg, lonDeg);
 
                 // Get the shortest local mapcode.
-                boolean reasonMultipleTerritories = false;
                 Mapcode mapcodeLocal = null;
                 if (territory != null) {
 
@@ -329,6 +323,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     // Return only the local, international or all mapcodes.
                     switch (type) {
                         case LOCAL: {
+                            if (mapcodeLocal == null) {
+                                throw new UnknownMapcodeException("No local mapcode for: " + mapcodeInternational.getCode());
+                            }
                             result = createMapcodeDTO(mapcodeLocal, precision, alphabet, includeOffset, includeTerritory, includeAlphabet,
                                     latDeg, lonDeg);
                             break;
@@ -356,7 +353,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
                 // Validate the DTO before returning it, to make sure it's valid (internal consistency check).
                 result.validate();
-                metricsCollector.addOneValidLatLonToMapcodeRequest();
+                metricsCollector.addOneValidLatLonToMapcodeRequest(paramClient);
                 response.resume(Response.ok(result).build());
             } catch (final UnknownMapcodeException ignored) {
 
@@ -374,16 +371,17 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final double paramLatDeg,
             final double paramLonDeg,
             @Nullable final String paramType,
-            @DefaultValue("0") final int paramPrecision,
+            final int paramPrecision,
             @Nullable final String paramTerritory,
             @Nullable final String paramContextMustBeNull,
             @Nullable final String paramAlphabet,
-            @DefaultValue("") @Nonnull final String paramInclude,
-            @DefaultValue("false") @Nonnull final String paramDebug,
+            @Nonnull final String paramInclude,
+            @Nonnull final String paramClient,
+            @Nonnull final String paramDebug,
             @Suspended @Nonnull final AsyncResponse response)
             throws ApiInvalidFormatException {
         convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramType, paramPrecision, paramTerritory, paramContextMustBeNull,
-                paramAlphabet, paramInclude, paramDebug, response);
+                paramAlphabet, paramInclude, paramClient, paramDebug, response);
     }
 
     @Override
@@ -408,17 +406,18 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nonnull final String paramCode,
             @Nullable final String paramContext,
             @Nullable final String paramTerritoryMustBeNull,
-            @Nonnull final String paramDebug,
+            @Nonnull final String paramClient,
+            @Nonnull final String paramAllowLog,
             @Nonnull final AsyncResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
         assert paramCode != null;
         assert response != null;
 
         processor.process("convertMapcodeToLatLon", LOG, response, () -> {
             // Get debug mode.
-            final boolean debug = paramDebug.equalsIgnoreCase("true");
+            final boolean allowLog = "true".equalsIgnoreCase(paramAllowLog);
 
-            LOG.info("convertMapcodeToLatLon: code={}, territory={}{}", paramCode, paramContext, debug ? " (DEBUG)" : "");
-            metricsCollector.addOneMapcodeToLatLonRequest();
+            LOG.info("convertMapcodeToLatLon: code={}, territory={}, client={}, allowLog={}", paramCode, paramContext, paramClient, paramAllowLog);
+            metricsCollector.addOneMapcodeToLatLonRequest(paramClient);
 
             // Prevent 'territory' from inadvertently being specified.
             if (paramTerritoryMustBeNull != null) {
@@ -445,8 +444,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
 
             // Send a trace event with the mapcode and territory.
-            if (!debug) {
-                TRACER.eventMapcodeToLatLon(paramCode, territoryContext, UTCTime.now());
+            if (allowLog) {
+                TRACER.eventMapcodeToLatLon(paramCode, territoryContext, UTCTime.now(), paramClient);
             }
 
             // Create result body (always an ApiDTO).
@@ -463,7 +462,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
             // Validate the result (internal consistency check).
             result.validate();
-            metricsCollector.addOneValidMapcodeToLatLonRequest();
+            metricsCollector.addOneValidMapcodeToLatLonRequest(paramClient);
             response.resume(Response.ok(result).build());
 
             // The response is already set within this method body.
@@ -476,26 +475,25 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nonnull final String paramCode,
             @Nullable final String paramContext,
             @Nullable final String paramTerritoryMustBeNull,
-            @DefaultValue("false") @Nonnull final String paramDebug,
+            @Nonnull final String paramClient,
+            @Nonnull final String paramDebug,
             @Suspended @Nonnull final AsyncResponse response)
             throws ApiNotFoundException, ApiInvalidFormatException {
-        convertMapcodeToLatLon(paramCode, paramContext, paramTerritoryMustBeNull, paramDebug, response);
+        convertMapcodeToLatLon(paramCode, paramContext, paramTerritoryMustBeNull, paramClient, paramDebug, response);
     }
 
     @Override
     public void getTerritories(
             final int offset,
             final int count,
-            @Nonnull final String paramDebug,
+            @Nonnull final String paramClient,
+            @Nonnull final String paramAllowLog,
             @Nonnull final AsyncResponse response) throws ApiIntegerOutOfRangeException {
         assert response != null;
 
         processor.process("getTerritories", LOG, response, () -> {
-            // Get debug mode.
-            final boolean debug = paramDebug.equalsIgnoreCase("true");
-
-            LOG.info("getTerritories{}", debug ? " (DEBUG)" : "");
-            metricsCollector.addOneTerritoryRequest();
+            LOG.info("getTerritories: client={}, allowLog={}", paramClient, paramAllowLog);
+            metricsCollector.addOneTerritoryRequest(paramClient);
 
             // Check value of count.
             if (count < 0) {
@@ -521,29 +519,28 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Override
     public void getTerritoriesXml(
-            @DefaultValue(DEFAULT_OFFSET) final int offset,
-            @DefaultValue(DEFAULT_COUNT) final int count,
-            @DefaultValue("false") @Nonnull final String paramDebug,
+            final int offset,
+            final int count,
+            @Nonnull final String paramClient,
+            @Nonnull final String paramAllowLog,
             @Suspended @Nonnull final AsyncResponse response)
             throws ApiIntegerOutOfRangeException {
-        getTerritories(offset, count, paramDebug, response);
+        getTerritories(offset, count, paramClient, paramAllowLog, response);
     }
 
     @Override
     public void getTerritory(
             @Nonnull final String paramTerritory,
             @Nullable final String paramContext,
-            @Nonnull final String paramDebug,
+            @Nonnull final String paramClient,
+            @Nonnull final String paramAllowLog,
             @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
         assert paramTerritory != null;
         assert response != null;
 
         processor.process("getTerritory", LOG, response, () -> {
-            // Get debug mode.
-            final boolean debug = paramDebug.equalsIgnoreCase("true");
-
-            LOG.info("getTerritory: territory={}, context={}{}", paramTerritory, paramContext, debug ? " (DEBUG)" : "");
-            metricsCollector.addOneTerritoryRequest();
+            LOG.info("getTerritory: territory={}, context={}, client={}, allowLog={}", paramTerritory, paramContext, paramClient, paramAllowLog);
+            metricsCollector.addOneTerritoryRequest(paramClient);
 
             // Get the territory from the URL.
             final Territory territory;
@@ -578,26 +575,25 @@ public class MapcodeResourceImpl implements MapcodeResource {
     public void getTerritoryXml(
             @Nonnull final String paramTerritory,
             @Nullable final String paramContext,
-            @DefaultValue("false") @Nonnull final String paramDebug,
+            @Nonnull final String paramClient,
+            @Nonnull final String paramAllowLog,
             @Suspended @Nonnull final AsyncResponse response)
             throws ApiInvalidFormatException {
-        getTerritory(paramTerritory, paramContext, paramDebug, response);
+        getTerritory(paramTerritory, paramContext, paramClient, paramAllowLog, response);
     }
 
     @Override
     public void getAlphabets(
             final int offset,
             final int count,
-            @Nonnull final String paramDebug,
+            @Nonnull final String paramClient,
+            @Nonnull final String paramAllowLog,
             @Nonnull final AsyncResponse response) throws ApiIntegerOutOfRangeException {
         assert response != null;
 
         processor.process("getAlphabets", LOG, response, () -> {
-            // Get debug mode.
-            final boolean debug = paramDebug.equalsIgnoreCase("true");
-            metricsCollector.addOneAlphabetRequest();
-
-            LOG.info("getAlphabets{}", debug ? " (DEBUG)" : "");
+            LOG.info("getAlphabets: clien={}, allowLog={}", paramClient, paramAllowLog);
+            metricsCollector.addOneAlphabetRequest(paramClient);
 
             // Check value of count.
             if (count < 0) {
@@ -623,28 +619,28 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Override
     public void getAlphabetsXml(
-            @DefaultValue(DEFAULT_OFFSET) final int offset,
-            @DefaultValue(DEFAULT_COUNT) final int count,
-            @DefaultValue("false") @Nonnull final String paramDebug,
+            final int offset,
+            final int count,
+            @Nonnull final String paramClient,
+            @Nonnull final String paramAllowLog,
             @Suspended @Nonnull final AsyncResponse response)
             throws ApiIntegerOutOfRangeException {
-        getAlphabets(offset, count, paramDebug, response);
+        getAlphabets(offset, count, paramClient, paramAllowLog, response);
     }
 
     @Override
     public void getAlphabet(
             @Nonnull final String paramAlphabet,
-            @Nonnull final String paramDebug,
+            @Nonnull final String paramClient,
+            @Nonnull final String paramAllowLog,
             @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
         assert paramAlphabet != null;
         assert response != null;
 
         processor.process("getAlphabet", LOG, response, () -> {
-            // Get debug mode.
-            final boolean debug = paramDebug.equalsIgnoreCase("true");
 
-            LOG.info("getAlphabet: alphabet={}{}", paramAlphabet, debug ? " (DEBUG)" : "");
-            metricsCollector.addOneAlphabetRequest();
+            LOG.info("getAlphabet: alphabet={}, client={}, allowLog={}", paramAlphabet, paramClient, paramAllowLog);
+            metricsCollector.addOneAlphabetRequest(paramClient);
 
             // Get the territory from the URL.
             final Alphabet alphabet;
@@ -669,10 +665,11 @@ public class MapcodeResourceImpl implements MapcodeResource {
     @Override
     public void getAlphabetXml(
             @Nonnull final String paramAlphabet,
-            @DefaultValue("false") @Nonnull final String paramDebug,
+            @Nonnull final String paramClient,
+            @Nonnull final String paramAllowLog,
             @Suspended @Nonnull final AsyncResponse response)
             throws ApiInvalidFormatException {
-        getAlphabet(paramAlphabet, paramDebug, response);
+        getAlphabet(paramAlphabet, paramClient, paramAllowLog, response);
     }
 
     @Nonnull
@@ -777,9 +774,20 @@ public class MapcodeResourceImpl implements MapcodeResource {
         // A request to translate a lat/lon to a mapcode is made.
         void eventLatLonToMapcode(double latDeg, double lonDeg, @Nullable Territory territory,
                                   int precision, @Nullable String type, @Nullable String alphabet,
+                                  @Nullable String include, @Nonnull DateTime now, @Nullable final String client);
+
+        // A request to translate a mapcode to a lat/lon is made.
+        void eventMapcodeToLatLon(@Nonnull String code, @Nullable Territory territory, @Nonnull DateTime now,
+                                            @Nullable final String client);
+
+        // A request to translate a lat/lon to a mapcode is made.
+        @Deprecated
+        void eventLatLonToMapcode(double latDeg, double lonDeg, @Nullable Territory territory,
+                                  int precision, @Nullable String type, @Nullable String alphabet,
                                   @Nullable String include, @Nonnull DateTime now);
 
         // A request to translate a mapcode to a lat/lon is made.
+        @Deprecated
         void eventMapcodeToLatLon(@Nonnull String code, @Nullable Territory territory, @Nonnull DateTime now);
     }
 }

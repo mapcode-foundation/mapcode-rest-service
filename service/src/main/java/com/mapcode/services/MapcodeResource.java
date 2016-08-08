@@ -24,12 +24,7 @@ import com.tomtom.speedtools.apivalidation.exceptions.ApiException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
@@ -66,7 +61,8 @@ public interface MapcodeResource {
     static final String PARAM_INCLUDE = "include";
     static final String PARAM_COUNT = "count";
     static final String PARAM_OFFSET = "offset";
-    static final String PARAM_DEBUG = "debug";
+    static final String PARAM_ALLOW_LOG = "allowLog";
+    static final String PARAM_CLIENT = "client";
 
     static final String DEFAULT_OFFSET = "0";
     static final String DEFAULT_COUNT = "1000";
@@ -97,7 +93,7 @@ public interface MapcodeResource {
      * @param paramInclude           Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
      *                               Range: {@link ParamInclude}.
      * @param paramContextMustBeNull Must not be used (added to allow check for incorrect usage).
-     * @param paramDebug             True for debugging purposes. Default is false.
+     * @param paramAllowLog          True if logging of data for improving the service is allowed. Default is true.
      * @param response               One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
      *                               INTERNATIONAL and {@link MapcodesDTO} for ALL.
      * @throws ApiException API exception, translated into HTTP status code.
@@ -113,7 +109,8 @@ public interface MapcodeResource {
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,
             @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
-            @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
+            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
@@ -127,7 +124,8 @@ public interface MapcodeResource {
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,
             @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
-            @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
+            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     /**
@@ -145,7 +143,7 @@ public interface MapcodeResource {
      * @param paramInclude           Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
      *                               Range: {@link ParamInclude}.
      * @param paramContextMustBeNull Must not be used (added to allow check for incorrect usage).
-     * @param paramDebug             True for debugging purposes. Default is false.
+     * @param paramAllowLog          True if logging of data for improving the service is allowed. Default is true.
      * @param response               One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
      *                               INTERNATIONAL and {@link MapcodesDTO} for ALL.
      * @throws ApiException API exception, translated into HTTP status code.
@@ -162,7 +160,8 @@ public interface MapcodeResource {
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,
             @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
-            @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
+            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
@@ -177,7 +176,8 @@ public interface MapcodeResource {
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,
             @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
-            @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
+            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramDebug,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     // Unsupported operation.
@@ -199,7 +199,7 @@ public interface MapcodeResource {
      * @param paramCode                Mapcode to convert.
      * @param paramContext             Specifies a territory context for interpretation of the mapcode.
      *                                 Range: any valid territory.
-     * @param paramDebug               True for debugging purposes. Default is false.
+     * @param paramAllowLog            True if logging of data for improving the service is allowed. Default is true.
      * @param paramTerritoryMustBeNull Must not be used (added to allow check for incorrect usage).
      * @param response                 Lat/lon. Format: {@link CoordinatesDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
@@ -211,7 +211,8 @@ public interface MapcodeResource {
             @PathParam(PARAM_CODE) @Nonnull String paramCode,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritoryMustBeNull,
-            @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
+            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
@@ -221,16 +222,17 @@ public interface MapcodeResource {
             @PathParam(PARAM_CODE) @Nonnull String paramCode,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritoryMustBeNull,
-            @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
+            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramDebug,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     /**
      * Get a list of all valid territory codes.
      *
-     * @param offset     Return values from 'offset'. Range: &gt;= 0 counts from start, &lt; 0 counts from end.
-     * @param count      Return 'count' values at most. Range: &gt;= 0.
-     * @param paramDebug True for debugging purposes. Default is false.
-     * @param response   Territory codes and information. Format: {@link TerritoryListDTO}.
+     * @param offset        Return values from 'offset'. Range: &gt;= 0 counts from start, &lt; 0 counts from end.
+     * @param count         Return 'count' values at most. Range: &gt;= 0.
+     * @param paramAllowLog True if logging of data for improving the service is allowed. Default is true.
+     * @param response      Territory codes and information. Format: {@link TerritoryListDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -239,7 +241,8 @@ public interface MapcodeResource {
     void getTerritories(
             @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
             @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
-            @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
+            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
@@ -248,7 +251,8 @@ public interface MapcodeResource {
     void getTerritoriesXml(
             @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
             @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
-            @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
+            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     /**
@@ -256,7 +260,7 @@ public interface MapcodeResource {
      *
      * @param paramTerritory Territory code. Range: any valid territory code, alpha or numeric.
      * @param paramContext   Context territory code for disambiguation. Range: any valid territory code, or alias.
-     * @param paramDebug     True for debugging purposes. Default is false.
+     * @param paramAllowLog  True if logging of data for improving the service is allowed. Default is true.
      * @param response       Territory information. Format: {@link com.mapcode.services.dto.TerritoryDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
@@ -266,7 +270,8 @@ public interface MapcodeResource {
     void getTerritory(
             @PathParam(PARAM_TERRITORY) @Nonnull String paramTerritory,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
-            @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
+            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
@@ -275,16 +280,17 @@ public interface MapcodeResource {
     void getTerritoryXml(
             @PathParam(PARAM_TERRITORY) @Nonnull String paramTerritory,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
-            @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
+            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     /**
      * Get a list of all valid alphabet codes.
      *
-     * @param offset     Return values from 'offset'. Range: &gt;= 0 counts from start, &lt; 0 counts from end.
-     * @param count      Return 'count' values at most. Range: &gt;= 0.
-     * @param paramDebug True for debugging purposes. Default is false.
-     * @param response   Alphabet codes and information. Format: {@link AlphabetListDTO}.
+     * @param offset        Return values from 'offset'. Range: &gt;= 0 counts from start, &lt; 0 counts from end.
+     * @param count         Return 'count' values at most. Range: &gt;= 0.
+     * @param paramAllowLog True if logging of data for improving the service is allowed. Default is true.
+     * @param response      Alphabet codes and information. Format: {@link AlphabetListDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -293,7 +299,8 @@ public interface MapcodeResource {
     void getAlphabets(
             @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
             @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
-            @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
+            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
@@ -302,14 +309,15 @@ public interface MapcodeResource {
     void getAlphabetsXml(
             @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
             @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
-            @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
+            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     /**
      * Get info for a specific alphabet.
      *
      * @param paramAlphabet Alphabet code. Range: any valid alphabet code, alpha or numeric.
-     * @param paramDebug    True for debugging purposes. Default is false.
+     * @param paramAllowLog True if logging of data for improving the service is allowed. Default is true.
      * @param response      Territory information. Format: {@link com.mapcode.services.dto.AlphabetDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
@@ -318,7 +326,8 @@ public interface MapcodeResource {
     @Path("alphabets/{" + PARAM_ALPHABET + '}')
     void getAlphabet(
             @PathParam(PARAM_ALPHABET) @Nonnull String paramAlphabet,
-            @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
+            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
@@ -326,6 +335,7 @@ public interface MapcodeResource {
     @Path("xml/alphabets/{" + PARAM_ALPHABET + '}')
     void getAlphabetXml(
             @PathParam(PARAM_ALPHABET) @Nonnull String paramAlphabet,
-            @QueryParam(PARAM_DEBUG) @DefaultValue("false") @Nonnull String paramDebug,
+            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 }

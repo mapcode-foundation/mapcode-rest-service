@@ -224,7 +224,25 @@ If you encounter any problems with this library, don't hesitate to use the `Issu
 Normally, one of our developers should be able to comment on them and fix.
 
 
+# Important Notice
+
+The Mapcode Foundation provides an implementation of the Mapcode REST API at: http://api.mapcode.com/mapcode
+
+This free online service is provided for demonstration purposes only and the Mapcode
+Foundation accepts no claims on its availability or reliability, although we'll try hard
+to provide a stable and decent service. Note that usage or log data may be collected, only
+to further improve service (never for commercial purposes). If you are interested in using
+the service for professional purposes, or in high-availability or high-demands contexts,
+you may wish to consider self-hosting this service.
+            
 ## Release Notes
+
+### 2.2.4.2
+
+* Added `client=` parameter, to allow logging per client type.
+
+* Added new metrics: `ALL_CLIENT_[NONE|IOS|ANDROID|WEB]_LATLON_TO_MAPCODE_REQUESTS` and
+`ALL_CLIENT_[NONE|IOS|ANDROID|WEB]_MAPCODE_TO_LATLON_REQUESTS`.
 
 ### 2.2.4.1
 

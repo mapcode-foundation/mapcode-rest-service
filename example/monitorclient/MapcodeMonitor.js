@@ -35,7 +35,6 @@ $(document).ready(function () {
         .size(400);
     var jolokia = context.jolokia(jolokiaConnector);
 
-
     function metric(metricName, path, label) {
         return jolokia.metric({
             type: 'read',
@@ -77,13 +76,23 @@ $(document).ready(function () {
             metric(metricName, "lastMonth/" + pathPostfix, "Last Month")]);
     }
 
-    stdgraph("#totalMapcodeToLatLonRequestsSum", "Total requests: mapcode > coord", "TotalMapcodeToLatLonRequests", "sum");
-    stdgraph("#validMapcodeToLatLonRequestsSum", "Valid requests: mapcode > coord", "ValidMapcodeToLatLonRequests", "sum");
-    stdgraph("#totalLatLonToMapcodeRequestsSum", "Total requests: coord > mapcode", "TotalLatLonToMapcodeRequests", "sum");
-    stdgraph("#validLatLonToMapcodeRequestsSum", "Valid requests: coord > mapcode", "ValidLatLonToMapcodeRequests", "sum");
-    stdgraph("#totalAlphabetRequestsSum", "Alphabet requests:", "TotalAlphabetRequests", "sum");
-    stdgraph("#totalTerritoryRequestsSum", "Territory requests:", "TotalTerritoryRequests", "sum");
-    stdgraph("#warningsAndErrorsSum", "Warnings and Errors", "WarningsAndErrors", "sum");
+    stdgraph("#allMapcodeToLatLonRequestsSum", "All", "AllMapcodeToLatLonRequests", "sum");
+    stdgraph("#validMapcodeToLatLonRequestsSum", "Valid", "ValidMapcodeToLatLonRequests", "sum");
+    stdgraph("#allClientNoneMapcodeToLatLonRequestsSum", "None/Unknown", "AllClientNoneMapcodeToLatLonRequests", "sum");
+    stdgraph("#allClientIOSMapcodeToLatLonRequestsSum", "iOS", "AllClientIOSMapcodeToLatLonRequests", "sum");
+    stdgraph("#allClientAndroidMapcodeToLatLonRequestsSum", "AndroidOS", "AllClientAndroidMapcodeToLatLonRequests", "sum");
+    stdgraph("#allClientWebMapcodeToLatLonRequestsSum", "Web (mapcode.com)", "AllClientWebMapcodeToLatLonRequests", "sum");
+
+    stdgraph("#allLatLonToMapcodeRequestsSum", "All", "AllLatLonToMapcodeRequests", "sum");
+    stdgraph("#validLatLonToMapcodeRequestsSum", "Valid", "ValidLatLonToMapcodeRequests", "sum");
+    stdgraph("#allClientNoneLatLonToMapcodeRequestsSum", "None/Unknown", "AllClientNoneLatLonToMapcodeRequests", "sum");
+    stdgraph("#allClientIOSLatLonToMapcodeRequestsSum", "iOS", "AllClientIOSLatLonToMapcodeRequests", "sum");
+    stdgraph("#allClientAndroidLatLonToMapcodeRequestsSum", "Android", "AllClientAndroidLatLonToMapcodeRequests", "sum");
+    stdgraph("#allClientWebLatLonToMapcodeRequestsSum", "Web (mapcode.com)", "AllClientWebLatLonToMapcodeRequests", "sum");
+
+    stdgraph("#allAlphabetRequestsSum", "Alphabet:", "AllAlphabetRequests", "sum");
+    stdgraph("#allTerritoryRequestsSum", "Territory:", "AllTerritoryRequests", "sum");
+    stdgraph("#warningsAndErrorsSum", "Warnings/Errors", "WarningsAndErrors", "sum");
 
     var value = jolokiaConnector.getAttribute("java.lang:type=Memory", "HeapMemoryUsage", "used") / (1024 * 1024);
     $("#memoryUsage").text("Memory used: " + Math.round(value) + "Mb");
