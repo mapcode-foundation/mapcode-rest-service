@@ -206,12 +206,12 @@ pressing the conversion/request buttons.
     <br/>
     <input type="text" id="lon" value="5.488075"> = longitude [-180, 180] (wrapped if outside of range)
     <br/>
-    <input type="text" id="territoryEncode" value=""> = restrict results to 1 territory (empty = show
+    <input type="text" id="territoryEncode" value=""> = restrict results to one territory (use mapcode territory, empty = show
     all)
     <br/>
-    <input type="text" id="alphabetEncode" value=""> = alphabet used for results (empty = roman)
+    <input type="text" id="alphabetEncode" value=""> = alphabet used for results (use alphabet name, empty = ROMAN)
     <br/>
-    <input type="text" id="precision" value=""> = precision (0, 1 or 2, empty = 0)
+    <input type="text" id="precision" value=""> = precision (use '0'..'8', empty = '0')
     <br/>
     <input type="button" value="Encode" onclick="encodeButtonPressed()">
 </form>
@@ -279,7 +279,7 @@ pressing the conversion/request buttons.
 </p>
 
 <form action="#" onsubmit="return decodeButtonPressed();">
-    <input type="text" id="contextDecode" value="NLD"> = mapcode territory (empty = international)
+    <input type="text" id="contextDecode" value="NLD"> = mapcode territory (use mapcode territory, empty = international)
     <br/>
     <input type="text" id="mapcode" value="XX.XX"> = mapcode code
     <br/>
@@ -356,7 +356,7 @@ pressing the conversion/request buttons.
 </p>
 
 <form action="#" onsubmit="return decodeButtonPressed();">
-    <input type="text" id="territory" value=""> = territory to show info for (empty = all territories)
+    <input type="text" id="territory" value=""> = territory to show info for (use mapcode territory, empty = all territories)
     <br/>
     <input type="text" id="context" value=""> = territory context (optional, for disambiguation)
     <br/>
@@ -431,7 +431,7 @@ pressing the conversion/request buttons.
 </p>
 
 <form action="#" onsubmit="return decodeButtonPressed();">
-    <input type="text" id="alphabet" value=""> = alphabet to show info for (empty = all alphabets)
+    <input type="text" id="alphabet" value=""> = alphabet to show info for (use alphabet name, empty = all alphabets)
     <br/>
     <input type="button" value="List" onclick="alphabetButtonPressed()">
 </form>
