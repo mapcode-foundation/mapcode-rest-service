@@ -35,7 +35,7 @@
 
 This page is an example of how the mapcode REST API can be used from HTML/Javascript.
 You can have a look at the source code of this page to see how the REST API is called,
-r you can try it out by simply entering some information in the dialog boxes and
+or you can try it out by simply entering some information in the dialog boxes and
 pressing the conversion/request buttons.
 <p/>
 <b>Copyright (C) 2016, Stichting Mapcode Foundation</b>, <a href="http://www.mapcode.com">http://www.mapcode.com</a>
@@ -206,10 +206,10 @@ pressing the conversion/request buttons.
     <br/>
     <input type="text" id="lon" value="5.488075"> = longitude [-180, 180] (wrapped if outside of range)
     <br/>
-    <input type="text" id="territoryEncode" value=""> = restrict results to one territory (use mapcode territory, empty = show
+    <input type="text" id="territoryEncode" value=""> = restrict results to one territory (use territory name, e.g. NLD, empty = show
     all)
     <br/>
-    <input type="text" id="alphabetEncode" value=""> = alphabet used for results (use alphabet name, empty = ROMAN)
+    <input type="text" id="alphabetEncode" value=""> = alphabet used for results (use alphabet name, e.g. GREEK, empty = ROMAN)
     <br/>
     <input type="text" id="precision" value=""> = precision (use '0'..'8', empty = '0')
     <br/>
@@ -279,7 +279,7 @@ pressing the conversion/request buttons.
 </p>
 
 <form action="#" onsubmit="return decodeButtonPressed();">
-    <input type="text" id="contextDecode" value="NLD"> = mapcode territory (use mapcode territory, empty = international)
+    <input type="text" id="contextDecode" value="NLD"> = mapcode territory (use territory name, e.g. NLD, empty = international)
     <br/>
     <input type="text" id="mapcode" value="XX.XX"> = mapcode code
     <br/>
@@ -356,9 +356,9 @@ pressing the conversion/request buttons.
 </p>
 
 <form action="#" onsubmit="return decodeButtonPressed();">
-    <input type="text" id="territory" value=""> = territory to show info for (use mapcode territory, empty = all territories)
+    <input type="text" id="territory" value=""> = territory to show info for (use territory name, e.g. NLD, empty = all territories)
     <br/>
-    <input type="text" id="context" value=""> = territory context (optional, for disambiguation)
+    <input type="text" id="context" value=""> = territory context (use parent territory, e.g. IND, for disambiguation)
     <br/>
     <input type="button" value="List" onclick="territoryButtonPressed()">
 </form>
@@ -431,7 +431,7 @@ pressing the conversion/request buttons.
 </p>
 
 <form action="#" onsubmit="return decodeButtonPressed();">
-    <input type="text" id="alphabet" value=""> = alphabet to show info for (use alphabet name, empty = all alphabets)
+    <input type="text" id="alphabet" value=""> = alphabet to show info for (use alphabet name, e.g. GREEK, empty = all alphabets)
     <br/>
     <input type="button" value="List" onclick="alphabetButtonPressed()">
 </form>
