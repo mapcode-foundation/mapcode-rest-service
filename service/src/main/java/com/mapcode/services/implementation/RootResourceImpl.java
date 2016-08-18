@@ -40,7 +40,7 @@ public class RootResourceImpl implements RootResource {
     @Nonnull
     private static final String HELP_TEXT = "" +
             "IMPORTANT NOTICE: The Mapcode Foundation provides an implementation of the Mapcode REST API at:\n" +
-            "----------------- http://api.mapcode.com/mapcode\n\n" +
+            "----------------- https://api.mapcode.com/mapcode\n\n" +
 
             "                  This free online service is provided for demonstration purposes only and the Mapcode\n" +
             "                  Foundation accepts no claims on its availability or reliability, although we'll try hard\n" +

@@ -226,7 +226,8 @@ Normally, one of our developers should be able to comment on them and fix.
 
 # Important Notice
 
-The Mapcode Foundation provides an implementation of the Mapcode REST API at: http://api.mapcode.com/mapcode
+The Mapcode Foundation provides an implementation of the Mapcode REST API at: 
+https://api.mapcode.com/mapcode
 
 This free online service is provided for demonstration purposes only and the Mapcode
 Foundation accepts no claims on its availability or reliability, although we'll try hard
@@ -302,7 +303,7 @@ need to use an XML service, but you can't specify the correct HTTP header.
 * Works with Google spreadsheets and Microsoft Excel.
 
 * In Google spreadsheets use the =IMPORTXML function, e.g.
-=`IMPORTXML("http://api.mapcode.com/mapcode/xml/codes/52.376514,4.908543";"//local")`
+=`IMPORTXML("https://api.mapcode.com/mapcode/xml/codes/52.376514,4.908543";"//local")`
 
 * In Microsoft Excel, use the =WEBSERVICE function.
 

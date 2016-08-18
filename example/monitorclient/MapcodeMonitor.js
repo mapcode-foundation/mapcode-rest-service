@@ -18,7 +18,7 @@ $(document).ready(function () {
     var fInterval = 1000;
 
     // To use on production system:
-    var jolokiaConnector = new Jolokia({ url: "http://api.mapcode.com/monitor", fetchInterval: fInterval});
+    var jolokiaConnector = new Jolokia({ url: "https://api.mapcode.com/monitor", fetchInterval: fInterval});
 
     // For local testing:
     // jolokiaConnector = new Jolokia({url: "http://localhost:8080/monitor", fetchInterval: fInterval});
