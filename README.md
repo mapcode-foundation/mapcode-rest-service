@@ -83,7 +83,7 @@ The available REST API methods are:
        offset            : Return list from 'offset' (negative value start counting from end).
        count             : Return 'count' items at most.
 
-## Supporting XML-only Tools (e.g. Google Spreadsheets, Microsoft Excel)
+### Supporting XML-only Tools (e.g. Google Spreadsheets, Microsoft Excel)
 
 The REST API methods defined above obey the HTTP `Accept:` header. To retrieve JSON responses,
 use **Accept:application/json**, to retrieve XML responses, use **Accept:application/xml**.
@@ -106,7 +106,7 @@ You can use these URLs, for example, in Google Spreadsheets, using the **=IMPORT
 function, or in Microsoft Excel 2013 or 2016 (for Windows) using the **=FILTERXML(WEBSERVICE(url), xpath)**
 functions. This should make live integration of mapcode conversion with your spreadsheets a breeze.
 
-## Build and Run
+### Build and Run
 
 The service always runs from a WAR file.
 To build the WAR file, type
@@ -139,7 +139,7 @@ your Tomcat instance.
 The first method, running the WAR file from the command-line, using `java` only is particularly
 useful if you wish use the XML services, for example, in a Microsoft Excel spreadsheet.
 
-## Missing `mapcode-secret.properties` File
+### Missing `mapcode-secret.properties` File
 
 The service requires a file called `mapcode-secret.properties` to be present on the
 classpath.  The properties file `mapcode-secret.properties` contains the username and password for
@@ -168,7 +168,7 @@ The service will work with an empty file as well, but will not trace events to t
 database.
 
 
-## Using Java 8 on MacOSX
+### Using Java 8 on MacOSX
 
 The source uses Java JDK 1.8, so make sure your Java compiler is set to 1.8, for example
 using something like (MacOSX):
@@ -176,7 +176,7 @@ using something like (MacOSX):
     export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
 
 
-## Smoke Testing The REST API
+### Smoke Testing The REST API
 
 Try out if the web services work by entering the following URL in your web browser
 (this should show you a HTML help page):
@@ -192,7 +192,7 @@ Or use a tool like cURL:
 There's also an example HTML page in the `examples/index.html` for HTML/Javascript developers.
 
 
-# Using Git and `.gitignore`
+## Using Git and `.gitignore`
 
 It's good practice to set up a personal global `.gitignore` file on your machine which filters a number of files
 on your file systems that you do not wish to submit to the Git repository. You can set up your own global
@@ -218,13 +218,13 @@ The local `.gitignore` file in the Git repository itself to reflect those file o
 regular compile, build or release commands, such as:
 `target/ out/`
 
-# Bug Reports and New Feature Requests
+## Bug Reports and New Feature Requests
 
 If you encounter any problems with this library, don't hesitate to use the `Issues` session to file your issues.
 Normally, one of our developers should be able to comment on them and fix.
 
 
-# Privacy Notification
+## Privacy Notification
  
 The Mapcode Foundation provides an implementation of the Mapcode REST API at:
 https://api.mapcode.com/mapcode
