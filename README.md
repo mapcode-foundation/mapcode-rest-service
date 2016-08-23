@@ -226,16 +226,21 @@ Normally, one of our developers should be able to comment on them and fix.
 
 # Important Notice
 
-The Mapcode Foundation provides an implementation of the Mapcode REST API at: 
+Privacy Notification
+ 
+The Mapcode Foundation provides an implementation of the Mapcode REST API at:
 https://api.mapcode.com/mapcode
-
-This free online service is provided for demonstration purposes only and the Mapcode
-Foundation accepts no claims on its availability or reliability, although we'll try hard
-to provide a stable and decent service. Note that usage or log data may be collected, only
-to further improve service (never for commercial purposes). If you are interested in using
-the service for professional purposes, or in high-availability or high-demands contexts,
-you may wish to consider self-hosting this service.
+ 
+This free online service is provided for demonstration purposes only and the Mapcode Foundation accepts no claims 
+on its availability or reliability, although we try hard to provide a stable and decent service. Note that anonymized 
+usage and log data, including mapcodes and coordinates, may be collected to improve the service and better anticipate 
+on its scalability needs. The collected data contains no IP addresses, is processed securely in the EEA and is never 
+sold or used for commercial purposes. The API allows you to indicate you insist on not having data logged by the service. 
+Please consult the API documentation for further information on how to do so. If you are interested in using the
+service for professional purposes, or in high-availability or high-demands contexts, you may wish to consider
+self-hosting this service.
             
+
 ## Release Notes
 
 ### 2.2.4.2
