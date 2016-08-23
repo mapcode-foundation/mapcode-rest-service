@@ -224,9 +224,7 @@ If you encounter any problems with this library, don't hesitate to use the `Issu
 Normally, one of our developers should be able to comment on them and fix.
 
 
-# Important Notice
-
-Privacy Notification
+# Privacy Notification
  
 The Mapcode Foundation provides an implementation of the Mapcode REST API at:
 https://api.mapcode.com/mapcode
