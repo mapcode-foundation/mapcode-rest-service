@@ -243,7 +243,7 @@ self-hosting this service.
 
 ### 2.3.0.0
 
-* Pretty major release, which includes full Arabic support and changes the
+* Important release, which includes full Arabic support and changes the
 way some other alphabets work (including Greek and Hebrew).
 
 ### 2.2.4.2
