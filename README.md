@@ -241,6 +241,11 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.3.0.0
+
+* Pretty major release, which includes full Arabic support and changes the
+way some other alphabets work (including Greek and Hebrew).
+
 ### 2.2.4.2
 
 * Added `client=` parameter, to allow logging per client type.
