@@ -23,7 +23,7 @@
     <artifactId>mapcode-rest-service</artifactId>
 
     <packaging>pom</packaging>
-    <version>2.3.0.0</version>
+    <version>2.3.1.0</version>
 
     <name>Mapcode REST API Web Service</name>
     <description>
@@ -70,7 +70,7 @@
         <jdk.version>1.8</jdk.version>
 
         <!-- Mapcode and SpeedTools libraries. -->
-        <mapcode.version>2.3.0</mapcode.version>
+        <mapcode.version>2.3.1</mapcode.version>
         <speedtools.version>3.0.21</speedtools.version>
 
         <!-- Repo token for Coveralls. -->

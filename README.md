@@ -241,6 +241,10 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.3.1.0
+
+* Updated to new Java library version 2.3.1 (fixed data in some part of China).
+
 ### 2.3.0.0
 
 * Important release, which includes full Arabic support and changes the
