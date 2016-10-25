@@ -241,6 +241,10 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.0.0
+
+* Updated to new Java library 2.4.0 with new scripts support.
+
 ### 2.3.1.0
 
 * Updated to new Java library version 2.3.1 (fixed data in some part of China).

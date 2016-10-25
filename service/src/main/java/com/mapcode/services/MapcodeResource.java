@@ -24,7 +24,12 @@ import com.tomtom.speedtools.apivalidation.exceptions.ApiException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.ws.rs.*;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
@@ -92,6 +97,7 @@ public interface MapcodeResource {
      * @param paramAlphabet          Alphabet. Range: any valid alphabet code, alpha or numeric.
      * @param paramInclude           Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
      *                               Range: {@link ParamInclude}.
+     * @param paramClient            Indicator of calling client (for stats).
      * @param paramContextMustBeNull Must not be used (added to allow check for incorrect usage).
      * @param paramAllowLog          True if logging of data for improving the service is allowed. Default is true.
      * @param response               One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
@@ -142,6 +148,7 @@ public interface MapcodeResource {
      * @param paramAlphabet          Alphabet. Range: any valid alphabet code, alpha or numeric.
      * @param paramInclude           Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
      *                               Range: {@link ParamInclude}.
+     * @param paramClient            Indicator of calling client (for stats).
      * @param paramContextMustBeNull Must not be used (added to allow check for incorrect usage).
      * @param paramAllowLog          True if logging of data for improving the service is allowed. Default is true.
      * @param response               One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
@@ -199,6 +206,7 @@ public interface MapcodeResource {
      * @param paramCode                Mapcode to convert.
      * @param paramContext             Specifies a territory context for interpretation of the mapcode.
      *                                 Range: any valid territory.
+     * @param paramClient              Indicator of calling client (for stats).
      * @param paramAllowLog            True if logging of data for improving the service is allowed. Default is true.
      * @param paramTerritoryMustBeNull Must not be used (added to allow check for incorrect usage).
      * @param response                 Lat/lon. Format: {@link CoordinatesDTO}.
@@ -231,6 +239,7 @@ public interface MapcodeResource {
      *
      * @param offset        Return values from 'offset'. Range: &gt;= 0 counts from start, &lt; 0 counts from end.
      * @param count         Return 'count' values at most. Range: &gt;= 0.
+     * @param paramClient   Indicator of calling client (for stats).
      * @param paramAllowLog True if logging of data for improving the service is allowed. Default is true.
      * @param response      Territory codes and information. Format: {@link TerritoryListDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
@@ -260,6 +269,7 @@ public interface MapcodeResource {
      *
      * @param paramTerritory Territory code. Range: any valid territory code, alpha or numeric.
      * @param paramContext   Context territory code for disambiguation. Range: any valid territory code, or alias.
+     * @param paramClient    Indicator of calling client (for stats).
      * @param paramAllowLog  True if logging of data for improving the service is allowed. Default is true.
      * @param response       Territory information. Format: {@link com.mapcode.services.dto.TerritoryDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
@@ -289,6 +299,7 @@ public interface MapcodeResource {
      *
      * @param offset        Return values from 'offset'. Range: &gt;= 0 counts from start, &lt; 0 counts from end.
      * @param count         Return 'count' values at most. Range: &gt;= 0.
+     * @param paramClient   Indicator of calling client (for stats).
      * @param paramAllowLog True if logging of data for improving the service is allowed. Default is true.
      * @param response      Alphabet codes and information. Format: {@link AlphabetListDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
@@ -317,6 +328,7 @@ public interface MapcodeResource {
      * Get info for a specific alphabet.
      *
      * @param paramAlphabet Alphabet code. Range: any valid alphabet code, alpha or numeric.
+     * @param paramClient   Indicator of calling client (for stats).
      * @param paramAllowLog True if logging of data for improving the service is allowed. Default is true.
      * @param response      Territory information. Format: {@link com.mapcode.services.dto.AlphabetDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
