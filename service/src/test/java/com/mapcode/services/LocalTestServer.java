@@ -32,6 +32,8 @@ import scala.concurrent.ExecutionContext;
 
 import javax.annotation.Nonnull;
 
+import static java.lang.Thread.sleep;
+
 @SuppressWarnings("JUnitTestMethodWithNoAssertions")
 public class LocalTestServer {
     private static final Logger LOG = LoggerFactory.getLogger(LocalTestServer.class);
@@ -112,7 +114,7 @@ public class LocalTestServer {
 
     @Nonnull
     public String getBaseUrl() {
-        return HOST + port;
+        return HOST + 8081;
     }
 
     @Nonnull
