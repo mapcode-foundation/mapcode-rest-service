@@ -61,6 +61,12 @@ public final class AlphabetsDTO extends ApiDTO {
         this.alphabets = alphabets;
     }
 
+    public AlphabetsDTO(
+            final int total,
+            @Nonnull final Alphabet[] alphabets) {
+        this(total, new AlphabetListDTO(alphabets));
+    }
+
     @SuppressWarnings("UnusedDeclaration")
     @Deprecated
     private AlphabetsDTO() {

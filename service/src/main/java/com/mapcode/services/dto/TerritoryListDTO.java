@@ -34,13 +34,17 @@ package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.mapcode.Territory;
+import com.mapcode.Territory.AlphaCodeFormat;
 import com.tomtom.speedtools.apivalidation.ApiListDTO;
 
 import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @JsonInclude(Include.NON_EMPTY)
@@ -55,6 +59,21 @@ public final class TerritoryListDTO extends ApiListDTO<TerritoryDTO> {
 
     public TerritoryListDTO(@Nonnull final List<TerritoryDTO> territories) {
         super(territories);
+    }
+
+    public TerritoryListDTO(@Nonnull final Territory[] territories) {
+        this(Arrays.asList(territories).stream().map(x -> {
+            return new TerritoryDTO(
+                    x.toString(),
+                    x.toAlphaCode(AlphaCodeFormat.MINIMAL_UNAMBIGUOUS),
+                    x.toAlphaCode(AlphaCodeFormat.MINIMAL),
+                    x.getFullName(),
+                    (x.getParentTerritory() == null) ? null : x.getParentTerritory().toString(),
+                    x.getAliases(),
+                    x.getFullNameAliases(),
+                    x.getAlphabets()
+            );
+        }).collect(Collectors.toList()));
     }
 
     @SuppressWarnings("UnusedDeclaration")

@@ -241,6 +241,19 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.1.0
+
+
+* Added scripts for Tifinagh (Berber), Tamil, Amharic, Telugu, Odia, Kannada, Gujarati.
+
+* Added `alphabets` element to `territories`, returning the most commonly used languages for the territory.
+
+* Renamed constant `HINDI` to `DEVANAGIRI`.
+
+* Improved some characters for Arabic and Devanagari.
+
+* Fixed Bengali to also support Assamese.
+
 ### 2.4.0.0
 
 * Updated to new Java library 2.4.0 with new scripts support.

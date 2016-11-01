@@ -18,17 +18,15 @@ package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.mapcode.Alphabet;
 import com.mapcode.services.ApiConstants;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @JsonInclude(Include.NON_EMPTY)
@@ -66,6 +64,14 @@ public final class TerritoryDTO extends ApiDTO {
     @Nonnull
     private String[] fullNameAliases;
 
+    @JsonProperty("alphabets")
+    @JsonUnwrapped
+    @XmlElementWrapper(name = "alphabets")
+//    @XmlElements(@XmlElement(name = "alphabet"))
+    @XmlElement(name = "alphabet")
+    @Nonnull
+    private AlphabetListDTO alphabets;
+
     @Override
     public void validate() {
         validator().start();
@@ -76,6 +82,7 @@ public final class TerritoryDTO extends ApiDTO {
         validator().checkString(false, "parentTerritory", parentTerritory, ApiConstants.API_NAME_LEN_MIN, ApiConstants.API_NAME_LEN_MAX);
         validator().checkNotNull(false, "aliases", aliases);
         validator().checkNotNull(false, "fullNameAliases", fullNameAliases);
+        validator().checkNotNullAndValidateAll(true, "alphabets", alphabets);
         validator().done();
     }
 
@@ -85,7 +92,8 @@ public final class TerritoryDTO extends ApiDTO {
                         @Nonnull final String fullName,
                         @Nullable final String parentTerritory,
                         @Nonnull final String[] aliases,
-                        @Nonnull final String[] fullNameAliases) {
+                        @Nonnull final String[] fullNameAliases,
+                        @Nonnull final AlphabetListDTO alphabets) {
         this.alphaCode = alphaCode;
         this.alphaCodeMinimalUnambiguous = alphaCodeMinimalUnambiguous;
         this.alphaCodeMinimal = alphaCodeMinimal;
@@ -93,6 +101,19 @@ public final class TerritoryDTO extends ApiDTO {
         this.parentTerritory = parentTerritory;
         this.aliases = aliases;
         this.fullNameAliases = fullNameAliases;
+        this.alphabets = alphabets;
+    }
+
+    public TerritoryDTO(@Nonnull final String alphaCode,
+                        @Nonnull final String alphaCodeMinimalUnambiguous,
+                        @Nonnull final String alphaCodeMinimal,
+                        @Nonnull final String fullName,
+                        @Nullable final String parentTerritory,
+                        @Nonnull final String[] aliases,
+                        @Nonnull final String[] fullNameAliases,
+                        @Nonnull final Alphabet[] alphabets) {
+        this(alphaCode, alphaCodeMinimalUnambiguous, alphaCodeMinimal, fullName, parentTerritory, aliases, fullNameAliases,
+                new AlphabetListDTO(alphabets));
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -184,5 +205,16 @@ public final class TerritoryDTO extends ApiDTO {
         beforeSet();
         assert fullNameAliases != null;
         this.fullNameAliases = fullNameAliases;
+    }
+
+    @Nonnull
+    public AlphabetListDTO getAlphabets() {
+        beforeGet();
+        return alphabets;
+    }
+
+    public void setAlphabets(@Nonnull final AlphabetListDTO alphabets) {
+        beforeSet();
+        this.alphabets = alphabets;
     }
 }
