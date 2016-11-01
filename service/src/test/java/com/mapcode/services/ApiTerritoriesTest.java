@@ -57,17 +57,17 @@ public class ApiTerritoriesTest {
         Assert.assertTrue(r.length() > 500);
         final String sub1 = r.substring(0, 500);
         final String sub2 = r.substring(r.length() - 500, r.length());
-        Assert.assertEquals("{\"total\":533,\"territories\":[{\"aliases\":[\"US\"],\"fullNameAliases\":[\"United States of America\",\"America\"],\"alphaCode\":\"USA\",\"alphaCodeMinimalUnambiguous\":\"USA\",\"alphaCodeMinimal\":\"USA\",\"fullName\":\"USA\"},{\"aliases\":[\"IN\"],\"alphaCode\":\"IND\",\"alphaCodeMinimalUnambiguous\":\"IND\",\"alphaCodeMinimal\":\"IND\",\"fullName\":\"India\"},{\"aliases\":[\"CA\"],\"alphaCode\":\"CAN\",\"alphaCodeMinimalUnambiguous\":\"CAN\",\"alphaCodeMinimal\":\"CAN\",\"fullName\":\"Canada\"},{\"aliases\":[\"AU\"],\"alphaCode\":\"AUS\",\"alphaCodeMinimalUnambiguous\"",
+        Assert.assertEquals("{\"total\":533,\"territories\":[{\"aliases\":[\"US\"],\"fullNameAliases\":[\"United States of America\",\"America\"],\"alphaCode\":\"USA\",\"alphaCodeMinimalUnambiguous\":\"USA\",\"alphaCodeMinimal\":\"USA\",\"fullName\":\"USA\",\"alphabets\":[{\"name\":\"ROMAN\"}]},{\"aliases\":[\"IN\"],\"alphaCode\":\"IND\",\"alphaCodeMinimalUnambiguous\":\"IND\",\"alphaCodeMinimal\":\"IND\",\"fullName\":\"India\",\"alphabets\":[{\"name\":\"DEVANAGARI\"},{\"name\":\"BENGALI\"},{\"name\":\"ROMAN\"}]},{\"aliases\":[\"CA\"],\"alphaCode\":\"CAN\",\"alphaCodeMinimalUnambiguous\":\"CAN\",\"alphaCo",
                 sub1);
-        Assert.assertEquals("aCodeMinimal\":\"XJ\",\"fullName\":\"Xinjiang Uyghur\",\"parentTerritory\":\"CHN\"},{\"aliases\":[\"US-UM\",\"USA-UM\",\"JTN\"],\"alphaCode\":\"UMI\",\"alphaCodeMinimalUnambiguous\":\"UMI\",\"alphaCodeMinimal\":\"UMI\",\"fullName\":\"United States Minor Outlying Islands\"},{\"alphaCode\":\"CPT\",\"alphaCodeMinimalUnambiguous\":\"CPT\",\"alphaCodeMinimal\":\"CPT\",\"fullName\":\"Clipperton Island\"},{\"fullNameAliases\":[\"Worldwide\",\"Earth\"],\"alphaCode\":\"AAA\",\"alphaCodeMinimalUnambiguous\":\"AAA\",\"alphaCodeMinimal\":\"AAA\",\"fullName\":\"International\"}]}",
+        Assert.assertEquals("\"USA-UM\",\"JTN\"],\"alphaCode\":\"UMI\",\"alphaCodeMinimalUnambiguous\":\"UMI\",\"alphaCodeMinimal\":\"UMI\",\"fullName\":\"United States Minor Outlying Islands\",\"alphabets\":[{\"name\":\"ROMAN\"}]},{\"alphaCode\":\"CPT\",\"alphaCodeMinimalUnambiguous\":\"CPT\",\"alphaCodeMinimal\":\"CPT\",\"fullName\":\"Clipperton Island\",\"alphabets\":[{\"name\":\"ROMAN\"}]},{\"fullNameAliases\":[\"Worldwide\",\"Earth\"],\"alphaCode\":\"AAA\",\"alphaCodeMinimalUnambiguous\":\"AAA\",\"alphaCodeMinimal\":\"AAA\",\"fullName\":\"International\",\"alphabets\":[{\"name\":\"ROMAN\"}]}]}",
                 sub2);
     }
 
     @Test
     public void checkTerritories1Xml() {
         LOG.info("checkTerritories1Xml");
-        final String expected1 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><territories><total>533</total><territory><alphaCode>USA</alphaCode><alphaCodeMinimalUnambiguous>USA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>USA</alphaCodeMinimal><fullName>USA</fullName><aliases><alias>US</alias></aliases><fullNameAliases><fullNameAlias>United States of America</fullNameAlias><fullNameAlias>America</fullNameAlias></fullNameAliases></territory><territory><alphaCode>IND</alphaCode><alphaCodeMinimalUnambiguous>IND</alph";
-        final String expected2 = "<alphaCodeMinimalUnambiguous>CPT</alphaCodeMinimalUnambiguous><alphaCodeMinimal>CPT</alphaCodeMinimal><fullName>Clipperton Island</fullName><aliases/><fullNameAliases/></territory><territory><alphaCode>AAA</alphaCode><alphaCodeMinimalUnambiguous>AAA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>AAA</alphaCodeMinimal><fullName>International</fullName><aliases/><fullNameAliases><fullNameAlias>Worldwide</fullNameAlias><fullNameAlias>Earth</fullNameAlias></fullNameAliases></territory></territories>";
+        final String expected1 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><territories><total>533</total><territory><alphaCode>USA</alphaCode><alphaCodeMinimalUnambiguous>USA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>USA</alphaCodeMinimal><fullName>USA</fullName><aliases><alias>US</alias></aliases><fullNameAliases><fullNameAlias>United States of America</fullNameAlias><fullNameAlias>America</fullNameAlias></fullNameAliases><alphabets><alphabet><name>ROMAN</name></alphabet></alphabets></territory><territory><a";
+        final String expected2 = "sland</fullName><aliases/><fullNameAliases/><alphabets><alphabet><name>ROMAN</name></alphabet></alphabets></territory><territory><alphaCode>AAA</alphaCode><alphaCodeMinimalUnambiguous>AAA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>AAA</alphaCodeMinimal><fullName>International</fullName><aliases/><fullNameAliases><fullNameAlias>Worldwide</fullNameAlias><fullNameAlias>Earth</fullNameAlias></fullNameAliases><alphabets><alphabet><name>ROMAN</name></alphabet></alphabets></territory></territories>";
         Response response = new ResteasyClientBuilder().build().
                 target(server.url("/mapcode/territories")).
                 request().
@@ -120,7 +120,7 @@ public class ApiTerritoriesTest {
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
         final String r = response.readEntity(String.class);
-        Assert.assertEquals("{\"total\":533,\"territories\":[{\"fullNameAliases\":[\"Worldwide\",\"Earth\"],\"alphaCode\":\"AAA\",\"alphaCodeMinimalUnambiguous\":\"AAA\",\"alphaCodeMinimal\":\"AAA\",\"fullName\":\"International\"}]}",
+        Assert.assertEquals("{\"total\":533,\"territories\":[{\"fullNameAliases\":[\"Worldwide\",\"Earth\"],\"alphaCode\":\"AAA\",\"alphaCodeMinimalUnambiguous\":\"AAA\",\"alphaCodeMinimal\":\"AAA\",\"fullName\":\"International\",\"alphabets\":[{\"name\":\"ROMAN\"}]}]}",
                 r);
     }
 
@@ -134,7 +134,7 @@ public class ApiTerritoriesTest {
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
         final String r = response.readEntity(String.class);
-        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><territories><total>533</total><territory><alphaCode>AAA</alphaCode><alphaCodeMinimalUnambiguous>AAA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>AAA</alphaCodeMinimal><fullName>International</fullName><aliases/><fullNameAliases><fullNameAlias>Worldwide</fullNameAlias><fullNameAlias>Earth</fullNameAlias></fullNameAliases></territory></territories>",
+        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><territories><total>533</total><territory><alphaCode>AAA</alphaCode><alphaCodeMinimalUnambiguous>AAA</alphaCodeMinimalUnambiguous><alphaCodeMinimal>AAA</alphaCodeMinimal><fullName>International</fullName><aliases/><fullNameAliases><fullNameAlias>Worldwide</fullNameAlias><fullNameAlias>Earth</fullNameAlias></fullNameAliases><alphabets><alphabet><name>ROMAN</name></alphabet></alphabets></territory></territories>",
                 r);
     }
 
@@ -158,14 +158,65 @@ public class ApiTerritoriesTest {
                 accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("{\"alphaCode\":\"NLD\",\"alphaCodeMinimalUnambiguous\":\"NLD\",\"alphaCodeMinimal\":\"NLD\",\"fullName\":\"Netherlands\"}",
+        Assert.assertEquals("{\"alphaCode\":\"NLD\",\"alphaCodeMinimalUnambiguous\":\"NLD\",\"alphaCodeMinimal\":\"NLD\",\"fullName\":\"Netherlands\",\"alphabets\":[{\"name\":\"ROMAN\"}]}",
                 response.readEntity(String.class));
     }
 
     @Test
-    public void checkTerritoryXml() {
-        LOG.info("checkTerritoryXml");
-        final String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><territory><alphaCode>NLD</alphaCode><alphaCodeMinimalUnambiguous>NLD</alphaCodeMinimalUnambiguous><alphaCodeMinimal>NLD</alphaCodeMinimal><fullName>Netherlands</fullName><aliases/><fullNameAliases/></territory>";
+    public void checkTerritoryJson1() {
+        LOG.info("checkTerritoryJson1");
+        final String expected = "{\"alphaCode\":\"NLD\",\"alphaCodeMinimalUnambiguous\":\"NLD\",\"alphaCodeMinimal\":\"NLD\",\"fullName\":\"Netherlands\",\"alphabets\":[{\"name\":\"ROMAN\"}]}";
+        Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/territories/nld")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals(expected,
+                response.readEntity(String.class));
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/territories/nld")).
+                request().
+                get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals(expected,
+                response.readEntity(String.class));
+    }
+
+    @Test
+    public void checkTerritoryJson2() {
+        LOG.info("checkTerritoryJson2");
+        final String expected = "{\"alphaCode\":\"IN-PY\",\"alphaCodeMinimalUnambiguous\":\"PY\",\"alphaCodeMinimal\":\"PY\",\"fullName\":\"Puducherry\",\"parentTerritory\":\"IND\",\"alphabets\":[{\"name\":\"MALAYALAM\"},{\"name\":\"TELUGU\"},{\"name\":\"DEVANAGARI\"}]}";
+        final Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/territories/in-py")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals(expected,
+                response.readEntity(String.class));
+    }
+
+    @Test
+    public void checkTerritoryJson3() {
+        LOG.info("checkTerritoryJson3");
+        final String expected = "{\"fullNameAliases\":[\"Scotland\",\"Great Britain\",\"Northern Ireland\",\"Ireland, Northern\"],\"alphaCode\":\"GBR\",\"alphaCodeMinimalUnambiguous\":\"GBR\",\"alphaCodeMinimal\":\"GBR\",\"fullName\":\"United Kingdom\",\"alphabets\":[{\"name\":\"ROMAN\"}]}";
+        final Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/territories/gbr")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals(expected,
+                response.readEntity(String.class));
+    }
+
+    @Test
+    public void checkTerritoryXml1() {
+        LOG.info("checkTerritoryXml1");
+        final String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><territory><alphaCode>NLD</alphaCode><alphaCodeMinimalUnambiguous>NLD</alphaCodeMinimalUnambiguous><alphaCodeMinimal>NLD</alphaCodeMinimal><fullName>Netherlands</fullName><aliases/><fullNameAliases/><alphabets><alphabet><name>ROMAN</name></alphabet></alphabets></territory>";
         Response response = new ResteasyClientBuilder().build().
                 target(server.url("/mapcode/territories/nld")).
                 request().
@@ -186,9 +237,37 @@ public class ApiTerritoriesTest {
     }
 
     @Test
+    public void checkTerritoryXml2() {
+        LOG.info("checkTerritoryXml2");
+        final String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><territory><alphaCode>IN-PY</alphaCode><alphaCodeMinimalUnambiguous>PY</alphaCodeMinimalUnambiguous><alphaCodeMinimal>PY</alphaCodeMinimal><fullName>Puducherry</fullName><parentTerritory>IND</parentTerritory><aliases/><fullNameAliases/><alphabets><alphabet><name>MALAYALAM</name></alphabet><alphabet><name>TELUGU</name></alphabet><alphabet><name>DEVANAGARI</name></alphabet></alphabets></territory>";
+        final Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/territories/in-py")).
+                request().
+                accept(MediaType.APPLICATION_XML_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals(expected,
+                response.readEntity(String.class));
+    }
+
+    @Test
+    public void checkTerritoryXml3() {
+        LOG.info("checkTerritoryXml3");
+        final String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><territory><alphaCode>GBR</alphaCode><alphaCodeMinimalUnambiguous>GBR</alphaCodeMinimalUnambiguous><alphaCodeMinimal>GBR</alphaCodeMinimal><fullName>United Kingdom</fullName><aliases/><fullNameAliases><fullNameAlias>Scotland</fullNameAlias><fullNameAlias>Great Britain</fullNameAlias><fullNameAlias>Northern Ireland</fullNameAlias><fullNameAlias>Ireland, Northern</fullNameAlias></fullNameAliases><alphabets><alphabet><name>ROMAN</name></alphabet></alphabets></territory>";
+        final Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/territories/gbr")).
+                request().
+                accept(MediaType.APPLICATION_XML_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals(expected,
+                response.readEntity(String.class));
+    }
+
+    @Test
     public void checkTerritoryStateJson() {
         LOG.info("checkTerritoryStateJson");
-        final String usIn = "{\"alphaCode\":\"US-IN\",\"alphaCodeMinimalUnambiguous\":\"US-IN\",\"alphaCodeMinimal\":\"IN\",\"fullName\":\"Indiana\",\"parentTerritory\":\"USA\"}";
+        final String usIn = "{\"alphaCode\":\"US-IN\",\"alphaCodeMinimalUnambiguous\":\"US-IN\",\"alphaCodeMinimal\":\"IN\",\"fullName\":\"Indiana\",\"parentTerritory\":\"USA\",\"alphabets\":[{\"name\":\"ROMAN\"}]}";
         Response response = new ResteasyClientBuilder().build().
                 target(server.url("/mapcode/territories/in")).
                 request().
@@ -233,7 +312,7 @@ public class ApiTerritoriesTest {
                 accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("{\"alphaCode\":\"RU-IN\",\"alphaCodeMinimalUnambiguous\":\"RU-IN\",\"alphaCodeMinimal\":\"IN\",\"fullName\":\"Ingushetia Republic\",\"parentTerritory\":\"RUS\"}",
+        Assert.assertEquals("{\"alphaCode\":\"RU-IN\",\"alphaCodeMinimalUnambiguous\":\"RU-IN\",\"alphaCodeMinimal\":\"IN\",\"fullName\":\"Ingushetia Republic\",\"parentTerritory\":\"RUS\",\"alphabets\":[{\"name\":\"CYRILLIC\"},{\"name\":\"ROMAN\"}]}",
                 response.readEntity(String.class));
     }
 }

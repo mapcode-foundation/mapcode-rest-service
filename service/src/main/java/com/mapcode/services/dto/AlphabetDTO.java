@@ -18,6 +18,7 @@ package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.mapcode.Alphabet;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
 
 import javax.annotation.Nonnull;
@@ -45,6 +46,10 @@ public final class AlphabetDTO extends ApiDTO {
 
     public AlphabetDTO(@Nonnull final String name) {
         this.name = name;
+    }
+
+    public AlphabetDTO(@Nonnull final Alphabet alphabet) {
+        this(alphabet.name());
     }
 
     @SuppressWarnings("UnusedDeclaration")

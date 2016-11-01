@@ -34,13 +34,16 @@ package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.mapcode.Alphabet;
 import com.tomtom.speedtools.apivalidation.ApiListDTO;
 
 import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @JsonInclude(Include.NON_EMPTY)
@@ -55,6 +58,12 @@ public final class AlphabetListDTO extends ApiListDTO<AlphabetDTO> {
 
     public AlphabetListDTO(@Nonnull final List<AlphabetDTO> alphabets) {
         super(alphabets);
+    }
+
+    public AlphabetListDTO(@Nonnull final Alphabet[] alphabets) {
+        this(Arrays.asList(alphabets).stream().map(x -> {
+            return new AlphabetDTO(x);
+        }).collect(Collectors.toList()));
     }
 
     @SuppressWarnings("UnusedDeclaration")

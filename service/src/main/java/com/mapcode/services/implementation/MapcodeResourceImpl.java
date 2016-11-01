@@ -73,23 +73,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
     private static final String API_ERROR_VALID_INCLUDES = Joiner.on('|').join(Arrays.asList(ParamInclude.values()).stream().
             map(x -> x).collect(Collectors.toList()));
 
-    private static final List<TerritoryDTO> ALL_TERRITORY_DTO = Arrays.asList(Territory.values()).stream().
-            map(x -> {
-                final Territory parentTerritory = x.getParentTerritory();
-                return new TerritoryDTO(
-                        x.toString(),
-                        x.toAlphaCode(AlphaCodeFormat.MINIMAL_UNAMBIGUOUS),
-                        x.toAlphaCode(AlphaCodeFormat.MINIMAL),
-                        x.getFullName(),
-                        (parentTerritory == null) ? null : parentTerritory.toString(),
-                        x.getAliases(),
-                        x.getFullNameAliases());
-            }).
-            collect(Collectors.toList());
-
-    private static final List<AlphabetDTO> ALL_ALPHABET_DTO = Arrays.asList(Alphabet.values()).stream().
-            map(x -> new AlphabetDTO(x.name())).
-            collect(Collectors.toList());
+    private static final TerritoryListDTO ALL_TERRITORY_DTO = new TerritoryListDTO(Territory.values());
+    private static final AlphabetListDTO ALL_ALPHABET_DTO = new AlphabetListDTO(Alphabet.values());
 
     /**
      * The constructor is called by Google Guice at start-up time and gets a processor injected
@@ -559,7 +544,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     territory.getFullName(),
                     (parentTerritory == null) ? null : parentTerritory.toString(),
                     territory.getAliases(),
-                    territory.getFullNameAliases()
+                    territory.getFullNameAliases(),
+                    territory.getAlphabets()
             );
 
             // Validate the result (internal consistency check).
@@ -651,7 +637,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
 
             // Return the right territory information.
-            final AlphabetDTO result = new AlphabetDTO(alphabet.name());
+            final AlphabetDTO result = new AlphabetDTO(alphabet);
 
             // Validate the result (internal consistency check).
             result.validate();
@@ -778,7 +764,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
         // A request to translate a mapcode to a lat/lon is made.
         void eventMapcodeToLatLon(@Nonnull String code, @Nullable Territory territory, @Nonnull DateTime now,
-                                            @Nullable final String client);
+                                  @Nullable final String client);
 
         // A request to translate a lat/lon to a mapcode is made.
         @Deprecated
