@@ -243,7 +243,6 @@ self-hosting this service.
 
 ### 2.4.1.0
 
-
 * Added scripts for Tifinagh (Berber), Tamil, Amharic, Telugu, Odia, Kannada, Gujarati.
 
 * Added `alphabets` element to `territories`, returning the most commonly used languages for the territory.
