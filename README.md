@@ -139,14 +139,25 @@ your Tomcat instance.
 The first method, running the WAR file from the command-line, using `java` only is particularly
 useful if you wish use the XML services, for example, in a Microsoft Excel spreadsheet.
 
-### Missing `mapcode-secret.properties` File
+### Missing `mapcode-secret.properties` and `log4j.xml` Files
 
-The service requires a file called `mapcode-secret.properties` to be present on the
-classpath.  The properties file `mapcode-secret.properties` contains the username and password for
+The service requires 2 files called `mapcode-secret.properties` and `log4j.xml` to be present on the
+classpath. They are specifically **not** included in the WAR file by default, because that would
+make it impossible to change them without recompiling the service.
+
+#### `log4j.xml`
+
+The file `log4j.xml` specifies the log levels during operations. An example of a `log4j.xml` file
+can be found in `service/src/test/resources/log4j.xml`. Make sure that file can be found on the classpath
+or add it `services/src/main/resources` before building and it will be integrated in the WAR file.
+
+#### `mapcode-secret.properties`
+ 
+The properties file `mapcode-secret.properties` contains the username and password for
 your MongDB database server for tracing, should you wish to use that.
 
 If you get a start-up error complaining about a missing `mapcode-secret.properties` file,
-make sure you add it to the classpath (or add it to `src/main/resources`) before building.
+make sure you add it to the classpath (or add it to `service/src/main/resources`) before building.
 
 By default, you can simply use an empty `mapcode-secret.properties` file. So, you may want to
 just create an empty file by executing:
