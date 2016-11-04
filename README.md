@@ -142,12 +142,16 @@ useful if you wish use the XML services, for example, in a Microsoft Excel sprea
 ### Missing `mapcode-secret.properties` and `log4j.xml` Files
 
 The service requires 2 files called `mapcode-secret.properties` and `log4j.xml` to be present on the
-classpath.  
+classpath. They are specifically **not** included in the WAR file by default, because that would
+make it impossible to change them without recompiling the service.
+
+#### `log4j.xml`
 
 The file `log4j.xml` specifies the log levels during operations. An example of a `log4j.xml` file
 can be found in `service/src/test/resources/log4j.xml`. Make sure that file can be found on the classpath
 or add it `services/src/main/resources` before building and it will be integrated in the WAR file.
 
+#### `mapcode-secret.properties`
  
 The properties file `mapcode-secret.properties` contains the username and password for
 your MongDB database server for tracing, should you wish to use that.
