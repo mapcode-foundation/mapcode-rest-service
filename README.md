@@ -169,7 +169,7 @@ Note that the file `mapcode-secret.properties` is ignored by Git in `.gitignore`
 If you wish to use MongoDB tracing, will need to provide your own local
 `mapcode-secret.properties`, which override the following properties:
 
-    MongoDBTrace.writeEnabled = true
+    MongoDBTrace.writeEnabled = false
     MongoDBTrace.servers = your-server:27017 (eg. localhost:27017)
     MongoDBTrace.database = your-database (eg. trace)
     MongoDBTrace.userName = your-username
