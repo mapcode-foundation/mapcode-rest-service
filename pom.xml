@@ -73,9 +73,6 @@
         <mapcode.version>2.4.1</mapcode.version>
         <speedtools.version>3.0.24</speedtools.version>
 
-        <!-- Repo token for Coveralls. -->
-        <coveralls-maven-plugin.repoToken>lh3CwMKGphMxYxTdyCcGtv6MnEiSYCijw</coveralls-maven-plugin.repoToken>
-
         <!-- Maven plugins. -->
         <coveralls-maven-plugin.version>4.2.0</coveralls-maven-plugin.version>
         <jacoco-maven-plugin.version>0.7.7.201606060606</jacoco-maven-plugin.version>
@@ -411,9 +408,6 @@
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>${coveralls-maven-plugin.version}</version>
-                <configuration>
-                    <repoToken>${coveralls-maven-plugin.repoToken}</repoToken>
-                </configuration>
             </plugin>
 
             <!-- Unit tests using SureFire. -->
