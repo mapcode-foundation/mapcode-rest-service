@@ -252,6 +252,10 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.2.0
+
+* Removed secret token from POM.
+
 ### 2.4.1.0
 
 * Added scripts for Tifinagh (Berber), Tamil, Amharic, Telugu, Odia, Kannada, Gujarati.
