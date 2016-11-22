@@ -70,14 +70,15 @@ pressing the conversion/request buttons.
 
     function onLoad() {
         var url = apiBaseURL + "/version";
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function () {
-            if (xmlhttp.readyState == 4) {
-                versionResponseReady(xmlhttp.responseText, xmlhttp.status);
+        var httpRequest = new XMLHttpRequest();
+        httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState == 4) {
+                versionResponseReady(httpRequest.responseText, httpRequest.status);
             }
         }
-        xmlhttp.open("GET", url, true);
-        xmlhttp.send();
+        httpRequest.open("GET", url, true);
+        httpRequest.setRequestHeader('Accept', 'application/json');
+        httpRequest.send();
     }
 
     function versionResponseReady(response, status) {
@@ -144,14 +145,15 @@ pressing the conversion/request buttons.
         document.getElementById("requestEncode").innerHTML = createRequestLine(url);
 
         /* Asynchronously request a solution, call encodeResponseReady when done. */
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function () {
-            if (xmlhttp.readyState == 4) {
-                encodeResponseReady(xmlhttp.responseText, xmlhttp.status);
+        var httpRequest = new XMLHttpRequest();
+        httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState == 4) {
+                encodeResponseReady(httpRequest.responseText, httpRequest.status);
             }
         }
-        xmlhttp.open("GET", url, true);
-        xmlhttp.send();
+        httpRequest.open("GET", url, true);
+        httpRequest.setRequestHeader('Accept', 'application/json');
+        httpRequest.send();
     }
 
     function encodeResponseReady(response, status) {
@@ -246,14 +248,15 @@ pressing the conversion/request buttons.
         document.getElementById("requestDecode").innerHTML = createRequestLine(url);
 
         /* Asynchronously request to decode mapcode, call decodeResponseReady when done. */
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = function () {
-            if (request.readyState == 4) {
-                decodeResponseReady(request.responseText, request.status);
+        var httpRequest = new XMLHttpRequest();
+        httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState == 4) {
+                decodeResponseReady(httpRequest.responseText, httpRequest.status);
             }
         }
-        request.open("GET", url, true);
-        request.send();
+        httpRequest.open("GET", url, true);
+        httpRequest.setRequestHeader('Accept', 'application/json');
+        httpRequest.send();
     }
 
     function decodeResponseReady(response, status) {
@@ -311,14 +314,15 @@ pressing the conversion/request buttons.
         document.getElementById("requestTerritory").innerHTML = createRequestLine(url);
 
         /* Asynchronously request a solution, call encodeResponseReady when done. */
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function () {
-            if (xmlhttp.readyState == 4) {
-                territoryResponseReady(xmlhttp.responseText, xmlhttp.status);
+        var httpRequest = new XMLHttpRequest();
+        httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState == 4) {
+                territoryResponseReady(httpRequest.responseText, httpRequest.status);
             }
         }
-        xmlhttp.open("GET", url, true);
-        xmlhttp.send();
+        httpRequest.open("GET", url, true);
+        httpRequest.setRequestHeader('Accept', 'application/json');
+        httpRequest.send();
     }
 
     function territoryResponseReady(response, status) {
@@ -386,14 +390,15 @@ pressing the conversion/request buttons.
         document.getElementById("requestAlphabet").innerHTML = createRequestLine(url);
 
         /* Asynchronously request a solution, call encodeResponseReady when done. */
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function () {
-            if (xmlhttp.readyState == 4) {
-                alphabetResponseReady(xmlhttp.responseText, xmlhttp.status);
+        var httpRequest = new XMLHttpRequest();
+        httpRequest.onreadystatechange = function () {
+            if (httpRequest.readyState == 4) {
+                alphabetResponseReady(httpRequest.responseText, httpRequest.status);
             }
         }
-        xmlhttp.open("GET", url, true);
-        xmlhttp.send();
+        httpRequest.open("GET", url, true);
+        httpRequest.setRequestHeader('Accept', 'application/json');
+        httpRequest.send();
     }
 
     function alphabetResponseReady(response, status) {
