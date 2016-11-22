@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2016 Stichting Mapcode Foundation (http://www.mapcode.com)
+  ~ Copyright (C) 2016, Stichting Mapcode Foundation (http://www.mapcode.com)
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.mapcode</groupId>
         <artifactId>mapcode-rest-service</artifactId>
-        <version>2.4.1.0</version>
+        <version>2.4.1.2</version>
     </parent>
 
     <artifactId>service</artifactId>
