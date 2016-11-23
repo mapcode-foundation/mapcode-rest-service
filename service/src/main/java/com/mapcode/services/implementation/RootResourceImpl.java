@@ -142,20 +142,21 @@ public class RootResourceImpl implements RootResource {
 
             "The default response type is JSON, if no \"Accept:\" header is specified.\n\n" +
 
-            "Alternatively, to retrieve XML responses if no \"Accept:\" header is specified, you can add \"/xml\"\n" +
-            "in the URL, directly after \"/mapcode\".\n\n" +
+            "Note that some browsers (such as FireFox) may silently insert an 'Accept:' header when using a\n" +
+            "XMLHttpRequest in Javascript. This may lead to returning JSON in some browsers and XML in others.\n" +
+            "It is advised to explicitly set the appropriate header in Javascript in such cases.\n\n" +
 
-            "So, the following methods are supported as well and return XML by default:\n\n" +
+            "Alternatively, to retrieve XML or JSON responses if no \"Accept:\" header is specified, you can add\n" +
+            "\"/xml\" or \"/json\" in the URL, directly after \"/mapcode\".\n\n" +
 
-            "    GET /mapcode/xml/version\n" +
-            "    GET /mapcode/xml/status\n" +
-            "    GET /mapcode/xml/codes\n" +
-            "    GET /mapcode/xml/coords\n" +
-            "    GET /mapcode/xml/territories\n" +
-            "    GET /mapcode/xml/alphabets\n\n" +
+            "So, the following methods are supported as well and return XML or JSON by default:\n\n" +
 
-            "We recommend to use the method without \"/xml: and use the \"Accept:\" header to specify the\n" +
-            "response type, however.\n";
+            "    GET /mapcode/xml/version           GET /mapcode/json/version\n" +
+            "    GET /mapcode/xml/status            GET /mapcode/json/status\n" +
+            "    GET /mapcode/xml/codes             GET /mapcode/json/codes\n" +
+            "    GET /mapcode/xml/coords            GET /mapcode/json/coords\n" +
+            "    GET /mapcode/xml/territories       GET /mapcode/json/territories\n" +
+            "    GET /mapcode/xml/alphabets         GET /mapcode/json/alphabets\n";
 
     private final MavenProperties mavenProperties;
     private final SystemMetrics metrics;
@@ -199,7 +200,12 @@ public class RootResourceImpl implements RootResource {
     }
 
     @Override
-    public void getVersionXml(@Suspended @Nonnull AsyncResponse response) {
+    public void getVersionXml(@Suspended @Nonnull final AsyncResponse response) {
+        getVersion(response);
+    }
+
+    @Override
+    public void getVersionJson(@Suspended @Nonnull final AsyncResponse response) {
         getVersion(response);
     }
 
@@ -211,7 +217,12 @@ public class RootResourceImpl implements RootResource {
     }
 
     @Override
-    public void getStatusXml(@Suspended @Nonnull AsyncResponse response) {
+    public void getStatusXml(@Suspended @Nonnull final AsyncResponse response) {
+        getStatus(response);
+    }
+
+    @Override
+    public void getStatusJson(@Suspended @Nonnull final AsyncResponse response) {
         getStatus(response);
     }
 

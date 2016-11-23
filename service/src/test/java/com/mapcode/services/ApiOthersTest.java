@@ -47,23 +47,32 @@ public class ApiOthersTest {
     }
 
     @Test
-    public void checkStatus() {
-        LOG.info("checkStatus");
-        Response r = new ResteasyClientBuilder().build().
+    public void checkStatusXmlJson() {
+        LOG.info("checkStatusXmlJson");
+        Response request = new ResteasyClientBuilder().build().
                 target(server.url("/mapcode/status")).
                 request().
                 get();
-        Assert.assertNotNull(r);
-        int status = r.getStatus();
+        Assert.assertNotNull(request);
+        int status = request.getStatus();
         LOG.info("status = {}", status);
         Assert.assertEquals(200, status);
 
-        r = new ResteasyClientBuilder().build().
+        request = new ResteasyClientBuilder().build().
                 target(server.url("/mapcode/xml/status")).
                 request().
                 get();
-        Assert.assertNotNull(r);
-        status = r.getStatus();
+        Assert.assertNotNull(request);
+        status = request.getStatus();
+        LOG.info("status = {}", status);
+        Assert.assertEquals(200, status);
+
+        request = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/json/status")).
+                request().
+                get();
+        Assert.assertNotNull(request);
+        status = request.getStatus();
         LOG.info("status = {}", status);
         Assert.assertEquals(200, status);
     }
@@ -100,16 +109,17 @@ public class ApiOthersTest {
     }
 
     @Test
-    public void checkVersionXml() {
-        LOG.info("checkVersionXml");
-        final String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><version><version>1.0</version></version>";
+    public void checkVersionXmlJson() {
+        LOG.info("checkVersionXmlJson");
+        final String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><version><version>1.0</version></version>";
+        final String expectedJson = "{\"version\":\"1.0\"}";
         Response response = new ResteasyClientBuilder().build().
                 target(server.url("/mapcode/version")).
                 request().
                 accept(MediaType.APPLICATION_XML_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals(expected, response.readEntity(String.class));
+        Assert.assertEquals(expectedXml, response.readEntity(String.class));
 
         response = new ResteasyClientBuilder().build().
                 target(server.url("/mapcode/xml/version")).
@@ -117,7 +127,15 @@ public class ApiOthersTest {
                 get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals(expected, response.readEntity(String.class));
+        Assert.assertEquals(expectedXml, response.readEntity(String.class));
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/json/version")).
+                request().
+                get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals(expectedJson, response.readEntity(String.class));
     }
 
     @Test

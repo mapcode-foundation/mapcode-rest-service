@@ -53,6 +53,11 @@ public interface RootResource {
     @Produces(MediaType.APPLICATION_XML)
     void getVersionXml(@Suspended @Nonnull AsyncResponse response);
 
+    @Path("json/version")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    void getVersionJson(@Suspended @Nonnull AsyncResponse response);
+
     /**
      * This method returns whether the service is operational or not (status code 200 is OK).
      *
@@ -67,6 +72,11 @@ public interface RootResource {
     @Produces(MediaType.APPLICATION_XML)
     @GET
     void getStatusXml(@Suspended @Nonnull AsyncResponse response);
+
+    @Path("json/status")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    void getStatusJson(@Suspended @Nonnull AsyncResponse response);
 
     /**
      * This method returns system metrics.

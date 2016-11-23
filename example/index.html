@@ -37,7 +37,7 @@ This page is an example of how the mapcode REST API can be used from HTML/Javasc
 You can have a look at the source code of this page to see how the REST API is called,
 or you can try it out by simply entering some information in the dialog boxes and
 pressing the conversion/request buttons.
-<p/>
+<p></p>
 <b>Copyright (C) 2016, Stichting Mapcode Foundation</b>, <a href="http://www.mapcode.com">http://www.mapcode.com</a>
 
 <hr/>
@@ -63,10 +63,10 @@ pressing the conversion/request buttons.
 <script type="text/javascript">
 
     /* This is the base URL of the mapcode REST API. */
-    var apiBaseURL = "https://api.mapcode.com/mapcode";
+    // var apiBaseURL = "https://api.mapcode.com/mapcode";
 
     // For local testing, use:
-    // var apiBaseURL = "http://localhost:8080/mapcode";
+    var apiBaseURL = "http://localhost:8080/mapcode";
 
     function onLoad() {
         var url = apiBaseURL + "/version";
@@ -75,7 +75,7 @@ pressing the conversion/request buttons.
             if (httpRequest.readyState == 4) {
                 versionResponseReady(httpRequest.responseText, httpRequest.status);
             }
-        }
+        };
         httpRequest.open("GET", url, true);
         httpRequest.setRequestHeader('Accept', 'application/json');
         httpRequest.send();
@@ -90,16 +90,16 @@ pressing the conversion/request buttons.
 
     function createResponseLine(status, result) {
         return "<small>" + ((status == 200) ? "<font color=\"#228800\">" : "<font color=\"cc2222\">") +
-                "<b>Response:</b><br><tt>" + result + "</tt></font></small></font><br/><br/>";
+            "<b>Response:<" + "/b><br><tt>" + result + "<" + "/tt><" + "/font><" + "/small><" + "/font><br/><br/>";
     }
 
     function createRequestLine(request) {
-        return "<font color=\"#228800\"><small><b>Request:</b><br><tt>HTTP GET " + request + "</tt></small></font><br/><br/>";
+        return "<font color=\"#228800\"><small><b>Request:<" + "/b><br><tt>HTTP GET " + request + "<" + "/tt><" + "/small><" + "/font><br/><br/>";
 
     }
 
     function createTerritoryLine(territory) {
-        var line = "<b>" + territory.alphaCode + "</b> - <u>" + territory.fullName + "</u>";
+        var line = "<b>" + territory.alphaCode + "<" + "/b> - <u>" + territory.fullName + "<" + "/u>";
         if (territory.fullNameAliases) {
             for (j = 0; j < territory.fullNameAliases.length; j++) {
                 line += ", " + territory.fullNameAliases[j];
@@ -108,14 +108,14 @@ pressing the conversion/request buttons.
         if (territory.aliases) {
             line += ", also known as: ";
             for (j = 0; j < territory.aliases.length; j++) {
-                line += territory.aliases[j] + ' ';
+                line += territory.aliases[j] + " ";
             }
         }
         return line;
     }
 
     function createAlphabetLine(alphabet) {
-        return "<b>" + alphabet.name + "</b></u>";
+        return "<b>" + alphabet.name + "<" + "/b><" + "/u>";
     }
 </script>
 
@@ -127,7 +127,7 @@ pressing the conversion/request buttons.
 
 <script type="text/javascript">
     function encodeButtonPressed() {
-        document.getElementById("resultEncode").innerHTML = '<font color=grey>Waiting...</font>';
+        document.getElementById("resultEncode").innerHTML = "<font color=grey>Waiting...<" + "/font>";
 
         /* Use the input fields to build the request URL. */
         var territory = document.getElementById("territoryEncode").value;
@@ -138,10 +138,10 @@ pressing the conversion/request buttons.
 
         /* Add include=territory,alphabet to make sure the territory and alphabet values are always present. */
         var url = apiBaseURL + "/codes/" + lat + "," + lon + "?include=territory,alphabet" +
-                ((territory && (territory.length != 0)) ? "&territory=" + territory : "") +
-                ((precision && (precision.length != 0)) ? "&precision=" + precision : "") +
-                ((alphabet && (alphabet.length != 0)) ? "&alphabet=" + alphabet : "") +
-                "&allowLog=true&client=web";
+            ((territory && (territory.length !== 0)) ? "&territory=" + territory : "") +
+            ((precision && (precision.length !== 0)) ? "&precision=" + precision : "") +
+            ((alphabet && (alphabet.length !== 0)) ? "&alphabet=" + alphabet : "") +
+            "&allowLog=true&client=web";
         document.getElementById("requestEncode").innerHTML = createRequestLine(url);
 
         /* Asynchronously request a solution, call encodeResponseReady when done. */
@@ -150,7 +150,7 @@ pressing the conversion/request buttons.
             if (httpRequest.readyState == 4) {
                 encodeResponseReady(httpRequest.responseText, httpRequest.status);
             }
-        }
+        };
         httpRequest.open("GET", url, true);
         httpRequest.setRequestHeader('Accept', 'application/json');
         httpRequest.send();
@@ -166,33 +166,33 @@ pressing the conversion/request buttons.
             var result = JSON.parse(response);
 
             /* Print the mapcodes, grey them if they are not the shortest (i.e. the first) in a territory. */
-            var resultLines = "<b><u>There are " + result.mapcodes.length + " possible mapcodes:</b></u><br><tt>";
+            var resultLines = "<b><u>There are " + result.mapcodes.length + " possible mapcodes:<" + "/b><" + "/u><br><tt>";
             for (i = 0; i < result.mapcodes.length; i++) {
                 var isGrey = ((i > 0) && (result.mapcodes[i].territory == result.mapcodes[i - 1].territory));
                 if (isGrey) {
                     resultLines += "<font color=\"#888888\">";
                 }
                 resultLines += ((result.mapcodes[i].territory == "AAA") ? "" :
-                        result.mapcodes[i].territoryInAlphabet + " ") + "<b>" + result.mapcodes[i].mapcodeInAlphabet + "</b> ";
+                    result.mapcodes[i].territoryInAlphabet + " ") + "<b>" + result.mapcodes[i].mapcodeInAlphabet + "<" + "/b> ";
 
                 if (result.mapcodes[i].mapcode != result.mapcodes[i].mapcodeInAlphabet) {
                     resultLines += " (" + ((result.mapcodes[i].territory == "AAA") ? "" :
-                            result.mapcodes[i].territory + " ") + result.mapcodes[i].mapcode + ") ";
+                        result.mapcodes[i].territory + " ") + result.mapcodes[i].mapcode + ") ";
                 }
 
                 if (result.mapcodes[i].territory == "AAA") {
                     resultLines += "(international)";
                 }
                 if (isGrey) {
-                    resultLines += "</font>";
+                    resultLines += "<" + "/font>";
                 }
                 resultLines += "<br/>"
             }
-            resultLines += "</tt>"
+            resultLines += "<" + "/tt>";
             document.getElementById("resultEncode").innerHTML = resultLines;
         }
         else {
-            document.getElementById("resultEncode").innerHTML = "<b>Error</b> (status = " + status + ')';
+            document.getElementById("resultEncode").innerHTML = "<b>Error<" + "/b> (status = " + status + ")";
         }
     }
 </script>
@@ -244,7 +244,7 @@ pressing the conversion/request buttons.
         var url = apiBaseURL + "/coords/" + mapcode + "?context=" + context + "&allowLog=true&client=web";
 
         /* Update page. */
-        document.getElementById("resultDecode").innerHTML = '<font color=grey>Waiting...</font>';
+        document.getElementById("resultDecode").innerHTML = "<font color=grey>Waiting...<" + "/font>";
         document.getElementById("requestDecode").innerHTML = createRequestLine(url);
 
         /* Asynchronously request to decode mapcode, call decodeResponseReady when done. */
@@ -253,7 +253,7 @@ pressing the conversion/request buttons.
             if (httpRequest.readyState == 4) {
                 decodeResponseReady(httpRequest.responseText, httpRequest.status);
             }
-        }
+        };
         httpRequest.open("GET", url, true);
         httpRequest.setRequestHeader('Accept', 'application/json');
         httpRequest.send();
@@ -267,10 +267,10 @@ pressing the conversion/request buttons.
 
             /* Parse the response into a coordinate. */
             var result = JSON.parse(response);
-            document.getElementById("resultDecode").innerHTML = "<b><u>Coordinate:</u></b><br><tt>(" + result.latDeg + ", " + result.lonDeg + ")</tt>";
+            document.getElementById("resultDecode").innerHTML = "<b><u>Coordinate:<" + "/u><" + "/b><br><tt>(" + result.latDeg + ", " + result.lonDeg + ")<" + "/tt>";
         }
         else {
-            document.getElementById("resultDecode").innerHTML = "<b>Error</b> (status = " + status + ')';
+            document.getElementById("resultDecode").innerHTML = "<b>Error<" + "/b> (status = " + status + ")";
         }
     }
 </script>
@@ -305,12 +305,12 @@ pressing the conversion/request buttons.
 
 <script>
     function territoryButtonPressed() {
-        document.getElementById("resultTerritory").innerHTML = '<font color=grey>Waiting...</font>';
+        document.getElementById("resultTerritory").innerHTML = "<font color=grey>Waiting...<" + "/font>";
 
         var territory = document.getElementById("territory").value;
         var context = document.getElementById("context").value;
         var url = apiBaseURL + "/territories" + (territory ? ('/' + territory) : "") + "?allowLog=true&client=web" +
-                (context ? ("&context=" + context) : "");
+            (context ? ("&context=" + context) : "");
         document.getElementById("requestTerritory").innerHTML = createRequestLine(url);
 
         /* Asynchronously request a solution, call encodeResponseReady when done. */
@@ -319,7 +319,7 @@ pressing the conversion/request buttons.
             if (httpRequest.readyState == 4) {
                 territoryResponseReady(httpRequest.responseText, httpRequest.status);
             }
-        }
+        };
         httpRequest.open("GET", url, true);
         httpRequest.setRequestHeader('Accept', 'application/json');
         httpRequest.send();
@@ -334,21 +334,21 @@ pressing the conversion/request buttons.
 
             var resultLines = "";
             if (result.territories) {
-                resultLines += "<b><u>List all territories (" + result.territories.length + "):</u></b></u><br/><small>";
+                resultLines += "<b><u>List all territories (" + result.territories.length + "):<" + "/u><" + "/b><" + "/u><br/><small>";
                 for (i = 0; i < result.territories.length; i++) {
                     var territory = result.territories[i];
                     resultLines += createTerritoryLine(territory) + "<br/>";
                 }
             }
             else {
-                resultLines += "<b><u>List one territory:</u></b></u><br/><small>";
+                resultLines += "<b><u>List one territory:<" + "/u><" + "/b><" + "/u><br/><small>";
                 resultLines += createTerritoryLine(result);
             }
-            resultLines += "<small>"
+            resultLines += "<" + "/small>";
             document.getElementById("resultTerritory").innerHTML = resultLines;
         }
         else {
-            document.getElementById("resultTerritory").innerHTML = "<b>Error</b> (status = " + status + ')';
+            document.getElementById("resultTerritory").innerHTML = "<b>Error<" + "/b> (status = " + status + ")";
         }
     }
 </script>
@@ -383,7 +383,7 @@ pressing the conversion/request buttons.
 
 <script>
     function alphabetButtonPressed() {
-        document.getElementById("resultAlphabet").innerHTML = '<font color=grey>Waiting...</font>';
+        document.getElementById("resultAlphabet").innerHTML = "<font color=grey>Waiting...<" + "/font>";
 
         var alphabet = document.getElementById("alphabet").value;
         var url = apiBaseURL + "/alphabets" + (alphabet ? ('/' + alphabet) : "") + "?allowLog=true&client=web";
@@ -395,7 +395,7 @@ pressing the conversion/request buttons.
             if (httpRequest.readyState == 4) {
                 alphabetResponseReady(httpRequest.responseText, httpRequest.status);
             }
-        }
+        };
         httpRequest.open("GET", url, true);
         httpRequest.setRequestHeader('Accept', 'application/json');
         httpRequest.send();
@@ -410,21 +410,21 @@ pressing the conversion/request buttons.
 
             var resultLines = "";
             if (result.alphabets) {
-                resultLines += "<b><u>List all alphabets (" + result.alphabets.length + "):</u></b></u><br/><small>";
+                resultLines += "<b><u>List all alphabets (" + result.alphabets.length + "):<" + "/u><" + "/b><" + "/u><br/><small>";
                 for (i = 0; i < result.alphabets.length; i++) {
                     var alphabet = result.alphabets[i];
                     resultLines += createAlphabetLine(alphabet) + "<br/>";
                 }
             }
             else {
-                resultLines += "<b><u>List one alphabet:</u></b></u><br/><small>";
+                resultLines += "<b><u>List one alphabet:<" + "/u><" + "/b><" + "/u><br/><small>";
                 resultLines += createAlphabetLine(result);
             }
-            resultLines += "<small>"
+            resultLines += "<" + "/small>";
             document.getElementById("resultAlphabet").innerHTML = resultLines;
         }
         else {
-            document.getElementById("resultAlphabet").innerHTML = "<b>Error</b> (status = " + status + ')';
+            document.getElementById("resultAlphabet").innerHTML = "<b>Error<" + "/b> (status = " + status + ")";
         }
     }
 </script>
