@@ -252,7 +252,15 @@ self-hosting this service.
 
 ## Release Notes
 
-### 2.4.2.0
+### 2.4.1.3
+
+* Increased test coverage, using Mockito stubs.
+
+### 2.4.1.2
+
+* Fixed JSON response for REST example.
+
+### 2.4.1.1
 
 * Removed secret token from POM.
 
