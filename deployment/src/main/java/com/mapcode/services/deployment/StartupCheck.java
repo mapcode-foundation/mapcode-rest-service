@@ -40,7 +40,7 @@ public class StartupCheck {
     private static final String REQUIRED_ENCODING = "UTF-8";
 
     @Inject
-    private StartupCheck(@Nonnull final Injector injector) {
+    StartupCheck(@Nonnull final Injector injector) {
         assert injector != null;
 
         /**

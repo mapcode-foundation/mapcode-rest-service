@@ -100,6 +100,7 @@
         <jsr305.version>3.0.1</jsr305.version>
         <junit.version>4.12</junit.version>
         <log4j.version>1.2.17</log4j.version>
+        <mockito-core.version>2.2.22</mockito-core.version>
         <resteasy.version>3.0.19.Final</resteasy.version>
         <slf4j.version>1.7.21</slf4j.version>
 
@@ -337,6 +338,13 @@
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>${log4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito-core.version}</version>
+                <scope>test</scope>
             </dependency>
 
             <dependency>

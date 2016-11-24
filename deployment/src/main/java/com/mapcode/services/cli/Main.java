@@ -30,7 +30,11 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
- * Stub to load cli main from war file.
+ * Stub to load CLI main from war file.
+ * You can start the application with the following command:
+ *
+ * java -jar deployment/target/deployment-<version>.war [arguments]
+ *
  */
 public class Main {
     private static final String MAIN_CLASS_NAME = "com.mapcode.services.standalone.MainCommandLine";

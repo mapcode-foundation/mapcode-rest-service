@@ -32,13 +32,12 @@ import scala.concurrent.ExecutionContext;
 
 import javax.annotation.Nonnull;
 
-import static java.lang.Thread.sleep;
-
 @SuppressWarnings("JUnitTestMethodWithNoAssertions")
 public class LocalTestServer {
     private static final Logger LOG = LoggerFactory.getLogger(LocalTestServer.class);
 
     private static final String HOST = "http://localhost:";
+    private static final int PORT = 8081;
 
     private final TJWSEmbeddedJaxrsServer server;
     private final String version;
@@ -76,7 +75,7 @@ public class LocalTestServer {
             public <T> T createTopLevelActor(
                     @Nonnull final Class<T> interfaceClass,
                     @Nonnull final Class<? extends T> implementationClass,
-                    @Nonnull Object... explicitParameters) {
+                    @Nonnull final Object... explicitParameters) {
                 assert false;
                 //noinspection ConstantConditions
                 return null;
@@ -114,7 +113,7 @@ public class LocalTestServer {
 
     @Nonnull
     public String getBaseUrl() {
-        return HOST + 8081;
+        return HOST + PORT;
     }
 
     @Nonnull

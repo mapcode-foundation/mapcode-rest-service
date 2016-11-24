@@ -26,8 +26,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 
-import javax.annotation.Nonnull;
-
 @SuppressWarnings({"UseOfSystemOutOrSystemErr", "ConstantConditions"})
 public class MainCommandLine {
     private static final String CMD_HELP = "--help";
@@ -36,6 +34,8 @@ public class MainCommandLine {
     private static final String CMD_PORT = "--port";
 
     private static final int DEFAULT_PORT = 8080;
+
+    private static Server server;
 
     private MainCommandLine() {
         // Prevent instantiation.
@@ -69,7 +69,7 @@ public class MainCommandLine {
                     break;
 
                 case CMD_PORT:
-                    if (index >= args.length) {
+                    if (index >= (args.length - 1)) {
                         System.out.println("Missing port number");
                         printUsage();
                         return;
@@ -103,9 +103,13 @@ public class MainCommandLine {
             printUsage();
         } else {
             final Injector guice = createGuice();
-            final Server server = guice.getInstance(Server.class);
+            server = guice.getInstance(Server.class);
             server.startServer(port);
         }
+    }
+
+    public static void stop() {
+        server.stopServer();
     }
 
     /**
@@ -117,8 +121,7 @@ public class MainCommandLine {
         return Guice.createInjector(
                 new GuiceConfigurationModule(
                         "classpath:speedtools.default.properties",      // Default set required by SpeedTools.
-                        "classpath:mapcode.properties",                 // Specific for mapcode service.
-                        "classpath:mapcode-notrace.properties"),        // No tracing.
+                        "classpath:mapcode.properties"),                // Mapcode properties.
                 new ServicesModule(),
                 new ResourcesModule(),
                 new StandaloneModule());
@@ -127,11 +130,5 @@ public class MainCommandLine {
     private static void printUsage() {
         System.out.println("Usage: java -jar <warfile>" + " [" + CMD_PORT + " <port>] [" + CMD_SILENT + "] [" + CMD_DEBUG + ']');
         System.out.println("       java -jar <warfile> " + CMD_HELP);
-    }
-
-    private static void endNotice(@Nonnull final String filename) {
-        assert filename != null;
-        System.out.println("(Note: the full output of this program is stored in: " + filename);
-        System.out.println("This file may grow very large. You may wish to remove it.)");
     }
 }
