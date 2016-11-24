@@ -118,8 +118,9 @@ You can run the WAR file in 3 ways:
 
 1. directly from the **command-line**, using:
 
-
++---
     java -jar deployment/target/deployment-<version>.war [--port <port>] [--silent] [--debug] [--help]
++---
 
   This will start the service at `http://localhost:<port>/mapcode`. If `<port>` is not specified, the
   default value is `8080`. If it is `0`, the server will choose any free port.
