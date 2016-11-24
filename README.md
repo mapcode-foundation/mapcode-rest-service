@@ -111,31 +111,33 @@ functions. This should make live integration of mapcode conversion with your spr
 The service always runs from a WAR file.
 To build the WAR file, type
 
+```bash
     cd <project-root>
     mvn clean package
+```
 
 You can run the WAR file in 3 ways:
 
 1. directly from the **command-line**, using:
 
-+---
+```bash
     java -jar deployment/target/deployment-<version>.war [--port <port>] [--silent] [--debug] [--help]
-+---
+```
 
   This will start the service at `http://localhost:<port>/mapcode`. If `<port>` is not specified, the
   default value is `8080`. If it is `0`, the server will choose any free port.
 
 2. directly from **Maven** using:
  
- 
+ ```bash
      cd deployment
      mvn jetty:run
+ ```
      
   This will start the service at `http://localhost:8080/mapcode`.
 
 3. in a **Tomcat server**, deploying the file `deployment/target/deployment-<version>.war` into
 your Tomcat instance.
-
 
 The first method, running the WAR file from the command-line, using `java` only is particularly
 useful if you wish use the XML services, for example, in a Microsoft Excel spreadsheet.
@@ -170,11 +172,13 @@ Note that the file `mapcode-secret.properties` is ignored by Git in `.gitignore`
 If you wish to use MongoDB tracing, will need to provide your own local
 `mapcode-secret.properties`, which override the following properties:
 
+```
     MongoDBTrace.writeEnabled = false
     MongoDBTrace.servers = your-server:27017 (eg. localhost:27017)
     MongoDBTrace.database = your-database (eg. trace)
     MongoDBTrace.userName = your-username
     MongoDBTrace.password = your-password
+```
 
 The service will work with an empty file as well, but will not trace events to the
 database.
@@ -185,21 +189,25 @@ database.
 The source uses Java JDK 1.8, so make sure your Java compiler is set to 1.8, for example
 using something like (MacOSX):
 
+```bash
     export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
-
+```
 
 ### Smoke Testing The REST API
 
 Try out if the web services work by entering the following URL in your web browser
 (this should show you a HTML help page):
 
+```
     http://localhost:8080/mapcode
     http://localhost:8080/mapcode/codes/50.2,4.9
-
+```
 Or use a tool like cURL:
 
+```
     curl -X GET http://localhost:8080/mapcode
     curl -X GET http://localhost:8080/mapcode/codes/50.2,4.9
+```
 
 There's also an example HTML page in the `examples/index.html` for HTML/Javascript developers.
 
