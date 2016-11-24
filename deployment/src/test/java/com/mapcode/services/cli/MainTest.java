@@ -17,7 +17,6 @@
 package com.mapcode.services.cli;
 
 import org.junit.Test;
-import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,9 +24,7 @@ import org.slf4j.LoggerFactory;
 public class MainTest {
     private static final Logger LOG = LoggerFactory.getLogger(MainTest.class);
 
-    @Mock
-    private ClassLoader mockClassLoader;
-
+    @SuppressWarnings("ProhibitedExceptionDeclared")
     @Test(expected = IllegalStateException.class)
     public void testMainFails() throws Exception {
         LOG.info("testMainFails");

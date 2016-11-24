@@ -289,11 +289,11 @@
                         <phase>compile</phase>
                         <configuration>
                             <tasks>
-                                <move todir="${project.basedir}/target/webapp/">
+                                <copy todir="${project.basedir}/target/webapp/">
                                     <fileset dir="${project.build.directory}/classes/">
-                                        <include name="com/mapcode/services/cli/*.class"/>
+                                        <include name="com/mapcode/services/cli/Main.class"/>
                                     </fileset>
-                                </move>
+                                </copy>
                             </tasks>
                         </configuration>
                         <goals>

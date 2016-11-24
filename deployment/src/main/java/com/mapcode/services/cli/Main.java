@@ -33,7 +33,7 @@ import java.util.jar.JarFile;
  * Stub to load CLI main from war file.
  * You can start the application with the following command:
  *
- * java -jar deployment/target/deployment-<version>.war [arguments]
+ * java -jar war-file [arguments]
  *
  */
 public class Main {
