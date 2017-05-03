@@ -37,8 +37,8 @@ $(document).ready(function () {
 
     function metric(metricName, path, label) {
         return jolokia.metric({
-            type: 'read',
-            mbean: 'mapcode:name=SystemMetrics',
+            type: "read",
+            mbean: "mapcode:name=SystemMetrics",
             attribute: metricName,
             path: path
         }, label);

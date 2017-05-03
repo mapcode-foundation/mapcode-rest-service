@@ -17,7 +17,6 @@
 package com.mapcode.services.standalone;
 
 import com.google.inject.Binder;
-import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.binder.LinkedBindingBuilder;
@@ -43,9 +42,6 @@ public class StandaloneModuleTest {
 
     @Mock
     private LinkedBindingBuilder mockLinkedBindingBuilder;
-
-    @Mock
-    private Injector mockInjector;
 
     @SuppressWarnings("JUnitTestMethodWithNoAssertions")
     @Test

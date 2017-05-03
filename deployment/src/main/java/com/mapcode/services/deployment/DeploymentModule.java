@@ -23,8 +23,6 @@ import com.tomtom.speedtools.tracer.TracerFactory;
 import com.tomtom.speedtools.tracer.mongo.MongoDBTraceHandler;
 import com.tomtom.speedtools.tracer.mongo.MongoDBTraceProperties;
 import com.tomtom.speedtools.tracer.mongo.MongoDBTraceStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 
@@ -41,7 +39,6 @@ import javax.annotation.Nonnull;
  * The "speedtools.default.properties" is required, but its values may be overridden in other property files.
  */
 public class DeploymentModule extends GuiceConfigurationModule {
-    private static final Logger LOG = LoggerFactory.getLogger(DeploymentModule.class);
 
     public DeploymentModule() {
         super(

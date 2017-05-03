@@ -21,12 +21,6 @@ package com.mapcode.services;
  */
 public final class ApiConstants {
 
-    // Prevent instantiation.
-    private ApiConstants() {
-        super();
-        assert false;
-    }
-
     /**
      * General HTTP timeout for @Suspend() annotations.
      */
@@ -58,4 +52,10 @@ public final class ApiConstants {
 
     public static final int API_PRECISION_MIN = 0;
     public static final int API_PRECISION_MAX = 8;
+
+    // Prevent instantiation.
+    private ApiConstants() {
+        super();
+        assert false;
+    }
 }

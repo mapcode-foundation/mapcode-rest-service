@@ -47,7 +47,8 @@ public class StartupCheckTest {
         when(mockInjector.getInstance(SystemMetricsAgent.class)).thenReturn(null);
 
         // Execute start-up check.
-        final StartupCheck startupCheck = new StartupCheck(mockInjector);
+        //noinspection ResultOfObjectAllocationIgnored
+        new StartupCheck(mockInjector);
     }
 
     @SuppressWarnings("InstantiationOfUtilityClass")
