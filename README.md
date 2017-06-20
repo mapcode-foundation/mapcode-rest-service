@@ -1,7 +1,7 @@
 # README for Mapcode REST API Web Services
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/809a3c6b23ed42d28b4b17e0e77b655f)](https://www.codacy.com/app/rijnb/mapcode-rest-service?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mapcode-foundation/mapcode-rest-service&amp;utm_campaign=Badge_Grade)
-[![Build Status](https://img.shields.io/travis/mapcode-foundation/mapcode-rest-service.svg?maxAge=3600)](https://travis-ci.org/mapcode-foundation/mapcode-rest-service)
+[![Build Status](https://img.shields.io/travis/mapcode-foundation/mapcode-rest-service.svg?maxAge=3600&branch=master)](https://travis-ci.org/mapcode-foundation/mapcode-rest-service)
 [![Coverage Status](https://coveralls.io/repos/github/mapcode-foundation/mapcode-rest-service/badge.svg?branch=master&maxAge=3600)](https://coveralls.io/github/mapcode-foundation/mapcode-rest-service?branch=master)
 [![License](http://img.shields.io/badge/license-APACHE2-blue.svg)]()
 [![Release](https://img.shields.io/github/release/mapcode-foundation/mapcode-rest-service.svg?maxAge=3600)](https://github.com/mapcode-foundation/mapcode-rest-service/releases)
