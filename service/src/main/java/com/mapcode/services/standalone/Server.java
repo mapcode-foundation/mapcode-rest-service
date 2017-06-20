@@ -86,14 +86,6 @@ public class Server {
             public DateTime getSystemStartupTime() {
                 return new DateTime();
             }
-
-            // This method is stubbed and never used.
-            @Nonnull
-            @Override
-            public <T> T createTopLevelActor(@Nonnull final Class<T> interfaceClass, @Nonnull final Class<? extends T> implementationClass, @Nonnull Object... explicitParameters) {
-                assert false;
-                return null;
-            }
         };
         final ResourceProcessor resourceProcessor = new ResourceProcessor(reactor);
         final SystemMetricsImpl metrics = new SystemMetricsImpl();

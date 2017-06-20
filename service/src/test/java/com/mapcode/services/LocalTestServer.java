@@ -68,18 +68,6 @@ public class LocalTestServer {
             public DateTime getSystemStartupTime() {
                 return new DateTime();
             }
-
-            // This method is stubbed and never used.
-            @Nonnull
-            @Override
-            public <T> T createTopLevelActor(
-                    @Nonnull final Class<T> interfaceClass,
-                    @Nonnull final Class<? extends T> implementationClass,
-                    @Nonnull final Object... explicitParameters) {
-                assert false;
-                //noinspection ConstantConditions
-                return null;
-            }
         };
         final ResourceProcessor resourceProcessor = new ResourceProcessor(reactor);
 
