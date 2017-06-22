@@ -262,6 +262,10 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.2 - 2.4.3
+
+* Updated dependencies.
+
 ### 2.4.1.3
 
 * Increased test coverage, using Mockito stubs.
