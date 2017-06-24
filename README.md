@@ -303,6 +303,10 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.3.1
+ 
+* Implemented security for REST calls.
+
 ### 2.4.2 - 2.4.3
 
 * Updated dependencies.
