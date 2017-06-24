@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2016, Stichting Mapcode Foundation (http://www.mapcode.com)
+ * Copyright (C) 2016-2017, Stichting Mapcode Foundation (http://www.mapcode.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,7 +17,7 @@
 package com.mapcode.services.implementation;
 
 import com.mapcode.services.RootResource;
-import com.mapcode.services.SystemMetrics;
+import com.mapcode.services.metrics.SystemMetrics;
 import com.mapcode.services.dto.VersionDTO;
 import com.tomtom.speedtools.json.Json;
 import com.tomtom.speedtools.maven.MavenProperties;
