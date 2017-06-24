@@ -21,8 +21,14 @@ import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.mapcode.services.implementation.MapcodeResourceImpl;
 import com.mapcode.services.implementation.RootResourceImpl;
+import com.mapcode.services.implementation.SessionResourceImpl;
 import com.mapcode.services.implementation.SystemMetricsImpl;
 import com.mapcode.services.jmx.SystemMetricsAgent;
+import com.mapcode.services.metrics.SystemMetrics;
+import com.mapcode.services.metrics.SystemMetricsCollector;
+import com.mapcode.services.security.AuthenticationServiceImpl;
+import com.mapcode.services.security.SecurityInterceptorConfigurer;
+import com.tomtom.speedtools.rest.security.AuthenticationService;
 
 import javax.annotation.Nonnull;
 import javax.inject.Singleton;
@@ -45,13 +51,20 @@ public class ResourcesModule implements Module {
     public void configure(@Nonnull final Binder binder) {
         assert binder != null;
 
+        // Bind the authentication service.
+        binder.bind(AuthenticationService.class).to(AuthenticationServiceImpl.class).in(Singleton.class);
+
         // Bind APIs to their implementation.
         binder.bind(RootResource.class).to(RootResourceImpl.class).in(Singleton.class);
         binder.bind(MapcodeResource.class).to(MapcodeResourceImpl.class).in(Singleton.class);
+        binder.bind(SessionResource.class).to(SessionResourceImpl.class).in(Singleton.class);
 
         // JMX interface.
         binder.bind(SystemMetricsImpl.class).in(Singleton.class);
         binder.bind(SystemMetricsAgent.class).in(Singleton.class);
+
+        // Bind security interceptor for REST authentication.
+        binder.bind(SecurityInterceptorConfigurer.class).asEagerSingleton();
     }
 
     @Provides

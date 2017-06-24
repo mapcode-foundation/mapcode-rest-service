@@ -22,7 +22,7 @@ import com.mapcode.*;
 import com.mapcode.Territory.AlphaCodeFormat;
 import com.mapcode.services.ApiConstants;
 import com.mapcode.services.MapcodeResource;
-import com.mapcode.services.SystemMetricsCollector;
+import com.mapcode.services.metrics.SystemMetricsCollector;
 import com.mapcode.services.dto.*;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiForbiddenException;

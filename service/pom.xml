@@ -87,12 +87,12 @@
 
         <dependency>
             <groupId>com.tomtom.speedtools</groupId>
-            <artifactId>json</artifactId>
+            <artifactId>guice</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.tomtom.speedtools</groupId>
-            <artifactId>guice</artifactId>
+            <artifactId>json</artifactId>
         </dependency>
 
         <dependency>

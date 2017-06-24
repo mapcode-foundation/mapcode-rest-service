@@ -2,7 +2,7 @@
  * Copyright (C) 2012. TomTom International BV. All rights reserved.
  */
 
-package com.mapcode.services;
+package com.mapcode.services.metrics;
 
 import javax.annotation.Nullable;
 

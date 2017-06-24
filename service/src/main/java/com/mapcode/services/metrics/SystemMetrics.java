@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mapcode.services;
+package com.mapcode.services.metrics;
 
 
 import com.tomtom.speedtools.metrics.MultiMetricsData;

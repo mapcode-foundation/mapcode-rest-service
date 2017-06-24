@@ -17,7 +17,7 @@
 package com.mapcode.services.implementation;
 
 import com.mapcode.services.RootResource;
-import com.mapcode.services.SystemMetrics;
+import com.mapcode.services.metrics.SystemMetrics;
 import com.mapcode.services.dto.VersionDTO;
 import com.tomtom.speedtools.json.Json;
 import com.tomtom.speedtools.maven.MavenProperties;

@@ -16,7 +16,7 @@
 
 package com.mapcode.services.jmx;
 
-import com.mapcode.services.SystemMetrics;
+import com.mapcode.services.metrics.SystemMetrics;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;

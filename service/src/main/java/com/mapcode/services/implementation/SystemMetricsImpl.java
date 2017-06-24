@@ -16,8 +16,8 @@
 
 package com.mapcode.services.implementation;
 
-import com.mapcode.services.SystemMetrics;
-import com.mapcode.services.SystemMetricsCollector;
+import com.mapcode.services.metrics.SystemMetrics;
+import com.mapcode.services.metrics.SystemMetricsCollector;
 import com.tomtom.speedtools.metrics.MultiMetricsCollector;
 import com.tomtom.speedtools.metrics.MultiMetricsData;
 import org.apache.log4j.AppenderSkeleton;
