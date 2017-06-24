@@ -18,11 +18,10 @@ package com.mapcode.services.implementation;
 
 import akka.dispatch.Futures;
 import com.mapcode.services.SessionResource;
-import com.mapcode.services.dto.AppLoginDTO;
-import com.mapcode.services.dto.LoginDTO;
+import com.mapcode.services.dto.LoginAppTokenDTO;
+import com.mapcode.services.dto.LoginUserNameDTO;
 import com.mapcode.services.dto.SessionCreatedDTO;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiForbiddenException;
-import com.tomtom.speedtools.apivalidation.exceptions.ApiInternalException;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiParameterMissingException;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiUnauthorizedException;
 import com.tomtom.speedtools.domain.Uid;
@@ -61,21 +60,9 @@ public class SessionResourceImpl implements SessionResource {
     }
 
     @Override
-    public void loginUserName(@Nullable final LoginDTO loginDTO,
+    public void loginUserName(@Nullable final LoginUserNameDTO loginUserNameDTO,
                               @Nonnull final AsyncResponse response) {
         assert response != null;
-
-        loginWithLoginDTO(loginDTO, response, AuthenticationScheme.APPTOKEN);
-    }
-
-    @Override
-    public void loginAppToken(
-            @Nullable final AppLoginDTO appLoginDTO,
-            @Nonnull final AsyncResponse response) {
-
-        assert response != null;
-
-        final SessionManager sessionManager = new SessionManager();
 
         /*
          * Send the handler to an actor for in-Akka execution. The result of the Future is omitted.
@@ -83,26 +70,78 @@ public class SessionResourceImpl implements SessionResource {
          *
          * Note that the Future call() closure has access to the parameter values above.
          */
+        final SessionManager sessionManager = new SessionManager();
+        processor.process("loginWithLoginDTO", LOG, response, () -> {
+
+            /*
+             * Check input parameters.
+             */
+            if (loginUserNameDTO == null) {
+                throw new ApiParameterMissingException("Login details");
+            }
+
+            assert loginUserNameDTO != null;
+            assert loginUserNameDTO.getUserName() != null;
+            assert loginUserNameDTO.getPassword() != null;
+
+            final String userName = loginUserNameDTO.getUserName();
+            final String credential = loginUserNameDTO.getPassword();
+
+            // Authenticate.
+            final Identity identity = authenticationService.authenticateByUserName(userName,
+                    new Password(UTCTime.now(), credential));
+
+            // A identity means authentication was successful.
+            if (identity != null) {
+
+                // Create a session
+                assert identity != null;
+                assert sessionManager != null;
+
+                // Start a session for this Person.
+                final String sessionId = sessionManager.startWebSession(identity);
+                LOG.debug("loginWithLoginDTO: customer logged in, userName={}", identity.getUserName());
+
+                // Create a response.
+                final SessionCreatedDTO binder =
+                        new SessionCreatedDTO(sessionId, identity.getId().toString());
+                binder.validate();
+                response.resume(Response.status(Status.CREATED).entity(binder).build());
+            } else {
+                throw new ApiUnauthorizedException("Username " + userName);
+            }
+
+            // The response is already set within this method body.
+            return Futures.successful(null);
+        });
+    }
+
+    @Override
+    public void loginAppToken(
+            @Nullable final LoginAppTokenDTO loginAppTokenDTO,
+            @Nonnull final AsyncResponse response) {
+
+        assert response != null;
+
+        final SessionManager sessionManager = new SessionManager();
         processor.process("loginAppToken", LOG, response, () -> {
 
             /*
              * Check input parameters.
              */
-            if (appLoginDTO == null) {
+            if (loginAppTokenDTO == null) {
                 throw new ApiParameterMissingException("App token details");
             }
-            assert appLoginDTO != null;
+            assert loginAppTokenDTO != null;
 
-            final Uid<App> appId = Uid.fromString(appLoginDTO.getAppId());
-            final String credential = appLoginDTO.getAppToken();
+            final Uid<App> appId = Uid.fromString(loginAppTokenDTO.getAppId());
+            final String credential = loginAppTokenDTO.getAppToken();
 
             final Identity identity = authenticationService.authenticateByAppId(appId, credential);
-
             if (identity != null) {
 
                 // Start an app session for this Person.
                 final String sessionId = sessionManager.startAppSession(identity);
-
                 LOG.debug("loginAppToken: customer logged in, userName={}", identity.getUserName());
 
                 // Create a response.
@@ -160,84 +199,6 @@ public class SessionResourceImpl implements SessionResource {
 
             // Report successful logout.
             response.resume(Response.noContent().build());
-
-            // The response is already set within this method body.
-            return Futures.successful(null);
-        });
-    }
-
-    private void loginWithLoginDTO(
-            @Nullable final LoginDTO loginDTO,
-            @Nonnull final AsyncResponse response,
-            @Nonnull final AuthenticationScheme scheme) {
-        assert response != null;
-        assert scheme != null;
-
-        final SessionManager sessionManager = new SessionManager();
-
-        /*
-         * Send the handler to an actor for in-Akka execution. The result of the Future is omitted.
-         * The purpose of the Future is to schedule the handler only.
-         *
-         * Note that the Future call() closure has access to the parameter values above.
-         */
-        processor.process("loginWithLoginDTO", LOG, response, () -> {
-
-            /*
-             * Check input parameters.
-             */
-            if (loginDTO == null) {
-                throw new ApiParameterMissingException("Login details");
-            }
-
-            assert loginDTO != null;
-            assert loginDTO.getUserName() != null;
-            assert loginDTO.getPassword() != null;
-
-            final String userName = loginDTO.getUserName();
-            final String credential = loginDTO.getPassword();
-
-            // Authenticate.
-            final Identity identity = authenticationService.authenticateByUserName(userName,
-                    new Password(UTCTime.now(), credential));
-
-            // A identity means authentication was successful.
-            if (identity != null) {
-
-                // Create a session
-                assert identity != null;
-                assert sessionManager != null;
-
-                // Start a session for this Person.
-                final String sessionId;
-                switch (scheme) {
-
-                    case USERNAME:
-                        sessionId = sessionManager.startWebSession(identity);
-                        break;
-
-                    case APPTOKEN:
-                        sessionId = sessionManager.startAppSession(identity);
-                        break;
-
-                    default:
-                        assert false;
-                        LOG.error("loginWithLoginDTO: handler not implemented for authentication scheme {}", scheme);
-                        throw new ApiInternalException(
-                                "Handler not implemented for authentication scheme " + scheme);
-                }
-
-                LOG.debug("loginWithLoginDTO: customer logged in, userName={}, scheme={}",
-                        identity.getUserName(), scheme);
-
-                // Create a response.
-                final SessionCreatedDTO binder =
-                        new SessionCreatedDTO(sessionId, identity.getId().toString());
-                binder.validate();
-                response.resume(Response.status(Status.CREATED).entity(binder).build());
-            } else {
-                throw new ApiUnauthorizedException("Username " + userName);
-            }
 
             // The response is already set within this method body.
             return Futures.successful(null);

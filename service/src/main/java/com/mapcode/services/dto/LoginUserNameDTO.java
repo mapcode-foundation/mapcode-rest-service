@@ -25,65 +25,69 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import static com.tomtom.speedtools.utils.StringUtils.literalToLowerCase;
 import static com.tomtom.speedtools.utils.StringUtils.trim;
 
 @XmlRootElement(name = "login")
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
-public final class AppLoginDTO extends ApiDTO {
+public final class LoginUserNameDTO extends ApiDTO {
 
     @Nullable
-    private String appId;
+    private String userName;
     @Nullable
-    private String appToken;
+    private String password;
 
     @Override
     public void validate() {
         validator().start();
-        validator().checkUid(true, "appId", appId);
-        validator().checkString(true, "appToken", appToken,
-                ApiConstants.WEB_APP_TOKEN_MIN_LENGTH,
-                ApiConstants.WEB_APP_TOKEN_MAX_LENGTH);
+        validator().checkEmailAddress(true, "userName", userName);
+        validator().checkString(true, "userName", userName,
+                ApiConstants.WEB_USER_NAME_MIN_LENGTH,
+                ApiConstants.WEB_USER_NAME_MAX_LENGTH);
+        validator().checkString(true, "password", password,
+                ApiConstants.WEB_PASSWORD_MIN_LENGTH,
+                ApiConstants.WEB_PASSWORD_MAX_LENGTH);
         validator().done();
     }
 
-    public AppLoginDTO(
-            @Nonnull final String appId,
-            @Nonnull final String appToken) {
+    public LoginUserNameDTO(
+            @Nonnull final String userName,
+            @Nonnull final String password) {
         super();
-        setAppId(appId);
-        setAppToken(appToken);
+        setUserName(userName);
+        setPassword(password);
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @Deprecated
-    private AppLoginDTO() {
+    private LoginUserNameDTO() {
         // Default constructor required by JAX-B.
         super();
     }
 
-    @XmlElement(name = "appId", required = true)
+    @XmlElement(name = "userName", required = true)
     @Nonnull
-    public String getAppId() {
+    public String getUserName() {
         beforeGet();
-        assert appId != null;
-        return appId;
+        assert userName != null;
+        return userName.toLowerCase();
     }
 
-    public void setAppId(@Nullable final String appId) {
+    public void setUserName(@Nullable final String userName) {
         beforeSet();
-        this.appId = trim(appId);
+        this.userName = literalToLowerCase(trim(userName)); // Treat the same as userName in AccountDTO.
     }
 
-    @XmlElement(name = "appToken", required = true)
+    @XmlElement(name = "password", required = true)
     @Nonnull
-    public String getAppToken() {
+    public String getPassword() {
         beforeGet();
-        assert appToken != null;
-        return appToken;
+        assert password != null;
+        return password;
     }
 
-    public void setAppToken(@Nullable final String appToken) {
+    public void setPassword(@Nullable final String password) {
         beforeSet();
-        this.appToken = trim(appToken);
+        this.password = password; // Not trimmed, since leading or trailing whitespace might be significant.
     }
 }

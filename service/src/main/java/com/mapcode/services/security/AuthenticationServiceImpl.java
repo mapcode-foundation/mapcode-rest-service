@@ -17,7 +17,6 @@ package com.mapcode.services.security;
 
 
 import com.google.inject.Inject;
-import com.tomtom.speedtools.checksums.SHA1Hash;
 import com.tomtom.speedtools.domain.Uid;
 import com.tomtom.speedtools.rest.security.AuthenticationService;
 import com.tomtom.speedtools.rest.security.Identity;
@@ -37,6 +36,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Nonnull
     private static final Logger LOG = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
 
+    private static final String theSecret = "123456";
+    private static final Identity theIdentity = new Identity(Uid.fromString("1-2-3-4-5"), "info@mapcode.com");
+
     @Inject
     public AuthenticationServiceImpl() {
         LOG.debug("AuthenticationServiceImpl: created");
@@ -47,12 +49,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public Identity authenticateByUserName(@Nonnull final String userName, @Nonnull final Password password) {
         assert userName != null;
         assert password != null;
+        LOG.debug("authenticateByUserName: userName={}", userName);
 
         // Hard-coded password check.
         final Identity identity;
-        final String hashedPwd = SHA1Hash.hash("123").toString();
-        if (hashedPwd.equals(password.getHash())) {
-            identity = new Identity(Uid.fromString("1-2-3-4-5"), "mapcode");
+        if (theIdentity.getUserName().equals(userName) && theSecret.equals(password.getHash())) {
+            identity = theIdentity;
         } else {
             identity = null;
         }
@@ -68,8 +70,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         // Hard-coded password check.
         final Identity identity;
-        if (plaintextToken.equals("123")) {
-            identity = new Identity(Uid.fromString("1-2-3-4-5"), "mapcode");
+        if (theIdentity.getId().as(App.class).equals(appId) && plaintextToken.equals(theSecret)) {
+            identity = theIdentity;
         } else {
             identity = null;
         }

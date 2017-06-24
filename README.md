@@ -212,6 +212,47 @@ Or use a tool like cURL:
 
 There's also an example HTML page in the `examples/index.html` for HTML/Javascript developers.
 
+### Getting a Session Token in a Debug Session
+
+Some REST APIs, such as `GET mapcode/metrics` require authentication. You can get a session on the
+command-line like this:
+
+```
+    $ http post http://localhost:8080/sessions/username userName=info@mapcode.com password=123456   
+    
+    HTTP/1.1 201 Created
+    Content-Length: 84
+    Content-Type: application/json
+    Date: Sat, 24 Jun 2017 16:40:54 GMT
+    Expires: Thu, 01 Jan 1970 00:00:00 GMT
+    Server: Jetty(8.1.7.v20120910)
+    Set-Cookie: JSESSIONID=15j59gfek2kk9s86b8n321xzu;Path=/
+    
+    {
+        "id": "15j59gfek2kk9s86b8n321xzu",
+        "personId": "00000001-0002-0003-0004-000000000005"
+    }
+```
+   
+Then, you can pass the session token as a cookie in the HTTP request, like this:
+    
+```    
+    $ http get http://localhost:8080/mapcode/metrics 'Cookie:JSESSIONID=15j59gfek2kk9s86b8n321xzu;Path=/'
+    
+    HTTP/1.1 200 OK
+    Content-Length: 21417
+    Content-Type: application/json
+    Date: Sat, 24 Jun 2017 16:41:23 GMT
+    Server: Jetty(8.1.7.v20120910)
+    
+    {
+        "all": {
+            "ALL_ALPHABET_REQUESTS": {
+                "calculators": [
+                    {
+                        "count": 0,
+     ...
+```    
 
 ## Using Git and `.gitignore`
 

@@ -16,8 +16,8 @@
 package com.mapcode.services;
 
 
-import com.mapcode.services.dto.AppLoginDTO;
-import com.mapcode.services.dto.LoginDTO;
+import com.mapcode.services.dto.LoginAppTokenDTO;
+import com.mapcode.services.dto.LoginUserNameDTO;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -58,13 +58,13 @@ public interface SessionResource {
      * 
      * Returns HTTP status code 401 when login failed.
      *
-     * @param loginDTO Login data passed by the client.
+     * @param loginUserNameDTO Login data passed by the client.
      * @param response {@link AsyncResponse} of type {@link com.mapcode.services.dto.SessionCreatedDTO}.
      */
     @POST
     @Path("username")
     void loginUserName(
-            @Nullable LoginDTO loginDTO,
+            @Nullable LoginUserNameDTO loginUserNameDTO,
             @Suspended @Nonnull AsyncResponse response);
 
     /**
@@ -74,13 +74,13 @@ public interface SessionResource {
      * 
      * Returns HTTP status code 401 when login failed.
      *
-     * @param appLoginDTO Login data passed by the client.
+     * @param loginAppTokenDTO Login data passed by the client.
      * @param response    {@link AsyncResponse} of type {@link com.mapcode.services.dto.SessionCreatedDTO}.
      */
     @POST
     @Path("token")
     void loginAppToken(
-            @Nullable AppLoginDTO appLoginDTO,
+            @Nullable LoginAppTokenDTO loginAppTokenDTO,
             @Suspended @Nonnull AsyncResponse response);
 
     /**

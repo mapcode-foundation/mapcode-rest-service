@@ -53,17 +53,17 @@ public final class ApiConstants {
     public static final int API_PRECISION_MIN = 0;
     public static final int API_PRECISION_MAX = 8;
 
-    public static final int       WEB_ID_MAX_LENGTH                       = 200;
-    public static final int       WEB_ID_MIN_LENGTH                       = 0;
+    public static final int WEB_ID_MAX_LENGTH = 200;
+    public static final int WEB_ID_MIN_LENGTH = 0;
 
-    public static final int WEB_APP_TOKEN_MAX_LENGTH = 250;
-    public static final int WEB_APP_TOKEN_MIN_LENGTH = 0;
+    public static final int WEB_APP_TOKEN_MAX_LENGTH = 255;
+    public static final int WEB_APP_TOKEN_MIN_LENGTH = 1;
 
     public static final int WEB_PASSWORD_MAX_LENGTH = 32;
     public static final int WEB_PASSWORD_MIN_LENGTH = 6;
 
-    public static final int WEB_USER_NAME_MAX_LENGTH = 50;
-    public static final int WEB_USER_NAME_MIN_LENGTH = 5;
+    public static final int WEB_USER_NAME_MAX_LENGTH = 64;
+    public static final int WEB_USER_NAME_MIN_LENGTH = 1;
 
     // Prevent instantiation.
     private ApiConstants() {
