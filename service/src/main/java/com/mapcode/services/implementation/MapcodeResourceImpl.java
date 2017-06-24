@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2016, Stichting Mapcode Foundation (http://www.mapcode.com)
+ * Copyright (C) 2016-2017, Stichting Mapcode Foundation (http://www.mapcode.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,7 +22,7 @@ import com.mapcode.*;
 import com.mapcode.Territory.AlphaCodeFormat;
 import com.mapcode.services.ApiConstants;
 import com.mapcode.services.MapcodeResource;
-import com.mapcode.services.SystemMetricsCollector;
+import com.mapcode.services.metrics.SystemMetricsCollector;
 import com.mapcode.services.dto.*;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiForbiddenException;
