@@ -305,7 +305,11 @@ self-hosting this service.
 
 ### 2.4.3.1
  
+* Updated dependency on SpeedTools.
+
 * Implemented security for REST calls.
+
+* Updated all copyright notices.
 
 ### 2.4.2 - 2.4.3
 
