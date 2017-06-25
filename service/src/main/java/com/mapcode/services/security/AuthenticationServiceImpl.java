@@ -52,8 +52,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Nonnull
     private static final Logger LOG = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
 
-    private static final String theSecret = "123456";
-    private static final Identity theIdentity = new Identity(Uid.fromString("1-2-3-4-5"), "info@mapcode.com");
+    private static final String THE_SECRET = "123456";
+    private static final Identity THE_IDENTITY = new Identity(Uid.fromString("1-2-3-4-5"), "info@mapcode.com");
 
     @Inject
     public AuthenticationServiceImpl() {
@@ -69,8 +69,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         // Hard-coded password check.
         final Identity identity;
-        if (theIdentity.getUserName().equals(userName) && theSecret.equals(password.getHash())) {
-            identity = theIdentity;
+        if (THE_IDENTITY.getUserName().equals(userName) && THE_SECRET.equals(password.getHash())) {
+            identity = THE_IDENTITY;
         } else {
             identity = null;
         }
@@ -86,8 +86,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         // Hard-coded password check.
         final Identity identity;
-        if (theIdentity.getId().as(App.class).equals(appId) && plaintextToken.equals(theSecret)) {
-            identity = theIdentity;
+        if (THE_IDENTITY.getId().as(App.class).equals(appId) && plaintextToken.equals(THE_SECRET)) {
+            identity = THE_IDENTITY;
         } else {
             identity = null;
         }
