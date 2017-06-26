@@ -104,7 +104,7 @@
         <resteasy.version>3.0.19.Final</resteasy.version>
         <scala.version>2.11.11</scala.version>
         <slf4j.version>1.7.25</slf4j.version>
-        <speedtools.version>3.1.1</speedtools.version>
+        <speedtools.version>3.2.0</speedtools.version>
 
         <maven.httpserver.port>8080</maven.httpserver.port>
         <maven.httpserver.root>/</maven.httpserver.root>
@@ -221,12 +221,6 @@
 
             <dependency>
                 <groupId>com.tomtom.speedtools</groupId>
-                <artifactId>mongodb</artifactId>
-                <version>${speedtools.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.tomtom.speedtools</groupId>
                 <artifactId>resources</artifactId>
                 <version>${speedtools.version}</version>
             </dependency>
@@ -240,6 +234,12 @@
             <dependency>
                 <groupId>com.tomtom.speedtools</groupId>
                 <artifactId>testutils</artifactId>
+                <version>${speedtools.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.tomtom.speedtools</groupId>
+                <artifactId>tracer</artifactId>
                 <version>${speedtools.version}</version>
             </dependency>
 

@@ -57,7 +57,7 @@
 
         <dependency>
             <groupId>com.tomtom.speedtools</groupId>
-            <artifactId>mongodb</artifactId>
+            <artifactId>tracer</artifactId>
         </dependency>
 
         <dependency>

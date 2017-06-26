@@ -76,12 +76,16 @@ public interface SystemMetrics {
     @Nonnull
     MultiMetricsData getAllMapcodeToLatLonRequests();
 
+    @Nonnull
     MultiMetricsData getAllClientNoneMapcodeToLatLonRequests();
 
+    @Nonnull
     MultiMetricsData getAllClientIOSMapcodeToLatLonRequests();
 
+    @Nonnull
     MultiMetricsData getAllClientAndroidMapcodeToLatLonRequests();
 
+    @Nonnull
     MultiMetricsData getAllClientWebMapcodeToLatLonRequests();
 
     /**
@@ -96,12 +100,16 @@ public interface SystemMetrics {
     @Nonnull
     MultiMetricsData getAllLatLonToMapcodeRequests();
 
+    @Nonnull
     MultiMetricsData getAllClientNoneLatLonToMapcodeRequests();
 
+    @Nonnull
     MultiMetricsData getAllClientIOSLatLonToMapcodeRequests();
 
+    @Nonnull
     MultiMetricsData getAllClientAndroidLatLonToMapcodeRequests();
 
+    @Nonnull
     MultiMetricsData getAllClientWebLatLonToMapcodeRequests();
 
     /**

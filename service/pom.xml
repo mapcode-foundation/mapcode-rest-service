@@ -113,12 +113,12 @@
 
         <dependency>
             <groupId>com.tomtom.speedtools</groupId>
-            <artifactId>mongodb</artifactId>
+            <artifactId>testutils</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.tomtom.speedtools</groupId>
-            <artifactId>testutils</artifactId>
+            <artifactId>tracer</artifactId>
         </dependency>
 
         <dependency>
