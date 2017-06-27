@@ -60,9 +60,6 @@
         </listener-class>
     </listener>
 
-    <!-- Include a custom listener for a shutdown request, to try and shut down the Akka
-         system properly, so actors can flush their info, if required.
-    -->
     <servlet>
         <servlet-name>Resteasy</servlet-name>
         <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
