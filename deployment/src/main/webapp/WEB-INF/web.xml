@@ -44,38 +44,11 @@
         </param-value>
     </context-param>
 
-    <context-param>
-        <param-name>resteasy.async.job.service.enabled</param-name>
-        <param-value>true</param-value>
-    </context-param>
-
-    <context-param>
-        <param-name>resteasy.async.job.service.max.job.results</param-name>
-        <param-value>100</param-value>
-    </context-param>
-
-    <context-param>
-        <param-name>resteasy.async.job.service.max.wait</param-name>
-        <param-value>300000</param-value>
-    </context-param>
-
-    <context-param>
-        <param-name>resteasy.async.job.service.thread.pool.size</param-name>
-        <param-value>100</param-value>
-    </context-param>
-
-    <context-param>
-        <param-name>resteasy.async.job.service.base.path</param-name>
-        <param-value>/asyncjobs</param-value>
-    </context-param>
-
     <!-- Replace the default bootstrap servlet container listener with a version that logs
          warnings and errors to the logger, for debugging purposes.
     -->
     <listener>
-        <listener-class>
-            com.tomtom.speedtools.guice.LoggingGuiceResteasyBootstrapServletContextListener
-        </listener-class>
+        <listener-class>com.tomtom.speedtools.guice.LoggingGuiceResteasyBootstrapServletContextListener</listener-class>
     </listener>
 
     <!-- Include a custom listener for a shutdown request, to try and shut down the Akka
@@ -92,21 +65,7 @@
     -->
     <servlet>
         <servlet-name>Resteasy</servlet-name>
-
-        <!--
-            We use a custom dispatcher in order to be able to access the HttpServletRequest
-            in an Resteasy interceptor.
-        -->
-        <servlet-class>
-            com.tomtom.speedtools.rest.CustomHttpServlet30Dispatcher
-        </servlet-class>
-
-        <!-- Original servlet dispatcher:
-        <servlet-class>
-            org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
-        </servlet-class>
-        -->
-
+        <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
         <async-supported>true</async-supported>
     </servlet>
 
