@@ -35,7 +35,23 @@ public class MainCommandLine {
 
     private static final int DEFAULT_PORT = 8080;
 
-    private static Server server;
+    private static final Server server;
+    private static final Logger rootLogger;
+    private static final ConsoleAppender consoleAppender;
+
+    // Static init.
+    static {
+        final Injector guice = createGuice();
+        server = guice.getInstance(Server.class);
+
+        // Configure log4j.
+        rootLogger = Logger.getRootLogger();
+        rootLogger.setLevel(Level.INFO);
+
+        consoleAppender = new ConsoleAppender(new SimpleLayout());
+        consoleAppender.setThreshold(Level.INFO);
+        rootLogger.addAppender(consoleAppender);
+    }
 
     private MainCommandLine() {
         // Prevent instantiation.
@@ -45,14 +61,6 @@ public class MainCommandLine {
         int port = DEFAULT_PORT;
         String command = null;
         boolean debug = false;
-
-        // Configure log4j.
-        final Logger rootLogger = Logger.getRootLogger();
-        rootLogger.setLevel(Level.INFO);
-
-        final ConsoleAppender consoleAppender = new ConsoleAppender(new SimpleLayout());
-        consoleAppender.setThreshold(Level.INFO);
-        rootLogger.addAppender(consoleAppender);
 
         // Parse command-line arguments.
         int index = 0;
@@ -102,8 +110,6 @@ public class MainCommandLine {
         if ((command != null) && command.equals(CMD_HELP)) {
             printUsage();
         } else {
-            final Injector guice = createGuice();
-            server = guice.getInstance(Server.class);
             server.startServer(port);
         }
     }
