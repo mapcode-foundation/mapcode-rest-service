@@ -81,6 +81,7 @@
         <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
         <maven-jetty-plugin.version>8.1.9.v20130131</maven-jetty-plugin.version>
         <maven-project-info-reports-plugin.version>2.9</maven-project-info-reports-plugin.version>
+        <maven-remote-resources-plugin.version>1.5</maven-remote-resources-plugin.version>
         <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>2.20</maven-surefire-plugin.version>
@@ -471,6 +472,13 @@
                     <!--suppress MavenModelInspection -->
                     <argLine>${argLine} -Xmx1024m -ea</argLine>
                 </configuration>
+            </plugin>
+
+            <!-- Remote resources. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+                <version>${maven-remote-resources-plugin.version}</version>
             </plugin>
 
             <!-- Code coverage collection using Coveralls.io. -->
