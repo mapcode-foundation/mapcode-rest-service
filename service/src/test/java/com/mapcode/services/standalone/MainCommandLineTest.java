@@ -72,15 +72,15 @@ public class MainCommandLineTest {
 
     public void checkVersionXmlJson() {
         LOG.info("checkVersionXmlJson");
-        final String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><version><version>1.0</version></version>";
-        final String expectedJson = "{\"version\":\"1.0\"}";
+        final String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><version>";
+        final String expectedJson = "{\"version\":\"";
         Response response = new ResteasyClientBuilder().build().
                 target(localUrl("/mapcode/version")).
                 request().
                 accept(MediaType.APPLICATION_XML_TYPE).get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals(expectedXml, response.readEntity(String.class));
+        Assert.assertTrue(response.readEntity(String.class).contains(expectedXml));
 
         response = new ResteasyClientBuilder().build().
                 target(localUrl("/mapcode/xml/version")).
@@ -88,7 +88,7 @@ public class MainCommandLineTest {
                 get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals(expectedXml, response.readEntity(String.class));
+        Assert.assertTrue(response.readEntity(String.class).contains(expectedXml));
 
         response = new ResteasyClientBuilder().build().
                 target(localUrl("/mapcode/json/version")).
@@ -96,7 +96,7 @@ public class MainCommandLineTest {
                 get();
         Assert.assertNotNull(response);
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals(expectedJson, response.readEntity(String.class));
+        Assert.assertTrue(response.readEntity(String.class).contains(expectedJson));
     }
 
     @Nonnull

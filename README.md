@@ -303,7 +303,7 @@ self-hosting this service.
 
 ## Release Notes
 
-### 2.4.3.1
+### 2.4.3.1 - 2.4.3.3
  
 * Updated dependency on SpeedTools.
 
