@@ -127,7 +127,8 @@ public class MainCommandLine {
         return Guice.createInjector(
                 new GuiceConfigurationModule(
                         "classpath:speedtools.default.properties",      // Default set required by SpeedTools.
-                        "classpath:mapcode.properties"),                // Mapcode properties.
+                        "classpath:mapcode.properties",                 // Mapcode properties.
+                        "classpath:mapcode-secret.properties"),         // Mapcode secret properties.
                 new ServicesModule(),
                 new ResourcesModule(),
                 new StandaloneModule());
