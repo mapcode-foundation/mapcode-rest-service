@@ -152,8 +152,10 @@ make it impossible to change them without recompiling the service.
 #### `log4j.xml`
 
 The file `log4j.xml` specifies the log levels during operations. An example of a `log4j.xml` file
-can be found in `service/src/test/resources/log4j.xml`. Make sure that file can be found on the classpath
-or add it `services/src/main/resources` before building and it will be integrated in the WAR file.
+can be found in `resources/src/main/external-resources-examples/log4j.xml`. 
+
+Make sure that file can be found on the classpath
+or add it `resources/src/main/external-resources` before building and it will be integrated in the WAR file.
 
 #### `mapcode-secret.properties`
  
@@ -161,7 +163,7 @@ The properties file `mapcode-secret.properties` contains the username and passwo
 your MongDB database server for tracing, should you wish to use that.
 
 If you get a start-up error complaining about a missing `mapcode-secret.properties` file,
-make sure you add it to the classpath (or add it to `service/src/main/resources`) before building.
+make sure you add it to the classpath (or add it to `resources/src/main/external-resources`) before building.
 
 By default, you can simply use an empty `mapcode-secret.properties` file. So, you may want to
 use the example file as a starting point:
