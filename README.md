@@ -164,11 +164,15 @@ If you get a start-up error complaining about a missing `mapcode-secret.properti
 make sure you add it to the classpath (or add it to `service/src/main/resources`) before building.
 
 By default, you can simply use an empty `mapcode-secret.properties` file. So, you may want to
-just create an empty file by executing:
+use the example file as a starting point:
 
-    touch src/main/resource/mapcode-secret.properties
+    cd resources/src/main
+    cp external-resources-example/* external-resources/
 
-Note that the file `mapcode-secret.properties` is ignored by Git in `.gitignore`.
+This will copy an example `log4j.xml` and `mapcode-secret.properties` file to your 
+resources.
+
+Note that the files in `external-resources` are ignored by Git in `.gitignore`.
 
 If you wish to use MongoDB tracing, will need to provide your own local
 `mapcode-secret.properties`, which override the following properties:
