@@ -41,37 +41,17 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
-
-            <resource>
-                <directory>src/main/external-resources</directory>
-                <filtering>true</filtering>
-            </resource>
         </resources>
-
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-remote-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>bundle</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>src/main/external-resources/*</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
     </build>
 
-    <!-- Test profiles. -->
     <profiles>
+
+        <!-- Test profile. Uses example properties from external-resources-example. -->
         <profile>
             <id>test</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <build>
                 <resources>
                     <resource>
@@ -82,7 +62,6 @@
 
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-remote-resources-plugin</artifactId>
                         <executions>
                             <execution>
@@ -92,6 +71,37 @@
                                 <configuration>
                                     <includes>
                                         <include>src/main/external-resources-example/*</include>
+                                    </includes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Default profile. Uses "real" properties from external-resources. -->
+        <profile>
+            <id>prod</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/external-resources</directory>
+                        <filtering>true</filtering>
+                    </resource>
+                </resources>
+
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-remote-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>bundle</goal>
+                                </goals>
+                                <configuration>
+                                    <includes>
+                                        <include>src/main/external-resources/*</include>
                                     </includes>
                                 </configuration>
                             </execution>

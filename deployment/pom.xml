@@ -114,13 +114,13 @@
                         <id>move-main-class</id>
                         <phase>compile</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <copy todir="${project.basedir}/target/webapp/">
                                     <fileset dir="${project.build.directory}/classes/">
                                         <include name="com/mapcode/services/cli/*.class"/>
                                     </fileset>
                                 </copy>
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>

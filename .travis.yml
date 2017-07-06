@@ -5,13 +5,13 @@ sudo: false
 jdk:
     - oraclejdk8
 
-install: mvn install -DskipTests -Dgpg.skip -Ptest
+install: mvn install -DskipTests -Dgpg.skip
 
 script:
-    - mvn verify -Dgpg.skip -Ptest
+    - mvn verify -Dgpg.skip
 
 after_success:
-    - mvn coveralls:report -Dgpg.skip -Ptest
+    - mvn coveralls:report -Dgpg.skip
 
 cache:
   directories:

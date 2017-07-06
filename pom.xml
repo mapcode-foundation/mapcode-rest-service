@@ -542,4 +542,78 @@
             </plugin>
         </plugins>
     </reporting>
+
+    <profiles>
+
+        <!-- Test profile. Uses example properties from external-resources-example. -->
+        <profile>
+            <id>test</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <echo>
+                                            .
+                                            .
+                                            ***********************************************************
+                                            ** This is a TEST build.
+                                            ** --------------------------------------------------------
+                                            ** Do NOT install in production environment!
+                                            ***********************************************************
+                                            .
+                                            .
+                                        </echo>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Default profile. Uses "real" properties from external-resources. -->
+        <profile>
+            <id>prod</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <echo>
+                                            .
+                                            .
+                                            ***********************************************************
+                                            ** This is a PRODUCTION build.
+                                            ***********************************************************
+                                            .
+                                            .
+                                        </echo>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
