@@ -403,6 +403,13 @@
     <build>
         <plugins>
 
+            <!-- Maven WAR plugin. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${maven-war-plugin.version}</version>
+            </plugin>
+
             <!-- Java compiler. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -472,12 +479,6 @@
                     <!--suppress MavenModelInspection -->
                     <argLine>${argLine} -Xmx1024m -ea</argLine>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>${maven-war-plugin.version}</version>
             </plugin>
 
             <!-- Remote resources. -->
