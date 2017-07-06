@@ -403,13 +403,6 @@
     <build>
         <plugins>
 
-            <!-- Maven WAR plugin. -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>${maven-war-plugin.version}</version>
-            </plugin>
-
             <!-- Java compiler. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -517,12 +510,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>${maven-jetty-plugin.version}</version>
             </plugin>
         </plugins>
     </build>

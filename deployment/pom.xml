@@ -108,6 +108,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
+                <version>${maven-antrun-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>move-main-class</id>
@@ -131,6 +132,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+                <version>${maven-war-plugin.version}</version>
                 <configuration>
                     <attachClasses>true</attachClasses>
                     <classesClassifier>classes</classesClassifier>
@@ -153,6 +155,7 @@
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
+                <version>${maven-jetty-plugin.version}</version>
                 <configuration>
                     <webApp>
                         <contextPath>${maven.httpserver.root}</contextPath>
