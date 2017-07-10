@@ -176,6 +176,9 @@ resources.
 
 Note that the files in `external-resources` are ignored by Git in `.gitignore`.
 
+
+#### Using a Capped Collection for Traces in MongoDB
+
 If you wish to use MongoDB tracing, will need to provide your own local
 `mapcode-secret.properties`, which override the following properties:
 
@@ -187,8 +190,24 @@ If you wish to use MongoDB tracing, will need to provide your own local
     MongoDBTrace.password = your-password
 ```
 
-The service will work with an empty file as well, but will not trace events to the
+The service will work with an empty properties file as well, but will not trace events to the
 database.
+
+To make sure the `traces` collection in the MongoDB database does not grow forever, you should
+create a "capped collection" for it, or convert an existing traces database to a capped collection.
+This can be done as follows, in the MongoDB shell `mongo`:
+
+```
+    use trace
+    db.runCommand({"convertToCapped": "traces", size: 2*1024*1024*1024});   // For example, limit to 2Gb of data.
+```
+
+You can inspect the status of the `trace` database like this:
+
+```
+    use trace
+    db.traces.stats()
+```
 
 
 ### Using Java 8 on MacOSX
