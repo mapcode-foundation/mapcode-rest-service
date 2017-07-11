@@ -153,6 +153,24 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+                <version>${maven-remote-resources-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <configuration>
+                            <resourceBundles>
+                                <resourceBundle>com.tomtom.speedtools:resources:${speedtools.version}</resourceBundle>
+                            </resourceBundles>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${maven-jetty-plugin.version}</version>

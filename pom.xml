@@ -545,7 +545,7 @@
 
     <profiles>
 
-        <!-- Test profile. Uses example properties from external-resources-example. -->
+        <!-- Test profile. Uses example properties from external-resources-test. -->
         <profile>
             <id>test</id>
             <activation>

@@ -152,7 +152,7 @@ make it impossible to change them without recompiling the service.
 #### `log4j.xml`
 
 The file `log4j.xml` specifies the log levels during operations. An example of a `log4j.xml` file
-can be found in `resources/src/main/external-resources-examples/log4j.xml`. 
+can be found in `resources/src/main/external-resources-test/log4j.xml`. 
 
 Make sure that file can be found on the classpath
 or add it `resources/src/main/external-resources` before building and it will be integrated in the WAR file.
@@ -169,7 +169,7 @@ By default, you can simply use an empty `mapcode-secret.properties` file. So, yo
 use the example file as a starting point:
 
     cd resources/src/main
-    cp external-resources-example/* external-resources/
+    cp external-resources-test/* external-resources/
 
 This will copy an example `log4j.xml` and `mapcode-secret.properties` file to your 
 resources.

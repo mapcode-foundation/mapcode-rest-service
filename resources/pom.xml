@@ -46,7 +46,7 @@
 
     <profiles>
 
-        <!-- Test profile. Uses example properties from external-resources-example. -->
+        <!-- Test profile. Uses example properties from external-resources-test. -->
         <profile>
             <id>test</id>
             <activation>
@@ -55,7 +55,7 @@
             <build>
                 <resources>
                     <resource>
-                        <directory>src/main/external-resources-example</directory>
+                        <directory>src/main/external-resources-test</directory>
                         <filtering>true</filtering>
                     </resource>
                 </resources>
@@ -71,7 +71,7 @@
                                 </goals>
                                 <configuration>
                                     <includes>
-                                        <include>src/main/external-resources-example/*</include>
+                                        <include>src/main/external-resources-test/*</include>
                                     </includes>
                                 </configuration>
                             </execution>
