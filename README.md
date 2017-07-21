@@ -328,6 +328,10 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.4.0
+
+* Upgraded to Mapcode Library 2.4.4.
+
 ### 2.4.3.1 - 2.4.3.3
  
 * Updated dependency on SpeedTools.

@@ -1,4 +1,4 @@
-resources/src/main/external-resources/mapcode-secret.properties
+**/mapcode-secret.properties
 resources/src/main/external-resources/log4j.xml
 out/
 target/
