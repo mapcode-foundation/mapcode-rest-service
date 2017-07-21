@@ -71,7 +71,9 @@
                                 </goals>
                                 <configuration>
                                     <includes>
-                                        <include>src/main/external-resources-test/*</include>
+                                        <include>**/external-resources-test/*.properties</include>
+                                        <include>**/external-resources-test/*.xml</include>
+                                        <include>**/external-resources-test/*.conf</include>
                                     </includes>
                                 </configuration>
                             </execution>
@@ -103,7 +105,9 @@
                                 </goals>
                                 <configuration>
                                     <includes>
-                                        <include>src/main/external-resources/*</include>
+                                        <include>**/external-resources/*.properties</include>
+                                        <include>**/external-resources/*.xml</include>
+                                        <include>**/external-resources/*.conf</include>
                                     </includes>
                                 </configuration>
                             </execution>
