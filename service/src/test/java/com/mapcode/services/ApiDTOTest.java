@@ -74,11 +74,11 @@ public class ApiDTOTest {
     @Test
     public void checkCoordinatesDTO() {
         LOG.info("checkCoordinatesDTO");
-        CoordinatesDTO x = new CoordinatesDTO(1.0, 2.0);
+        PointDTO x = new PointDTO(1.0, 2.0);
         assertEquals(1.0, x.getLatDeg(), 0.01);
         assertEquals(2.0, x.getLonDeg(), 0.01);
 
-        x = new CoordinatesDTO(1.0, 2.0);
+        x = new PointDTO(1.0, 2.0);
         x.setLatDeg(-90.0);
         x.setLonDeg(-180.0);
         assertEquals(-90.0, x.getLatDeg(), 0.01);

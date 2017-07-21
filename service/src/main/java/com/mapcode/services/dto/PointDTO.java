@@ -18,6 +18,7 @@ package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.mapcode.Point;
 import com.mapcode.services.ApiConstants;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
 
@@ -31,7 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "point")
 @XmlAccessorType(XmlAccessType.FIELD)
-public final class CoordinatesDTO extends ApiDTO {
+public final class PointDTO extends ApiDTO {
 
     @XmlElement(name = "latDeg")
     @Nonnull
@@ -49,16 +50,20 @@ public final class CoordinatesDTO extends ApiDTO {
         validator().done();
     }
 
-    public CoordinatesDTO(
+    public PointDTO(
             @Nonnull final Double latDeg,
             @Nonnull final Double lonDeg) {
         this.latDeg = latDeg;
         this.lonDeg = lonDeg;
     }
 
+    public PointDTO(@Nonnull final Point point) {
+        this(point.getLatDeg(), point.getLonDeg());
+    }
+
     @SuppressWarnings("UnusedDeclaration")
     @Deprecated
-    private CoordinatesDTO() {
+    private PointDTO() {
         // Default constructor required by JAX-B.
         super();
     }

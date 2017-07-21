@@ -51,6 +51,7 @@ public final class SessionCreatedDTO extends ApiDTO {
 
     @Nullable
     private String id;
+
     @Nullable
     private String personId;
 

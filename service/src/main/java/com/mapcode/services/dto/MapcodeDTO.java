@@ -54,6 +54,10 @@ public final class MapcodeDTO extends ApiDTO {
     @Nullable
     private Double offsetMeters;
 
+    @XmlElement(name = "rectangle")
+    @Nullable
+    private RectangleDTO rectangle;
+
     @Override
     public void validate() {
         validator().start();
@@ -62,6 +66,7 @@ public final class MapcodeDTO extends ApiDTO {
         validator().checkString(false, "territory", territory, ApiConstants.API_TERRITORY_LEN_MIN, ApiConstants.API_TERRITORY_LEN_MAX);
         validator().checkString(false, "territoryInAlphabet", territoryInAlphabet, ApiConstants.API_TERRITORY_LEN_MIN, ApiConstants.API_TERRITORY_LEN_MAX);
         validator().checkDouble(false, "offsetMeters", offsetMeters, -Double.MAX_VALUE, Double.MAX_VALUE, false);
+        validator().checkNotNullAndValidate(false, "rectangle", rectangle);
         validator().done();
     }
 
@@ -70,12 +75,48 @@ public final class MapcodeDTO extends ApiDTO {
             @Nullable final String mapcodeInAlphabet,
             @Nullable final String territory,
             @Nullable final String territoryInAlphabet,
-            @Nullable final Double offsetMeters) {
+            @Nullable final Double offsetMeters,
+            @Nullable final RectangleDTO rectangle) {
         this.mapcode = mapcode;
         this.mapcodeInAlphabet = mapcodeInAlphabet;
         this.territory = territory;
         this.territoryInAlphabet = territoryInAlphabet;
         this.offsetMeters = offsetMeters;
+        this.rectangle = rectangle;
+    }
+
+    public MapcodeDTO(
+            @Nonnull final String mapcode,
+            @Nullable final String mapcodeInAlphabet,
+            @Nullable final String territory,
+            @Nullable final String territoryInAlphabet,
+            @Nullable final Double offsetMeters) {
+        this(mapcode, mapcodeInAlphabet, territory, territoryInAlphabet, offsetMeters, null);
+    }
+
+    public MapcodeDTO(
+            @Nonnull final String mapcode,
+            @Nullable final String mapcodeInAlphabet,
+            @Nullable final String territory,
+            @Nullable final String territoryInAlphabet) {
+        this(mapcode, mapcodeInAlphabet, territory, territoryInAlphabet, null, null);
+    }
+
+    public MapcodeDTO(
+            @Nonnull final String mapcode,
+            @Nullable final String mapcodeInAlphabet,
+            @Nullable final String territory) {
+        this(mapcode, mapcodeInAlphabet, territory, null, null, null);
+    }
+
+    public MapcodeDTO(
+            @Nonnull final String mapcode,
+            @Nullable final String mapcodeInAlphabet) {
+        this(mapcode, mapcodeInAlphabet, null, null, null, null);
+    }
+
+    public MapcodeDTO(@Nonnull final String mapcode) {
+        this(mapcode, null, null, null, null, null);
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -139,5 +180,16 @@ public final class MapcodeDTO extends ApiDTO {
     public void setOffsetMeters(@Nullable final Double offsetMeters) {
         beforeSet();
         this.offsetMeters = offsetMeters;
+    }
+
+    @Nullable
+    public RectangleDTO getRectangle() {
+        beforeGet();
+        return rectangle;
+    }
+
+    public void setRectangle(@Nullable final RectangleDTO rectangle) {
+        beforeSet();
+        this.rectangle = rectangle;
     }
 }

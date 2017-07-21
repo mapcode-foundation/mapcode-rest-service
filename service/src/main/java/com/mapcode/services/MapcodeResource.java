@@ -17,19 +17,14 @@
 package com.mapcode.services;
 
 import com.mapcode.services.dto.AlphabetListDTO;
-import com.mapcode.services.dto.CoordinatesDTO;
 import com.mapcode.services.dto.MapcodesDTO;
+import com.mapcode.services.dto.PointDTO;
 import com.mapcode.services.dto.TerritoryListDTO;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
@@ -49,7 +44,8 @@ public interface MapcodeResource {
     enum ParamInclude {
         OFFSET,             // Includes offset (in meters) from center of mapcode to originally specified lat/lon.
         TERRITORY,          // Force including the territory, even when the territory code is "AAA".
-        ALPHABET            // Force including the mapcodeInAlphabet attribute, even if it is the same as the mapcode.
+        ALPHABET,           // Force including the mapcodeInAlphabet attribute, even if it is the same as the mapcode.
+        RECTANGLE           // Include encompassing rectangle of mapcode in result.
     }
 
     /**
@@ -62,7 +58,7 @@ public interface MapcodeResource {
     static final String PARAM_ALPHABET = "alphabet";
     static final String PARAM_CONTEXT = "context";
     static final String PARAM_TYPE = "type";
-    static final String PARAM_CODE = "mapcode";
+    static final String PARAM_CODE = "code";
     static final String PARAM_INCLUDE = "include";
     static final String PARAM_COUNT = "count";
     static final String PARAM_OFFSET = "offset";
@@ -167,7 +163,8 @@ public interface MapcodeResource {
      *                               If the mapcode cannot be created for the territory, an exception is thrown.
      *                               Range: any valid territory code, alpha or numeric.
      * @param paramAlphabet          Alphabet. Range: any valid alphabet code, alpha or numeric.
-     * @param paramInclude           Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
+     * @param paramInclude           Specifies whether to include additional info in the result, such as the offset (in meters)
+     *                               from the mapcode center to the specified lat/lon, or the encompassing rectangle.
      *                               Range: {@link ParamInclude}.
      * @param paramClient            Indicator of calling client (for stats).
      * @param paramContextMustBeNull Must not be used (added to allow check for incorrect usage).
@@ -249,10 +246,12 @@ public interface MapcodeResource {
      * @param paramCode                Mapcode to convert.
      * @param paramContext             Specifies a territory context for interpretation of the mapcode.
      *                                 Range: any valid territory.
+     * @param paramInclude             Specifies whether to include additional info in the result, such as the encompassing rectangle.
+     *                                 Range: {@link ParamInclude}.
      * @param paramClient              Indicator of calling client (for stats).
      * @param paramAllowLog            True if logging of data for improving the service is allowed. Default is true.
      * @param paramTerritoryMustBeNull Must not be used (added to allow check for incorrect usage).
-     * @param response                 Lat/lon. Format: {@link CoordinatesDTO}.
+     * @param response                 Lat/lon. Format: {@link PointDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @GET
@@ -262,6 +261,7 @@ public interface MapcodeResource {
             @PathParam(PARAM_CODE) @Nonnull String paramCode,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritoryMustBeNull,
+            @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
             @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
             @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
@@ -273,6 +273,7 @@ public interface MapcodeResource {
             @PathParam(PARAM_CODE) @Nonnull String paramCode,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritoryMustBeNull,
+            @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
             @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
             @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramDebug,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
@@ -284,6 +285,7 @@ public interface MapcodeResource {
             @PathParam(PARAM_CODE) @Nonnull String paramCode,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritoryMustBeNull,
+            @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
             @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
             @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramDebug,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;

@@ -328,6 +328,10 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.4.1
+
+* Added `include=rectangle` parameter to retrieve the encompassing rectangle of a mapcode.
+
 ### 2.4.4.0
 
 * Upgraded to Mapcode Library 2.4.4.

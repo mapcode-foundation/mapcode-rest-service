@@ -63,7 +63,7 @@ public class RootResourceImpl implements RootResource {
             "GET /mapcode/status  Returns 200 if the service OK.\n\n" +
 
             "GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]\n" +
-            "     [?precision=[0..8] & territory={restrictToTerritory} & alphabet={alphabet} & include={offset|territory|alphabet}]\n\n" +
+            "     [?precision=[0..8] & territory={restrictToTerritory} & alphabet={alphabet} & include={offset|territory|alphabet|rectangle}]\n\n" +
 
             "   Convert latitude/longitude to one or more mapcodes. The response always contains the 'international' mapcode and\n" +
             "   only contains a 'local' mapcode if there are any non-international mapcode AND they are all of the same territory.\n\n" +
@@ -84,18 +84,18 @@ public class RootResourceImpl implements RootResource {
             "   Query parameters:\n" +
             "     precision       : Precision, range [0..8] (default=0).\n" +
             "     territory       : Territory to restrict results to (name or alphacode).\n" +
-            "     alphabet        : Alphabet to return results in.\n\n" +
-
+            "     alphabet        : Alphabet to return results in.\n" +
             "     include         : Multiple options may be set, separated by comma's:\n" +
             "                         offset    = Include offset from mapcode center to lat/lon (in meters).\n" +
             "                         territory = Always include territory in result, also for territory 'AAA'.\n" +
-            "                         alphabet  = Always the mapcodeInAlphabet, also if same as mapcode.\n\n" +
+            "                         alphabet  = Always the mapcodeInAlphabet, also if same as mapcode.\n" +
+            "                         rectangle = Include the encompassing rectangle of a mapcode.\n\n" +
 
             "                       Note that you can use 'include=territory,alphabet' to ensure the territory code\n" +
             "                       is always present, as well as the translated territory and mapcode codes.\n" +
             "                       This can make processing the records easier in scripts, for example.\n\n" +
 
-            "GET /mapcode/coords/{code} [?context={territory}]\n" +
+            "GET /mapcode/coords/{code} [?context={territory} & include={include}]\n" +
             "   Convert a mapcode into a latitude/longitude pair.\n\n" +
 
             "   Path parameters:\n" +
@@ -106,7 +106,9 @@ public class RootResourceImpl implements RootResource {
             "   Query parameters:\n" +
             "     context         : Optional mapcode territory context (name or alphacode). The context is only used if the\n\n" +
             "                       code is ambiguous without it, otherwise it is ignored. For example, the context is ignored\n" +
-            "                       when converting an international code (but it is not considered an error to provide it).\n\n" +
+            "                       when converting an international code (but it is not considered an error to provide it).\n" +
+            "     include         : An additional option may be set:\n" +
+            "                         rectangle = Include the encompassing rectangle of a mapcode.\n\n" +
 
             "GET /mapcode/territories [?offset={offset}&count={count}]\n" +
             "   Return a list of all territories.\n\n" +
