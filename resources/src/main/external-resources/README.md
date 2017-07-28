@@ -1,0 +1,1 @@
+This file only keeps the folder `external-resources` from being removed.

@@ -16,11 +16,12 @@
 
 package com.mapcode.services;
 
-import com.mapcode.services.dto.AlphabetListDTO;
-import com.mapcode.services.dto.MapcodesDTO;
-import com.mapcode.services.dto.PointDTO;
-import com.mapcode.services.dto.TerritoryListDTO;
+import com.mapcode.services.dto.*;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiException;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,6 +33,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * This class handle the Mapcode REST API, which includes conversions to and from mapcodes.
  */
+@Api(value = "mapcode", description = "Mapcode stuff")
 @Path("/mapcode")
 public interface MapcodeResource {
 
@@ -106,6 +108,12 @@ public interface MapcodeResource {
      *                               INTERNATIONAL and {@link MapcodesDTO} for ALL.
      * @throws ApiException API exception, translated into HTTP status code.
      */
+    @ApiOperation(value = "Convert coordinate to mapcode", notes = "Returns mapcode(s).", response = MapcodeDTO.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful conversion to mapcode", response = MapcodesDTO.class),
+            @ApiResponse(code = 404, message = "Coordinate does not exist"),
+            @ApiResponse(code = 500, message = "Internal server error") }
+    )
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + '}')

@@ -40,6 +40,8 @@
     <context-param>
         <param-name>resteasy.providers</param-name>
         <param-value>
+            io.swagger.jaxrs.listing.ApiListingResource,
+            io.swagger.jaxrs.listing.SwaggerSerializers,
             com.tomtom.speedtools.rest.security.CorsFeature
         </param-value>
     </context-param>
@@ -61,27 +63,42 @@
     </listener>
 
     <servlet>
-        <servlet-name>Resteasy</servlet-name>
+        <servlet-name>Mapcode</servlet-name>
         <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
         <async-supported>true</async-supported>
     </servlet>
 
-    <!-- Map the URL address space to the Resteasy servlet defined above, so Resteasy will
-         process these URLs.
-    -->
     <servlet-mapping>
-        <servlet-name>Resteasy</servlet-name>
+        <servlet-name>Mapcode</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>jolokia-agent</servlet-name>
+        <servlet-name>Swagger</servlet-name>
+        <servlet-class>io.swagger.jaxrs.config.DefaultJaxrsConfig</servlet-class>
+        <init-param>
+            <param-name>api.version</param-name>
+            <param-value>0.1</param-value>
+        </init-param>
+        <init-param>
+            <param-name>swagger.api.basepath</param-name>
+            <param-value>http://localhost:8080/mapcode</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Swagger</servlet-name>
+        <url-pattern>/apidoc/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Jolokia</servlet-name>
         <servlet-class>org.jolokia.http.AgentServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>jolokia-agent</servlet-name>
+        <servlet-name>Jolokia</servlet-name>
         <url-pattern>/monitor/*</url-pattern>
     </servlet-mapping>
 </web-app>
