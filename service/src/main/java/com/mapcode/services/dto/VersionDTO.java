@@ -20,6 +20,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.mapcode.services.ApiConstants;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -32,11 +34,19 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
+@ApiModel(
+        value = "version",
+        description = "The version of the Mapcode REST API."
+)
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "version")
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class VersionDTO extends ApiDTO {
 
+    @ApiModelProperty(
+            name = "version",
+            value = "Version of the API."
+    )
     @XmlElement(name = "version")
     @Nonnull
     private String version;

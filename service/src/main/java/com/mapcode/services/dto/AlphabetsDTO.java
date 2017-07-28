@@ -22,6 +22,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.mapcode.Alphabet;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -30,16 +32,28 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
+@ApiModel(
+        value = "alphabets",
+        description = "A list of alphabet objects, such as returned by `GET /mapcode/alphabets`."
+)
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "alphabets")
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class AlphabetsDTO extends ApiDTO {
 
+    @ApiModelProperty(
+            name = "total",
+            value = "The total number of alphabet objects (not just the ones in this response)."
+    )
     @JsonProperty("total")
     @XmlElement(name = "total")
     @Nonnull
     private int total;
 
+    @ApiModelProperty(
+            name = "alphabets",
+            value = "A list of alphabet objects."
+    )
     @JsonProperty("alphabets")
     @JsonUnwrapped
     @XmlElement(name = "alphabet")

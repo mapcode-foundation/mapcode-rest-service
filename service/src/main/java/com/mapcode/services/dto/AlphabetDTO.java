@@ -20,6 +20,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.mapcode.Alphabet;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -28,11 +30,19 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
+@ApiModel(
+        value = "alphabet",
+        description = "An alphabet definition object, such as returned by `GET /mapcode/alphabets/roman`."
+)
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "alphabet")
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class AlphabetDTO extends ApiDTO {
 
+    @ApiModelProperty(
+            name = "name",
+            value = "The name of the alphabet. Currently, this is the only attribute for an alphabet."
+    )
     @XmlElement(name = "name")
     @Nonnull
     private String name;
