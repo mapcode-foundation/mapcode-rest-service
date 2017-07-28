@@ -63,7 +63,8 @@ public final class MapcodesDTO extends ApiDTO {
                     "mapcodes of different lengths may exist. Normally, the logical thing to do, is select the shortest " +
                     "mapcode in the correct territory from this list. The attribute `local` tries to achieve this as well " +
                     "but in some cases it may use a territory you don't wish to use.",
-            dataType = "com.mapcode.services.dto.TerritoriesDTO")
+            dataType = "com.mapcode.services.dto.MapcodeDTO",
+            reference = "com.mapcode.services.dto.MapcodeDTO")
     @JsonProperty("mapcodes")
     @XmlElementWrapper(name = "mapcodes")
     @XmlElement(name = "mapcode")

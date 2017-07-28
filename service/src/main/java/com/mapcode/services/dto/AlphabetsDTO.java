@@ -51,7 +51,8 @@ public final class AlphabetsDTO extends ApiDTO {
     @ApiModelProperty(
             name = "alphabets",
             value = "A list of alphabet objects.",
-            dataType = "com.mapcode.services.dto.AlphabetsDTO")
+            dataType = "com.mapcode.services.dto.AlphabetDTO",
+            reference = "com.mapcode.services.dto.AlphabetDTO")
     @JsonProperty("alphabets")
     @JsonUnwrapped
     @XmlElement(name = "alphabet")

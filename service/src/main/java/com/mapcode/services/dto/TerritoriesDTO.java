@@ -51,7 +51,8 @@ public final class TerritoriesDTO extends ApiDTO {
     @ApiModelProperty(
             name = "territories",
             value = "A list of territory objects.",
-            dataType = "com.mapcode.services.dto.TerritoriesDTO")
+            dataType = "com.mapcode.services.dto.TerritoriesDTO",
+            reference = "com.mapcode.services.dto.TerritoriesDTO")
     @JsonProperty("territories")
     @JsonUnwrapped
     @XmlElement(name = "territory")

@@ -119,13 +119,13 @@ public interface MapcodeResource {
     @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + '}')
     void convertLatLonToMapcode(
             @ApiParam(
-                    name = "latitude",
+                    name = "latdeg",
                     value = "Latitude in degrees. Format: [-90, 90].",
                     allowableValues = "range[-90,90]"
             )
             @PathParam(PARAM_LAT_DEG) double paramLatDeg,
             @ApiParam(
-                    name = "longitude",
+                    name = "lonDeg",
                     value = "Longitude in degrees. Format: [-180, 180) (other values are correctly wrapped).",
                     allowableValues = "range[-180,180)"
             )
