@@ -99,7 +99,8 @@ public final class TerritoryDTO extends ApiDTO {
     @ApiModelProperty(
             name = "alphabets",
             value = "A list of typical alphabets (scripts) used in this territory, ordered by importance. " +
-                    "`ROMAN` is always present in this list, as a fallback.")
+                    "`ROMAN` is always present in this list, as a fallback.",
+            dataType = "com.mapcode.services.dto.AlphabetsDTO")
     @JsonProperty("alphabets")
     @JsonUnwrapped
     @XmlElementWrapper(name = "alphabets")
