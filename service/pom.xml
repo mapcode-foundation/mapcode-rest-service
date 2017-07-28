@@ -247,7 +247,7 @@
                     <apiSources>
                         <apiSource>
                             <springmvc>false</springmvc>
-                            <locations>com.mapcode.services.MapcodeResource,com.mapcode.service.RootResource</locations>
+                            <locations>com.mapcode.services</locations>
                             <schemes>http,https</schemes>
                             <basePath>/</basePath>
                             <host>api.mapcode.com</host>

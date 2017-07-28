@@ -32,8 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @ApiModel(
         value = "alphabet",
-        description = "An alphabet definition object, such as returned by `GET /mapcode/alphabets/roman`."
-)
+        description = "An alphabet definition object, such as returned by `GET /mapcode/alphabets/roman`.")
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "alphabet")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -41,8 +40,7 @@ public final class AlphabetDTO extends ApiDTO {
 
     @ApiModelProperty(
             name = "name",
-            value = "The name of the alphabet. Currently, this is the only attribute for an alphabet."
-    )
+            value = "The name of the alphabet. Currently, this is the only attribute for an alphabet.")
     @XmlElement(name = "name")
     @Nonnull
     private String name;

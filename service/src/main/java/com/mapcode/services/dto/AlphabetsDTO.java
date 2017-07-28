@@ -34,8 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @ApiModel(
         value = "alphabets",
-        description = "A list of alphabet objects, such as returned by `GET /mapcode/alphabets`."
-)
+        description = "A list of alphabet objects, such as returned by `GET /mapcode/alphabets`.")
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "alphabets")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -43,8 +42,7 @@ public final class AlphabetsDTO extends ApiDTO {
 
     @ApiModelProperty(
             name = "total",
-            value = "The total number of alphabet objects (not just the ones in this response)."
-    )
+            value = "The total number of alphabet objects (not just the ones in this response).")
     @JsonProperty("total")
     @XmlElement(name = "total")
     @Nonnull
@@ -52,8 +50,8 @@ public final class AlphabetsDTO extends ApiDTO {
 
     @ApiModelProperty(
             name = "alphabets",
-            value = "A list of alphabet objects."
-    )
+            value = "A list of alphabet objects.",
+            dataType = "com.mapcode.services.dto.AlphabetsDTO")
     @JsonProperty("alphabets")
     @JsonUnwrapped
     @XmlElement(name = "alphabet")

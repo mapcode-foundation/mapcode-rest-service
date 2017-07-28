@@ -31,8 +31,7 @@ import java.util.List;
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @ApiModel(
         value = "mapcodes",
-        description = "A full coordinate to mapcode response object, such as returned by `GET /mapcode/codes/52,5`."
-)
+        description = "A full coordinate to mapcode response object, such as returned by `GET /mapcode/codes/52,5`.")
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "mapcodes")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -44,8 +43,7 @@ public final class MapcodesDTO extends ApiDTO {
                     "Note that coordinates near borders of adjacent territories may be covered by different local " +
                     "mapcodes (with different territory codes). In such cases, the 'local' mapcode may not always " +
                     "specify the territory you would expect. The `mapcodes` attribute will contain the 'correct' local " +
-                    "mapcode in those cases. This `local` mapcode is only offered as a convenience."
-    )
+                    "mapcode in those cases. This `local` mapcode is only offered as a convenience.")
     @XmlElement(name = "local")
     @Nullable
     private MapcodeDTO local;
@@ -53,8 +51,7 @@ public final class MapcodesDTO extends ApiDTO {
     @ApiModelProperty(
             name = "international",
             value = "The international mapcode. This is globally unique mapcode, which does not require a territory " +
-                    "code. The downside of using international mapcodes is their length: they are always 10 characters."
-    )
+                    "code. The downside of using international mapcodes is their length: they are always 10 characters.")
     @XmlElement(name = "international")
     @Nonnull
     private MapcodeDTO international;
@@ -65,8 +62,8 @@ public final class MapcodesDTO extends ApiDTO {
                     "territories may be covered by mapcodes from multiple territories and within a single territory, " +
                     "mapcodes of different lengths may exist. Normally, the logical thing to do, is select the shortest " +
                     "mapcode in the correct territory from this list. The attribute `local` tries to achieve this as well " +
-                    "but in some cases it may use a territory you don't wish to use."
-    )
+                    "but in some cases it may use a territory you don't wish to use.",
+            dataType = "com.mapcode.services.dto.TerritoriesDTO")
     @JsonProperty("mapcodes")
     @XmlElementWrapper(name = "mapcodes")
     @XmlElement(name = "mapcode")

@@ -34,8 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @ApiModel(
         value = "territories",
-        description = "A list of territory objects, such as returned by `GET /mapcode/territories`."
-)
+        description = "A list of territory objects, such as returned by `GET /mapcode/territories`.")
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "territories")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -43,8 +42,7 @@ public final class TerritoriesDTO extends ApiDTO {
 
     @ApiModelProperty(
             name = "total",
-            value = "The total number of territory objects (not just the ones in this response)."
-    )
+            value = "The total number of territory objects (not just the ones in this response).")
     @JsonProperty("total")
     @XmlElement(name = "total")
     @Nonnull
@@ -52,8 +50,8 @@ public final class TerritoriesDTO extends ApiDTO {
 
     @ApiModelProperty(
             name = "territories",
-            value = "A list of territory objects."
-    )
+            value = "A list of territory objects.",
+            dataType = "com.mapcode.services.dto.TerritoriesDTO")
     @JsonProperty("territories")
     @JsonUnwrapped
     @XmlElement(name = "territory")

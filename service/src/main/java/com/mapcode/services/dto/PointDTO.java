@@ -33,8 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @ApiModel(
         value = "point",
-        description = "A WGS84 coordinate, specified as a latitude and logitude."
-)
+        description = "A WGS84 coordinate, specified as a latitude and logitude.")
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "point")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -43,8 +42,7 @@ public final class PointDTO extends ApiDTO {
     @ApiModelProperty(
             name = "latDeg",
             value = "The latitude (South-North) in degrees. Format: [-90, 90], 0 indicates the equator.",
-            allowableValues = "range[-90,90]"
-    )
+            allowableValues = "range[-90,90]")
     @XmlElement(name = "latDeg")
     @Nonnull
     private Double latDeg;
@@ -52,8 +50,7 @@ public final class PointDTO extends ApiDTO {
     @ApiModelProperty(
             name = "lonDeg",
             value = "The longitude (West-East) in degrees. Format: [-180, 180), 0 indicates the Greenwich meridian.",
-            allowableValues = "range[-180,180]"
-    )
+            allowableValues = "range[-180,180]")
     @XmlElement(name = "lonDeg")
     @Nonnull
     private Double lonDeg;

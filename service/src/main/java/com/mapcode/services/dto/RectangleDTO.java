@@ -33,8 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @ApiModel(
         value = "rectangle",
-        description = "A rectangular geospatial area, defined by its South-West and North-East corners."
-)
+        description = "A rectangular geospatial area, defined by its South-West and North-East corners.")
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "rectangle")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -42,24 +41,21 @@ public final class RectangleDTO extends ApiDTO {
 
     @ApiModelProperty(
             name = "southWest",
-            value = "The South-West corner of the rectangular area."
-    )
+            value = "The South-West corner of the rectangular area.")
     @XmlElement(name = "southWest")
     @Nonnull
     private PointDTO southWest;
 
     @ApiModelProperty(
             name = "northEast",
-            value = "The North-East corner of the rectangular area."
-    )
+            value = "The North-East corner of the rectangular area.")
     @XmlElement(name = "northEast")
     @Nonnull
     private PointDTO northEast;
 
     @ApiModelProperty(
             name = "center",
-            value = "The center coordinate of the rectangular area."
-    )
+            value = "The center coordinate of the rectangular area.")
     @XmlElement(name = "center")
     @Nullable
     private PointDTO center;

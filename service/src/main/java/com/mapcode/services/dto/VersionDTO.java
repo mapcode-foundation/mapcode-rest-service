@@ -36,8 +36,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @ApiModel(
         value = "version",
-        description = "The version of the Mapcode REST API."
-)
+        description = "The version of the Mapcode REST API.")
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "version")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -45,8 +44,7 @@ public final class VersionDTO extends ApiDTO {
 
     @ApiModelProperty(
             name = "version",
-            value = "Version of the API."
-    )
+            value = "Version of the API.")
     @XmlElement(name = "version")
     @Nonnull
     private String version;

@@ -33,8 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @ApiModel(
         value = "mapcode",
-        description = "A mapcode object, such as returned by `GET /mapcode/codes/52,5/local`."
-)
+        description = "A mapcode object, such as returned by `GET /mapcode/codes/52,5/local`.")
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "mapcode")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -43,9 +42,7 @@ public final class MapcodeDTO extends ApiDTO {
     @ApiModelProperty(
             name = "mapcode",
             value = "The mapcode without the territory code. Format: 5-10 characters, including the '.'.",
-            example = "2TNM"
-
-    )
+            example = "2TNM")
     @XmlElement(name = "mapcode")
     @Nonnull
     private String mapcode;
@@ -53,8 +50,7 @@ public final class MapcodeDTO extends ApiDTO {
     @ApiModelProperty(
             name = "mapcodeInAlphabet",
             value = "(optional) The same mapcode in a specific alphabet. " +
-                    "To view which alphabets are available: `GET /mapcode/alphabets`"
-    )
+                    "To view which alphabets are available: `GET /mapcode/alphabets`")
     @XmlElement(name = "mapcodeInAlphabet")
     @Nullable
     private String mapcodeInAlphabet;
@@ -63,16 +59,14 @@ public final class MapcodeDTO extends ApiDTO {
             name = "territory",
             value = "The territory code. Format: `XXX` or `XX-YY`. " +
                     "To view which alphabets are available: `GET /mapcode/territories`",
-            example = "NLD"
-    )
+            example = "NLD")
     @XmlElement(name = "territory")
     @Nullable
     private String territory;
 
     @ApiModelProperty(
             name = "territoryInAlphabet",
-            value = "(optional) The same territory code in a specific alphabet."
-    )
+            value = "(optional) The same territory code in a specific alphabet.")
     @XmlElement(name = "territoryInAlphabet")
     @Nullable
     private String territoryInAlphabet;
@@ -80,16 +74,14 @@ public final class MapcodeDTO extends ApiDTO {
     @ApiModelProperty(
             name = "offsetMeters",
             value = "(optional) The approximated offset from the specified coordinate " +
-                    "to the center of this mapcode area."
-    )
+                    "to the center of this mapcode area.")
     @XmlElement(name = "offsetMeters")
     @Nullable
     private Double offsetMeters;
 
     @ApiModelProperty(
             name = "rectangle",
-            value = "(optional) The rectangular area covered by the mapcode."
-    )
+            value = "(optional) The rectangular area covered by the mapcode.")
     @XmlElement(name = "rectangle")
     @Nullable
     private RectangleDTO rectangle;
