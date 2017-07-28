@@ -366,10 +366,9 @@ public interface MapcodeResource {
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @ApiOperation(
-            value = "Return a list of territory definitions.",
-            response = TerritoriesDTO.class)
+            value = "Return a list of territory definitions.")
     @ApiResponses(
-            @ApiResponse(code = 200, message = "Returned a list of territories.", response = TerritoriesDTO.class))
+            @ApiResponse(code = 200, message = "Returned a list of territories."))
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("territories")
