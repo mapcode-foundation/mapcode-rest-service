@@ -28,7 +28,7 @@ import java.nio.charset.Charset;
 /**
  * This class provides a safe start up of the system. It provides basic checks required before startup is allowed. It
  * is
- * abound as an eager Singleton by Guice in the {@link com.mapcode.services.deployment.DeploymentModule}
+ * abound as an eager Singleton by Guice in the {@link DeploymentModule}
  * by using "binder.bind(StartupCheck.class).asEagerSingleton()". This means the Singleton is instantiated right away.
  * <p> If any of the checks in the constructor of this class fail, an IllegalStateException is thrown and the
  * application will not continue to run. This prevents starting the system with, for example, incorrect database
@@ -73,7 +73,7 @@ public class StartupCheck {
         try {
             jmxAgent.register();
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             check(false, "Could not register the JMX agent: " + e.getMessage());
         }
 

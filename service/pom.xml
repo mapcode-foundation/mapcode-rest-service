@@ -23,7 +23,7 @@
     <parent>
         <groupId>com.mapcode</groupId>
         <artifactId>mapcode-rest-service</artifactId>
-        <version>2.4.4.1</version>
+        <version>2.4.4.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>service</artifactId>
@@ -247,20 +247,65 @@
                     <apiSources>
                         <apiSource>
                             <springmvc>false</springmvc>
-                            <locations>api.mapcode.com</locations>
+                            <locations>com.mapcode.services</locations>
                             <schemes>http,https</schemes>
-                            <host>api.[host]:[port]</host>
-                            <basePath>/mapcode</basePath>
+                            <basePath>/</basePath>
+                            <host>api.mapcode.com</host>
                             <info>
                                 <title>Mapcode REST API</title>
-                                <version>v1</version>
-                                <description>This is the specification for the Mapcode REST API</description>
+                                <version>${project.version}</version>
+                                <description>
+### Disclaimer
+
+The Mapcode Foundation provides an implementation of the Mapcode REST API at:
+https://api.mapcode.com/mapcode
+
+This free online service is provided for demonstration purposes only and the Mapcode
+Foundation accepts no claims on its availability or reliability, although we'll try hard
+to provide a stable and decent service. Note that usage or log data may be collected, only
+to further improve service (never for commercial purposes). If you are interested in using
+the service for professional purposes, or in high-availability or high-demands contexts,
+you may wish to consider self-hosting this service. The source code is open-source and
+available at: https://github.com/mapcode-foundation/mapcode-rest-service
+
+### Using JSON or XML
+
+All REST services are able to return both JSON and XML. Use the HTTP `Accept:` header to
+specify the expected format: `application/json` or `application/xml`. If the `Accept:`
+header is omitted, JSON is assumed.
+
+Note that some clients (such as FireFox, or Excel) may silently insert an `Accept:` header
+when using a `XMLHttpRequest`-call in Javascript. This may lead to returning JSON in some
+browsers and XML in others. It is advised to explicitly set the appropriate header in
+Javascript in such cases.
+
+Alternatively, to retrieve XML or JSON responses if no `Accept:` header is specified, you
+can add `/xml` or `/json` in the URL, directly after `/mapcode`.
+
+The following methods supported an `Accept:` header and explicit specification of the
+format in the URI:
+
+```
+GET /mapcode[/xml|json]/version
+GET /mapcode[/xml|json]/status
+GET /mapcode[/xml|json]/codes
+GET /mapcode[/xml|json]/coords
+GET /mapcode[/xml|json]/territories
+GET /mapcode[/xml|json]/alphabets
+```
+
+### Trying out the REST API
+
+You can try out the REST API below by clicking in the **/mapcode** box and then selecting a
+method. This expands the definition of the method and shows its documentation. It also
+reveals a `Try it out` button.
+                                </description>
                                 <termsOfService>
                                     http://mapcode.com/downloads.html
                                 </termsOfService>
                                 <contact>
                                     <email>rijn.buve@mapcode.com</email>
-                                    <name>Rijn Buve</name>
+                                    <name>Mapcode Foundation</name>
                                     <url>http://mapcode.com</url>
                                 </contact>
                                 <license>
@@ -269,6 +314,7 @@
                                 </license>
                             </info>
                             <swaggerDirectory>deployment/src/main/webapp/</swaggerDirectory>
+                            <attachSwaggerArtifact>true</attachSwaggerArtifact>
                         </apiSource>
                     </apiSources>
                 </configuration>

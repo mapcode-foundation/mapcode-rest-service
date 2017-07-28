@@ -33,7 +33,9 @@ import javax.ws.rs.core.MediaType;
 /**
  * This class handle the Mapcode REST API, which includes conversions to and from mapcodes.
  */
-@Api(value = "mapcode", description = "Mapcode stuff")
+@Api(
+        value = "/mapcode",
+        description = "This resource provides the Mapcode REST API.")
 @Path("/mapcode")
 public interface MapcodeResource {
 
@@ -108,11 +110,14 @@ public interface MapcodeResource {
      *                               INTERNATIONAL and {@link MapcodesDTO} for ALL.
      * @throws ApiException API exception, translated into HTTP status code.
      */
-    @ApiOperation(value = "Convert coordinate to mapcode", notes = "Returns mapcode(s).", response = MapcodeDTO.class)
+    @ApiOperation(
+            value = "Convert a latitude/longitude coordinate to a mapcode.",
+            notes = "Returns one or more mapcode(s).",
+            response = MapcodeDTO.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successful conversion to mapcode", response = MapcodesDTO.class),
-            @ApiResponse(code = 404, message = "Coordinate does not exist"),
-            @ApiResponse(code = 500, message = "Internal server error") }
+            @ApiResponse(code = 200, message = "Successful conversion to mapcode.", response = MapcodesDTO.class),
+            @ApiResponse(code = 404, message = "Coordinate does not exist."),
+            @ApiResponse(code = 500, message = "Internal server error.") }
     )
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
