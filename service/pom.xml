@@ -248,11 +248,12 @@
                         <apiSource>
                             <springmvc>false</springmvc>
                             <locations>
-                                <location>
-                                    com.mapcode.services
-                                </location>
+                                <location>com.mapcode.services</location>
                             </locations>
-                            <schemes>http,https</schemes>
+                            <schemes>
+                                <scheme>http</scheme>
+                                <scheme>https</scheme>
+                            </schemes>
                             <basePath>/</basePath>
                             <host>api.mapcode.com</host>
                             <info>
