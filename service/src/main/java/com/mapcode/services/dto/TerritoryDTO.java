@@ -23,51 +23,88 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.mapcode.Alphabet;
 import com.mapcode.services.ApiConstants;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.*;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
+@ApiModel(
+        value = "territory",
+        description = "A territory definition object, such as returned by `GET /mapcode/territories/nld`."
+)
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "territory")
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class TerritoryDTO extends ApiDTO {
 
+    @ApiModelProperty(
+            name = "alphaCode",
+            value = "The alpha-code of the territory. This is a 3-character `XXX` code, or a 2-2 character `XX-YY` code, " +
+                    "for territories which are divided into sub-regions.")
     @XmlElement(name = "alphaCode")
     @Nonnull
     private String alphaCode;
 
+    @ApiModelProperty(
+            name = "alphaCodeMinimalUnambiguous",
+            value = "The shortest alpha-code which is still unambiguous, world-wide. For example, `TX` is unambiguous, " +
+                    "world-wide, for Texas in the USA, but `IN` is not: it can be India or Indiana, USA.")
     @XmlElement(name = "alphaCodeMinimalUnambiguous")
     @Nonnull
     private String alphaCodeMinimalUnambiguous;
 
+    @ApiModelProperty(
+            name = "alphaCodeMinimal",
+            value = "The shortest alpha-code. This code may be ambiguous for `XX-YY` types of codes, if used without its " +
+                    "parent territory.")
     @XmlElement(name = "alphaCodeMinimal")
     @Nonnull
     private String alphaCodeMinimal;
 
+    @ApiModelProperty(
+            name = "fullName",
+            value = "The full name (in English) of the territory.")
     @XmlElement(name = "fullName")
     @Nonnull
     private String fullName;
 
+    @ApiModelProperty(
+            name = "parentTerritory",
+            value = "(optional) The full name (in English) of the parent territory. This is only relevant for `XX-YY` codes.")
     @XmlElement(name = "parentTerritory")
     @Nullable
     private String parentTerritory;
 
+    @ApiModelProperty(
+            name = "aliases",
+            value = "Alias territory codes for the territory. For example, `US-VI` and `USA-VI` both designate " +
+                    "the Virgin Islands.")
     @XmlElementWrapper(name = "aliases")
     @XmlElements(@XmlElement(name = "alias"))
     @Nonnull
     private String[] aliases;
 
+    @ApiModelProperty(
+            name = "fullNameAliases",
+            value = "Alias names (in English) of the territory. For example, `GBR` designates the United Kingdom, " +
+                    "but it has aliases, such as Great Britain, Scotland and more.")
     @XmlElementWrapper(name = "fullNameAliases")
     @XmlElements(@XmlElement(name = "fullNameAlias"))
     @Nonnull
     private String[] fullNameAliases;
 
+    @ApiModelProperty(
+            name = "alphabets",
+            value = "A list of typical alphabets (scripts) used in this territory, ordered by importance. " +
+                    "`ROMAN` is always present in this list, as a fallback.",
+            dataType = "com.mapcode.services.dto.AlphabetsDTO",
+            reference = "com.mapcode.services.dto.AlphabetsDTO")
     @JsonProperty("alphabets")
     @JsonUnwrapped
     @XmlElementWrapper(name = "alphabets")
-//    @XmlElements(@XmlElement(name = "alphabet"))
     @XmlElement(name = "alphabet")
     @Nonnull
     private AlphabetListDTO alphabets;

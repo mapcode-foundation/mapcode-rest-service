@@ -21,6 +21,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.mapcode.Point;
 import com.mapcode.services.ApiConstants;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -29,15 +31,26 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
+@ApiModel(
+        value = "point",
+        description = "A WGS84 coordinate, specified as a latitude and logitude.")
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "point")
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class PointDTO extends ApiDTO {
 
+    @ApiModelProperty(
+            name = "latDeg",
+            value = "The latitude (South-North) in degrees. Format: [-90, 90], 0 indicates the equator.",
+            allowableValues = "range[-90,90]")
     @XmlElement(name = "latDeg")
     @Nonnull
     private Double latDeg;
 
+    @ApiModelProperty(
+            name = "lonDeg",
+            value = "The longitude (West-East) in degrees. Format: [-180, 180), 0 indicates the Greenwich meridian.",
+            allowableValues = "range[-180,180]")
     @XmlElement(name = "lonDeg")
     @Nonnull
     private Double lonDeg;

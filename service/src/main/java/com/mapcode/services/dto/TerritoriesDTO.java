@@ -22,6 +22,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.mapcode.Territory;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -30,16 +32,27 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
+@ApiModel(
+        value = "territories",
+        description = "A list of territory objects, such as returned by `GET /mapcode/territories`.")
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "territories")
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class TerritoriesDTO extends ApiDTO {
 
+    @ApiModelProperty(
+            name = "total",
+            value = "The total number of territory objects (not just the ones in this response).")
     @JsonProperty("total")
     @XmlElement(name = "total")
     @Nonnull
     private int total;
 
+    @ApiModelProperty(
+            name = "territories",
+            value = "A list of territory objects.",
+            dataType = "com.mapcode.services.dto.TerritoriesDTO",
+            reference = "com.mapcode.services.dto.TerritoriesDTO")
     @JsonProperty("territories")
     @JsonUnwrapped
     @XmlElement(name = "territory")

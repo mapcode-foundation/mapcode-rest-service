@@ -24,7 +24,7 @@
     <artifactId>mapcode-rest-service</artifactId>
 
     <packaging>pom</packaging>
-    <version>2.4.4.1</version>
+    <version>2.4.4.2</version>
 
     <name>Mapcode REST API Web Service</name>
     <description>
@@ -60,9 +60,9 @@
     </scm>
 
     <modules>
-        <module>service</module>
         <module>deployment</module>
         <module>resources</module>
+        <module>service</module>
     </modules>
 
     <!-- Dependencies on other packages. -->
@@ -74,10 +74,10 @@
         <maven.httpserver.root>/</maven.httpserver.root>
 
         <!-- Maven plugins. -->
-        <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
-        <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
+        <maven-coveralls-plugin.version>4.3.0</maven-coveralls-plugin.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
+        <maven-jacoco-plugin.version>0.7.9</maven-jacoco-plugin.version>
         <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
         <maven-jetty-plugin.version>8.1.9.v20130131</maven-jetty-plugin.version>
         <maven-project-info-reports-plugin.version>2.9</maven-project-info-reports-plugin.version>
@@ -85,6 +85,7 @@
         <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>2.20</maven-surefire-plugin.version>
+        <maven-swagger-plugin.version>3.1.5</maven-swagger-plugin.version>
         <maven-war-plugin.version>3.1.0</maven-war-plugin.version>
 
         <!-- Library versions - these are not re-used from the top-level POM to simulate stand-alone usage. -->
@@ -109,6 +110,7 @@
         <scala.version>2.11.11</scala.version>
         <slf4j.version>1.7.25</slf4j.version>
         <speedtools.version>3.2.3</speedtools.version>
+        <swagger.version>1.5.16</swagger.version>
     </properties>
 
     <distributionManagement>
@@ -154,6 +156,12 @@
                 <groupId>com.fasterxml.jackson.module</groupId>
                 <artifactId>jackson-module-jaxb-annotations</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.kongchen</groupId>
+                <artifactId>swagger-maven-plugin.version</artifactId>
+                <version>swagger-maven-plugin.version</version>
             </dependency>
 
             <dependency>
@@ -254,6 +262,18 @@
                 <groupId>commons-httpclient</groupId>
                 <artifactId>commons-httpclient</artifactId>
                 <version>${commons-httpclient.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-jaxrs</artifactId>
+                <version>${swagger.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.ws.rs</groupId>
+                        <artifactId>jsr311-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -485,14 +505,14 @@
             <plugin>
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
-                <version>${coveralls-maven-plugin.version}</version>
+                <version>${maven-coveralls-plugin.version}</version>
             </plugin>
 
             <!-- Code coverage using JaCoCo. -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco-maven-plugin.version}</version>
+                <version>${maven-jacoco-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>pre-unit-test</id>
@@ -538,7 +558,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco-maven-plugin.version}</version>
+                <version>${maven-jacoco-plugin.version}</version>
             </plugin>
         </plugins>
     </reporting>
@@ -555,6 +575,7 @@
                 <plugins>
                     <plugin>
                         <artifactId>maven-antrun-plugin</artifactId>
+                        <version>${maven-antrun-plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>install</phase>
@@ -566,11 +587,14 @@
                                         <echo>
                                             .
                                             .
-                                            ***********************************************************
+                                            ***************************************************************
                                             ** This is a TEST build.
-                                            ** --------------------------------------------------------
+                                            ** 
                                             ** Do NOT install in production environment!
-                                            ***********************************************************
+                                            ** 
+                                            ** Files from resources/src/main/external-resources-test have
+                                            ** been used to create the WAR file.
+                                            ***************************************************************
                                             .
                                             .
                                         </echo>
@@ -590,6 +614,7 @@
                 <plugins>
                     <plugin>
                         <artifactId>maven-antrun-plugin</artifactId>
+                        <version>${maven-antrun-plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>install</phase>
@@ -601,9 +626,12 @@
                                         <echo>
                                             .
                                             .
-                                            ***********************************************************
+                                            ***************************************************************
                                             ** This is a PRODUCTION build.
-                                            ***********************************************************
+                                            **
+                                            ** Make sure the file in resources/src/main/external-resources
+                                            ** were indeed the correct files for your deployment setup.
+                                            ***************************************************************
                                             .
                                             .
                                         </echo>

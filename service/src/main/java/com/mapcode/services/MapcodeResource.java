@@ -16,11 +16,9 @@
 
 package com.mapcode.services;
 
-import com.mapcode.services.dto.AlphabetListDTO;
-import com.mapcode.services.dto.MapcodesDTO;
-import com.mapcode.services.dto.PointDTO;
-import com.mapcode.services.dto.TerritoryListDTO;
+import com.mapcode.services.dto.*;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiException;
+import io.swagger.annotations.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,6 +30,9 @@ import javax.ws.rs.core.MediaType;
 /**
  * This class handle the Mapcode REST API, which includes conversions to and from mapcodes.
  */
+@Api(
+        value = "/mapcode",
+        description = "This resource provides the Mapcode REST API.")
 @Path("/mapcode")
 public interface MapcodeResource {
 
@@ -51,14 +52,14 @@ public interface MapcodeResource {
     /**
      * Strings used as path or url parameters.
      */
-    static final String PARAM_LAT_DEG = "lat";
-    static final String PARAM_LON_DEG = "lon";
+    static final String PARAM_LAT_DEG = "latDeg";
+    static final String PARAM_LON_DEG = "lonDeg";
     static final String PARAM_PRECISION = "precision";
     static final String PARAM_TERRITORY = "territory";
     static final String PARAM_ALPHABET = "alphabet";
     static final String PARAM_CONTEXT = "context";
     static final String PARAM_TYPE = "type";
-    static final String PARAM_CODE = "code";
+    static final String PARAM_MAPCODE = "mapcode";
     static final String PARAM_INCLUDE = "include";
     static final String PARAM_COUNT = "count";
     static final String PARAM_OFFSET = "offset";
@@ -102,22 +103,59 @@ public interface MapcodeResource {
      * @param paramClient            Indicator of calling client (for stats).
      * @param paramContextMustBeNull Must not be used (added to allow check for incorrect usage).
      * @param paramAllowLog          True if logging of data for improving the service is allowed. Default is true.
-     * @param response               One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
+     * @param response               One or more mapcodes. Format: {@link MapcodeDTO} for LOCAL and
      *                               INTERNATIONAL and {@link MapcodesDTO} for ALL.
      * @throws ApiException API exception, translated into HTTP status code.
      */
+    @ApiOperation(
+            value = "Convert a latitude/longitude coordinate to one or more mapcodes.",
+            response = MapcodeDTO.class)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successful conversion to mapcode.", response = MapcodesDTO.class),
+            @ApiResponse(code = 400, message = "Bad request. For example, a parameter may be out of range."),
+            @ApiResponse(code = 404, message = "Coordinate does not exist.")})
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + '}')
     void convertLatLonToMapcode(
+            @ApiParam(
+                    value = "Latitude in degrees. Format: [-90, 90].",
+                    allowableValues = "range[-90,90]"
+            )
             @PathParam(PARAM_LAT_DEG) double paramLatDeg,
+            @ApiParam(
+                    value = "Longitude in degrees. Format: [-180, 180) (other values are correctly wrapped).",
+                    allowableValues = "range[-180,180)"
+            )
             @PathParam(PARAM_LON_DEG) double paramLonDeg,
+            @ApiParam(
+                    value = "(optional) Additional precision for the mapcodes. This uses precision extension " +
+                            "characters, which are appended to a mapcode after a `-`.",
+                    allowableValues = "range[0,8]",
+                    defaultValue = "0")
             @QueryParam(PARAM_PRECISION) @DefaultValue("0") int paramPrecision,
+            @ApiParam(
+                    value = "(optional) Limit the returned mapcodes to this territory. This is useful if the territory " +
+                            "is already set by the context of the application (for example, you are only interested " +
+                            "in mapcodes for your country). If omitted, mapcodes for all territories are considered.")
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritory,
+            @ApiParam(hidden = true)
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,
+            @ApiParam(
+                    value = "(optional) Provide the strings in the response using this alphabet (as well as Roman). " +
+                            "This allows you to retrieve mapcodes written a specific script.")
             @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
+            @ApiParam(
+                    value = "(optional) Provide additional information in the response. You can include: " +
+                            "`offset` to include the distance (in meters) of the center of the mapcode area " +
+                            "to the coordinate; `territory` to always include a territory code, even for " +
+                            "international mapcodes; `alphabet` to always include `mapcodeInAlphabet` and " +
+                            "`territoryInAlphabet` attributes, even for Roman; `rectangle` to include " +
+                            "the geospatial area covered by a mapcode.")
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
+            @ApiParam(hidden = true)
             @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @ApiParam(hidden = true)
             @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
@@ -169,7 +207,7 @@ public interface MapcodeResource {
      * @param paramClient            Indicator of calling client (for stats).
      * @param paramContextMustBeNull Must not be used (added to allow check for incorrect usage).
      * @param paramAllowLog          True if logging of data for improving the service is allowed. Default is true.
-     * @param response               One or more mapcodes. Format: {@link com.mapcode.services.dto.MapcodeDTO} for LOCAL and
+     * @param response               One or more mapcodes. Format: {@link MapcodeDTO} for LOCAL and
      *                               INTERNATIONAL and {@link MapcodesDTO} for ALL.
      * @throws ApiException API exception, translated into HTTP status code.
      */
@@ -254,23 +292,41 @@ public interface MapcodeResource {
      * @param response                 Lat/lon. Format: {@link PointDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
+    @ApiOperation(
+            value = "Convert a mapcode to a latitude/longitude coordinate.",
+            response = PointDTO.class)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successful conversion to coordinate.", response = PointDTO.class),
+            @ApiResponse(code = 404, message = "Mapcode does not exist.")})
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Path("coords/{" + PARAM_CODE + '}')
+    @Path("coords/{" + PARAM_MAPCODE + '}')
     void convertMapcodeToLatLon(
-            @PathParam(PARAM_CODE) @Nonnull String paramCode,
+            @ApiParam(
+                    value = "A mapcode, either with a territory, or without it. if the territory " +
+                            "is not specified in the URI, it should be specified as a query parameter " +
+                            "`context=` in the request (unless it's an international mapcode).")
+            @PathParam(PARAM_MAPCODE) @Nonnull String paramCode,
+            @ApiParam(
+                    value = "(optional) The territory used as a context to resolve the mapcode. ")
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
+            @ApiParam(hidden = true)
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritoryMustBeNull,
+            @ApiParam(
+                    value = "(optional) Include additional information in the response. You can include: " +
+                            "`rectangle` to include rectangular area covered by the mapcode.")
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
+            @ApiParam(hidden = true)
             @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @ApiParam(hidden = true)
             @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    @Path("xml/coords/{" + PARAM_CODE + '}')
+    @Path("xml/coords/{" + PARAM_MAPCODE + '}')
     void convertMapcodeToLatLonXml(
-            @PathParam(PARAM_CODE) @Nonnull String paramCode,
+            @PathParam(PARAM_MAPCODE) @Nonnull String paramCode,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritoryMustBeNull,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
@@ -280,9 +336,9 @@ public interface MapcodeResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("json/coords/{" + PARAM_CODE + '}')
+    @Path("json/coords/{" + PARAM_MAPCODE + '}')
     void convertMapcodeToLatLonJson(
-            @PathParam(PARAM_CODE) @Nonnull String paramCode,
+            @PathParam(PARAM_MAPCODE) @Nonnull String paramCode,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritoryMustBeNull,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
@@ -300,13 +356,28 @@ public interface MapcodeResource {
      * @param response      Territory codes and information. Format: {@link TerritoryListDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
+    @ApiOperation(
+            value = "Return a list of territory definitions.")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "Returned a list of territories."))
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("territories")
     void getTerritories(
+            @ApiParam(
+                    value = "(optional) Only return territories from a specific offset in the full " +
+                            "list of territories. If the value is negative, the offset counts from the end " +
+                            "of the list, rather than the start. For example, to return the last 10 items, " +
+                            "simply specify `offset=-10`.",
+                    defaultValue = "0")
             @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
+            @ApiParam(
+                    value = "(optional) Return at most `count` territories in the response.",
+                    defaultValue = "1000")
             @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
+            @ApiParam(hidden = true)
             @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @ApiParam(hidden = true)
             @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
@@ -337,16 +408,29 @@ public interface MapcodeResource {
      * @param paramContext   Context territory code for disambiguation. Range: any valid territory code, or alias.
      * @param paramClient    Indicator of calling client (for stats).
      * @param paramAllowLog  True if logging of data for improving the service is allowed. Default is true.
-     * @param response       Territory information. Format: {@link com.mapcode.services.dto.TerritoryDTO}.
+     * @param response       Territory information. Format: {@link TerritoryDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
+    @ApiOperation(
+            value = "Return a single territory definition.",
+            response = TerritoryDTO.class)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Returned a single territory.", response = TerritoryDTO.class),
+            @ApiResponse(code = 404, message = "The territory does not exist.")})
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("territories/{" + PARAM_TERRITORY + '}')
     void getTerritory(
+            @ApiParam(
+                    value = "The territory code. This can be a 3-character `XXX` or 2-character `XX-YY` code.")
             @PathParam(PARAM_TERRITORY) @Nonnull String paramTerritory,
+            @ApiParam(
+                    value = "(optional) Use this territory as a parent territy, if need to disambiguate the " +
+                            "provided territory code.")
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
+            @ApiParam(hidden = true)
             @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @ApiParam(hidden = true)
             @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
@@ -380,13 +464,31 @@ public interface MapcodeResource {
      * @param response      Alphabet codes and information. Format: {@link AlphabetListDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
+    @ApiOperation(
+            value = "Return a list of supported alphabets.",
+            response = AlphabetsDTO.class)
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "Returned a list of alphabets.", response = AlphabetsDTO.class))
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("alphabets")
     void getAlphabets(
+            @ApiParam(
+                    name = "offset",
+                    value = "(optional) Only return territories from a specific offset in the full " +
+                            "list of territories. If the value is negative, the offset counts from the end " +
+                            "of the list, rather than the start. For example, to return the last 10 items, " +
+                            "simply specify `offset=-10`.",
+                    defaultValue = "0")
             @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
+            @ApiParam(
+                    name = "count",
+                    value = "(optional) Return at most `count` territories in the response.",
+                    defaultValue = "1000")
             @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
+            @ApiParam(hidden = true)
             @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @ApiParam(hidden = true)
             @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
@@ -416,15 +518,26 @@ public interface MapcodeResource {
      * @param paramAlphabet Alphabet code. Range: any valid alphabet code, alpha or numeric.
      * @param paramClient   Indicator of calling client (for stats).
      * @param paramAllowLog True if logging of data for improving the service is allowed. Default is true.
-     * @param response      Territory information. Format: {@link com.mapcode.services.dto.AlphabetDTO}.
+     * @param response      Territory information. Format: {@link AlphabetDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
+    @ApiOperation(
+            value = "Return a single alphabet definition.",
+            response = AlphabetDTO.class)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Returned an alphabet definition.", response = AlphabetDTO.class),
+            @ApiResponse(code = 404, message = "The alphabet does not exist.")})
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("alphabets/{" + PARAM_ALPHABET + '}')
     void getAlphabet(
+            @ApiParam(
+                    name = "alphabet",
+                    value = "Name of the alphabet.")
             @PathParam(PARAM_ALPHABET) @Nonnull String paramAlphabet,
+            @ApiParam(hidden = true)
             @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @ApiParam(hidden = true)
             @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 

@@ -1,4 +1,6 @@
-**/mapcode-secret.properties
-resources/src/main/external-resources/log4j.xml
+deployment/src/main/webapp/swagger.json
+resources/src/main/external-resources/*.xml
+resources/src/main/external-resources/*.json
+resources/src/main/external-resources/*.properties
 out/
 target/
