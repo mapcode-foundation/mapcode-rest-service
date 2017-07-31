@@ -52,14 +52,14 @@ public interface MapcodeResource {
     /**
      * Strings used as path or url parameters.
      */
-    static final String PARAM_LAT_DEG = "lat";
-    static final String PARAM_LON_DEG = "lon";
+    static final String PARAM_LAT_DEG = "latDeg";
+    static final String PARAM_LON_DEG = "lonDeg";
     static final String PARAM_PRECISION = "precision";
     static final String PARAM_TERRITORY = "territory";
     static final String PARAM_ALPHABET = "alphabet";
     static final String PARAM_CONTEXT = "context";
     static final String PARAM_TYPE = "type";
-    static final String PARAM_CODE = "code";
+    static final String PARAM_MAPCODE = "mapcode";
     static final String PARAM_INCLUDE = "include";
     static final String PARAM_COUNT = "count";
     static final String PARAM_OFFSET = "offset";
@@ -119,26 +119,22 @@ public interface MapcodeResource {
     @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + '}')
     void convertLatLonToMapcode(
             @ApiParam(
-                    name = "latdeg",
                     value = "Latitude in degrees. Format: [-90, 90].",
                     allowableValues = "range[-90,90]"
             )
             @PathParam(PARAM_LAT_DEG) double paramLatDeg,
             @ApiParam(
-                    name = "lonDeg",
                     value = "Longitude in degrees. Format: [-180, 180) (other values are correctly wrapped).",
                     allowableValues = "range[-180,180)"
             )
             @PathParam(PARAM_LON_DEG) double paramLonDeg,
             @ApiParam(
-                    name = "precision",
                     value = "(optional) Additional precision for the mapcodes. This uses precision extension " +
                             "characters, which are appended to a mapcode after a `-`.",
                     allowableValues = "range[0,8]",
                     defaultValue = "0")
             @QueryParam(PARAM_PRECISION) @DefaultValue("0") int paramPrecision,
             @ApiParam(
-                    name = "territory",
                     value = "(optional) Limit the returned mapcodes to this territory. This is useful if the territory " +
                             "is already set by the context of the application (for example, you are only interested " +
                             "in mapcodes for your country). If omitted, mapcodes for all territories are considered.")
@@ -146,12 +142,10 @@ public interface MapcodeResource {
             @ApiParam(hidden = true)
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,
             @ApiParam(
-                    name = "alphabet",
                     value = "(optional) Provide the strings in the response using this alphabet (as well as Roman). " +
                             "This allows you to retrieve mapcodes written a specific script.")
             @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
             @ApiParam(
-                    name = "include",
                     value = "(optional) Provide additional information in the response. You can include: " +
                             "`offset` to include the distance (in meters) of the center of the mapcode area " +
                             "to the coordinate; `territory` to always include a territory code, even for " +
@@ -306,22 +300,19 @@ public interface MapcodeResource {
             @ApiResponse(code = 404, message = "Mapcode does not exist.")})
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Path("coords/{" + PARAM_CODE + '}')
+    @Path("coords/{" + PARAM_MAPCODE + '}')
     void convertMapcodeToLatLon(
             @ApiParam(
-                    name = "mapcode",
                     value = "A mapcode, either with a territory, or without it. if the territory " +
                             "is not specified in the URI, it should be specified as a query parameter " +
                             "`context=` in the request (unless it's an international mapcode).")
-            @PathParam(PARAM_CODE) @Nonnull String paramCode,
+            @PathParam(PARAM_MAPCODE) @Nonnull String paramCode,
             @ApiParam(
-                    name = "context",
                     value = "(optional) The territory used as a context to resolve the mapcode. ")
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
             @ApiParam(hidden = true)
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritoryMustBeNull,
             @ApiParam(
-                    name = "include",
                     value = "(optional) Include additional information in the response. You can include: " +
                             "`rectangle` to include rectangular area covered by the mapcode.")
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
@@ -333,9 +324,9 @@ public interface MapcodeResource {
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    @Path("xml/coords/{" + PARAM_CODE + '}')
+    @Path("xml/coords/{" + PARAM_MAPCODE + '}')
     void convertMapcodeToLatLonXml(
-            @PathParam(PARAM_CODE) @Nonnull String paramCode,
+            @PathParam(PARAM_MAPCODE) @Nonnull String paramCode,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritoryMustBeNull,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
@@ -345,9 +336,9 @@ public interface MapcodeResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("json/coords/{" + PARAM_CODE + '}')
+    @Path("json/coords/{" + PARAM_MAPCODE + '}')
     void convertMapcodeToLatLonJson(
-            @PathParam(PARAM_CODE) @Nonnull String paramCode,
+            @PathParam(PARAM_MAPCODE) @Nonnull String paramCode,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritoryMustBeNull,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
@@ -374,7 +365,6 @@ public interface MapcodeResource {
     @Path("territories")
     void getTerritories(
             @ApiParam(
-                    name = "offset",
                     value = "(optional) Only return territories from a specific offset in the full " +
                             "list of territories. If the value is negative, the offset counts from the end " +
                             "of the list, rather than the start. For example, to return the last 10 items, " +
@@ -382,7 +372,6 @@ public interface MapcodeResource {
                     defaultValue = "0")
             @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
             @ApiParam(
-                    name = "count",
                     value = "(optional) Return at most `count` territories in the response.",
                     defaultValue = "1000")
             @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
@@ -433,11 +422,9 @@ public interface MapcodeResource {
     @Path("territories/{" + PARAM_TERRITORY + '}')
     void getTerritory(
             @ApiParam(
-                    name = "territory",
                     value = "The territory code. This can be a 3-character `XXX` or 2-character `XX-YY` code.")
             @PathParam(PARAM_TERRITORY) @Nonnull String paramTerritory,
             @ApiParam(
-                    name = "context",
                     value = "(optional) Use this territory as a parent territy, if need to disambiguate the " +
                             "provided territory code.")
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,

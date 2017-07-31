@@ -535,14 +535,14 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     final Rectangle rectangle = MapcodeCodec.decodeToRectangle(paramCode, territoryContext);
                     result = new RectangleDTO(rectangle);
                 } catch (final UnknownMapcodeException ignored) {
-                    throw new ApiNotFoundException("No mapcode found for mapcode='" + paramCode + "', context=" + territoryContext);
+                    throw new ApiNotFoundException("No rectangle found for mapcode='" + paramCode + "', context=" + territoryContext);
                 }
             } else {
                 try {
                     final Point point = MapcodeCodec.decode(paramCode, territoryContext);
                     result = new PointDTO(point.getLatDeg(), point.getLonDeg());
                 } catch (final UnknownMapcodeException ignored) {
-                    throw new ApiNotFoundException("No mapcode found for mapcode='" + paramCode + "', context=" + territoryContext);
+                    throw new ApiNotFoundException("No location found for mapcode='" + paramCode + "', context=" + territoryContext);
                 }
             }
 
