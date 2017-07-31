@@ -242,12 +242,16 @@
             <plugin>
                 <groupId>com.github.kongchen</groupId>
                 <artifactId>swagger-maven-plugin</artifactId>
-                <version>${swagger-maven-plugin.version}</version>
+                <version>${maven-swagger-plugin.version}</version>
                 <configuration>
                     <apiSources>
                         <apiSource>
                             <springmvc>false</springmvc>
-                            <locations>com.mapcode.services</locations>
+                            <locations>
+                                <location>
+                                    com.mapcode.services
+                                </location>
+                            </locations>
                             <schemes>http,https</schemes>
                             <basePath>/</basePath>
                             <host>api.mapcode.com</host>
