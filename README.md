@@ -328,7 +328,7 @@ self-hosting this service.
 
 ## Release Notes
 
-### 2.4.4.2 - 2.4.4.3
+### 2.4.4.2 - 2.4.4.4
 
 * Added Swagger documentation to the API's. Swagger generates online API documentation, with the
 ability to try out the API.
