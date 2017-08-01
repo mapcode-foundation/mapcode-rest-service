@@ -112,7 +112,7 @@ functions. This should make live integration of mapcode conversion with your spr
 The service always runs from a WAR file.
 To build the WAR file, type
 
-```bash
+```
     cd <project-root>
     mvn clean package
 ```
@@ -327,6 +327,11 @@ self-hosting this service.
             
 
 ## Release Notes
+
+### 2.4.4.2 - 2.4.4.3
+
+* Added Swagger documentation to the API's. Swagger generates online API documentation, with the
+ability to try out the API.
 
 ### 2.4.4.1
 
