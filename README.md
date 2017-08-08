@@ -346,7 +346,7 @@ self-hosting this service.
 
 ### 2.4.4.5
 
-* Improved `status` call to actually do a mapcode cnmversion back and forth.
+* Improved `status` call to actually do a mapcode conversion back and forth.
 
 * Improved Swagger documentation.
 
