@@ -46,7 +46,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,18 +105,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Override
-    public void convertLatLonToMapcodeXml(
-            @Suspended @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
-        convertLatLonToMapcode(response);
-    }
-
-    @Override
-    public void convertLatLonToMapcodeJson(
-            @Suspended @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
-        convertLatLonToMapcode(response);
-    }
-
-    @Override
     public void convertLatLonToMapcode(
             final double paramLatDeg,
             final double paramLonDeg,
@@ -130,40 +117,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nonnull final String paramAllowLog,
             @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
         convertLatLonToMapcode(paramLatDeg, paramLonDeg, null, paramPrecision, paramTerritory, paramContextMustBeNull,
-                paramAlphabet, paramInclude, paramClient, paramAllowLog, response);
-    }
-
-    @Override
-    public void convertLatLonToMapcodeXml(
-            final double paramLatDeg,
-            final double paramLonDeg,
-            final int paramPrecision,
-            @Nullable final String paramTerritory,
-            @Nullable final String paramContextMustBeNull,
-            @Nullable final String paramAlphabet,
-            @Nonnull final String paramInclude,
-            @Nonnull final String paramClient,
-            @Nonnull final String paramAllowLog,
-            @Suspended @Nonnull final AsyncResponse response)
-            throws ApiInvalidFormatException {
-        convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramPrecision, paramTerritory, paramContextMustBeNull,
-                paramAlphabet, paramInclude, paramClient, paramAllowLog, response);
-    }
-
-    @Override
-    public void convertLatLonToMapcodeJson(
-            final double paramLatDeg,
-            final double paramLonDeg,
-            final int paramPrecision,
-            @Nullable final String paramTerritory,
-            @Nullable final String paramContextMustBeNull,
-            @Nullable final String paramAlphabet,
-            @Nonnull final String paramInclude,
-            @Nonnull final String paramClient,
-            @Nonnull final String paramAllowLog,
-            @Suspended @Nonnull final AsyncResponse response)
-            throws ApiInvalidFormatException {
-        convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramPrecision, paramTerritory, paramContextMustBeNull,
                 paramAlphabet, paramInclude, paramClient, paramAllowLog, response);
     }
 
@@ -407,42 +360,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Override
-    public void convertLatLonToMapcodeXml(
-            final double paramLatDeg,
-            final double paramLonDeg,
-            @Nullable final String paramType,
-            final int paramPrecision,
-            @Nullable final String paramTerritory,
-            @Nullable final String paramContextMustBeNull,
-            @Nullable final String paramAlphabet,
-            @Nonnull final String paramInclude,
-            @Nonnull final String paramClient,
-            @Nonnull final String paramDebug,
-            @Suspended @Nonnull final AsyncResponse response)
-            throws ApiInvalidFormatException {
-        convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramType, paramPrecision, paramTerritory, paramContextMustBeNull,
-                paramAlphabet, paramInclude, paramClient, paramDebug, response);
-    }
-
-    @Override
-    public void convertLatLonToMapcodeJson(
-            final double paramLatDeg,
-            final double paramLonDeg,
-            @Nullable final String paramType,
-            final int paramPrecision,
-            @Nullable final String paramTerritory,
-            @Nullable final String paramContextMustBeNull,
-            @Nullable final String paramAlphabet,
-            @Nonnull final String paramInclude,
-            @Nonnull final String paramClient,
-            @Nonnull final String paramDebug,
-            @Suspended @Nonnull final AsyncResponse response)
-            throws ApiInvalidFormatException {
-        convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramType, paramPrecision, paramTerritory, paramContextMustBeNull,
-                paramAlphabet, paramInclude, paramClient, paramDebug, response);
-    }
-
-    @Override
     public void convertMapcodeToLatLon(
             @Nonnull final AsyncResponse response) throws ApiNotFoundException, ApiInvalidFormatException {
 
@@ -450,20 +367,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
         processor.process("convertLatLonToMapcode", LOG, response, () -> {
             throw new ApiForbiddenException("Missing URL path parameters: /{mapcode}");
         });
-    }
-
-    @Override
-    public void convertMapcodeToLatLonXml(
-            @Suspended @Nonnull final AsyncResponse response)
-            throws ApiNotFoundException, ApiInvalidFormatException {
-        convertMapcodeToLatLon(response);
-    }
-
-    @Override
-    public void convertMapcodeToLatLonJson(
-            @Suspended @Nonnull final AsyncResponse response)
-            throws ApiNotFoundException, ApiInvalidFormatException {
-        convertMapcodeToLatLon(response);
     }
 
     @Override
@@ -557,32 +460,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Override
-    public void convertMapcodeToLatLonXml(
-            @Nonnull final String paramCode,
-            @Nullable final String paramContext,
-            @Nullable final String paramTerritoryMustBeNull,
-            @Nonnull final String paramInclude,
-            @Nonnull final String paramClient,
-            @Nonnull final String paramDebug,
-            @Suspended @Nonnull final AsyncResponse response)
-            throws ApiNotFoundException, ApiInvalidFormatException {
-        convertMapcodeToLatLon(paramCode, paramContext, paramTerritoryMustBeNull, paramInclude, paramClient, paramDebug, response);
-    }
-
-    @Override
-    public void convertMapcodeToLatLonJson(
-            @Nonnull final String paramCode,
-            @Nullable final String paramContext,
-            @Nullable final String paramTerritoryMustBeNull,
-            @Nonnull final String paramInclude,
-            @Nonnull final String paramClient,
-            @Nonnull final String paramDebug,
-            @Suspended @Nonnull final AsyncResponse response)
-            throws ApiNotFoundException, ApiInvalidFormatException {
-        convertMapcodeToLatLon(paramCode, paramContext, paramTerritoryMustBeNull, paramInclude, paramClient, paramDebug, response);
-    }
-
-    @Override
     public void getTerritories(
             final int offset,
             final int count,
@@ -615,28 +492,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
             // The response is already set within this method body.
             return Futures.successful(null);
         });
-    }
-
-    @Override
-    public void getTerritoriesXml(
-            final int offset,
-            final int count,
-            @Nonnull final String paramClient,
-            @Nonnull final String paramAllowLog,
-            @Suspended @Nonnull final AsyncResponse response)
-            throws ApiIntegerOutOfRangeException {
-        getTerritories(offset, count, paramClient, paramAllowLog, response);
-    }
-
-    @Override
-    public void getTerritoriesJson(
-            final int offset,
-            final int count,
-            @Nonnull final String paramClient,
-            @Nonnull final String paramAllowLog,
-            @Suspended @Nonnull final AsyncResponse response)
-            throws ApiIntegerOutOfRangeException {
-        getTerritories(offset, count, paramClient, paramAllowLog, response);
     }
 
     @Override
@@ -684,28 +539,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Override
-    public void getTerritoryXml(
-            @Nonnull final String paramTerritory,
-            @Nullable final String paramContext,
-            @Nonnull final String paramClient,
-            @Nonnull final String paramAllowLog,
-            @Suspended @Nonnull final AsyncResponse response)
-            throws ApiInvalidFormatException {
-        getTerritory(paramTerritory, paramContext, paramClient, paramAllowLog, response);
-    }
-
-    @Override
-    public void getTerritoryJson(
-            @Nonnull final String paramTerritory,
-            @Nullable final String paramContext,
-            @Nonnull final String paramClient,
-            @Nonnull final String paramAllowLog,
-            @Suspended @Nonnull final AsyncResponse response)
-            throws ApiInvalidFormatException {
-        getTerritory(paramTerritory, paramContext, paramClient, paramAllowLog, response);
-    }
-
-    @Override
     public void getAlphabets(
             final int offset,
             final int count,
@@ -741,28 +574,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
     }
 
     @Override
-    public void getAlphabetsXml(
-            final int offset,
-            final int count,
-            @Nonnull final String paramClient,
-            @Nonnull final String paramAllowLog,
-            @Suspended @Nonnull final AsyncResponse response)
-            throws ApiIntegerOutOfRangeException {
-        getAlphabets(offset, count, paramClient, paramAllowLog, response);
-    }
-
-    @Override
-    public void getAlphabetsJson(
-            final int offset,
-            final int count,
-            @Nonnull final String paramClient,
-            @Nonnull final String paramAllowLog,
-            @Suspended @Nonnull final AsyncResponse response)
-            throws ApiIntegerOutOfRangeException {
-        getAlphabets(offset, count, paramClient, paramAllowLog, response);
-    }
-
-    @Override
     public void getAlphabet(
             @Nonnull final String paramAlphabet,
             @Nonnull final String paramClient,
@@ -794,26 +605,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
             // The response is already set within this method body.
             return Futures.successful(null);
         });
-    }
-
-    @Override
-    public void getAlphabetXml(
-            @Nonnull final String paramAlphabet,
-            @Nonnull final String paramClient,
-            @Nonnull final String paramAllowLog,
-            @Suspended @Nonnull final AsyncResponse response)
-            throws ApiInvalidFormatException {
-        getAlphabet(paramAlphabet, paramClient, paramAllowLog, response);
-    }
-
-    @Override
-    public void getAlphabetJson(
-            @Nonnull final String paramAlphabet,
-            @Nonnull final String paramClient,
-            @Nonnull final String paramAllowLog,
-            @Suspended @Nonnull final AsyncResponse response)
-            throws ApiInvalidFormatException {
-        getAlphabet(paramAlphabet, paramClient, paramAllowLog, response);
     }
 
     @Nonnull

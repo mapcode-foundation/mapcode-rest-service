@@ -19,9 +19,7 @@ package com.mapcode.services;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Provides;
-import com.mapcode.services.implementation.MapcodeResourceImpl;
-import com.mapcode.services.implementation.RootResourceImpl;
-import com.mapcode.services.implementation.SystemMetricsImpl;
+import com.mapcode.services.implementation.*;
 import com.mapcode.services.jmx.SystemMetricsAgent;
 import com.mapcode.services.metrics.SystemMetrics;
 import com.mapcode.services.metrics.SystemMetricsCollector;
@@ -50,6 +48,8 @@ public class ResourcesModule implements Module {
         // Bind APIs to their implementation.
         binder.bind(RootResource.class).to(RootResourceImpl.class).in(Singleton.class);
         binder.bind(MapcodeResource.class).to(MapcodeResourceImpl.class).in(Singleton.class);
+        binder.bind(MapcodeJsonResource.class).to(MapcodeJsonResourceImpl.class).in(Singleton.class);
+        binder.bind(MapcodeXmlResource.class).to(MapcodeXmlResourceImpl.class).in(Singleton.class);
 
         // JMX interface.
         binder.bind(SystemMetricsImpl.class).in(Singleton.class);

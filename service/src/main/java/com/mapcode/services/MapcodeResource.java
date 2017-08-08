@@ -30,7 +30,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * This class handle the Mapcode REST API, which includes conversions to and from mapcodes.
  */
-@Api(value = "/mapcode", description = "This resource provides the Mapcode REST API.")
+@Api(value = "mapcode", description = "This resource provides the Mapcode REST API.")
 @Path("/mapcode")
 public interface MapcodeResource {
 
@@ -72,18 +72,6 @@ public interface MapcodeResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("codes")
     void convertLatLonToMapcode(
-            @Suspended @Nonnull AsyncResponse response) throws ApiException;
-
-    @GET
-    @Produces(MediaType.APPLICATION_XML)
-    @Path("xml/codes")
-    void convertLatLonToMapcodeXml(
-            @Suspended @Nonnull AsyncResponse response) throws ApiException;
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("json/codes")
-    void convertLatLonToMapcodeJson(
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     /**
@@ -157,36 +145,6 @@ public interface MapcodeResource {
             @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
-    @GET
-    @Produces(MediaType.APPLICATION_XML)
-    @Path("xml/codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + '}')
-    void convertLatLonToMapcodeXml(
-            @PathParam(PARAM_LAT_DEG) double paramLatDeg,
-            @PathParam(PARAM_LON_DEG) double paramLonDeg,
-            @QueryParam(PARAM_PRECISION) @DefaultValue("0") int paramPrecision,
-            @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritory,
-            @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,
-            @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
-            @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
-            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
-            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
-            @Suspended @Nonnull AsyncResponse response) throws ApiException;
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("json/codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + '}')
-    void convertLatLonToMapcodeJson(
-            @PathParam(PARAM_LAT_DEG) double paramLatDeg,
-            @PathParam(PARAM_LON_DEG) double paramLonDeg,
-            @QueryParam(PARAM_PRECISION) @DefaultValue("0") int paramPrecision,
-            @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritory,
-            @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,
-            @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
-            @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
-            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
-            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
-            @Suspended @Nonnull AsyncResponse response) throws ApiException;
-
     /**
      * Convert a lat/lon to one or more mapcodes.
      *
@@ -225,55 +183,11 @@ public interface MapcodeResource {
             @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
-    @GET
-    @Produces(MediaType.APPLICATION_XML)
-    @Path("xml/codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + "}/{" + PARAM_TYPE + '}')
-    void convertLatLonToMapcodeXml(
-            @PathParam(PARAM_LAT_DEG) double paramLatDeg,
-            @PathParam(PARAM_LON_DEG) double paramLonDeg,
-            @PathParam(PARAM_TYPE) @Nullable String paramType,
-            @QueryParam(PARAM_PRECISION) @DefaultValue("0") int paramPrecision,
-            @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritory,
-            @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,
-            @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
-            @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
-            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
-            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramDebug,
-            @Suspended @Nonnull AsyncResponse response) throws ApiException;
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("json/codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + "}/{" + PARAM_TYPE + '}')
-    void convertLatLonToMapcodeJson(
-            @PathParam(PARAM_LAT_DEG) double paramLatDeg,
-            @PathParam(PARAM_LON_DEG) double paramLonDeg,
-            @PathParam(PARAM_TYPE) @Nullable String paramType,
-            @QueryParam(PARAM_PRECISION) @DefaultValue("0") int paramPrecision,
-            @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritory,
-            @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,
-            @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
-            @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
-            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
-            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramDebug,
-            @Suspended @Nonnull AsyncResponse response) throws ApiException;
-
     // Unsupported operation.
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("coords")
     void convertMapcodeToLatLon(
-            @Suspended @Nonnull AsyncResponse response) throws ApiException;
-
-    @GET
-    @Produces(MediaType.APPLICATION_XML)
-    @Path("xml/coords")
-    void convertMapcodeToLatLonXml(
-            @Suspended @Nonnull AsyncResponse response) throws ApiException;
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("json/coords")
-    void convertMapcodeToLatLonJson(
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     /**
@@ -320,30 +234,6 @@ public interface MapcodeResource {
             @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
-    @GET
-    @Produces(MediaType.APPLICATION_XML)
-    @Path("xml/coords/{" + PARAM_MAPCODE + '}')
-    void convertMapcodeToLatLonXml(
-            @PathParam(PARAM_MAPCODE) @Nonnull String paramCode,
-            @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
-            @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritoryMustBeNull,
-            @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
-            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
-            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramDebug,
-            @Suspended @Nonnull AsyncResponse response) throws ApiException;
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("json/coords/{" + PARAM_MAPCODE + '}')
-    void convertMapcodeToLatLonJson(
-            @PathParam(PARAM_MAPCODE) @Nonnull String paramCode,
-            @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
-            @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritoryMustBeNull,
-            @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
-            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
-            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramDebug,
-            @Suspended @Nonnull AsyncResponse response) throws ApiException;
-
     /**
      * Get a list of all valid territory codes.
      *
@@ -379,26 +269,6 @@ public interface MapcodeResource {
             @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
-    @GET
-    @Produces(MediaType.APPLICATION_XML)
-    @Path("xml/territories")
-    void getTerritoriesXml(
-            @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
-            @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
-            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
-            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
-            @Suspended @Nonnull AsyncResponse response) throws ApiException;
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("json/territories")
-    void getTerritoriesJson(
-            @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
-            @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
-            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
-            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
-            @Suspended @Nonnull AsyncResponse response) throws ApiException;
-
     /**
      * Get info for a specific territory.
      *
@@ -429,26 +299,6 @@ public interface MapcodeResource {
             @ApiParam(hidden = true)
             @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
             @ApiParam(hidden = true)
-            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
-            @Suspended @Nonnull AsyncResponse response) throws ApiException;
-
-    @GET
-    @Produces(MediaType.APPLICATION_XML)
-    @Path("xml/territories/{" + PARAM_TERRITORY + '}')
-    void getTerritoryXml(
-            @PathParam(PARAM_TERRITORY) @Nonnull String paramTerritory,
-            @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
-            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
-            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
-            @Suspended @Nonnull AsyncResponse response) throws ApiException;
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("json/territories/{" + PARAM_TERRITORY + '}')
-    void getTerritoryJson(
-            @PathParam(PARAM_TERRITORY) @Nonnull String paramTerritory,
-            @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
-            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
             @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
@@ -490,26 +340,6 @@ public interface MapcodeResource {
             @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
-    @GET
-    @Produces(MediaType.APPLICATION_XML)
-    @Path("xml/alphabets")
-    void getAlphabetsXml(
-            @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
-            @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
-            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
-            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
-            @Suspended @Nonnull AsyncResponse response) throws ApiException;
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("json/alphabets")
-    void getAlphabetsJson(
-            @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
-            @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
-            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
-            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
-            @Suspended @Nonnull AsyncResponse response) throws ApiException;
-
     /**
      * Get info for a specific alphabet.
      *
@@ -536,24 +366,6 @@ public interface MapcodeResource {
             @ApiParam(hidden = true)
             @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
             @ApiParam(hidden = true)
-            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
-            @Suspended @Nonnull AsyncResponse response) throws ApiException;
-
-    @GET
-    @Produces(MediaType.APPLICATION_XML)
-    @Path("xml/alphabets/{" + PARAM_ALPHABET + '}')
-    void getAlphabetXml(
-            @PathParam(PARAM_ALPHABET) @Nonnull String paramAlphabet,
-            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
-            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
-            @Suspended @Nonnull AsyncResponse response) throws ApiException;
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("json/alphabets/{" + PARAM_ALPHABET + '}')
-    void getAlphabetJson(
-            @PathParam(PARAM_ALPHABET) @Nonnull String paramAlphabet,
-            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
             @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 }

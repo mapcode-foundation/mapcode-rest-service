@@ -78,7 +78,7 @@
         <servlet-class>io.swagger.jaxrs.config.DefaultJaxrsConfig</servlet-class>
         <init-param>
             <param-name>api.version</param-name>
-            <param-value>2.4.4</param-value>
+            <param-value>${pom.version}</param-value>
         </init-param>
         <load-on-startup>2</load-on-startup>
     </servlet>
