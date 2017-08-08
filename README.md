@@ -344,6 +344,14 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.4.5
+
+* Improved `status` call to actually do a mapcode cnmversion back and forth.
+
+* Improved Swagger documentation.
+
+* Split JSON- and XML-only calls into seperate files.
+
 ### 2.4.4.2 - 2.4.4.4
 
 * Added Swagger documentation to the API's. Swagger generates online API documentation, with the
