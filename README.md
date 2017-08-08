@@ -344,13 +344,15 @@ self-hosting this service.
 
 ## Release Notes
 
-### 2.4.4.5
+### 2.4.4.5 - 2.4.4.6
 
 * Improved `status` call to actually do a mapcode conversion back and forth.
 
 * Improved Swagger documentation.
 
 * Split JSON- and XML-only calls into seperate files.
+
+* Note that 2.4.4.5 was broken, fixed by 2.4.4.6.
 
 ### 2.4.4.2 - 2.4.4.4
 

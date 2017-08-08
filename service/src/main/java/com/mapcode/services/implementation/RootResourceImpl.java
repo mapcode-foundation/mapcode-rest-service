@@ -24,6 +24,9 @@ import com.mapcode.services.dto.VersionDTO;
 import com.mapcode.services.metrics.SystemMetrics;
 import com.tomtom.speedtools.json.Json;
 import com.tomtom.speedtools.maven.MavenProperties;
+import com.tomtom.speedtools.time.UTCTime;
+import com.tomtom.speedtools.utils.MathUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -214,45 +217,60 @@ public class RootResourceImpl implements RootResource {
         assert response != null;
         LOG.info("getStatus: get status");
 
-        // Execute a lat/lon to mapcode conversion
-        final double latDeg = 52.158974;
-        final double lonDeg = 4.492479;
-        final String mapcode = "QJM.1G";
-        final String territory = "NLD";
-        final TestAsyncResponse asyncResponse = new TestAsyncResponse();
-        mapcodeResource.convertLatLonToMapcode(latDeg, lonDeg, "local",
-                0, null, null, null, "", "",
-                "false:", asyncResponse);
+        try {
+            // Execute a lat/lon to mapcode conversion
+            final double latDeg = 52.158974;
+            final double lonDeg = 4.492479;
+            final String mapcode = "QJM.1G";
+            final String territory = "NLD";
+            final String alphabet = null;
+            final int precision = 0;
+            final String include = "";
+            final String client = "";
+            final String allowLog = "false";
+            final TestAsyncResponse asyncResponse1 = new TestAsyncResponse();
+            mapcodeResource.convertLatLonToMapcode(latDeg, lonDeg, "local",
+                    precision, territory, null, alphabet, include, client,
+                    allowLog, asyncResponse1);
+            waitForResponse(asyncResponse1);
 
-        // Check if conversion was OK.
-        if (asyncResponse.getResponse() instanceof Response) {
-            final Response response1 = (Response) asyncResponse.getResponse();
-            if (response1.getEntity() instanceof MapcodeDTO) {
-                final MapcodeDTO result1 = (MapcodeDTO) response1.getEntity();
-                final MapcodeDTO expected1 = new MapcodeDTO(mapcode, null, territory, null);
-                if (expected1.equals(result1)) {
+            // Check if conversion was OK.
+            if (asyncResponse1.getResponse() instanceof Response) {
+                final Response response1 = (Response) asyncResponse1.getResponse();
+                if (response1.getEntity() instanceof MapcodeDTO) {
+                    final MapcodeDTO result1 = (MapcodeDTO) response1.getEntity();
+                    final MapcodeDTO expected1 = new MapcodeDTO(mapcode, null, territory, null);
+                    //noinspection ConstantConditions
+                    if (expected1.getMapcode().equals(result1.getMapcode()) &&
+                            expected1.getTerritory().equals(result1.getTerritory())) {
 
-                    // Now execute a mapcode to lat/lon conversion.
-                    mapcodeResource.convertMapcodeToLatLon(mapcode, territory,
-                            null, "", "", "false", asyncResponse);
+                        // Now execute a mapcode to lat/lon conversion.
+                        final TestAsyncResponse asyncResponse2 = new TestAsyncResponse();
+                        mapcodeResource.convertMapcodeToLatLon(mapcode, territory,
+                                null, include, client, allowLog, asyncResponse2);
+                        waitForResponse(asyncResponse2);
 
-                    if (asyncResponse.getResponse() instanceof Response) {
-                        final Response response2 = (Response) asyncResponse.getResponse();
-                        if (response2.getEntity() instanceof PointDTO) {
-                            final PointDTO result2 = (PointDTO) response2.getEntity();
-                            final PointDTO expected2 = new PointDTO(latDeg, lonDeg);
-                            if (expected2.equals(result2)) {
+                        if (asyncResponse2.getResponse() instanceof Response) {
+                            final Response response2 = (Response) asyncResponse2.getResponse();
+                            if (response2.getEntity() instanceof PointDTO) {
+                                final PointDTO result2 = (PointDTO) response2.getEntity();
+                                final PointDTO expected2 = new PointDTO(latDeg, lonDeg);
+                                if (MathUtils.isAlmostEqual(expected2.getLatDeg(), result2.getLatDeg()) &&
+                                        MathUtils.isAlmostEqual(expected2.getLonDeg(), result2.getLonDeg())) {
 
-                                // Yes, all is OK.
-                                response.resume(Response.ok().build());
-                                return;
+                                    // Yes, all is OK.
+                                    response.resume(Response.ok().build());
+                                    return;
+                                }
                             }
                         }
+                        response.resume(Response.ok().build());
+                        return;
                     }
-                    response.resume(Response.ok().build());
-                    return;
                 }
             }
+        } catch (final InterruptedException ignored) {
+            // Empty.
         }
 
         // This are not OK.
@@ -267,5 +285,23 @@ public class RootResourceImpl implements RootResource {
         // No input validation required. Just return metrics as a plain JSON string.
         final String json = Json.toJson(metrics);
         response.resume(Response.ok(json).build());
+    }
+
+    private static void waitForResponse(@Nonnull  final TestAsyncResponse asyncResponse) throws InterruptedException {
+        final int sleepMillis = 100;                            // No more than 10 reqs/sec.
+        final DateTime now = UTCTime.now();
+        final DateTime until = now.plusSeconds(10);             // Wait at most 10 seconds.
+        while (now.isBefore(until)) {
+            if (asyncResponse.isReady()) {
+                if (asyncResponse.getResponse() != null) {      // If the object is null, retry.
+
+                    // All OK.
+                    return;
+                }
+            }
+            //noinspection BusyWait
+            Thread.sleep(sleepMillis);
+        }
+        throw new IllegalStateException();
     }
 }

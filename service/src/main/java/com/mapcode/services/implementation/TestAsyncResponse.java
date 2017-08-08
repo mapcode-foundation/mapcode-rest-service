@@ -26,38 +26,47 @@ import java.util.concurrent.TimeUnit;
 
 public class TestAsyncResponse implements AsyncResponse {
 
-    private boolean isResumed = false;
+    private boolean isReady = false;
     private Object response = null;
+
+    public boolean isReady() {
+        return isReady;
+    }
+
+    @Nullable
+    public Object getResponse() {
+        return response;
+    }
 
     @Override
     public boolean resume(final Object response) {
-        this.isResumed = true;
+        this.isReady = true;
         this.response = response;
         return true;
     }
 
     @Override
     public boolean resume(final Throwable response) {
-        this.isResumed = true;
+        this.isReady = true;
         this.response = response;
         return true;
     }
 
     @Override
     public boolean cancel() {
-        this.isResumed = false;
+        this.isReady = true;
         return true;
     }
 
     @Override
     public boolean cancel(final int retryAfter) {
-        this.isResumed = false;
+        this.isReady = true;
         return true;
     }
 
     @Override
     public boolean cancel(final Date retryAfter) {
-        this.isResumed = false;
+        this.isReady = true;
         return true;
     }
 
@@ -108,14 +117,5 @@ public class TestAsyncResponse implements AsyncResponse {
     @Nullable
     public Map<Class<?>, Collection<Class<?>>> register(final Object callback, final Object... callbacks) {
         return null;
-    }
-
-    public boolean isResumed() {
-        return isResumed;
-    }
-
-    @Nullable
-    public Object getResponse() {
-        return response;
     }
 }
