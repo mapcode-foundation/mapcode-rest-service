@@ -30,19 +30,29 @@ import static com.mapcode.services.MapcodeResource.*;
 /**
  * This class handle the Mapcode REST API, which includes conversions to and from mapcodes.
  */
-@Path("/mapcode/json")
-public interface MapcodeJsonResource {
+@Path("/mapcode/xml")
+public interface OnlyXmlResource {
+
+    @Path("version")
+    @GET
+    @Produces(MediaType.APPLICATION_XML)
+    void getVersionXml(@Suspended @Nonnull AsyncResponse response);
+
+    @Path("status")
+    @Produces(MediaType.APPLICATION_XML)
+    @GET
+    void getStatusXml(@Suspended @Nonnull AsyncResponse response);
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_XML)
     @Path("codes")
-    void convertLatLonToMapcodeJson(
+    void convertLatLonToMapcodeXml(
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_XML)
     @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + '}')
-    void convertLatLonToMapcodeJson(
+    void convertLatLonToMapcodeXml(
             @PathParam(PARAM_LAT_DEG) double paramLatDeg,
             @PathParam(PARAM_LON_DEG) double paramLonDeg,
             @QueryParam(PARAM_PRECISION) @DefaultValue("0") int paramPrecision,
@@ -55,9 +65,9 @@ public interface MapcodeJsonResource {
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_XML)
     @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + "}/{" + PARAM_TYPE + '}')
-    void convertLatLonToMapcodeJson(
+    void convertLatLonToMapcodeXml(
             @PathParam(PARAM_LAT_DEG) double paramLatDeg,
             @PathParam(PARAM_LON_DEG) double paramLonDeg,
             @PathParam(PARAM_TYPE) @Nullable String paramType,
@@ -71,15 +81,15 @@ public interface MapcodeJsonResource {
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_XML)
     @Path("coords")
-    void convertMapcodeToLatLonJson(
+    void convertMapcodeToLatLonXml(
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_XML)
     @Path("coords/{" + PARAM_MAPCODE + '}')
-    void convertMapcodeToLatLonJson(
+    void convertMapcodeToLatLonXml(
             @PathParam(PARAM_MAPCODE) @Nonnull String paramCode,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritoryMustBeNull,
@@ -89,9 +99,9 @@ public interface MapcodeJsonResource {
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_XML)
     @Path("territories")
-    void getTerritoriesJson(
+    void getTerritoriesXml(
             @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
             @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
             @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
@@ -99,9 +109,9 @@ public interface MapcodeJsonResource {
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_XML)
     @Path("territories/{" + PARAM_TERRITORY + '}')
-    void getTerritoryJson(
+    void getTerritoryXml(
             @PathParam(PARAM_TERRITORY) @Nonnull String paramTerritory,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContext,
             @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
@@ -109,9 +119,9 @@ public interface MapcodeJsonResource {
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_XML)
     @Path("alphabets")
-    void getAlphabetsJson(
+    void getAlphabetsXml(
             @QueryParam(PARAM_OFFSET) @DefaultValue(DEFAULT_OFFSET) int offset,
             @QueryParam(PARAM_COUNT) @DefaultValue(DEFAULT_COUNT) int count,
             @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
@@ -119,9 +129,9 @@ public interface MapcodeJsonResource {
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_XML)
     @Path("alphabets/{" + PARAM_ALPHABET + '}')
-    void getAlphabetJson(
+    void getAlphabetXml(
             @PathParam(PARAM_ALPHABET) @Nonnull String paramAlphabet,
             @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
             @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,

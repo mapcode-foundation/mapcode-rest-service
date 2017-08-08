@@ -202,30 +202,10 @@ public class RootResourceImpl implements RootResource {
     }
 
     @Override
-    public void getVersionXml(@Suspended @Nonnull final AsyncResponse response) {
-        getVersion(response);
-    }
-
-    @Override
-    public void getVersionJson(@Suspended @Nonnull final AsyncResponse response) {
-        getVersion(response);
-    }
-
-    @Override
     public void getStatus(@Suspended @Nonnull final AsyncResponse response) {
         assert response != null;
         LOG.info("getStatus: get status");
         response.resume(Response.ok().build());
-    }
-
-    @Override
-    public void getStatusXml(@Suspended @Nonnull final AsyncResponse response) {
-        getStatus(response);
-    }
-
-    @Override
-    public void getStatusJson(@Suspended @Nonnull final AsyncResponse response) {
-        getStatus(response);
     }
 
     @Override

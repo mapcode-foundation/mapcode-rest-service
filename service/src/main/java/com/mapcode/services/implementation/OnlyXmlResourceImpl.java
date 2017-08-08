@@ -17,7 +17,8 @@
 package com.mapcode.services.implementation;
 
 import com.mapcode.services.MapcodeResource;
-import com.mapcode.services.MapcodeXmlResource;
+import com.mapcode.services.OnlyXmlResource;
+import com.mapcode.services.RootResource;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiIntegerOutOfRangeException;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiInvalidFormatException;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiNotFoundException;
@@ -28,16 +29,27 @@ import javax.inject.Inject;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 
-/**
- * This class implements the REST API that handles mapcode conversions.
- */
-public class MapcodeXmlResourceImpl implements MapcodeXmlResource {
+public class OnlyXmlResourceImpl implements OnlyXmlResource {
 
+    private final RootResource rootResource;
     private final MapcodeResource mapcodeResource;
 
     @Inject
-    public MapcodeXmlResourceImpl(@Nonnull final MapcodeResource mapcodeResource) {
+    public OnlyXmlResourceImpl(
+            @Nonnull final RootResource rootResource,
+            @Nonnull final MapcodeResource mapcodeResource) {
+        this.rootResource = rootResource;
         this.mapcodeResource = mapcodeResource;
+    }
+
+    @Override
+    public void getVersionXml(@Suspended @Nonnull final AsyncResponse response) {
+        rootResource.getVersion(response);
+    }
+
+    @Override
+    public void getStatusXml(@Suspended @Nonnull final AsyncResponse response) {
+        rootResource.getStatus(response);
     }
 
     @Override

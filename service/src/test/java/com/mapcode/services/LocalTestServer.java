@@ -16,9 +16,7 @@
 
 package com.mapcode.services;
 
-import com.mapcode.services.implementation.MapcodeResourceImpl;
-import com.mapcode.services.implementation.RootResourceImpl;
-import com.mapcode.services.implementation.SystemMetricsImpl;
+import com.mapcode.services.implementation.*;
 import com.tomtom.speedtools.maven.MavenProperties;
 import com.tomtom.speedtools.rest.Reactor;
 import com.tomtom.speedtools.rest.ResourceProcessor;
@@ -75,16 +73,22 @@ public class LocalTestServer {
         final SystemMetricsImpl metrics = new SystemMetricsImpl();
 
         // Add root resource.
-        server.getDeployment().getResources().add(new RootResourceImpl(
+        final RootResourceImpl rootResource = new RootResourceImpl(
                 mavenProperties,
                 metrics
-        ));
+        );
+        server.getDeployment().getResources().add(rootResource);
 
         // Add mapcode resource.
-        server.getDeployment().getResources().add(new MapcodeResourceImpl(
+        final MapcodeResourceImpl mapcodeResource = new MapcodeResourceImpl(
                 resourceProcessor,
                 metrics
-        ));
+        );
+        server.getDeployment().getResources().add(mapcodeResource);
+
+        // Add JSON and XML mapcode resource.
+        server.getDeployment().getResources().add(new OnlyJsonResourceImpl(rootResource, mapcodeResource));
+        server.getDeployment().getResources().add(new OnlyXmlResourceImpl(rootResource, mapcodeResource));
         server.start();
         LOG.debug("start: Start local server, baseUrl={}", getBaseUrl());
     }

@@ -48,8 +48,8 @@ public class ResourcesModule implements Module {
         // Bind APIs to their implementation.
         binder.bind(RootResource.class).to(RootResourceImpl.class).in(Singleton.class);
         binder.bind(MapcodeResource.class).to(MapcodeResourceImpl.class).in(Singleton.class);
-        binder.bind(MapcodeJsonResource.class).to(MapcodeJsonResourceImpl.class).in(Singleton.class);
-        binder.bind(MapcodeXmlResource.class).to(MapcodeXmlResourceImpl.class).in(Singleton.class);
+        binder.bind(OnlyJsonResource.class).to(OnlyJsonResourceImpl.class).in(Singleton.class);
+        binder.bind(OnlyXmlResource.class).to(OnlyXmlResourceImpl.class).in(Singleton.class);
 
         // JMX interface.
         binder.bind(SystemMetricsImpl.class).in(Singleton.class);

@@ -17,9 +17,7 @@
 package com.mapcode.services.standalone;
 
 import com.google.inject.Inject;
-import com.mapcode.services.implementation.MapcodeResourceImpl;
-import com.mapcode.services.implementation.RootResourceImpl;
-import com.mapcode.services.implementation.SystemMetricsImpl;
+import com.mapcode.services.implementation.*;
 import com.tomtom.speedtools.maven.MavenProperties;
 import com.tomtom.speedtools.rest.Reactor;
 import com.tomtom.speedtools.rest.ResourceProcessor;
@@ -85,16 +83,22 @@ public class Server {
         final List<Object> resources = deployment.getResources();
 
         // Add root resource.
-        resources.add(new RootResourceImpl(
+        final RootResourceImpl rootResource = new RootResourceImpl(
                 mavenProperties,
                 metrics
-        ));
+        );
+        resources.add(rootResource);
 
         // Add mapcode resource.
-        resources.add(new MapcodeResourceImpl(
+        final MapcodeResourceImpl mapcodeResource = new MapcodeResourceImpl(
                 resourceProcessor,
                 metrics
-        ));
+        );
+        resources.add(mapcodeResource);
+
+        // Add JSON and XML mapcode resources.
+        resources.add(new OnlyJsonResourceImpl(rootResource, mapcodeResource));
+        resources.add(new OnlyXmlResourceImpl(rootResource, mapcodeResource));
 
         LOG.debug("Server: start server...");
         server.start();

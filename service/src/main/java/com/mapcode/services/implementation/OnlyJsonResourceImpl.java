@@ -16,8 +16,9 @@
 
 package com.mapcode.services.implementation;
 
-import com.mapcode.services.MapcodeJsonResource;
+import com.mapcode.services.OnlyJsonResource;
 import com.mapcode.services.MapcodeResource;
+import com.mapcode.services.RootResource;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiIntegerOutOfRangeException;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiInvalidFormatException;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiNotFoundException;
@@ -28,15 +29,16 @@ import javax.inject.Inject;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 
-/**
- * This class implements the REST API that handles mapcode conversions.
- */
-public class MapcodeJsonResourceImpl implements MapcodeJsonResource {
+public class OnlyJsonResourceImpl implements OnlyJsonResource {
 
+    private final RootResource rootResource;
     private final MapcodeResource mapcodeResource;
 
     @Inject
-    public MapcodeJsonResourceImpl(@Nonnull final MapcodeResource mapcodeResource) {
+    public OnlyJsonResourceImpl(
+            @Nonnull final RootResource rootResource,
+            @Nonnull final MapcodeResource mapcodeResource) {
+        this.rootResource = rootResource;
         this.mapcodeResource = mapcodeResource;
     }
 
@@ -44,6 +46,16 @@ public class MapcodeJsonResourceImpl implements MapcodeJsonResource {
     public void convertLatLonToMapcodeJson(
             @Suspended @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
         mapcodeResource.convertLatLonToMapcode(response);
+    }
+
+    @Override
+    public void getVersionJson(@Suspended @Nonnull final AsyncResponse response) {
+        rootResource.getVersion(response);
+    }
+
+    @Override
+    public void getStatusJson(@Suspended @Nonnull final AsyncResponse response) {
+        rootResource.getStatus(response);
     }
 
     @Override
