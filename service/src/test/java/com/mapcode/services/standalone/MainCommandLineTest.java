@@ -74,6 +74,7 @@ public class MainCommandLineTest {
         LOG.info("checkVersionXmlJson");
         final String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><version>";
         final String expectedJson = "{\"version\":\"";
+
         Response response = new ResteasyClientBuilder().build().
                 target(localUrl("/mapcode/version")).
                 request().

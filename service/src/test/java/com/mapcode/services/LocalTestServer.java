@@ -72,19 +72,20 @@ public class LocalTestServer {
         final MavenProperties mavenProperties = new MavenProperties(version);
         final SystemMetricsImpl metrics = new SystemMetricsImpl();
 
-        // Add root resource.
-        final RootResourceImpl rootResource = new RootResourceImpl(
-                mavenProperties,
-                metrics
-        );
-        server.getDeployment().getResources().add(rootResource);
-
         // Add mapcode resource.
         final MapcodeResourceImpl mapcodeResource = new MapcodeResourceImpl(
                 resourceProcessor,
                 metrics
         );
         server.getDeployment().getResources().add(mapcodeResource);
+
+        // Add root resource.
+        final RootResourceImpl rootResource = new RootResourceImpl(
+                mapcodeResource,
+                mavenProperties,
+                metrics
+        );
+        server.getDeployment().getResources().add(rootResource);
 
         // Add JSON and XML mapcode resource.
         server.getDeployment().getResources().add(new OnlyJsonResourceImpl(rootResource, mapcodeResource));

@@ -82,19 +82,20 @@ public class Server {
         final ResteasyDeployment deployment = server.getDeployment();
         final List<Object> resources = deployment.getResources();
 
-        // Add root resource.
-        final RootResourceImpl rootResource = new RootResourceImpl(
-                mavenProperties,
-                metrics
-        );
-        resources.add(rootResource);
-
         // Add mapcode resource.
         final MapcodeResourceImpl mapcodeResource = new MapcodeResourceImpl(
                 resourceProcessor,
                 metrics
         );
         resources.add(mapcodeResource);
+
+        // Add root resource.
+        final RootResourceImpl rootResource = new RootResourceImpl(
+                mapcodeResource,
+                mavenProperties,
+                metrics
+        );
+        resources.add(rootResource);
 
         // Add JSON and XML mapcode resources.
         resources.add(new OnlyJsonResourceImpl(rootResource, mapcodeResource));

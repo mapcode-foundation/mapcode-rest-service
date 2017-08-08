@@ -16,9 +16,12 @@
 
 package com.mapcode.services.implementation;
 
+import com.mapcode.services.MapcodeResource;
 import com.mapcode.services.RootResource;
-import com.mapcode.services.metrics.SystemMetrics;
+import com.mapcode.services.dto.MapcodeDTO;
+import com.mapcode.services.dto.PointDTO;
 import com.mapcode.services.dto.VersionDTO;
+import com.mapcode.services.metrics.SystemMetrics;
 import com.tomtom.speedtools.json.Json;
 import com.tomtom.speedtools.maven.MavenProperties;
 import org.slf4j.Logger;
@@ -160,16 +163,21 @@ public class RootResourceImpl implements RootResource {
             "    GET /mapcode/xml/territories       GET /mapcode/json/territories\n" +
             "    GET /mapcode/xml/alphabets         GET /mapcode/json/alphabets\n";
 
+    private final MapcodeResource mapcodeResource;
     private final MavenProperties mavenProperties;
     private final SystemMetrics metrics;
 
     @Inject
     public RootResourceImpl(
+            @Nonnull final MapcodeResource mapcodeResource,
             @Nonnull final MavenProperties mavenProperties,
             @Nonnull final SystemMetrics metrics) {
+        assert mapcodeResource != null;
         assert mavenProperties != null;
+        assert metrics != null;
 
         // Store the injected values.
+        this.mapcodeResource = mapcodeResource;
         this.mavenProperties = mavenProperties;
         this.metrics = metrics;
     }
@@ -205,7 +213,50 @@ public class RootResourceImpl implements RootResource {
     public void getStatus(@Suspended @Nonnull final AsyncResponse response) {
         assert response != null;
         LOG.info("getStatus: get status");
-        response.resume(Response.ok().build());
+
+        // Execute a lat/lon to mapcode conversion
+        final double latDeg = 52.158974;
+        final double lonDeg = 4.492479;
+        final String mapcode = "QJM.1G";
+        final String territory = "NLD";
+        final TestAsyncResponse asyncResponse = new TestAsyncResponse();
+        mapcodeResource.convertLatLonToMapcode(latDeg, lonDeg, "local",
+                0, null, null, null, "", "",
+                "false:", asyncResponse);
+
+        // Check if conversion was OK.
+        if (asyncResponse.getResponse() instanceof Response) {
+            final Response response1 = (Response) asyncResponse.getResponse();
+            if (response1.getEntity() instanceof MapcodeDTO) {
+                final MapcodeDTO result1 = (MapcodeDTO) response1.getEntity();
+                final MapcodeDTO expected1 = new MapcodeDTO(mapcode, null, territory, null);
+                if (expected1.equals(result1)) {
+
+                    // Now execute a mapcode to lat/lon conversion.
+                    mapcodeResource.convertMapcodeToLatLon(mapcode, territory,
+                            null, "", "", "false", asyncResponse);
+
+                    if (asyncResponse.getResponse() instanceof Response) {
+                        final Response response2 = (Response) asyncResponse.getResponse();
+                        if (response2.getEntity() instanceof PointDTO) {
+                            final PointDTO result2 = (PointDTO) response2.getEntity();
+                            final PointDTO expected2 = new PointDTO(latDeg, lonDeg);
+                            if (expected2.equals(result2)) {
+
+                                // Yes, all is OK.
+                                response.resume(Response.ok().build());
+                                return;
+                            }
+                        }
+                    }
+                    response.resume(Response.ok().build());
+                    return;
+                }
+            }
+        }
+
+        // This are not OK.
+        response.resume(Response.serverError().build());
     }
 
     @Override
