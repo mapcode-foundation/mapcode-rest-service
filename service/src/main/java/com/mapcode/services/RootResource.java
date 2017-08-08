@@ -29,8 +29,7 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 
-@Api(
-        value = "/mapcode")
+@Api(value = "/mapcode")
 @Path("/mapcode")
 public interface RootResource {
 

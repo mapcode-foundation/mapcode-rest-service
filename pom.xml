@@ -159,12 +159,6 @@
             </dependency>
 
             <dependency>
-                <groupId>com.github.kongchen</groupId>
-                <artifactId>swagger-maven-plugin.version</artifactId>
-                <version>swagger-maven-plugin.version</version>
-            </dependency>
-
-            <dependency>
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>jsr305</artifactId>
                 <version>${jsr305.version}</version>
