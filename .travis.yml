@@ -5,12 +5,16 @@ sudo: false
 jdk:
     - oraclejdk8
 
-install: mvn install -DskipTests -Dgpg.skip
+install:
+    - export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+    - mvn install -DskipTests -Dgpg.skip
 
 script:
+    - export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
     - mvn verify -Dgpg.skip
 
 after_success:
+    - export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
     - mvn coveralls:report -Dgpg.skip
 
 cache:
