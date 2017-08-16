@@ -17,89 +17,91 @@ branch may not be stable during development.*
 
 The available REST API methods are:
 
-    All REST services (except 'metrics') are able to return both JSON and XML. Use the HTTP
-    'Accept:' header to specify the expected format: application/json or application/xml
-    If the 'Accept:' header is omitted, JSON is assumed.
-    
-    GET /mapcode         Returns this help page.
-    GET /mapcode/version Returns the software version.
-    GET /mapcode/metrics Returns some system metrics (JSON-only, also available from JMX).
-    GET /mapcode/status  Returns 200 if the service OK.
-    
-    GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]
-         [?precision=[0..8] & territory={restrictToTerritory} & alphabet={alphabet} & include={offset|territory|alphabet|rectangle}]
-    
-       Convert latitude/longitude to one or more mapcodes. The response always contains the 'international' mapcode and
-       only contains a 'local' mapcode if there are any non-international mapcode AND they are all of the same territory.
-    
-       Path parameters:
-         lat             : Latitude, range [-90, 90] (automatically limited to this range).
-         lon             : Longitude, range [-180, 180] (automatically wrapped to this range).
-    
-       An additional filter can be specified to limit the results:
-         mapcodes        : Same as without specifying a filter, returns all mapcodes.
-         local           : Return the shortest local mapcode (not an international code). Note that multiple local
-                           mapcodes may exist for a location, with different territories. This method returns the
-                           shortest code. It does not check if the territory is the 'geographically correct' one
-                           for the coordinates. To get the shortest code for a specific territory, you need to explicitly
-                           specify the territory with 'territory=' parameter in the query.
-         international   : Return the international mapcode.
-    
-       Query parameters:
-         precision       : Precision, range [0..8] (default=0).
-         territory       : Territory to restrict results to (name or alphacode).
-         alphabet        : Alphabet to return results in.
-         include         : Multiple options may be set, separated by comma's:
-                             offset    = Include offset from mapcode center to lat/lon (in meters).
-                             territory = Always include territory in result, also for territory 'AAA'.
-                             alphabet  = Always the mapcodeInAlphabet, also if same as mapcode.
-                             rectangle = Include the encompassing rectangle of a mapcode.
-    
-                           Note that you can use 'include=territory,alphabet' to ensure the territory code
-                           is always present, as well as the translated territory and mapcode codes.
-                           This can make processing the records easier in scripts, for example.
-    
-    GET /mapcode/coords/{code} [?context={territory} & include={include}]
-       Convert a mapcode into a latitude/longitude pair.
-    
-       Path parameters:
-         code            : Mapcode code (local or international). You can specify the territory in the code itself,
-                           like 'NLD%20XX.XX' (note that the space is URL-encoded to '%20'), or you specifty the
-                           territory separately in the 'context=' parameter, like 'XX.XX?context-NLD'.
-       Query parameters:
-         context         : Optional mapcode territory context (name or alphacode). The context is only used if the
-    
-                           code is ambiguous without it, otherwise it is ignored. For example, the context is ignored
-                           when converting an international code (but it is not considered an error to provide it).
-         include         : An additional option may be set:
-                             rectangle = Include the encompassing rectangle of a mapcode.
-    
-    GET /mapcode/territories [?offset={offset}&count={count}]
-       Return a list of all territories.
-    
-    GET /mapcode/territories/{territory} [?context={territory}]
-       Return information for a single territory code.
-    
-       Path parameters:
-         territory       : Territory to get info for (name or alphacode).
-    
-       Query parameters:
-         context         : Territory context (optional, for disambiguation, name or alphacode).
-                           The context can only be: USA IND CAN AUS MEX BRA RUS CHN ATA
-    
-    GET /mapcode/alphabets [?offset={offset}&count={count}]
-       Return a list of all alphabet codes.
-    
-    GET /mapcode/alphabets/{alphabet}
-       Return information for a specific alphabet.
-    
-       Path parameters:
-         alphabet        : Alphabet to get info for.
-    
-    General query parameters for methods which return a list of results:
-    
-       offset            : Return list from 'offset' (negative value start counting from end).
-       count             : Return 'count' items at most.
+```
+All REST services (except 'metrics') are able to return both JSON and XML. Use the HTTP
+'Accept:' header to specify the expected format: application/json or application/xml
+If the 'Accept:' header is omitted, JSON is assumed.
+
+GET /mapcode         Returns this help page.
+GET /mapcode/version Returns the software version.
+GET /mapcode/metrics Returns some system metrics (JSON-only, also available from JMX).
+GET /mapcode/status  Returns 200 if the service OK.
+
+GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]
+     [?precision=[0..8] & territory={restrictToTerritory} & alphabet={alphabet} & include={offset|territory|alphabet|rectangle}]
+
+   Convert latitude/longitude to one or more mapcodes. The response always contains the 'international' mapcode and
+   only contains a 'local' mapcode if there are any non-international mapcode AND they are all of the same territory.
+
+   Path parameters:
+     lat             : Latitude, range [-90, 90] (automatically limited to this range).
+     lon             : Longitude, range [-180, 180] (automatically wrapped to this range).
+
+   An additional filter can be specified to limit the results:
+     mapcodes        : Same as without specifying a filter, returns all mapcodes.
+     local           : Return the shortest local mapcode (not an international code). Note that multiple local
+                       mapcodes may exist for a location, with different territories. This method returns the
+                       shortest code. It does not check if the territory is the 'geographically correct' one
+                       for the coordinates. To get the shortest code for a specific territory, you need to explicitly
+                       specify the territory with 'territory=' parameter in the query.
+     international   : Return the international mapcode.
+
+   Query parameters:
+     precision       : Precision, range [0..8] (default=0).
+     territory       : Territory to restrict results to (name or alphacode).
+     alphabet        : Alphabet to return results in.
+     include         : Multiple options may be set, separated by comma's:
+                         offset    = Include offset from mapcode center to lat/lon (in meters).
+                         territory = Always include territory in result, also for territory 'AAA'.
+                         alphabet  = Always the mapcodeInAlphabet, also if same as mapcode.
+                         rectangle = Include the encompassing rectangle of a mapcode.
+
+                       Note that you can use 'include=territory,alphabet' to ensure the territory code
+                       is always present, as well as the translated territory and mapcode codes.
+                       This can make processing the records easier in scripts, for example.
+
+GET /mapcode/coords/{code} [?context={territory} & include={include}]
+   Convert a mapcode into a latitude/longitude pair.
+
+   Path parameters:
+     code            : Mapcode code (local or international). You can specify the territory in the code itself,
+                       like 'NLD%20XX.XX' (note that the space is URL-encoded to '%20'), or you specifty the
+                       territory separately in the 'context=' parameter, like 'XX.XX?context-NLD'.
+   Query parameters:
+     context         : Optional mapcode territory context (name or alphacode). The context is only used if the
+
+                       code is ambiguous without it, otherwise it is ignored. For example, the context is ignored
+                       when converting an international code (but it is not considered an error to provide it).
+     include         : An additional option may be set:
+                         rectangle = Include the encompassing rectangle of a mapcode.
+
+GET /mapcode/territories [?offset={offset}&count={count}]
+   Return a list of all territories.
+
+GET /mapcode/territories/{territory} [?context={territory}]
+   Return information for a single territory code.
+
+   Path parameters:
+     territory       : Territory to get info for (name or alphacode).
+
+   Query parameters:
+     context         : Territory context (optional, for disambiguation, name or alphacode).
+                       The context can only be: USA IND CAN AUS MEX BRA RUS CHN ATA
+
+GET /mapcode/alphabets [?offset={offset}&count={count}]
+   Return a list of all alphabet codes.
+
+GET /mapcode/alphabets/{alphabet}
+   Return information for a specific alphabet.
+
+   Path parameters:
+     alphabet        : Alphabet to get info for.
+
+General query parameters for methods which return a list of results:
+
+   offset            : Return list from 'offset' (negative value start counting from end).
+   count             : Return 'count' items at most.
+```
 
 ### Supporting XML-only Tools (e.g. Google Spreadsheets, Microsoft Excel)
 
@@ -111,12 +113,14 @@ Some tools, like Google Spreadheets and Microsoft Excel, can only handle XML res
 not provide the correct HTTP `Accept:` header. In these cases you can alternatively
 retrieve **XML** (**JSON**) responses with these alias URLs (note the "/xml" in the URLs):
 
-    GET /mapcode/xml/version           GET /mapcode/json/version
-    GET /mapcode/xml/status            GET /mapcode/json/status
-    GET /mapcode/xml/codes             GET /mapcode/json/codes
-    GET /mapcode/xml/coords            GET /mapcode/json/coords
-    GET /mapcode/xml/territories       GET /mapcode/json/territories
-    GET /mapcode/xml/alphabets         GET /mapcode/json/alphabets
+```
+GET /mapcode/xml/version           GET /mapcode/json/version
+GET /mapcode/xml/status            GET /mapcode/json/status
+GET /mapcode/xml/codes             GET /mapcode/json/codes
+GET /mapcode/xml/coords            GET /mapcode/json/coords
+GET /mapcode/xml/territories       GET /mapcode/json/territories
+GET /mapcode/xml/alphabets         GET /mapcode/json/alphabets
+```
 
 These URLs only provide XML responses, with or without the HTTP `Accept:` header.
 
@@ -134,17 +138,15 @@ Include this environment variable in your `.profile` or `.bashrc`:
 The service always runs from a WAR file.
 To build the WAR file, type
 
-```
     cd <project-root>
     mvn clean package
-```
 
 You can run the WAR file in 3 ways:
 
 1. directly from the **command-line**, using:
 
-```bash
-    java -jar deployment/target/deployment-<version>.war [--port <port>] [--silent] [--debug] [--help]
+```
+java -jar deployment/target/deployment-<version>.war [--port <port>] [--silent] [--debug] [--help]
 ```
 
   This will start the service at `http://localhost:<port>/mapcode`. If `<port>` is not specified, the
@@ -152,12 +154,12 @@ You can run the WAR file in 3 ways:
 
 2. directly from **Maven** using:
  
- ```bash
-     cd deployment
-     mvn jetty:run
- ```
+```
+cd deployment
+mvn jetty:run
+```
      
-  This will start the service at `http://localhost:8080/mapcode`.
+This will start the service at `http://localhost:8080/mapcode`.
 
 3. in a **Tomcat server**, deploying the file `deployment/target/deployment-<version>.war` into
 your Tomcat instance.
@@ -205,11 +207,11 @@ If you wish to use MongoDB tracing, will need to provide your own local
 `mapcode-secret.properties`, which override the following properties:
 
 ```
-    MongoDBTrace.writeEnabled = false
-    MongoDBTrace.servers = your-server:27017 (eg. localhost:27017)
-    MongoDBTrace.database = your-database (eg. trace)
-    MongoDBTrace.userName = your-username
-    MongoDBTrace.password = your-password
+MongoDBTrace.writeEnabled = false
+MongoDBTrace.servers = your-server:27017 (eg. localhost:27017)
+MongoDBTrace.database = your-database (eg. trace)
+MongoDBTrace.userName = your-username
+MongoDBTrace.password = your-password
 ```
 
 The service will work with an empty properties file as well, but will not trace events to the
@@ -220,15 +222,15 @@ create a "capped collection" for it, or convert an existing traces database to a
 This can be done as follows, in the MongoDB shell `mongo`:
 
 ```
-    use trace
-    db.runCommand({"convertToCapped": "traces", size: 2*1024*1024*1024});   // For example, limit to 2Gb of data.
+use trace
+db.runCommand({"convertToCapped": "traces", size: 2*1024*1024*1024});   // For example, limit to 2Gb of data.
 ```
-
+    
 You can inspect the status of the `trace` database like this:
 
 ```
-    use trace
-    db.traces.stats()
+use trace
+db.traces.stats()
 ```
 
 ### Using Java 8 on MacOSX
@@ -237,7 +239,7 @@ The source uses Java JDK 1.8, so make sure your Java compiler is set to 1.8, for
 using something like (MacOSX):
 
 ```bash
-    export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
+export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
 ```
 
 ### Smoke Testing The REST API
@@ -246,14 +248,14 @@ Try out if the web services work by entering the following URL in your web brows
 (this should show you a HTML help page):
 
 ```
-    http://localhost:8080/mapcode
-    http://localhost:8080/mapcode/codes/50.2,4.9
+http://localhost:8080/mapcode
+http://localhost:8080/mapcode/codes/50.2,4.9
 ```
 Or use a tool like cURL:
 
 ```
-    curl -X GET http://localhost:8080/mapcode
-    curl -X GET http://localhost:8080/mapcode/codes/50.2,4.9
+curl -X GET http://localhost:8080/mapcode
+curl -X GET http://localhost:8080/mapcode/codes/50.2,4.9
 ```
 
 There's also an example HTML page in the `examples/index.html` for HTML/Javascript developers.
@@ -264,40 +266,40 @@ Some REST APIs, such as `GET mapcode/metrics` require authentication. You can ge
 command-line like this:
 
 ```
-    $ http post http://localhost:8080/sessions/username userName=info@mapcode.com password=123456   
-    
-    HTTP/1.1 201 Created
-    Content-Length: 84
-    Content-Type: application/json
-    Date: Sat, 24 Jun 2017 16:40:54 GMT
-    Expires: Thu, 01 Jan 1970 00:00:00 GMT
-    Server: Jetty(8.1.7.v20120910)
-    Set-Cookie: JSESSIONID=15j59gfek2kk9s86b8n321xzu;Path=/
-    
-    {
-        "id": "15j59gfek2kk9s86b8n321xzu",
-        "personId": "00000001-0002-0003-0004-000000000005"
-    }
+$ http post http://localhost:8080/sessions/username userName=info@mapcode.com password=123456   
+
+HTTP/1.1 201 Created
+Content-Length: 84
+Content-Type: application/json
+Date: Sat, 24 Jun 2017 16:40:54 GMT
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Server: Jetty(8.1.7.v20120910)
+Set-Cookie: JSESSIONID=15j59gfek2kk9s86b8n321xzu;Path=/
+
+{
+    "id": "15j59gfek2kk9s86b8n321xzu",
+    "personId": "00000001-0002-0003-0004-000000000005"
+}
 ```
    
 Then, you can pass the session token as a cookie in the HTTP request, like this:
     
 ```    
-    $ http get http://localhost:8080/mapcode/metrics 'Cookie:JSESSIONID=15j59gfek2kk9s86b8n321xzu;Path=/'
-    
-    HTTP/1.1 200 OK
-    Content-Length: 21417
-    Content-Type: application/json
-    Date: Sat, 24 Jun 2017 16:41:23 GMT
-    Server: Jetty(8.1.7.v20120910)
-    
-    {
-        "all": {
-            "ALL_ALPHABET_REQUESTS": {
-                "calculators": [
-                    {
-                        "count": 0,
-     ...
+$ http get http://localhost:8080/mapcode/metrics 'Cookie:JSESSIONID=15j59gfek2kk9s86b8n321xzu;Path=/'
+
+HTTP/1.1 200 OK
+Content-Length: 21417
+Content-Type: application/json
+Date: Sat, 24 Jun 2017 16:41:23 GMT
+Server: Jetty(8.1.7.v20120910)
+
+{
+    "all": {
+        "ALL_ALPHABET_REQUESTS": {
+            "calculators": [
+                {
+                    "count": 0,
+ ...
 ```    
 
 ## Using Git and `.gitignore`
