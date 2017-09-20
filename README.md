@@ -351,7 +351,7 @@ self-hosting this service.
 
 ## Release Notes
 
-### 2.4.5.1
+### 2.4.5.0
 
 * Moved to Mapcode Java library 2.4.5. No functional changes.
 
