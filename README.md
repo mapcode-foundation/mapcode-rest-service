@@ -351,6 +351,10 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.5.1
+
+* Moved to Mapcode Java library 2.4.5. No functional changes.
+
 ### 2.4.4.5 - 2.4.4.6
 
 * Improved `status` call to actually do a mapcode conversion back and forth.
