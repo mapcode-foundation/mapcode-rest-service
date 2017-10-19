@@ -139,7 +139,7 @@ The service always runs from a WAR file.
 To build the WAR file, type
 
     cd <project-root>
-    mvn clean package
+    mvn clean package -Pprod
 
 You can run the WAR file in 3 ways:
 
