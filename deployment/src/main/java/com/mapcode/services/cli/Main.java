@@ -86,8 +86,6 @@ public final class Main {
 
     static class NestedJarURLConnection extends URLConnection {
         private final URLConnection connection;
-        final static char SEPARATOR_CHAR = '~';
-        final static String SEPARATOR = SEPARATOR_CHAR + "/";
 
         @SuppressWarnings("OverlyBroadThrowsClause")
         NestedJarURLConnection(@Nonnull final URL url)
