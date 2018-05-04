@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 
 @SuppressWarnings({"UseOfSystemOutOrSystemErr", "ConstantConditions"})
-public class MainCommandLine {
+public final class MainCommandLine {
     private static final String CMD_HELP = "--help";
     private static final String CMD_SILENT = "--silent";
     private static final String CMD_DEBUG = "--debug";

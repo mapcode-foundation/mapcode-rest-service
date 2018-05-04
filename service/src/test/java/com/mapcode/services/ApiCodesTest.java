@@ -168,6 +168,7 @@ public class ApiCodesTest {
                 s);
         final MapcodesDTO y = new Gson().fromJson(s, MapcodesDTO.class);
         Assert.assertNotNull(y);
+        Assert.assertNotNull(y.getLocal());
         Assert.assertEquals("JL0.KP", y.getLocal().getMapcode());
     }
 

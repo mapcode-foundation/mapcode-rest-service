@@ -26,11 +26,11 @@ import java.util.concurrent.TimeUnit;
 
 public class TestAsyncResponse implements AsyncResponse {
 
-    private boolean isReady = false;
+    private boolean ready = false;
     private Object response = null;
 
     public boolean isReady() {
-        return isReady;
+        return ready;
     }
 
     @Nullable
@@ -40,33 +40,33 @@ public class TestAsyncResponse implements AsyncResponse {
 
     @Override
     public boolean resume(final Object response) {
-        this.isReady = true;
+        this.ready = true;
         this.response = response;
         return true;
     }
 
     @Override
     public boolean resume(final Throwable response) {
-        this.isReady = true;
+        this.ready = true;
         this.response = response;
         return true;
     }
 
     @Override
     public boolean cancel() {
-        this.isReady = true;
+        this.ready = true;
         return true;
     }
 
     @Override
     public boolean cancel(final int retryAfter) {
-        this.isReady = true;
+        this.ready = true;
         return true;
     }
 
     @Override
     public boolean cancel(final Date retryAfter) {
-        this.isReady = true;
+        this.ready = true;
         return true;
     }
 

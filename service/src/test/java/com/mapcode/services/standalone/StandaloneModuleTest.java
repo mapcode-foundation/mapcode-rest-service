@@ -45,7 +45,7 @@ public class StandaloneModuleTest {
 
     @SuppressWarnings("JUnitTestMethodWithNoAssertions")
     @Test
-    public void testStandaloneModule() throws Exception {
+    public void testStandaloneModule() {
         LOG.info("testStandaloneModule");
 
         // Initialize Mockito.

@@ -35,7 +35,7 @@ public class MainCommandLineTest {
 
     @SuppressWarnings("JUnitTestMethodWithNoAssertions")
     @Test
-    public void testHelp() throws Exception {
+    public void testHelp() {
         LOG.info("testHelp");
 
         // Initialize Mockito.
@@ -45,7 +45,7 @@ public class MainCommandLineTest {
 
     @SuppressWarnings("JUnitTestMethodWithNoAssertions")
     @Test
-    public void testUnknownArgument() throws Exception {
+    public void testUnknownArgument() {
         LOG.info("testUnknownArgument");
 
         // Initialize Mockito.
@@ -57,7 +57,7 @@ public class MainCommandLineTest {
 
     @SuppressWarnings("JUnitTestMethodWithNoAssertions")
     @Test
-    public void testServer() throws Exception {
+    public void testServer() {
         LOG.info("testServer");
 
         // Initialize Mockito.

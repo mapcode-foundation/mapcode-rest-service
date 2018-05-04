@@ -34,7 +34,7 @@ import java.nio.charset.Charset;
  * application will not continue to run. This prevents starting the system with, for example, incorrect database
  * information or an incompatible JRE.
  */
-public class StartupCheck {
+public final class StartupCheck {
     private static final Logger LOG = LoggerFactory.getLogger(StartupCheck.class);
 
     private static final String REQUIRED_ENCODING = "UTF-8";
@@ -90,14 +90,14 @@ public class StartupCheck {
             LOG.error("check: System did NOT start succesfully.");
             LOG.error("check: Reason: {}", reason);
 
-            System.err.println("");
+            System.err.println();
             System.err.println("=======================================");
             System.err.println("ERROR");
             System.err.println("=======================================");
             System.err.println("System did NOT start successfully.");
             System.err.println("Reason: " + reason);
             System.err.println("=======================================");
-            System.err.println("");
+            System.err.println();
             throw new IllegalStateException("System did NOT start successfully.");
         }
     }

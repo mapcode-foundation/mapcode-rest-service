@@ -188,7 +188,7 @@ public class RootResourceImpl implements RootResource {
     @Override
     @Nonnull
     public String getHelpHTML() {
-        LOG.info("getHelpHTML: show help page", mavenProperties.getPomVersion());
+        LOG.info("getHelpHTML: show help page, version {}", mavenProperties.getPomVersion());
         return "<html><pre>\n" +
                 "MAPCODE API (" + mavenProperties.getPomVersion() + ")\n" +
                 "-----------\n\n" +
@@ -302,6 +302,6 @@ public class RootResourceImpl implements RootResource {
             //noinspection BusyWait
             Thread.sleep(sleepMillis);
         }
-        throw new IllegalStateException();
+        throw new IllegalStateException("Did not receive a response");
     }
 }

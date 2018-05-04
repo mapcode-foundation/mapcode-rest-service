@@ -40,8 +40,7 @@ public interface RootResource {
      */
     @ApiOperation(
             value = "Provide a simple help page for the REST API.")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "HTML help page.")})
+    @ApiResponses(@ApiResponse(code = 200, message = "HTML help page."))
     @GET
     @Produces(MediaType.TEXT_HTML)
     @Nonnull

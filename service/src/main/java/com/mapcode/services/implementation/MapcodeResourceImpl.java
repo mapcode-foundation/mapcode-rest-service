@@ -62,17 +62,16 @@ public class MapcodeResourceImpl implements MapcodeResource {
     private final ResourceProcessor processor;
     private final SystemMetricsCollector metricsCollector;
 
-    private static final String API_ERROR_VALID_TERRITORY_CODES = Joiner.on('|').join(Arrays.asList(Territory.values()).stream().
-            map(x -> (x.toString())).collect(Collectors.toList()));
+    private static final String API_ERROR_VALID_TERRITORY_CODES = Joiner.on('|').join(Arrays.stream(Territory.values()).
+            collect(Collectors.toList()));
 
-    private static final String API_ERROR_VALID_ALPHABET_CODES = Joiner.on('|').join(Arrays.asList(Alphabet.values()).stream().
-            map(x -> (x.toString())).collect(Collectors.toList()));
+    private static final String API_ERROR_VALID_ALPHABET_CODES = Joiner.on('|').join(Arrays.stream(Alphabet.values()).
+            collect(Collectors.toList()));
 
-    private static final String API_ERROR_VALID_TYPES = Joiner.on('|').join(Arrays.asList(ParamType.values()).stream().
-            map(x -> x).collect(Collectors.toList()));
+    private static final String API_ERROR_VALID_TYPES = Joiner.on('|').join(new ArrayList<>(Arrays.asList(ParamType.values())));
 
-    private static final String API_ERROR_VALID_INCLUDES = Joiner.on('|').join(Arrays.asList(ParamInclude.values()).stream().
-            map(x -> x).collect(Collectors.toList()));
+    private static final String API_ERROR_VALID_INCLUDES = Joiner.on('|').join(Arrays.stream(ParamInclude.values()).
+            collect(Collectors.toList()));
 
     private static final TerritoryListDTO ALL_TERRITORY_DTO = new TerritoryListDTO(Territory.values());
     private static final AlphabetListDTO ALL_ALPHABET_DTO = new AlphabetListDTO(Alphabet.values());
@@ -244,7 +243,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 // Get all mapcodes.
                 final List<Mapcode> mapcodes;
                 mapcodes = MapcodeCodec.encode(latDeg, lonDeg, territory);
-                mapcodes.stream().forEach(mapcode -> {
+                mapcodes.forEach(mapcode -> {
                     try {
                         final Rectangle rectangle = MapcodeCodec.decodeToRectangle(mapcode.getCode(), mapcode.getTerritory());
                         mapcodesAndRectangles.add(Tuple.create(mapcode, rectangle));
@@ -654,14 +653,12 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Nullable
     private static Territory getTerritoryAlias(@Nonnull final String paramAlias) {
-        Territory context = null;
+        Territory context;
         final String aliasToLookFor = paramAlias.replace('_', '-').toUpperCase();
-        for (final Territory aliasTerritory : Territory.values()) {
-            if (Arrays.asList(aliasTerritory.getAliases()).contains(aliasToLookFor)) {
-                context = aliasTerritory;
-                break;
-            }
-        }
+        context = Arrays.stream(Territory.values()).
+                filter(aliasTerritory ->
+                        Arrays.asList(aliasTerritory.getAliases()).contains(aliasToLookFor)).
+                findFirst().orElse(null);
         return context;
     }
 

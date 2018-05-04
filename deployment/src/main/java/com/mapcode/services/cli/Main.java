@@ -36,7 +36,7 @@ import java.util.jar.JarFile;
  * java -jar war-file [arguments]
  *
  */
-public class Main {
+public final class Main {
     private static final String MAIN_CLASS_NAME = "com.mapcode.services.standalone.MainCommandLine";
     private static final String MAIN_METHOD_NAME = "execute";
 
@@ -48,7 +48,7 @@ public class Main {
     public static void main(@Nonnull final String[] args)
             throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IOException {
         assert args != null;
-        final List<URL> newUrls = new ArrayList<URL>();
+        final List<URL> newUrls = new ArrayList<>();
         URL.setURLStreamHandlerFactory(new NestedJarURLStreamHandlerFactory());
         final String warFile = getWarFile();
         try (final JarFile jarFile = new JarFile(warFile)) {
@@ -86,11 +86,11 @@ public class Main {
 
     static class NestedJarURLConnection extends URLConnection {
         private final URLConnection connection;
-        public final static char SEPARATOR_CHAR = '~';
-        public final static String SEPARATOR = SEPARATOR_CHAR + "/";
+        final static char SEPARATOR_CHAR = '~';
+        final static String SEPARATOR = SEPARATOR_CHAR + "/";
 
         @SuppressWarnings("OverlyBroadThrowsClause")
-        public NestedJarURLConnection(@Nonnull final URL url)
+        NestedJarURLConnection(@Nonnull final URL url)
                 throws IOException {
             super(url);
             assert url != null;

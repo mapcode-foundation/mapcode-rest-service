@@ -45,9 +45,7 @@ public final class AlphabetListDTO extends ApiListDTO<AlphabetDTO> {
     }
 
     public AlphabetListDTO(@Nonnull final Alphabet[] alphabets) {
-        this(Arrays.asList(alphabets).stream().map(x -> {
-            return new AlphabetDTO(x);
-        }).collect(Collectors.toList()));
+        this(Arrays.stream(alphabets).map(AlphabetDTO::new).collect(Collectors.toList()));
     }
 
     @SuppressWarnings("UnusedDeclaration")

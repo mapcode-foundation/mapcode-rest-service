@@ -46,18 +46,16 @@ public final class TerritoryListDTO extends ApiListDTO<TerritoryDTO> {
     }
 
     public TerritoryListDTO(@Nonnull final Territory[] territories) {
-        this(Arrays.asList(territories).stream().map(x -> {
-            return new TerritoryDTO(
-                    x.toString(),
-                    x.toAlphaCode(AlphaCodeFormat.MINIMAL_UNAMBIGUOUS),
-                    x.toAlphaCode(AlphaCodeFormat.MINIMAL),
-                    x.getFullName(),
-                    (x.getParentTerritory() == null) ? null : x.getParentTerritory().toString(),
-                    x.getAliases(),
-                    x.getFullNameAliases(),
-                    x.getAlphabets()
-            );
-        }).collect(Collectors.toList()));
+        this(Arrays.stream(territories).map(x -> new TerritoryDTO(
+                x.toString(),
+                x.toAlphaCode(AlphaCodeFormat.MINIMAL_UNAMBIGUOUS),
+                x.toAlphaCode(AlphaCodeFormat.MINIMAL),
+                x.getFullName(),
+                (x.getParentTerritory() == null) ? null : x.getParentTerritory().toString(),
+                x.getAliases(),
+                x.getFullNameAliases(),
+                x.getAlphabets()
+        )).collect(Collectors.toList()));
     }
 
     @SuppressWarnings("UnusedDeclaration")

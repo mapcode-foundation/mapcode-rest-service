@@ -19,6 +19,7 @@ package com.mapcode.services;
 import com.mapcode.Alphabet;
 import com.mapcode.services.dto.*;
 import com.tomtom.speedtools.objects.Immutables;
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,6 +123,7 @@ public class ApiDTOTest {
                 new MapcodeDTO("AA.AA", "aa.aa", "USA", "usa", 1.0),
                 new MapcodeDTO("BB.BB", "bb.bb", "CAN", "can", 1.0),
                 new MapcodeListDTO(Immutables.listOf(new MapcodeDTO("XX.XX", "YY.YY", "NLD", "BEL", 1.0))));
+        Assert.assertNotNull(x.getLocal());
         assertEquals("AA.AA", x.getLocal().getMapcode());
         assertEquals("bb.bb", x.getInternational().getMapcodeInAlphabet());
         assertEquals("BEL", x.getMapcodes().get(0).getTerritoryInAlphabet());
@@ -133,6 +135,7 @@ public class ApiDTOTest {
         x.setLocal(new MapcodeDTO("11.11", "22.22", "333", "444", 1.0));
         x.setInternational(new MapcodeDTO("10.10", "20.20", "300", "400", 1.0));
         x.setMapcodes(new MapcodeListDTO(Immutables.listOf(new MapcodeDTO("12.34", "43.21", "USA", "CAN", 1.0))));
+        Assert.assertNotNull(x.getLocal());
         assertEquals("11.11", x.getLocal().getMapcode());
         assertEquals("20.20", x.getInternational().getMapcodeInAlphabet());
         assertEquals("CAN", x.getMapcodes().get(0).getTerritoryInAlphabet());
