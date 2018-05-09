@@ -351,6 +351,14 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.6.0 - 2.4.6.2
+
+* Updated to new Mapcode library.
+
+* Added testcase for `.../mapcodes`.
+
+* Removed unused code. 
+
 ### 2.4.5.1 - 2.4.5.2
 
 * Updated library dependencies.
