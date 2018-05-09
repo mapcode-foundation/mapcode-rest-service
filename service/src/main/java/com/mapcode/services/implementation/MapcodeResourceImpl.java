@@ -320,7 +320,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 switch (type) {
                     case LOCAL: {
                         if (mapcodeLocalAndRectangle == null) {
-                            throw new UnknownMapcodeException("No local mapcode for: " +
+                            throw new ApiNotFoundException("No local mapcode for: " +
                                     ((mapcodeInternationalAndRectangle == null) ? null : mapcodeInternationalAndRectangle.getValue1().getCode()));
                         }
                         result = createMapcodeDTO(mapcodeLocalAndRectangle, precision, alphabet, includeOffset, includeTerritory,

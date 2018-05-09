@@ -43,6 +43,10 @@ public class ApiCodesTest {
     private static final Double TEST_LON2 = 4.499790;
     private static final String TEST_LATLON2 = TEST_LAT2 + "," + TEST_LON2;
 
+    private static final Double TEST_LAT_INTL = 53.80065082633023;
+    private static final Double TEST_LON_INTL = 4.504394531250001;
+    private static final String TEST_LATLON_INTL = TEST_LAT_INTL + "," + TEST_LON_INTL;
+
     private LocalTestServer server;
 
     @Before
@@ -284,6 +288,17 @@ public class ApiCodesTest {
     }
 
     @Test
+    public void checkCodesLocalDoesNotExist() {
+        LOG.info("checkCodesLocalDoesNotExist");
+        Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/" + TEST_LATLON_INTL + "/local")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(404, response.getStatus());
+    }
+
+        @Test
     public void checkCodesLocalJson() {
         LOG.info("checkCodesLocalJson");
         Response response = new ResteasyClientBuilder().build().
