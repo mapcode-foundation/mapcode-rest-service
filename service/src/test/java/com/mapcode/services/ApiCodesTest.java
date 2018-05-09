@@ -298,7 +298,31 @@ public class ApiCodesTest {
         Assert.assertEquals(404, response.getStatus());
     }
 
-        @Test
+    @Test
+    public void checkCodesMapcodesJson() {
+        LOG.info("checkCodesMapcodesJson");
+        Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/" + TEST_LATLON2 + "/mapcodes")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        String x = response.readEntity(String.class);
+        Assert.assertEquals("[{\"mapcode\":\"QKM.N4\",\"territory\":\"NLD\"},{\"mapcode\":\"CZQ.376\",\"territory\":\"NLD\"},{\"mapcode\":\"N39J.QW0\",\"territory\":\"NLD\"},{\"mapcode\":\"VHVN4.YZ74\"}]",
+                x);
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/" + TEST_LATLON_INTL + "/mapcodes")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        x = response.readEntity(String.class);
+        Assert.assertEquals("[{\"mapcode\":\"WHWZG.5Q6Q\"}]",
+                x);
+    }
+
+    @Test
     public void checkCodesLocalJson() {
         LOG.info("checkCodesLocalJson");
         Response response = new ResteasyClientBuilder().build().
