@@ -25,10 +25,7 @@ import com.mapcode.services.MapcodeResource;
 import com.mapcode.services.dto.*;
 import com.mapcode.services.metrics.SystemMetricsCollector;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
-import com.tomtom.speedtools.apivalidation.exceptions.ApiForbiddenException;
-import com.tomtom.speedtools.apivalidation.exceptions.ApiIntegerOutOfRangeException;
-import com.tomtom.speedtools.apivalidation.exceptions.ApiInvalidFormatException;
-import com.tomtom.speedtools.apivalidation.exceptions.ApiNotFoundException;
+import com.tomtom.speedtools.apivalidation.exceptions.*;
 import com.tomtom.speedtools.geometry.Geo;
 import com.tomtom.speedtools.geometry.GeoPoint;
 import com.tomtom.speedtools.objects.Tuple;
@@ -64,6 +61,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     private static final String API_ERROR_VALID_TERRITORY_CODES = Joiner.on('|').join(Arrays.stream(Territory.values()).
             collect(Collectors.toList()));
+
+    private static final String API_ERROR_VALID_COUNTRY_CODES = Joiner.on('|').join(Territory.allCountryISO2Codes()) +
+            '|' + Joiner.on('|').join(Territory.allCountryISO3Codes());
 
     private static final String API_ERROR_VALID_ALPHABET_CODES = Joiner.on('|').join(Arrays.stream(Alphabet.values()).
             collect(Collectors.toList()));
@@ -109,16 +109,18 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final double paramLonDeg,
             final int paramPrecision,
             @Nullable final String paramTerritory,
+            @Nullable final String paramCountry,
             @Nullable final String paramContextMustBeNull,
             @Nullable final String paramAlphabet,
             @Nonnull final String paramInclude,
             @Nonnull final String paramClient,
             @Nonnull final String paramAllowLog,
             @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
-        convertLatLonToMapcode(paramLatDeg, paramLonDeg, null, paramPrecision, paramTerritory, paramContextMustBeNull,
-                paramAlphabet, paramInclude, paramClient, paramAllowLog, response);
+        convertLatLonToMapcode(paramLatDeg, paramLonDeg, null, paramPrecision, paramTerritory, paramCountry,
+                paramContextMustBeNull, paramAlphabet, paramInclude, paramClient, paramAllowLog, response);
     }
 
+    @SuppressWarnings("NestedTryStatement")
     @Override
     public void convertLatLonToMapcode(
             final double paramLatDeg,
@@ -126,6 +128,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nullable final String paramType,
             final int paramPrecision,
             @Nullable final String paramTerritory,
+            @Nullable final String paramCountry,
             @Nullable final String paramContextMustBeNull,
             @Nullable final String paramAlphabet,
             @Nonnull final String paramInclude,
@@ -164,13 +167,34 @@ public class MapcodeResourceImpl implements MapcodeResource {
                         ", " + ApiConstants.API_PRECISION_MAX + ']');
             }
 
+            // Check if either paramTerritory or paramCountry is set (or neither).
+            if ((paramTerritory != null) && (paramCountry != null)) {
+                throw new ApiConflictException("Cannot specify both " + PARAM_TERRITORY + " and " + PARAM_COUNTRY);
+            }
+
             // Get the territory.
-            @Nullable final Territory territory;
-            try {
-                territory = (paramTerritory != null) ?
-                        resolveTerritory(StringEscapeUtils.unescapeHtml4(paramTerritory), null) : null;
-            } catch (final IllegalArgumentException ignored) {
-                throw new ApiInvalidFormatException(PARAM_TERRITORY, paramTerritory, API_ERROR_VALID_TERRITORY_CODES);
+            @Nullable Territory territory = null;
+            @Nullable String country = null;
+            if (paramTerritory != null) {
+                try {
+                    territory = resolveTerritory(StringEscapeUtils.unescapeHtml4(paramTerritory), null);
+                } catch (final IllegalArgumentException ignored) {
+                    throw new ApiInvalidFormatException(PARAM_TERRITORY, paramTerritory, API_ERROR_VALID_TERRITORY_CODES);
+                }
+            } else if (paramCountry != null) {
+                try {
+                    final String countryUnescaped = StringEscapeUtils.unescapeHtml4(paramCountry);
+                    //noinspection NestedTryStatement
+                    try {
+                        Territory.fromCountryISO2(countryUnescaped);
+                        country = countryUnescaped;
+                    } catch (final IllegalArgumentException ignored) {
+                        Territory.fromCountryISO3(countryUnescaped);
+                        country = countryUnescaped;
+                    }
+                } catch (final IllegalArgumentException ignored) {
+                    throw new ApiInvalidFormatException(PARAM_COUNTRY, paramCountry, API_ERROR_VALID_COUNTRY_CODES);
+                }
             }
 
             // Get the alphabet.
@@ -242,7 +266,11 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
                 // Get all mapcodes.
                 final List<Mapcode> mapcodes;
-                mapcodes = MapcodeCodec.encode(latDeg, lonDeg, territory);
+                if (country != null) {
+                    mapcodes = MapcodeCodec.encodeRestrictToCountryISO(latDeg, lonDeg, country);
+                } else {
+                    mapcodes = MapcodeCodec.encode(latDeg, lonDeg, territory);
+                }
                 mapcodes.forEach(mapcode -> {
                     try {
                         final Rectangle rectangle = MapcodeCodec.decodeToRectangle(mapcode.getCode(), mapcode.getTerritory());
@@ -261,10 +289,22 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
                 // Get the shortest local mapcode.
                 Mapcode mapcodeLocal = null;
-                if (territory != null) {
+                if (country != null) {
 
                     // A territory was provided, so simply use first.
-                    mapcodeLocal = MapcodeCodec.encodeToShortest(latDeg, lonDeg, territory);
+                    try {
+                        mapcodeLocal = MapcodeCodec.encodeToShortest(latDeg, lonDeg, Territory.fromCountryISO(country));
+                    } catch (final UnknownMapcodeException ignored) {
+                        mapcodeLocal = null;
+                    }
+                } else if (territory != null) {
+
+                    // A territory was provided, so simply use first.
+                    try {
+                        mapcodeLocal = MapcodeCodec.encodeToShortest(latDeg, lonDeg, territory);
+                    } catch (final UnknownMapcodeException ignored) {
+                        mapcodeLocal = null;
+                    }
                 } else {
 
                     // Get the shortest code.

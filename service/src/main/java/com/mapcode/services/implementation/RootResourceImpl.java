@@ -69,10 +69,20 @@ public class RootResourceImpl implements RootResource {
             "GET /mapcode/status  Returns 200 if the service OK.\n\n" +
 
             "GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]\n" +
-            "     [?precision=[0..8] & territory={restrictToTerritory} & alphabet={alphabet} & include={offset|territory|alphabet|rectangle}]\n\n" +
+            "     [?precision=[0..8] & territory={restrictToTerritory} & country={restrictToCountry}\n" +
+            "     alphabet={alphabet} & include={offset|territory|alphabet|rectangle}]\n\n" +
 
             "   Convert latitude/longitude to one or more mapcodes. The response always contains the 'international' mapcode and\n" +
             "   only contains a 'local' mapcode if there are any non-international mapcode AND they are all of the same territory.\n\n" +
+
+            "   The 'country' parameter always specifies a country, by a 2 or 3 character ISO-3166 code, like 'US' or 'USA'\n" +
+            "   (for the USA), and 'NL' or 'NLD' (for the Netherlands). In a web environment, the country code is often available\n" +
+            "   as a 2-character code. That code can be used for this parameter.\n\n" +
+
+            "   The 'territory' parameter is a 2, 3 or 5 (XX-YY) character code. These code can be countries or states within countries.\n" +
+            "   Some 2 character state codes are the same as country codes. In that case, the territory implies the state, not the country.\n" +
+            "   For example, the territory code 'US' is unambiguous and means USA, but 'NL' means 'IN-NL' (Nagaland, India) rather than\n" +
+            "   the Netherlands. You cannot use the standard 2-character country codes in web applications for this parameter.\n\n" +
 
             "   Path parameters:\n" +
             "     lat             : Latitude, range [-90, 90] (automatically limited to this range).\n" +
@@ -89,7 +99,8 @@ public class RootResourceImpl implements RootResource {
 
             "   Query parameters:\n" +
             "     precision       : Precision, range [0..8] (default=0).\n" +
-            "     territory       : Territory to restrict results to (name or alphacode).\n" +
+            "     territory       : Territory (country or state) to restrict results to (name or alphacode).\n" +
+            "     country         : Country to restrict results to (name or alphacode).\n" +
             "     alphabet        : Alphabet to return results in.\n" +
             "     include         : Multiple options may be set, separated by comma's:\n" +
             "                         offset    = Include offset from mapcode center to lat/lon (in meters).\n" +
@@ -230,7 +241,7 @@ public class RootResourceImpl implements RootResource {
             final String allowLog = "false";
             final TestAsyncResponse asyncResponse1 = new TestAsyncResponse();
             mapcodeResource.convertLatLonToMapcode(latDeg, lonDeg, "local",
-                    precision, territory, null, alphabet, include, client,
+                    precision, territory, null, null, alphabet, include, client,
                     allowLog, asyncResponse1);
             waitForResponse(asyncResponse1);
 

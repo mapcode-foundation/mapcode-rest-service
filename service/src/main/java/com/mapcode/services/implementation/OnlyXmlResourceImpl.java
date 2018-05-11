@@ -64,6 +64,7 @@ public class OnlyXmlResourceImpl implements OnlyXmlResource {
             final double paramLonDeg,
             final int paramPrecision,
             @Nullable final String paramTerritory,
+            @Nullable final String paramCountry,
             @Nullable final String paramContextMustBeNull,
             @Nullable final String paramAlphabet,
             @Nonnull final String paramInclude,
@@ -71,8 +72,8 @@ public class OnlyXmlResourceImpl implements OnlyXmlResource {
             @Nonnull final String paramAllowLog,
             @Suspended @Nonnull final AsyncResponse response)
             throws ApiInvalidFormatException {
-        mapcodeResource.convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramPrecision, paramTerritory, paramContextMustBeNull,
-                paramAlphabet, paramInclude, paramClient, paramAllowLog, response);
+        mapcodeResource.convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramPrecision, paramTerritory, paramCountry,
+                paramContextMustBeNull, paramAlphabet, paramInclude, paramClient, paramAllowLog, response);
     }
 
     @Override
@@ -82,6 +83,7 @@ public class OnlyXmlResourceImpl implements OnlyXmlResource {
             @Nullable final String paramType,
             final int paramPrecision,
             @Nullable final String paramTerritory,
+            @Nullable final String paramCountry,
             @Nullable final String paramContextMustBeNull,
             @Nullable final String paramAlphabet,
             @Nonnull final String paramInclude,
@@ -89,8 +91,8 @@ public class OnlyXmlResourceImpl implements OnlyXmlResource {
             @Nonnull final String paramDebug,
             @Suspended @Nonnull final AsyncResponse response)
             throws ApiInvalidFormatException {
-        mapcodeResource.convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramType, paramPrecision, paramTerritory, paramContextMustBeNull,
-                paramAlphabet, paramInclude, paramClient, paramDebug, response);
+        mapcodeResource.convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramType, paramPrecision, paramTerritory, paramCountry,
+                paramContextMustBeNull, paramAlphabet, paramInclude, paramClient, paramDebug, response);
     }
 
     @Override
