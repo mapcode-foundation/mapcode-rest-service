@@ -54,6 +54,7 @@ public interface MapcodeResource {
     static final String PARAM_LON_DEG = "lonDeg";
     static final String PARAM_PRECISION = "precision";
     static final String PARAM_TERRITORY = "territory";
+    static final String PARAM_COUNTRY = "country";
     static final String PARAM_ALPHABET = "alphabet";
     static final String PARAM_CONTEXT = "context";
     static final String PARAM_TYPE = "type";
@@ -83,6 +84,9 @@ public interface MapcodeResource {
      * @param paramTerritory         Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
      *                               If the mapcode cannot be created for the territory, an exception is thrown.
      *                               Range: any valid territory code, alpha or numeric.
+     * @param paramCountry           Specifies a country context to create a local mapcode for. See also 'paramTerritory'.
+     *                               If the mapcode cannot be created for the country, an exception is thrown.
+     *                               Range: any valid country code.
      * @param paramAlphabet          Alphabet. Range: any valid alphabet code, alpha or numeric.
      * @param paramInclude           Specifies whether to include the offset (in meters) from the mapcode center to the specified lat/lon.
      *                               Range: {@link ParamInclude}.
@@ -125,6 +129,11 @@ public interface MapcodeResource {
                             "is already set by the context of the application (for example, you are only interested " +
                             "in mapcodes for your country). If omitted, mapcodes for all territories are considered.")
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritory,
+            @ApiParam(
+                    value = "(optional) Limit the returned mapcodes to this country. This is useful if the country " +
+                            "is already set by the context of the application (for example, you are only interested " +
+                            "in mapcodes for your country). If omitted, mapcodes for all countries are considered.")
+            @QueryParam(PARAM_COUNTRY) @Nullable String paramCountry,
             @ApiParam(hidden = true)
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,
             @ApiParam(
@@ -156,6 +165,9 @@ public interface MapcodeResource {
      * @param paramTerritory         Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
      *                               If the mapcode cannot be created for the territory, an exception is thrown.
      *                               Range: any valid territory code, alpha or numeric.
+     * @param paramCountry           Specifies a country context to create a local mapcode for. See also 'paramTerritory'.
+     *                               If the mapcode cannot be created for the country, an exception is thrown.
+     *                               Range: any valid country code.
      * @param paramAlphabet          Alphabet. Range: any valid alphabet code, alpha or numeric.
      * @param paramInclude           Specifies whether to include additional info in the result, such as the offset (in meters)
      *                               from the mapcode center to the specified lat/lon, or the encompassing rectangle.
@@ -176,6 +188,7 @@ public interface MapcodeResource {
             @PathParam(PARAM_TYPE) @Nullable String paramType,
             @QueryParam(PARAM_PRECISION) @DefaultValue("0") int paramPrecision,
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritory,
+            @QueryParam(PARAM_COUNTRY) @Nullable String paramCountry,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,
             @QueryParam(PARAM_ALPHABET) @Nullable String paramAlphabet,
             @QueryParam(PARAM_INCLUDE) @DefaultValue("") @Nonnull String paramInclude,
