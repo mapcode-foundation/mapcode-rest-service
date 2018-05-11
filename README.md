@@ -351,6 +351,12 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.7.0
+
+* Added `?country=` parameter for mapcode encoding, to limit the result list to a specific country, given
+as a 2- or 3-character ISO 3166 country code. (In contrast with `?territory=`, which is not always a country,
+but can be a state as well.)
+
 ### 2.4.6.0 - 2.4.6.2
 
 * Updated to new Mapcode library.
