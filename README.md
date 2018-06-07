@@ -351,6 +351,10 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.7.1
+
+* Changed `web.xml` to disallow anything but `GET` and `HEAD` requests. 
+
 ### 2.4.7.0
 
 * Added `?country=` parameter for mapcode encoding, to limit the result list to a specific country, given
