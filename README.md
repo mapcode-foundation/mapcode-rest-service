@@ -351,6 +351,10 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.7.2
+
+* Updated dependency version (for bug fixes and security pacthes).
+
 ### 2.4.7.1
 
 * Changed `web.xml` to disallow anything but `GET` and `HEAD` requests. 
