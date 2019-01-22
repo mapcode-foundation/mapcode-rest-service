@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2016-2018, Stichting Mapcode Foundation (http://www.mapcode.com)
+  ~ Copyright (C) 2016-2019, Stichting Mapcode Foundation (http://www.mapcode.com)
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -77,7 +77,7 @@
         <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
-        <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
         <maven-jetty-plugin.version>8.1.9.v20130131</maven-jetty-plugin.version>
         <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
@@ -95,7 +95,7 @@
         <gson.version>2.8.5</gson.version>
         <guava.version>27.0.1-jre</guava.version>
         <guice.version>4.2.2</guice.version>
-        <jackson.version>2.9.7</jackson.version>
+        <jackson.version>2.9.8</jackson.version>
         <javax.inject.version>1</javax.inject.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
         <jaxb-api.version>2.3.0</jaxb-api.version>
@@ -104,12 +104,12 @@
         <jsr305.version>3.0.2</jsr305.version>
         <junit.version>4.12</junit.version>
         <log4j.version>1.2.17</log4j.version>
-        <mapcode.version>2.4.7</mapcode.version>
-        <mockito-core.version>2.23.0</mockito-core.version>
+        <mapcode.version>2.4.8</mapcode.version>
+        <mockito-core.version>2.23.4</mockito-core.version>
         <resteasy.version>3.6.2.Final</resteasy.version>
         <scala.version>2.12.7</scala.version>
         <slf4j.version>1.7.25</slf4j.version>
-        <speedtools.version>3.2.11</speedtools.version>
+        <speedtools.version>3.2.13</speedtools.version>
         <swagger.version>1.5.21</swagger.version>
     </properties>
 
@@ -543,9 +543,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
                 <version>${maven-project-info-reports-plugin.version}</version>
-                <configuration>
-                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                </configuration>
             </plugin>
 
             <!-- Coverage reports using JaCoCo. -->

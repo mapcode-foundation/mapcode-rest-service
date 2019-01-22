@@ -351,6 +351,12 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.7.3
+
+* Updated dependency versions (for bug fixes and security pacthes).
+
+* Updated copyright.
+
 ### 2.4.7.2
 
 * Updated dependency version (for bug fixes and security pacthes).

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018, Stichting Mapcode Foundation (http://www.mapcode.com)
+ * Copyright (C) 2016-2019, Stichting Mapcode Foundation (http://www.mapcode.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,9 +38,9 @@
 
 (function () {
     var builder = function (cubism,Jolokia) {
-        
+
         var VERSION = "1.3.0";
-        
+
         var ctx_jolokia = function (url, opts) {
             var source = {},
                 context = this,
