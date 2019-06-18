@@ -351,6 +351,10 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.8.1 – 2.4.10.1
+
+* Updated Mapcode library.
+
 ### 2.4.7.3
 
 * Updated dependency versions (for bug fixes and security pacthes).
