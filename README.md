@@ -351,7 +351,7 @@ self-hosting this service.
 
 ## Release Notes
 
-### 2.4.8.1 – 2.4.10.1
+### 2.4.8.1 – 2.4.11.1
 
 * Updated Mapcode library.
 
