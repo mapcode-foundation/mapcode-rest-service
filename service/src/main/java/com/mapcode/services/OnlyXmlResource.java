@@ -53,9 +53,9 @@ public interface OnlyXmlResource {
     @Produces(MediaType.APPLICATION_XML)
     @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + '}')
     void convertLatLonToMapcodeXml(
-            @PathParam(PARAM_LAT_DEG) double paramLatDeg,
-            @PathParam(PARAM_LON_DEG) double paramLonDeg,
-            @QueryParam(PARAM_PRECISION) @DefaultValue("0") int paramPrecision,
+            @PathParam(PARAM_LAT_DEG) @Nullable String paramLatDegAsString,
+            @PathParam(PARAM_LON_DEG) @Nullable String paramLonDegAsString,
+            @QueryParam(PARAM_PRECISION) @DefaultValue("0") @Nullable String paramPrecisionAsString,
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritory,
             @QueryParam(PARAM_COUNTRY) @Nullable String paramCountry,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,
@@ -69,10 +69,10 @@ public interface OnlyXmlResource {
     @Produces(MediaType.APPLICATION_XML)
     @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + "}/{" + PARAM_TYPE + '}')
     void convertLatLonToMapcodeXml(
-            @PathParam(PARAM_LAT_DEG) double paramLatDeg,
-            @PathParam(PARAM_LON_DEG) double paramLonDeg,
+            @PathParam(PARAM_LAT_DEG) @Nullable String paramLatDegAsString,
+            @PathParam(PARAM_LON_DEG) @Nullable String paramLonDegAsString,
             @PathParam(PARAM_TYPE) @Nullable String paramType,
-            @QueryParam(PARAM_PRECISION) @DefaultValue("0") int paramPrecision,
+            @QueryParam(PARAM_PRECISION) @DefaultValue("0") @Nullable String paramPrecisionAsString,
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritory,
             @QueryParam(PARAM_COUNTRY) @Nullable String paramCountry,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,

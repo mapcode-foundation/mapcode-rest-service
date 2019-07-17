@@ -16,8 +16,8 @@
 
 package com.mapcode.services.implementation;
 
-import com.mapcode.services.OnlyJsonResource;
 import com.mapcode.services.MapcodeResource;
+import com.mapcode.services.OnlyJsonResource;
 import com.mapcode.services.RootResource;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiIntegerOutOfRangeException;
 import com.tomtom.speedtools.apivalidation.exceptions.ApiInvalidFormatException;
@@ -60,9 +60,9 @@ public class OnlyJsonResourceImpl implements OnlyJsonResource {
 
     @Override
     public void convertLatLonToMapcodeJson(
-            final double paramLatDeg,
-            final double paramLonDeg,
-            final int paramPrecision,
+            @Nullable final String paramLatDegAsString,
+            @Nullable final String paramLonDegAsString,
+            @Nullable final String paramPrecisionAsString,
             @Nullable final String paramTerritory,
             @Nullable final String paramCountry,
             @Nullable final String paramContextMustBeNull,
@@ -72,16 +72,16 @@ public class OnlyJsonResourceImpl implements OnlyJsonResource {
             @Nonnull final String paramAllowLog,
             @Suspended @Nonnull final AsyncResponse response)
             throws ApiInvalidFormatException {
-        mapcodeResource.convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramPrecision, paramTerritory, paramCountry,
+        mapcodeResource.convertLatLonToMapcode(paramLatDegAsString, paramLonDegAsString, paramPrecisionAsString, paramTerritory, paramCountry,
                 paramContextMustBeNull, paramAlphabet, paramInclude, paramClient, paramAllowLog, response);
     }
 
     @Override
     public void convertLatLonToMapcodeJson(
-            final double paramLatDeg,
-            final double paramLonDeg,
+            @Nullable final String paramLatDegAsString,
+            @Nullable final String paramLonDegAsString,
             @Nullable final String paramType,
-            final int paramPrecision,
+            @Nullable final String paramPrecisionAsString,
             @Nullable final String paramTerritory,
             @Nullable final String paramCountry,
             @Nullable final String paramContextMustBeNull,
@@ -91,7 +91,7 @@ public class OnlyJsonResourceImpl implements OnlyJsonResource {
             @Nonnull final String paramDebug,
             @Suspended @Nonnull final AsyncResponse response)
             throws ApiInvalidFormatException {
-        mapcodeResource.convertLatLonToMapcode(paramLatDeg, paramLonDeg, paramType, paramPrecision, paramTerritory, paramCountry,
+        mapcodeResource.convertLatLonToMapcode(paramLatDegAsString, paramLonDegAsString, paramType, paramPrecisionAsString, paramTerritory, paramCountry,
                 paramContextMustBeNull, paramAlphabet, paramInclude, paramClient, paramDebug, response);
     }
 

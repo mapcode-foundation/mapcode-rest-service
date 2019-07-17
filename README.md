@@ -351,6 +351,11 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.12.2
+
+* Improved handling if incorrect coordinates and parameter values, producing a
+`HTTP 400 Bad Request` rather than `HTTP 404 Not Found`. 
+ 
 ### 2.4.8.1 – 2.4.12.1
 
 * Updated Mapcode library.

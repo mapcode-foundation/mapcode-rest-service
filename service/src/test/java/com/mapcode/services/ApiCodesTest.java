@@ -94,6 +94,94 @@ public class ApiCodesTest {
     }
 
     @Test
+    public void checkIncorrectParameters() {
+        LOG.info("checkIncorrectParameters");
+        Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/1")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(404, response.getStatus());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/1,")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(404, response.getStatus());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/,1")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(404, response.getStatus());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/x,1")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/1,x")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/1,1?precision=x")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/1,1?precision=")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/1,1?precision=x")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/1,1?territory=")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/1,1?territory=x")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/1,1?alphabet=")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/codes/1,1?alphabet=x")).
+                request().
+                accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(400, response.getStatus());
+    }
+
+    @Test
     public void checkCodesCheckLatLon() {
         LOG.info("checkCodesCheckLatLon");
         Response response = new ResteasyClientBuilder().build().

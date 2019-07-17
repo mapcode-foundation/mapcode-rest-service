@@ -78,9 +78,9 @@ public interface MapcodeResource {
     /**
      * Convert a lat/lon to one or more mapcodes. All possible mapcodes are returned.
      *
-     * @param paramLatDeg            Latitude. Range: [-90, 90].
-     * @param paramLonDeg            Longitude. Range: Any double, wrapped along the earth to [-180, 180].
-     * @param paramPrecision         Precision specifier; specifies additional mapcode digits. Range: [0, 2].
+     * @param paramLatDegAsString    Latitude. Range: [-90, 90].
+     * @param paramLonDegAsString    Longitude. Range: Any double, wrapped along the earth to [-180, 180].
+     * @param paramPrecisionAsString Precision specifier; specifies additional mapcode digits. Range: [0, 2].
      * @param paramTerritory         Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
      *                               If the mapcode cannot be created for the territory, an exception is thrown.
      *                               Range: any valid territory code, alpha or numeric.
@@ -112,18 +112,18 @@ public interface MapcodeResource {
                     value = "Latitude in degrees. Format: [-90, 90].",
                     allowableValues = "range[-90,90]"
             )
-            @PathParam(PARAM_LAT_DEG) double paramLatDeg,
+            @PathParam(PARAM_LAT_DEG) @Nullable String paramLatDegAsString,
             @ApiParam(
                     value = "Longitude in degrees. Format: [-180, 180) (other values are correctly wrapped).",
                     allowableValues = "range[-180,180)"
             )
-            @PathParam(PARAM_LON_DEG) double paramLonDeg,
+            @PathParam(PARAM_LON_DEG) @Nullable String paramLonDegAsString,
             @ApiParam(
                     value = "(optional) Additional precision for the mapcodes. This uses precision extension " +
                             "characters, which are appended to a mapcode after a `-`.",
                     allowableValues = "range[0,8]",
                     defaultValue = "0")
-            @QueryParam(PARAM_PRECISION) @DefaultValue("0") int paramPrecision,
+            @QueryParam(PARAM_PRECISION) @DefaultValue("0") @Nullable String paramPrecisionAsString,
             @ApiParam(
                     value = "(optional) Limit the returned mapcodes to this territory. This is useful if the territory " +
                             "is already set by the context of the application (for example, you are only interested " +
@@ -157,11 +157,11 @@ public interface MapcodeResource {
     /**
      * Convert a lat/lon to one or more mapcodes.
      *
-     * @param paramLatDeg            Latitude. Range: [-90, 90].
-     * @param paramLonDeg            Longitude. Range: Any double, wrapped along the earth to [-180, 180].
+     * @param paramLatDegAsString    Latitude. Range: [-90, 90].
+     * @param paramLonDegAsString    Longitude. Range: Any double, wrapped along the earth to [-180, 180].
      * @param paramType              Specifies whether to return only the shortest local, the international, or all mapcodes.
      *                               Range: {@link ParamType}, if null, no type is supplied.
-     * @param paramPrecision         Precision specifier; specifies additional mapcode digits. Range: [0, 2].
+     * @param paramPrecisionAsString Precision specifier; specifies additional mapcode digits. Range: [0, 2].
      * @param paramTerritory         Specifies a territory context to create a local mapcode for. This is only useful for local mapcodes.
      *                               If the mapcode cannot be created for the territory, an exception is thrown.
      *                               Range: any valid territory code, alpha or numeric.
@@ -183,10 +183,10 @@ public interface MapcodeResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + "}/{" + PARAM_TYPE + '}')
     void convertLatLonToMapcode(
-            @PathParam(PARAM_LAT_DEG) double paramLatDeg,
-            @PathParam(PARAM_LON_DEG) double paramLonDeg,
+            @PathParam(PARAM_LAT_DEG) @Nullable String paramLatDegAsString,
+            @PathParam(PARAM_LON_DEG) @Nullable String paramLonDegAsString,
             @PathParam(PARAM_TYPE) @Nullable String paramType,
-            @QueryParam(PARAM_PRECISION) @DefaultValue("0") int paramPrecision,
+            @QueryParam(PARAM_PRECISION) @DefaultValue("0") @Nullable String paramPrecisionAsString,
             @QueryParam(PARAM_TERRITORY) @Nullable String paramTerritory,
             @QueryParam(PARAM_COUNTRY) @Nullable String paramCountry,
             @QueryParam(PARAM_CONTEXT) @Nullable String paramContextMustBeNull,

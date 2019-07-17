@@ -34,6 +34,7 @@ import com.tomtom.speedtools.time.UTCTime;
 import com.tomtom.speedtools.tracer.Traceable;
 import com.tomtom.speedtools.tracer.TracerFactory;
 import com.tomtom.speedtools.utils.MathUtils;
+import com.tomtom.speedtools.utils.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -105,9 +106,9 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     @Override
     public void convertLatLonToMapcode(
-            final double paramLatDeg,
-            final double paramLonDeg,
-            final int paramPrecision,
+            @Nullable final String paramLatDegAsString,
+            @Nullable final String paramLonDegAsString,
+            @Nullable final String paramPrecisionAsString,
             @Nullable final String paramTerritory,
             @Nullable final String paramCountry,
             @Nullable final String paramContextMustBeNull,
@@ -116,17 +117,17 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nonnull final String paramClient,
             @Nonnull final String paramAllowLog,
             @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
-        convertLatLonToMapcode(paramLatDeg, paramLonDeg, null, paramPrecision, paramTerritory, paramCountry,
+        convertLatLonToMapcode(paramLatDegAsString, paramLonDegAsString, null, paramPrecisionAsString, paramTerritory, paramCountry,
                 paramContextMustBeNull, paramAlphabet, paramInclude, paramClient, paramAllowLog, response);
     }
 
     @SuppressWarnings("NestedTryStatement")
     @Override
     public void convertLatLonToMapcode(
-            final double paramLatDeg,
-            final double paramLonDeg,
+            @Nullable final String paramLatDegAsString,
+            @Nullable final String paramLonDegAsString,
             @Nullable final String paramType,
-            final int paramPrecision,
+            @Nullable final String paramPrecisionAsString,
             @Nullable final String paramTerritory,
             @Nullable final String paramCountry,
             @Nullable final String paramContextMustBeNull,
@@ -142,7 +143,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final boolean allowLog = "true".equalsIgnoreCase(paramAllowLog);
 
             LOG.info("convertLatLonToMapcode: lat={}, lon={}, precision={}, type={}, context={}, alphabet={}, include={}, client={}, allowLog={}",
-                    paramLatDeg, paramLonDeg, paramPrecision, paramType, paramTerritory, paramAlphabet, paramInclude, paramClient, paramAllowLog);
+                    paramLatDegAsString, paramLonDegAsString, paramPrecisionAsString, paramType, paramTerritory, paramAlphabet, paramInclude, paramClient, paramAllowLog);
             metricsCollector.addOneLatLonToMapcodeRequest(paramClient);
 
             // Prevent 'context' from inadvertently being specified.
@@ -151,19 +152,35 @@ public class MapcodeResourceImpl implements MapcodeResource {
             }
 
             // Check lat range.
-            final double latDeg = paramLatDeg;
-            if (!MathUtils.isBetween(latDeg, ApiConstants.API_LAT_MIN, ApiConstants.API_LAT_MAX)) {
-                throw new ApiInvalidFormatException(PARAM_LAT_DEG, String.valueOf(paramLatDeg),
+            final double latDeg;
+            try {
+                latDeg = Double.valueOf(StringUtils.nullToEmpty(paramLatDegAsString));
+                if (!MathUtils.isBetween(latDeg, ApiConstants.API_LAT_MIN, ApiConstants.API_LAT_MAX)) {
+                    throw new NumberFormatException(paramLatDegAsString);
+                }
+            } catch (final NumberFormatException e) {
+                throw new ApiInvalidFormatException(PARAM_LAT_DEG, paramLatDegAsString,
                         "[" + ApiConstants.API_LAT_MIN + ", " + ApiConstants.API_LAT_MAX + ']');
             }
 
+
             // Check lon range.
-            final double lonDeg = Geo.mapToLon(paramLonDeg);
+            final double lonDeg;
+            try {
+                lonDeg = Geo.mapToLon(Double.valueOf(StringUtils.nullToEmpty(paramLonDegAsString)));
+            } catch (final NumberFormatException e) {
+                throw new ApiInvalidFormatException(PARAM_LAT_DEG, paramLonDegAsString, "Double");
+            }
 
             // Check precision.
-            final int precision = paramPrecision;
-            if (!MathUtils.isBetween(precision, ApiConstants.API_PRECISION_MIN, ApiConstants.API_PRECISION_MAX)) {
-                throw new ApiInvalidFormatException(PARAM_PRECISION, String.valueOf(paramPrecision), "[" + ApiConstants.API_PRECISION_MIN +
+            final int precision;
+            try {
+                precision = Integer.valueOf(StringUtils.nullToEmpty(paramPrecisionAsString));
+                if (!MathUtils.isBetween(precision, ApiConstants.API_PRECISION_MIN, ApiConstants.API_PRECISION_MAX)) {
+                    throw new NumberFormatException(paramPrecisionAsString);
+                }
+            } catch (final NumberFormatException e) {
+                throw new ApiInvalidFormatException(PARAM_PRECISION, paramPrecisionAsString, "[" + ApiConstants.API_PRECISION_MIN +
                         ", " + ApiConstants.API_PRECISION_MAX + ']');
             }
 

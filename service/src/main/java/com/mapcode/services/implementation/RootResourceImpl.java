@@ -240,8 +240,8 @@ public class RootResourceImpl implements RootResource {
             final String client = "";
             final String allowLog = "false";
             final TestAsyncResponse asyncResponse1 = new TestAsyncResponse();
-            mapcodeResource.convertLatLonToMapcode(latDeg, lonDeg, "local",
-                    precision, territory, null, null, alphabet, include, client,
+            mapcodeResource.convertLatLonToMapcode(String.valueOf(latDeg), String.valueOf(lonDeg), "local",
+                    String.valueOf(precision), territory, null, null, alphabet, include, client,
                     allowLog, asyncResponse1);
             waitForResponse(asyncResponse1);
 
