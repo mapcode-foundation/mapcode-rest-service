@@ -29,6 +29,7 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 
+@SuppressWarnings("SimplifiableAnnotation")
 @Api(value = "monitoring", description = "These resources are provided for monitoring purposes.")
 @Path("/mapcode")
 public interface RootResource {

@@ -28,6 +28,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Pattern;
 
 /**
  * Stub to load CLI main from war file.
@@ -44,8 +45,7 @@ public final class Main {
         // Prevent instantiation.
     }
 
-    @SuppressWarnings("OverlyBroadThrowsClause")
-    public static void main(@Nonnull final String[] args)
+    public static void main(@Nonnull final String... args)
             throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IOException {
         assert args != null;
         final List<URL> newUrls = new ArrayList<>();
@@ -53,7 +53,6 @@ public final class Main {
         final String warFile = getWarFile();
         try (final JarFile jarFile = new JarFile(warFile)) {
 
-            //noinspection ForLoopWithMissingComponent
             for (final Enumeration<JarEntry> entryEnum = jarFile.entries(); entryEnum.hasMoreElements(); ) {
                 final JarEntry entry = entryEnum.nextElement();
                 if (entry.getName().endsWith(".jar")) {
@@ -126,7 +125,8 @@ public final class Main {
 
     static class JarJarURLStreamHandler extends URLStreamHandler {
 
-        @SuppressWarnings("DuplicateThrows")
+        private static final Pattern PATTERN = Pattern.compile("\\~/");
+
         @Nonnull
         @Override
         protected URLConnection openConnection(@Nonnull final URL u) throws IOException {
@@ -138,7 +138,7 @@ public final class Main {
         protected void parseURL(@Nonnull final URL u, @Nonnull final String spec, final int start, final int limit) {
             assert u != null;
             assert spec != null;
-            final String file = "jar:" + spec.substring(start, limit).replaceFirst("\\~/", "!/");
+            final String file = "jar:" + PATTERN.matcher(spec.substring(start, limit)).replaceFirst("!/");
             setURL(u, "nestedjar", "", -1, null, null, file, null, null);
         }
     }

@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
+@SuppressWarnings({"NullableProblems", "InstanceVariableMayNotBeInitialized"})
 @ApiModel(
         value = "rectangle",
         description = "A rectangular geospatial area, defined by its South-West and North-East corners.")

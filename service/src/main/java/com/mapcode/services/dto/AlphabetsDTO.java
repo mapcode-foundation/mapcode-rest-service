@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
+@SuppressWarnings({"NullableProblems", "InstanceVariableMayNotBeInitialized"})
 @ApiModel(
         value = "alphabets",
         description = "A list of alphabet objects, such as returned by `GET /mapcode/alphabets`.")
@@ -76,7 +76,7 @@ public final class AlphabetsDTO extends ApiDTO {
 
     public AlphabetsDTO(
             final int total,
-            @Nonnull final Alphabet[] alphabets) {
+            @Nonnull final Alphabet... alphabets) {
         this(total, new AlphabetListDTO(alphabets));
     }
 

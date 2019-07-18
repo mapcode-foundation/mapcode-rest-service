@@ -31,6 +31,6 @@ public class MainTest {
 
         // This will fail, as it needs to run from a WAR file and we can't do that here.
         // Arguments: [--port <port>] [--silent] [--debug] [--help]
-        Main.main(new String[]{"--port", "8080", "--debug"});
+        Main.main("--port", "8080", "--debug");
     }
 }

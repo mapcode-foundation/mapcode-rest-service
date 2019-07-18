@@ -70,6 +70,7 @@ public final class StartupCheck {
 
         // Start JMX server.
         final SystemMetricsAgent jmxAgent = injector.getInstance(SystemMetricsAgent.class);
+        //noinspection OverlyBroadCatchBlock
         try {
             jmxAgent.register();
         }

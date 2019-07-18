@@ -40,7 +40,7 @@ public class MainCommandLineTest {
 
         // Initialize Mockito.
         MockitoAnnotations.initMocks(this);
-        MainCommandLine.execute(new String[]{"--help"});
+        MainCommandLine.execute("--help");
     }
 
     @SuppressWarnings("JUnitTestMethodWithNoAssertions")
@@ -50,9 +50,9 @@ public class MainCommandLineTest {
 
         // Initialize Mockito.
         MockitoAnnotations.initMocks(this);
-        MainCommandLine.execute(new String[]{"--help", "unknown"});
-        MainCommandLine.execute(new String[]{"--unknown"});
-        MainCommandLine.execute(new String[]{"--port"});
+        MainCommandLine.execute("--help", "unknown");
+        MainCommandLine.execute("--unknown");
+        MainCommandLine.execute("--port");
     }
 
     @SuppressWarnings("JUnitTestMethodWithNoAssertions")
@@ -62,7 +62,7 @@ public class MainCommandLineTest {
 
         // Initialize Mockito.
         MockitoAnnotations.initMocks(this);
-        MainCommandLine.execute(new String[]{"--silent", "--debug", "--port", "8081"});
+        MainCommandLine.execute("--silent", "--debug", "--port", "8081");
 
         // Execute a REST API call.
         checkVersionXmlJson();

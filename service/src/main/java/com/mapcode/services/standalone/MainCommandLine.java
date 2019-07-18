@@ -57,7 +57,7 @@ public final class MainCommandLine {
         // Prevent instantiation.
     }
 
-    public static void execute(final String[] args) {
+    public static void execute(final String... args) {
         int port = DEFAULT_PORT;
         String command = null;
         boolean debug = false;

@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "alphabets")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -44,7 +43,7 @@ public final class AlphabetListDTO extends ApiListDTO<AlphabetDTO> {
         super(alphabets);
     }
 
-    public AlphabetListDTO(@Nonnull final Alphabet[] alphabets) {
+    public AlphabetListDTO(@Nonnull final Alphabet... alphabets) {
         this(Arrays.stream(alphabets).map(AlphabetDTO::new).collect(Collectors.toList()));
     }
 

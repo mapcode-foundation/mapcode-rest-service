@@ -33,14 +33,14 @@ public interface SystemMetricsCollector {
      *
      * @param client Client that issued the call. Can be null
      */
-    public void addOneMapcodeToLatLonRequest(@Nullable final String client);
+    public void addOneMapcodeToLatLonRequest(@Nullable String client);
 
     /**
      * Called whenever a successful mapcode to lat/lon request is made.
      *
      * @param client Client that issued the call. Can be null
      */
-    public void addOneValidMapcodeToLatLonRequest(@Nullable final String client);
+    public void addOneValidMapcodeToLatLonRequest(@Nullable String client);
 
     /**
      * Called whenever ANY lat/lon to mapcode request is made. The request may fail because
@@ -48,26 +48,26 @@ public interface SystemMetricsCollector {
      *
      * @param client Client that issued the call. Can be null
      */
-    public void addOneLatLonToMapcodeRequest(@Nullable final String client);
+    public void addOneLatLonToMapcodeRequest(@Nullable String client);
 
     /**
      * Called whenever a successful lat/lon to mapcode request is made.
      *
      * @param client Client that issued the call. Can be null
      */
-    public void addOneValidLatLonToMapcodeRequest(@Nullable final String client);
+    public void addOneValidLatLonToMapcodeRequest(@Nullable String client);
 
     /**
      * Called whenever a alphabet request is made.
      *
      * @param client Client that issued the call. Can be null
      */
-    public void addOneAlphabetRequest(@Nullable final String client);
+    public void addOneAlphabetRequest(@Nullable String client);
 
     /**
      * Called whenever a territory request is made.
      *
      * @param client Client that issued the call. Can be null
      */
-    public void addOneTerritoryRequest(@Nullable final String client);
+    public void addOneTerritoryRequest(@Nullable String client);
 }

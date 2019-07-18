@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
+@SuppressWarnings({"NullableProblems", "InstanceVariableMayNotBeInitialized"})
 @ApiModel(
         value = "alphabet",
         description = "An alphabet definition object, such as returned by `GET /mapcode/alphabets/roman`.")

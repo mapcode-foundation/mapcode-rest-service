@@ -22,18 +22,15 @@ import com.mapcode.services.ApiConstants;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
+@SuppressWarnings({"NullableProblems", "InstanceVariableMayNotBeInitialized"})
 @ApiModel(
         value = "version",
         description = "The version of the Mapcode REST API.")
@@ -83,15 +80,5 @@ public final class VersionDTO extends ApiDTO {
     @Nonnull
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
-    }
-
-    @Override
-    public boolean equals(@Nullable final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj, false);
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this, false);
     }
 }

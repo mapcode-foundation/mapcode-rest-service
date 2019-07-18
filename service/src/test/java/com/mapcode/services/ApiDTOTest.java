@@ -164,8 +164,8 @@ public class ApiDTOTest {
         x.setAlphaCodeMinimal("3");
         x.setFullName("4");
         x.setParentTerritory("5");
-        x.setAliases(new String[]{"6"});
-        x.setFullNameAliases(new String[]{"7"});
+        x.setAliases("6");
+        x.setFullNameAliases("7");
         assertEquals("1", x.getAlphaCode());
     }
 

@@ -143,7 +143,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final boolean allowLog = "true".equalsIgnoreCase(paramAllowLog);
 
             LOG.info("convertLatLonToMapcode: lat={}, lon={}, precision={}, type={}, context={}, alphabet={}, include={}, client={}, allowLog={}",
-                    paramLatDegAsString, paramLonDegAsString, paramPrecisionAsString, paramType, paramTerritory, paramAlphabet, paramInclude, paramClient, paramAllowLog);
+                    paramLatDegAsString, paramLonDegAsString, paramPrecisionAsString, paramType, paramTerritory, paramAlphabet, paramInclude, paramClient,
+                    paramAllowLog);
             metricsCollector.addOneLatLonToMapcodeRequest(paramClient);
 
             // Prevent 'context' from inadvertently being specified.
@@ -162,7 +163,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 throw new ApiInvalidFormatException(PARAM_LAT_DEG, paramLatDegAsString,
                         "[" + ApiConstants.API_LAT_MIN + ", " + ApiConstants.API_LAT_MAX + ']');
             }
-
 
             // Check lon range.
             final double lonDeg;
@@ -299,10 +299,8 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
                 // Get the international mapcode.
                 final Mapcode mapcodeInternational = MapcodeCodec.encodeToInternational(latDeg, lonDeg);
-                mapcodeInternationalAndRectangle = (mapcodeInternational == null) ? null : Tuple.create(
-                        mapcodeInternational,
-                        MapcodeCodec.decodeToRectangle(mapcodeInternational.getCode())
-                );
+                mapcodeInternationalAndRectangle = Tuple.create(mapcodeInternational,
+                        MapcodeCodec.decodeToRectangle(mapcodeInternational.getCode()));
 
                 // Get the shortest local mapcode.
                 Mapcode mapcodeLocal = null;
@@ -312,7 +310,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     try {
                         mapcodeLocal = MapcodeCodec.encodeToShortest(latDeg, lonDeg, Territory.fromCountryISO(country));
                     } catch (final UnknownMapcodeException ignored) {
-                        mapcodeLocal = null;
                     }
                 } else if (territory != null) {
 
@@ -320,7 +317,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
                     try {
                         mapcodeLocal = MapcodeCodec.encodeToShortest(latDeg, lonDeg, territory);
                     } catch (final UnknownMapcodeException ignored) {
-                        mapcodeLocal = null;
                     }
                 } else {
 
@@ -377,8 +373,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 switch (type) {
                     case LOCAL: {
                         if (mapcodeLocalAndRectangle == null) {
-                            throw new ApiNotFoundException("No local mapcode for: " +
-                                    ((mapcodeInternationalAndRectangle == null) ? null : mapcodeInternationalAndRectangle.getValue1().getCode()));
+                            throw new ApiNotFoundException("No local mapcode for: " + mapcodeInternationalAndRectangle.getValue1().getCode());
                         }
                         result = createMapcodeDTO(mapcodeLocalAndRectangle, precision, alphabet, includeOffset, includeTerritory,
                                 includeAlphabet, includeRectangle, latDeg, lonDeg);
@@ -746,12 +741,14 @@ public class MapcodeResourceImpl implements MapcodeResource {
             @Nonnull final Mapcode mapcode,
             final int precision) {
         assert mapcode != null;
+        final double million = 1.0e6;
         final GeoPoint position = new GeoPoint(latDeg, lonDeg);
         try {
             final Point point = MapcodeCodec.decode(mapcode.getCode(precision), mapcode.getTerritory());
             final GeoPoint center = new GeoPoint(point.getLatDeg(), point.getLonDeg());
             final double distanceMeters = Geo.distanceInMeters(position, center);
-            return Math.round(distanceMeters * 1.0e6) / 1.0e6;
+            return Math.round(distanceMeters * million) / million;
+
         } catch (final UnknownMapcodeException ignore) {
             // Simply ignore.
             return 0.0;
@@ -766,11 +763,11 @@ public class MapcodeResourceImpl implements MapcodeResource {
         // A request to translate a lat/lon to a mapcode is made.
         void eventLatLonToMapcode(double latDeg, double lonDeg, @Nullable Territory territory,
                                   int precision, @Nullable String type, @Nullable String alphabet,
-                                  @Nullable String include, @Nonnull DateTime now, @Nullable final String client);
+                                  @Nullable String include, @Nonnull DateTime now, @Nullable String client);
 
         // A request to translate a mapcode to a lat/lon is made.
         void eventMapcodeToLatLon(@Nonnull String code, @Nullable Territory territory, @Nonnull DateTime now,
-                                  @Nullable final String client);
+                                  @Nullable String client);
 
         // A request to translate a lat/lon to a mapcode is made.
         @Deprecated

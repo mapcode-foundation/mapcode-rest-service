@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import javax.xml.bind.annotation.*;
 import java.util.List;
 
-@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
+@SuppressWarnings({"NullableProblems", "InstanceVariableMayNotBeInitialized"})
 @ApiModel(
         value = "mapcodes",
         description = "A full coordinate to mapcode response object, such as returned by `GET /mapcode/codes/52,5`.")

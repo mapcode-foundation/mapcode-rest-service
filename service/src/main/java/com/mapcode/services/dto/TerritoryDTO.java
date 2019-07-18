@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.*;
 
-@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
+@SuppressWarnings({"NullableProblems", "InstanceVariableMayNotBeInitialized"})
 @ApiModel(
         value = "territory",
         description = "A territory definition object, such as returned by `GET /mapcode/territories/nld`."
@@ -226,7 +226,7 @@ public final class TerritoryDTO extends ApiDTO {
         return aliases;
     }
 
-    public void setAliases(@Nonnull final String[] aliases) {
+    public void setAliases(@Nonnull final String... aliases) {
         beforeSet();
         assert aliases != null;
         this.aliases = aliases;
@@ -238,7 +238,7 @@ public final class TerritoryDTO extends ApiDTO {
         return fullNameAliases;
     }
 
-    public void setFullNameAliases(@Nonnull final String[] fullNameAliases) {
+    public void setFullNameAliases(@Nonnull final String... fullNameAliases) {
         beforeSet();
         assert fullNameAliases != null;
         this.fullNameAliases = fullNameAliases;

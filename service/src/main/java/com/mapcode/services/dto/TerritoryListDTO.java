@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"NonFinalFieldReferenceInEquals", "NonFinalFieldReferencedInHashCode", "NullableProblems", "EqualsWhichDoesntCheckParameterClass"})
+@SuppressWarnings("NullableProblems")
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "territories")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -45,7 +45,7 @@ public final class TerritoryListDTO extends ApiListDTO<TerritoryDTO> {
         super(territories);
     }
 
-    public TerritoryListDTO(@Nonnull final Territory[] territories) {
+    public TerritoryListDTO(@Nonnull final Territory... territories) {
         this(Arrays.stream(territories).map(x -> new TerritoryDTO(
                 x.toString(),
                 x.toAlphaCode(AlphaCodeFormat.MINIMAL_UNAMBIGUOUS),

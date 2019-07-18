@@ -234,14 +234,13 @@ public class RootResourceImpl implements RootResource {
             final double lonDeg = 4.492479;
             final String mapcode = "QJM.1G";
             final String territory = "NLD";
-            final String alphabet = null;
             final int precision = 0;
             final String include = "";
             final String client = "";
             final String allowLog = "false";
             final TestAsyncResponse asyncResponse1 = new TestAsyncResponse();
             mapcodeResource.convertLatLonToMapcode(String.valueOf(latDeg), String.valueOf(lonDeg), "local",
-                    String.valueOf(precision), territory, null, null, alphabet, include, client,
+                    String.valueOf(precision), territory, null, null, null, include, client,
                     allowLog, asyncResponse1);
             waitForResponse(asyncResponse1);
 

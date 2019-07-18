@@ -30,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * This class handle the Mapcode REST API, which includes conversions to and from mapcodes.
  */
+@SuppressWarnings("SimplifiableAnnotation")
 @Api(value = "mapcode", description = "This resource provides the Mapcode REST API.")
 @Path("/mapcode")
 public interface MapcodeResource {

@@ -54,6 +54,7 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
     private final MultiMetricsCollector allTerritoryRequests = MultiMetricsCollector.all();
     private final MultiMetricsCollector warningsAndErrors = MultiMetricsCollector.all();
 
+    @SuppressWarnings("ClassExtendsConcreteCollection")
     @Nonnull
     private final EnumMap<Metric, MultiMetricsCollector> all =
             new EnumMap<Metric, MultiMetricsCollector>(Metric.class) {{
@@ -242,7 +243,6 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
     @Override
     public void addOneLatLonToMapcodeRequest(@Nullable final String client) {
         allLatLonToMapcodeRequests.addValue(1);
-
         switch (getClient(client)) {
 
             case NONE:
