@@ -96,7 +96,7 @@
         <guava.version>27.1-jre</guava.version>
         <guice.version>4.2.2</guice.version>
         <jackson.version>2.9.9</jackson.version>
-        <jackson-bind.version>2.9.9.1</jackson-bind.version>
+        <jackson-databind.version>2.9.9.1</jackson-databind.version>
         <javax.inject.version>1</javax.inject.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
