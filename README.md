@@ -351,6 +351,10 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.12.3
+
+* Fixed `jackson-databind` security issue.
+
 ### 2.4.12.2
 
 * Improved handling if incorrect coordinates and parameter values, producing a
