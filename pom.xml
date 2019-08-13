@@ -110,7 +110,7 @@
         <resteasy.version>3.7.0.Final</resteasy.version>
         <scala.version>2.12.8</scala.version>
         <slf4j.version>1.7.25</slf4j.version>
-        <speedtools.version>3.2.16</speedtools.version>
+        <speedtools.version>3.2.17</speedtools.version>
         <swagger.version>1.5.22</swagger.version>
     </properties>
 
