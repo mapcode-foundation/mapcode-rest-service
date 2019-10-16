@@ -351,9 +351,9 @@ self-hosting this service.
 
 ## Release Notes
 
-### 2.4.12.3
+### 2.4.12.3-2.4.12.4
 
-* Fixed `jackson-databind` security issue.
+* Fixed `jackson-databind` security issues.
 
 ### 2.4.12.2
 
