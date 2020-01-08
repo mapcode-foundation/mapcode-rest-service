@@ -351,6 +351,10 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.13.0
+
+* Updated dependencies. 
+
 ### 2.4.12.3-2.4.12.5
 
 * Fixed `jackson-databind` security issues.
