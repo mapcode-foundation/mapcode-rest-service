@@ -351,6 +351,10 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.14.0
+
+* Updated dependencies for security vulnerabilities.
+
 ### 2.4.13.0
 
 * Updated dependencies. 
