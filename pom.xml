@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2016-2019, Stichting Mapcode Foundation (http://www.mapcode.com)
+  ~ Copyright (C) 2016-2020, Stichting Mapcode Foundation (http://www.mapcode.com)
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
     <artifactId>mapcode-rest-service</artifactId>
 
     <packaging>pom</packaging>
-    <version>2.4.14.0-SNAPSHOT</version>
+    <version>2.4.14.0</version>
 
     <name>Mapcode REST API Web Service</name>
     <description>
@@ -75,43 +75,43 @@
 
         <!-- Maven plugins. -->
         <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
-        <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
+        <jetty-maven-plugin.version>9.4.28.v20200408</jetty-maven-plugin.version>
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
-        <maven-jetty-plugin.version>9.4.21.v20190926</maven-jetty-plugin.version>
+        <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
         <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
         <maven-remote-resources-plugin.version>1.6.0</maven-remote-resources-plugin.version>
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
-        <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <maven-war-plugin.version>3.2.3</maven-war-plugin.version>
         <swagger-maven-plugin.version>3.1.8</swagger-maven-plugin.version>
 
         <!-- Library versions - these are not re-used from the top-level POM to simulate stand-alone usage. -->
-        <commons-lang3.version>3.9</commons-lang3.version>
+        <commons-lang3.version>3.10</commons-lang3.version>
         <commons-text.version>1.8</commons-text.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <gson.version>2.8.6</gson.version>
-        <guava.version>27.1-jre</guava.version>
-        <guice.version>4.2.2</guice.version>
-        <jackson.version>2.10.1</jackson.version>
-        <jackson-databind.version>2.10.1</jackson-databind.version>
+        <guava.version>29.0-jre</guava.version>
+        <guice.version>4.2.3</guice.version>
+        <jackson.version>2.10.3</jackson.version>
+        <jackson-databind.version>2.10.3</jackson-databind.version>
         <javax.inject.version>1</javax.inject.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <joda-time.version>2.10.5</joda-time.version>
-        <jolokia.version>1.6.1</jolokia.version>
+        <jolokia.version>1.6.2</jolokia.version>
         <jsr305.version>3.0.2</jsr305.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13</junit.version>
         <log4j.version>1.2.17</log4j.version>
-        <mapcode.version>2.4.13</mapcode.version>
-        <mockito-core.version>3.2.0</mockito-core.version>
-        <resteasy.version>3.7.0.Final</resteasy.version>
-        <scala.version>2.12.8</scala.version>
+        <mapcode.version>2.4.14</mapcode.version>
+        <mockito-core.version>3.3.3</mockito-core.version>
+        <resteasy.version>3.11.2.Final</resteasy.version>
+        <scala.version>2.12.11</scala.version>
         <slf4j.version>1.7.25</slf4j.version>
         <speedtools.version>3.2.19</speedtools.version>
-        <swagger.version>1.6.0</swagger.version>
+        <swagger.version>1.6.1</swagger.version>
     </properties>
 
     <distributionManagement>
@@ -637,3 +637,4 @@
         </profile>
     </profiles>
 </project>
+
