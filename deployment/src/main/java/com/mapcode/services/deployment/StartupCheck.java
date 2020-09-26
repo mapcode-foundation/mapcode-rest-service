@@ -58,6 +58,7 @@ public final class StartupCheck {
          */
 
         // Check if we are using the correct JDK.
+        LOG.info("check: Checking system start-up configuration.");
         final String javaVersion = System.getProperty("java.version");
         check(javaVersion.startsWith("1.6.") || javaVersion.startsWith("1.7.") || javaVersion.startsWith("1.8."),
                 "The system requires JRE 1.6.x, 1.7.x or 1.8.x (found JRE " + javaVersion + ").");
@@ -69,9 +70,12 @@ public final class StartupCheck {
                         " Current value=" + Charset.defaultCharset().name());
 
         // Start JMX server.
+        LOG.info("check: Get JMX agent.");
         final SystemMetricsAgent jmxAgent = injector.getInstance(SystemMetricsAgent.class);
+
         //noinspection OverlyBroadCatchBlock
         try {
+            LOG.info("check: Register JMX agent.");
             jmxAgent.register();
         }
         catch (final Exception e) {
@@ -99,7 +103,7 @@ public final class StartupCheck {
             System.err.println("Reason: " + reason);
             System.err.println("=======================================");
             System.err.println();
-            throw new IllegalStateException("System did NOT start successfully.");
+            throw new IllegalStateException("System did NOT start successfully. Reason: " + reason);
         }
     }
 }
