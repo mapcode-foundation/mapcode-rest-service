@@ -351,13 +351,13 @@ self-hosting this service.
 
 ## Release Notes
 
-###
+### 2.4.14.3
 
-* Improved README.md.
+* Updated dependencies.
 
 * Added reason for failure at startup in log file.
 
-### 2.4.14.0-2.4.14.1
+### 2.4.14.0-2.4.14.2
 
 * Updated dependencies for security vulnerabilities.
 
