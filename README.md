@@ -141,24 +141,25 @@ To build the WAR file, type
     cd <project-root>
     mvn clean install -Pprod
 
-You can run the WAR file in 3 ways:
+This will install the required JAR files in your local Maven repository (normally 
+at `~/.m2/repository`). You can run the WAR file in 3 ways:
 
-1. directly from the **command-line**, using:
-
-```
-java -jar deployment/target/deployment-<version>.war [--port <port>] [--silent] [--debug] [--help]
-```
-
-  This will start the service at `http://localhost:<port>/mapcode`. If `<port>` is not specified, the
-  default value is `8080`. If it is `0`, the server will choose any free port.
-
-2. directly from **Maven** using:
+1. Directly from **Maven** using:
  
 ```
 cd deployment
 mvn jetty:run
 ```
-     
+   
+2. Or directly from the **command-line**, using:
+
+```
+java -jar deployment/target/deployment-<version>.war [--port <port>] [--silent] [--debug] [--help]
+```
+
+This will start the service at `http://localhost:<port>/mapcode`. If `<port>` is not specified, the
+default value is `8080`. If it is `0`, the server will choose any free port.
+  
 This will start the service at `http://localhost:8080/mapcode`.
 
 3. in a **Tomcat server**, deploying the file `deployment/target/deployment-<version>.war` into
@@ -166,6 +167,9 @@ your Tomcat instance.
 
 The first method, running the WAR file from the command-line, using `java` only is particularly
 useful if you wish use the XML services, for example, in a Microsoft Excel spreadsheet.
+
+**Important:** If the service does not start, some files may be missing from your `external-resources`
+directory. To fix this, read on.
 
 ### Missing `mapcode-secret.properties` and `log4j.xml` Files
 
@@ -350,6 +354,12 @@ self-hosting this service.
             
 
 ## Release Notes
+
+### 2.4.14.4
+
+* Changed `groupId` to `com.mapcode.rest`.
+
+* Updated `README.md` with correct instructions to create WAR file.
 
 ### 2.4.14.3
 
