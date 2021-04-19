@@ -355,6 +355,10 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.15.0
+
+* Bumped version.
+
 ### 2.4.14.4
 
 * Changed `groupId` to `com.mapcode.rest`.
