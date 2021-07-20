@@ -60,8 +60,9 @@ public final class StartupCheck {
         // Check if we are using the correct JDK.
         LOG.info("check: Checking system start-up configuration.");
         final String javaVersion = System.getProperty("java.version");
-        check(javaVersion.startsWith("1.6.") || javaVersion.startsWith("1.7.") || javaVersion.startsWith("1.8."),
-                "The system requires JRE 1.6.x, 1.7.x or 1.8.x (found JRE " + javaVersion + ").");
+        check(javaVersion.startsWith("1.6.") || javaVersion.startsWith("1.7.") || javaVersion.startsWith("1.8.") ||
+                        javaVersion.startsWith("11.") || javaVersion.startsWith("14."),
+                "The system requires JRE 1.6.x/1.7.x/1.8.x/11.x/14.x (found JRE " + javaVersion + ").");
 
         // Check encoding. The default character encoding for JSON is UTF8. UTF16 and UTF32 are also supported.
         // This is to make sure that byte conversions that rely on default encoding do not cause unexpected behaviour.
