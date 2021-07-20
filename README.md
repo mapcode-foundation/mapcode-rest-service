@@ -355,6 +355,10 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.15.1
+
+* Allowed JDK 11 and 14 ti run this application.
+
 ### 2.4.15.0
 
 * Bumped version.
