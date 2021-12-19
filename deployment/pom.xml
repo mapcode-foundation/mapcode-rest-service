@@ -23,7 +23,7 @@
     <parent>
         <groupId>com.mapcode.rest</groupId>
         <artifactId>mapcode-rest-service</artifactId>
-        <version>2.4.15.1</version>
+        <version>2.4.15.2</version>
     </parent>
 
     <artifactId>deployment</artifactId>
@@ -77,8 +77,13 @@
         </dependency>
 
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
         </dependency>
 
         <dependency>
@@ -197,4 +202,3 @@
         </plugins>
     </build>
 </project>
-

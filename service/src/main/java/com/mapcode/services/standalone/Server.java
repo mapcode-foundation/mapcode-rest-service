@@ -21,7 +21,7 @@ import com.mapcode.services.implementation.*;
 import com.tomtom.speedtools.maven.MavenProperties;
 import com.tomtom.speedtools.rest.Reactor;
 import com.tomtom.speedtools.rest.ResourceProcessor;
-import com.tomtom.speedtools.testutils.akka.SimpleExecutionContext;
+import com.tomtom.speedtools.testutils.SimpleExecutionContext;
 import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.plugins.interceptors.CacheControlFeature;
 import org.jboss.resteasy.plugins.providers.*;
