@@ -355,6 +355,10 @@ self-hosting this service.
 
 ## Release Notes
 
+### 2.4.17.0
+
+* Updated dependencies.
+
 ### 2.4.16.0
 
 * Corrected version to match `mapcode-java` library version.
