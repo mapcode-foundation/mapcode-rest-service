@@ -103,7 +103,7 @@
         <jolokia.version>1.7.1</jolokia.version>
         <jsr305.version>3.0.2</jsr305.version>
         <junit.version>4.13.2</junit.version>
-        <log4j.version>2.17.0</log4j.version>
+        <log4j.version>2.17.1</log4j.version>
         <mapcode.version>2.4.16</mapcode.version>
         <mockito-core.version>4.2.0</mockito-core.version>
         <resteasy.version>3.15.3.Final</resteasy.version>
