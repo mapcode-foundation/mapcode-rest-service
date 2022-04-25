@@ -355,7 +355,7 @@ self-hosting this service.
 
 ## Release Notes
 
-### 2.4.17.0
+### 2.4.17.0-2.4.18.0
 
 * Updated dependencies.
 
