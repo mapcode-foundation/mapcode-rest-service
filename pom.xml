@@ -96,6 +96,7 @@
         <guava.version>31.1-jre</guava.version>
         <guice.version>5.1.0</guice.version>
         <jackson.version>2.13.2</jackson.version>
+        <jackson-databind.version>2.13.2.2</jackson-databind.version>
         <javax.inject.version>1</javax.inject.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
@@ -109,7 +110,7 @@
         <resteasy.version>3.15.3.Final</resteasy.version>
         <scala.version>2.13.8</scala.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <speedtools.version>3.4.2</speedtools.version>
+        <speedtools.version>3.4.3</speedtools.version>
         <swagger.version>1.6.6</swagger.version>
     </properties>
 
@@ -149,7 +150,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jackson-databind.version}</version>
             </dependency>
 
             <dependency>
