@@ -93,7 +93,7 @@
         <commons-text.version>1.9</commons-text.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <gson.version>2.9.0</gson.version>
-        <guava.version>31.1-jre</guava.version>
+        <guava.version>32.0.0-jre</guava.version>
         <guice.version>5.1.0</guice.version>
         <jackson.version>2.13.2</jackson.version>
         <jackson-databind.version>2.13.2.2</jackson-databind.version>
