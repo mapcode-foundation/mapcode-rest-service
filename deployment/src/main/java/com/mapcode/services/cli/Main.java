@@ -75,6 +75,7 @@ public final class Main {
         }
 
         final URLClassLoader newClassLoader = new URLClassLoader(newUrls.toArray(new URL[0]));
+        Thread.currentThread().setContextClassLoader(newClassLoader);
         final Class<?> mainClass = newClassLoader.loadClass(MAIN_CLASS_NAME);
         final Method method = mainClass.getMethod(MAIN_METHOD_NAME, String[].class);
         try {
