@@ -109,6 +109,8 @@
     </dependencies>
 
     <build>
+        <finalName>mapcode-rest-service</finalName>
+
         <resources>
             <resource>
                 <!-- Let Maven change these files, to enter POM version and such. -->

@@ -1,0 +1,11 @@
+name: mapcode-rest-service
+services:
+  - name: api
+    github:
+      repo: mapcode-foundation/mapcode-rest-service
+      branch: master
+      deploy_on_push: true
+    build_command: mvn clean package -pl deployment -am -DskipTests -Dgpg.skip
+    run_command: java -jar deployment/target/mapcode-rest-service.war --port $PORT
+    http_port: 8080
+    instance_size_slug: basic-xxs

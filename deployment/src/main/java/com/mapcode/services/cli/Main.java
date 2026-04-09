@@ -17,18 +17,20 @@
 package com.mapcode.services.cli;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.*;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.regex.Pattern;
 
 /**
  * Stub to load CLI main from war file.
@@ -48,20 +50,31 @@ public final class Main {
     public static void main(@Nonnull final String... args)
             throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IOException {
         assert args != null;
-        final List<URL> newUrls = new ArrayList<>();
-        URL.setURLStreamHandlerFactory(new NestedJarURLStreamHandlerFactory());
         final String warFile = getWarFile();
-        try (final JarFile jarFile = new JarFile(warFile)) {
 
+        // Extract nested JARs from the WAR to a temp directory and build a
+        // URLClassLoader from them. The old nestedjar:// URL scheme no longer
+        // works on Java 9+ because JarURLConnection became stricter about
+        // double-nested URLs.
+        final File tempDir = Files.createTempDirectory("mapcode-war-").toFile();
+        tempDir.deleteOnExit();
+
+        final List<URL> newUrls = new ArrayList<>();
+        try (final JarFile jarFile = new JarFile(warFile)) {
             for (final Enumeration<JarEntry> entryEnum = jarFile.entries(); entryEnum.hasMoreElements(); ) {
                 final JarEntry entry = entryEnum.nextElement();
                 if (entry.getName().endsWith(".jar")) {
-                    newUrls.add(new URL("jar:nestedjar:file:" + warFile + "~/" + entry.getName() + "!/"));
+                    final File tempJar = new File(tempDir, new File(entry.getName()).getName());
+                    tempJar.deleteOnExit();
+                    try (final InputStream is = jarFile.getInputStream(entry)) {
+                        Files.copy(is, tempJar.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    }
+                    newUrls.add(tempJar.toURI().toURL());
                 }
             }
         }
 
-        final URLClassLoader newClassLoader = new URLClassLoader(newUrls.toArray(new URL[newUrls.size()]));
+        final URLClassLoader newClassLoader = new URLClassLoader(newUrls.toArray(new URL[0]));
         final Class<?> mainClass = newClassLoader.loadClass(MAIN_CLASS_NAME);
         final Method method = mainClass.getMethod(MAIN_METHOD_NAME, String[].class);
         try {
@@ -74,72 +87,15 @@ public final class Main {
 
     @Nonnull
     private static String getWarFile() {
-        final URLClassLoader classLoader = (URLClassLoader) Main.class.getClassLoader();
-        for (final URL url : classLoader.getURLs()) {
-            if (url.toString().endsWith(".war")) {
-                return url.getFile();
+        // In Java 9+, AppClassLoader no longer extends URLClassLoader, so we
+        // read the WAR path from the system classpath instead.
+        final String classPath = System.getProperty("java.class.path", "");
+        final String pathSeparator = System.getProperty("path.separator", ":");
+        for (final String entry : classPath.split(pathSeparator)) {
+            if (entry.endsWith(".war")) {
+                return entry;
             }
         }
         throw new IllegalStateException("Should be run from the war file (using java -jar <warfile>).");
-    }
-
-    static class NestedJarURLConnection extends URLConnection {
-        private final URLConnection connection;
-
-        @SuppressWarnings("OverlyBroadThrowsClause")
-        NestedJarURLConnection(@Nonnull final URL url)
-                throws IOException {
-            super(url);
-            assert url != null;
-            connection = new URL(url.getFile()).openConnection();
-        }
-
-        @Override
-        public void connect() throws IOException {
-            if (!connected) {
-                connection.connect();
-                connected = true;
-            }
-        }
-
-        @Override
-        @Nonnull
-        public InputStream getInputStream() throws IOException {
-            connect();
-            return connection.getInputStream();
-        }
-    }
-
-    static class NestedJarURLStreamHandlerFactory implements URLStreamHandlerFactory {
-
-        @Nullable
-        @Override
-        public URLStreamHandler createURLStreamHandler(@Nonnull final String protocol) {
-            assert protocol != null;
-            if (protocol.equals("nestedjar")) {
-                return new JarJarURLStreamHandler();
-            }
-            return null;
-        }
-    }
-
-    static class JarJarURLStreamHandler extends URLStreamHandler {
-
-        private static final Pattern PATTERN = Pattern.compile("\\~/");
-
-        @Nonnull
-        @Override
-        protected URLConnection openConnection(@Nonnull final URL u) throws IOException {
-            assert u != null;
-            return new NestedJarURLConnection(u);
-        }
-
-        @Override
-        protected void parseURL(@Nonnull final URL u, @Nonnull final String spec, final int start, final int limit) {
-            assert u != null;
-            assert spec != null;
-            final String file = "jar:" + PATTERN.matcher(spec.substring(start, limit)).replaceFirst("!/");
-            setURL(u, "nestedjar", "", -1, null, null, file, null, null);
-        }
     }
 }
