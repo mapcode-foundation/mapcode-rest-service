@@ -100,6 +100,7 @@
         <javax.inject.version>1</javax.inject.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
+        <jaxb-impl.version>2.3.3</jaxb-impl.version>
         <joda-time.version>2.10.14</joda-time.version>
         <jolokia.version>1.7.1</jolokia.version>
         <jsr305.version>3.0.2</jsr305.version>
@@ -285,6 +286,12 @@
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>
                 <version>${jaxb-api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>${jaxb-impl.version}</version>
             </dependency>
 
             <dependency>
