@@ -4,3 +4,9 @@ resources/src/main/external-resources/*.json
 resources/src/main/external-resources/*.properties
 out/
 target/
+.gitnexus
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
