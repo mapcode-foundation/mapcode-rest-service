@@ -197,6 +197,43 @@ public interface MapcodeResource {
             @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
             @Suspended @Nonnull AsyncResponse response) throws ApiException;
 
+    /**
+     * Look up the "most likely" territories containing a lat/lon, ranked.
+     * Backed by OSM admin-boundary polygons; results are in mapcode alphaCode
+     * format (e.g., {@code USA-CA}, {@code NLD}).
+     *
+     * @param paramLatDegAsString Latitude. Range: [-90, 90].
+     * @param paramLonDegAsString Longitude. Range: any double, wrapped to [-180, 180].
+     * @param paramClient         Indicator of calling client (for stats).
+     * @param paramAllowLog       True if logging is allowed. Default is true.
+     * @param response            {@link com.mapcode.services.dto.TerritoryCandidateListDTO}.
+     * @throws ApiException API exception, translated into HTTP status code.
+     */
+    @ApiOperation(
+            value = "Look up the ranked list of mapcode territories containing a lat/lon.",
+            response = TerritoryCandidateListDTO.class)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Ranked territory candidates (possibly empty for points at sea).",
+                    response = TerritoryCandidateListDTO.class),
+            @ApiResponse(code = 400, message = "Bad request. For example, a parameter may be out of range.")})
+    @GET
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Path("codes/{" + PARAM_LAT_DEG + "},{" + PARAM_LON_DEG + "}/territories")
+    void getTerritoriesForLatLon(
+            @ApiParam(
+                    value = "Latitude in degrees. Format: [-90, 90].",
+                    allowableValues = "range[-90,90]")
+            @PathParam(PARAM_LAT_DEG) @Nullable String paramLatDegAsString,
+            @ApiParam(
+                    value = "Longitude in degrees. Format: [-180, 180) (other values are correctly wrapped).",
+                    allowableValues = "range[-180,180)")
+            @PathParam(PARAM_LON_DEG) @Nullable String paramLonDegAsString,
+            @ApiParam(hidden = true)
+            @QueryParam(PARAM_CLIENT) @DefaultValue("") @Nonnull String paramClient,
+            @ApiParam(hidden = true)
+            @QueryParam(PARAM_ALLOW_LOG) @DefaultValue("true") @Nonnull String paramAllowLog,
+            @Suspended @Nonnull AsyncResponse response) throws ApiException;
+
     // Unsupported operation.
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})

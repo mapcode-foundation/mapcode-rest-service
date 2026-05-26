@@ -77,6 +77,8 @@ public class Server {
         };
         final ResourceProcessor resourceProcessor = new ResourceProcessor(reactor);
         final SystemMetricsImpl metrics = new SystemMetricsImpl();
+        final BoundaryService boundaryService = new BoundaryService(
+                System.getProperty("mapcode.bordersFile", "borders.fgb"));
 
         LOG.debug("Server: add resources...");
         final ResteasyDeployment deployment = server.getDeployment();
@@ -85,7 +87,8 @@ public class Server {
         // Add mapcode resource.
         final MapcodeResourceImpl mapcodeResource = new MapcodeResourceImpl(
                 resourceProcessor,
-                metrics
+                metrics,
+                boundaryService
         );
         resources.add(mapcodeResource);
 

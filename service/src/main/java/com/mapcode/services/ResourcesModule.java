@@ -56,6 +56,17 @@ public class ResourcesModule implements Module {
         binder.bind(SystemMetricsAgent.class).in(Singleton.class);
     }
 
+    private static final String BORDERS_FILE_PROPERTY = "mapcode.bordersFile";
+    private static final String BORDERS_FILE_DEFAULT = "borders.fgb";
+
+    @Provides
+    @Singleton
+    @Nonnull
+    public BoundaryService provideBoundaryService() {
+        final String path = System.getProperty(BORDERS_FILE_PROPERTY, BORDERS_FILE_DEFAULT);
+        return new BoundaryService(path);
+    }
+
     @Provides
     @Singleton
     @Nonnull

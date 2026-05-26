@@ -59,6 +59,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
     private final ResourceProcessor processor;
     private final SystemMetricsCollector metricsCollector;
+    private final BoundaryService boundaryService;
 
     private static final String API_ERROR_VALID_TERRITORY_CODES = Joiner.on('|').join(Arrays.stream(Territory.values()).
             collect(Collectors.toList()));
@@ -87,11 +88,14 @@ public class MapcodeResourceImpl implements MapcodeResource {
     @Inject
     public MapcodeResourceImpl(
             @Nonnull final ResourceProcessor processor,
-            @Nonnull final SystemMetricsCollector metricsCollector) {
+            @Nonnull final SystemMetricsCollector metricsCollector,
+            @Nonnull final BoundaryService boundaryService) {
         assert processor != null;
         assert metricsCollector != null;
+        assert boundaryService != null;
         this.processor = processor;
         this.metricsCollector = metricsCollector;
+        this.boundaryService = boundaryService;
     }
 
     @Override
@@ -406,6 +410,53 @@ public class MapcodeResourceImpl implements MapcodeResource {
             response.resume(Response.ok(result).build());
 
             // The response is already set within this method body.
+            return Futures.successful(null);
+        });
+    }
+
+    @Override
+    public void getTerritoriesForLatLon(
+            @Nullable final String paramLatDegAsString,
+            @Nullable final String paramLonDegAsString,
+            @Nonnull final String paramClient,
+            @Nonnull final String paramAllowLog,
+            @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
+        assert response != null;
+
+        processor.process("getTerritoriesForLatLon", LOG, response, () -> {
+            LOG.info("getTerritoriesForLatLon: lat={}, lon={}, client={}, allowLog={}",
+                    paramLatDegAsString, paramLonDegAsString, paramClient, paramAllowLog);
+            metricsCollector.addOneLatLonToTerritoriesRequest(paramClient);
+
+            // Check lat range.
+            final double latDeg;
+            try {
+                latDeg = Double.valueOf(StringUtils.nullToEmpty(paramLatDegAsString));
+                if (!MathUtils.isBetween(latDeg, ApiConstants.API_LAT_MIN, ApiConstants.API_LAT_MAX)) {
+                    throw new NumberFormatException(paramLatDegAsString);
+                }
+            } catch (final NumberFormatException e) {
+                throw new ApiInvalidFormatException(PARAM_LAT_DEG, paramLatDegAsString,
+                        "[" + ApiConstants.API_LAT_MIN + ", " + ApiConstants.API_LAT_MAX + ']');
+            }
+
+            // Check lon range (wrapped to [-180, 180]).
+            final double lonDeg;
+            try {
+                lonDeg = Geo.mapToLon(Double.valueOf(StringUtils.nullToEmpty(paramLonDegAsString)));
+            } catch (final NumberFormatException e) {
+                throw new ApiInvalidFormatException(PARAM_LON_DEG, paramLonDegAsString, "Double");
+            }
+
+            final List<TerritoryMatch> matches = boundaryService.lookup(latDeg, lonDeg);
+            final List<TerritoryCandidateDTO> candidates = matches.stream()
+                    .map(m -> new TerritoryCandidateDTO(m.getAlphaCode(), m.getParentAlphaCode()))
+                    .collect(Collectors.toList());
+            final TerritoryCandidateListDTO result = new TerritoryCandidateListDTO(candidates);
+            result.validate();
+
+            metricsCollector.addOneValidLatLonToTerritoriesRequest(paramClient);
+            response.resume(Response.ok(result).build());
             return Futures.successful(null);
         });
     }
