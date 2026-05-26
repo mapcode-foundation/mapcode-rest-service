@@ -230,6 +230,18 @@ public class BoundaryService {
                 p.get(strBytes);
                 return new String(strBytes, StandardCharsets.UTF_8);
             }
+            case ColumnType.Binary: {
+                // Consume the 4-byte length prefix and the payload bytes without decoding.
+                if (p.remaining() < 4) {
+                    return null;
+                }
+                final int len = p.getInt();
+                if (len < 0 || len > p.remaining()) {
+                    return null;
+                }
+                p.position(p.position() + len);
+                return null;
+            }
             default:
                 return null;
         }

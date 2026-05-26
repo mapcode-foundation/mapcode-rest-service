@@ -56,6 +56,20 @@ public class BoundaryServiceTest {
         assertEquals("DISPUTED-A", matches.get(1).getAlphaCode());
     }
 
+    @Test
+    public void subdivisionCollapsedToCountryAppearsInBothEntries() {
+        // Point (62, 22.5) is inside both NO-MAPCODE-PARENT polygons (admin 2 and 4).
+        // The fixture simulates the build-time fallback: the subdivision is tagged with
+        // the parent country's alphaCode. The runtime returns both entries, smaller first.
+        final BoundaryService svc = new BoundaryService(FIXTURE.toString());
+        final List<TerritoryMatch> matches = svc.lookup(62.0, 22.5);
+        assertEquals(2, matches.size());
+        assertEquals("NO-MAPCODE-PARENT", matches.get(0).getAlphaCode());
+        assertEquals(4, matches.get(0).getAdminLevel());
+        assertEquals("NO-MAPCODE-PARENT", matches.get(1).getAlphaCode());
+        assertEquals(2, matches.get(1).getAdminLevel());
+    }
+
     @Test(expected = IllegalStateException.class)
     public void missingFileFailsConstruction() {
         new BoundaryService("/does/not/exist.fgb");
