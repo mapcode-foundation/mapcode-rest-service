@@ -51,6 +51,8 @@ public interface SystemMetrics {
 
         ALL_ALPHABET_REQUESTS,
         ALL_TERRITORY_REQUESTS,
+        ALL_LATLON_TO_TERRITORIES_REQUESTS,
+        VALID_LATLON_TO_TERRITORIES_REQUESTS,
         WARNINGS_AND_ERRORS
     }
 
@@ -129,6 +131,18 @@ public interface SystemMetrics {
      */
     @Nonnull
     MultiMetricsData getAllTerritoryRequests();
+
+    /**
+     * @return The total number of requests for lat/lon to territories.
+     */
+    @Nonnull
+    MultiMetricsData getAllLatLonToTerritoriesRequests();
+
+    /**
+     * @return The number of valid requests for lat/lon to territories.
+     */
+    @Nonnull
+    MultiMetricsData getValidLatLonToTerritoriesRequests();
 
     /**
      * @return The number of warnings and errors that were logged through log4j.

@@ -52,6 +52,8 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
 
     private final MultiMetricsCollector allAlphabetRequests = MultiMetricsCollector.all();
     private final MultiMetricsCollector allTerritoryRequests = MultiMetricsCollector.all();
+    private final MultiMetricsCollector allLatLonToTerritoriesRequests = MultiMetricsCollector.all();
+    private final MultiMetricsCollector validLatLonToTerritoriesRequests = MultiMetricsCollector.all();
     private final MultiMetricsCollector warningsAndErrors = MultiMetricsCollector.all();
 
     @SuppressWarnings("ClassExtendsConcreteCollection")
@@ -74,6 +76,8 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
 
                 put(Metric.ALL_ALPHABET_REQUESTS, allAlphabetRequests);
                 put(Metric.ALL_TERRITORY_REQUESTS, allTerritoryRequests);
+                put(Metric.ALL_LATLON_TO_TERRITORIES_REQUESTS, allLatLonToTerritoriesRequests);
+                put(Metric.VALID_LATLON_TO_TERRITORIES_REQUESTS, validLatLonToTerritoriesRequests);
                 put(Metric.WARNINGS_AND_ERRORS, warningsAndErrors);
             }};
 
@@ -204,6 +208,18 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
 
     @Nonnull
     @Override
+    public MultiMetricsData getAllLatLonToTerritoriesRequests() {
+        return allLatLonToTerritoriesRequests;
+    }
+
+    @Nonnull
+    @Override
+    public MultiMetricsData getValidLatLonToTerritoriesRequests() {
+        return validLatLonToTerritoriesRequests;
+    }
+
+    @Nonnull
+    @Override
     public MultiMetricsData getWarningsAndErrors() {
         return warningsAndErrors;
     }
@@ -280,6 +296,16 @@ public class SystemMetricsImpl implements SystemMetrics, SystemMetricsCollector 
     @Override
     public void addOneTerritoryRequest(@Nullable final String client) {
         allTerritoryRequests.addValue(1);
+    }
+
+    @Override
+    public void addOneLatLonToTerritoriesRequest(@Nullable final String client) {
+        allLatLonToTerritoriesRequests.addValue(1);
+    }
+
+    @Override
+    public void addOneValidLatLonToTerritoriesRequest(@Nullable final String client) {
+        validLatLonToTerritoriesRequests.addValue(1);
     }
 
     private static Client getClient(@Nullable final String client) {

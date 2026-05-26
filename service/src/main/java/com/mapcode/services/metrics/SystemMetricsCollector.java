@@ -70,4 +70,18 @@ public interface SystemMetricsCollector {
      * @param client Client that issued the call. Can be null
      */
     public void addOneTerritoryRequest(@Nullable String client);
+
+    /**
+     * Called whenever ANY lat/lon to territories request is made.
+     *
+     * @param client Client that issued the call. Can be null
+     */
+    public void addOneLatLonToTerritoriesRequest(@Nullable String client);
+
+    /**
+     * Called whenever a successful lat/lon to territories request is made.
+     *
+     * @param client Client that issued the call. Can be null
+     */
+    public void addOneValidLatLonToTerritoriesRequest(@Nullable String client);
 }
