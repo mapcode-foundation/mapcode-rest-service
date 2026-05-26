@@ -72,10 +72,17 @@ public class LocalTestServer {
         final MavenProperties mavenProperties = new MavenProperties(version);
         final SystemMetricsImpl metrics = new SystemMetricsImpl();
 
+        // Borders fixture for territory-lookup tests.
+        final String bordersPath = java.nio.file.Paths.get(
+                "src", "test", "resources", "borders-test.fgb").toAbsolutePath().toString();
+        final com.mapcode.services.implementation.BoundaryService boundaryService =
+                new com.mapcode.services.implementation.BoundaryService(bordersPath);
+
         // Add mapcode resource.
         final MapcodeResourceImpl mapcodeResource = new MapcodeResourceImpl(
                 resourceProcessor,
-                metrics
+                metrics,
+                boundaryService
         );
         server.getDeployment().getResources().add(mapcodeResource);
 
