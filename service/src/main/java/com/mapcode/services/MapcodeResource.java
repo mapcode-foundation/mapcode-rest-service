@@ -206,15 +206,15 @@ public interface MapcodeResource {
      * @param paramLonDegAsString Longitude. Range: any double, wrapped to [-180, 180].
      * @param paramClient         Indicator of calling client (for stats).
      * @param paramAllowLog       True if logging is allowed. Default is true.
-     * @param response            {@link com.mapcode.services.dto.TerritoryCandidateListDTO}.
+     * @param response            {@link com.mapcode.services.dto.TerritoryCandidatesDTO}.
      * @throws ApiException API exception, translated into HTTP status code.
      */
     @ApiOperation(
             value = "Look up the ranked list of mapcode territories containing a lat/lon.",
-            response = TerritoryCandidateListDTO.class)
+            response = TerritoryCandidatesDTO.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "Ranked territory candidates (possibly empty for points at sea).",
-                    response = TerritoryCandidateListDTO.class),
+                    response = TerritoryCandidatesDTO.class),
             @ApiResponse(code = 400, message = "Bad request. For example, a parameter may be out of range.")})
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})

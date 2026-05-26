@@ -452,7 +452,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final List<TerritoryCandidateDTO> candidates = matches.stream()
                     .map(m -> new TerritoryCandidateDTO(m.getAlphaCode(), m.getParentAlphaCode()))
                     .collect(Collectors.toList());
-            final TerritoryCandidateListDTO result = new TerritoryCandidateListDTO(candidates);
+            final TerritoryCandidatesDTO result = new TerritoryCandidatesDTO(new TerritoryCandidateListDTO(candidates));
             result.validate();
 
             metricsCollector.addOneValidLatLonToTerritoriesRequest(paramClient);

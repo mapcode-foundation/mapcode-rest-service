@@ -33,14 +33,14 @@ public class ApiCodesTerritoriesTest {
     @Test
     public void pointInsideCountryReturnsCountryJson() {
         // (52, 5) is inside the NLD fixture polygon.
-        // TerritoryCandidateListDTO extends ApiListDTO which serializes as a bare JSON array.
+        // Response is wrapped in a TerritoryCandidatesDTO: {"territories":[...]}
         final Response response = new ResteasyClientBuilder().build()
                 .target(server.url("/mapcode/codes/52.0,5.0/territories"))
                 .request()
                 .accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertEquals(200, response.getStatus());
         Assert.assertEquals(
-                "[{\"alphaCode\":\"NLD\"}]",
+                "{\"territories\":[{\"alphaCode\":\"NLD\"}]}",
                 response.readEntity(String.class));
     }
 
@@ -54,22 +54,22 @@ public class ApiCodesTerritoriesTest {
                 .accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertEquals(200, response.getStatus());
         Assert.assertEquals(
-                "[" +
+                "{\"territories\":[" +
                         "{\"alphaCode\":\"USA-CA\",\"parentAlphaCode\":\"USA\"}," +
-                        "{\"alphaCode\":\"USA\"}]",
+                        "{\"alphaCode\":\"USA\"}]}",
                 response.readEntity(String.class));
     }
 
     @Test
     public void pointAtSeaReturnsEmptyListJson() {
         // (0, -30) mid-Atlantic — no fixture polygon contains it.
-        // ApiListDTO with NON_EMPTY serializes an empty list as [].
+        // TerritoryCandidatesDTO with NON_EMPTY: the empty territories list is omitted, producing {}.
         final Response response = new ResteasyClientBuilder().build()
                 .target(server.url("/mapcode/codes/0.0,-30.0/territories"))
                 .request()
                 .accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("[]", response.readEntity(String.class));
+        Assert.assertEquals("{}", response.readEntity(String.class));
     }
 
     @Test
@@ -81,9 +81,9 @@ public class ApiCodesTerritoriesTest {
                 .accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertEquals(200, response.getStatus());
         Assert.assertEquals(
-                "[" +
+                "{\"territories\":[" +
                         "{\"alphaCode\":\"DISPUTED-B\"}," +
-                        "{\"alphaCode\":\"DISPUTED-A\"}]",
+                        "{\"alphaCode\":\"DISPUTED-A\"}]}",
                 response.readEntity(String.class));
     }
 
@@ -105,21 +105,21 @@ public class ApiCodesTerritoriesTest {
                 .accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertEquals(200, response.getStatus());
         Assert.assertEquals(
-                "[{\"alphaCode\":\"NLD\"}]",
+                "{\"territories\":[{\"alphaCode\":\"NLD\"}]}",
                 response.readEntity(String.class));
     }
 
     @Test
     public void pointInsideCountryReturnsCountryXml() {
-        // ApiListDTO does not serialize individual elements via JAXB XmlElement annotations;
-        // the XML representation is a self-closing <territories/> tag regardless of contents.
+        // TerritoryCandidatesDTO properly wraps items in <territoryCandidate> elements.
         final Response response = new ResteasyClientBuilder().build()
                 .target(server.url("/mapcode/codes/52.0,5.0/territories"))
                 .request()
                 .accept(MediaType.APPLICATION_XML_TYPE).get();
         Assert.assertEquals(200, response.getStatus());
         Assert.assertEquals(
-                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><territories/>",
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+                        "<territories><territoryCandidate><alphaCode>NLD</alphaCode></territoryCandidate></territories>",
                 response.readEntity(String.class));
     }
 }
