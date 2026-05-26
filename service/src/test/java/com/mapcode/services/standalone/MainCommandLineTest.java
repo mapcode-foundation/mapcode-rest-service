@@ -29,6 +29,16 @@ import javax.ws.rs.core.Response;
 
 @SuppressWarnings({"rawtypes", "ProhibitedExceptionDeclared", "unchecked"})
 public class MainCommandLineTest {
+    static {
+        // Set the borders file path before MainCommandLine's static initializer
+        // (which triggers Guice configuration) runs.
+        if (System.getProperty("mapcode.borders.path") == null) {
+            System.setProperty("mapcode.borders.path",
+                    java.nio.file.Paths.get("src", "test", "resources", "borders-test.fgb")
+                            .toAbsolutePath().toString());
+        }
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(MainCommandLineTest.class);
 
     private static final int SERVER_PORT = 8081;
