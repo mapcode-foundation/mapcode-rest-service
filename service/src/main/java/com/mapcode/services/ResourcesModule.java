@@ -54,16 +54,23 @@ public class ResourcesModule implements Module {
         // JMX interface.
         binder.bind(SystemMetricsImpl.class).in(Singleton.class);
         binder.bind(SystemMetricsAgent.class).in(Singleton.class);
+
+        // Construct BoundaryService eagerly so startup fails fast if the
+        // borders file is missing or unreadable. Using toInstance(...) here
+        // (rather than @Provides + asEagerSingleton) avoids duplicate-binding
+        // errors and runs the constructor during Guice configuration, which
+        // is exactly when we want to surface a missing borders file.
+        binder.bind(BoundaryService.class).toInstance(createBoundaryService());
     }
 
-    private static final String BORDERS_FILE_PROPERTY = "mapcode.bordersFile";
-    private static final String BORDERS_FILE_DEFAULT = "borders.fgb";
-
-    @Provides
-    @Singleton
     @Nonnull
-    public BoundaryService provideBoundaryService() {
-        final String path = System.getProperty(BORDERS_FILE_PROPERTY, BORDERS_FILE_DEFAULT);
+    private static BoundaryService createBoundaryService() {
+        final String path = System.getProperty("mapcode.borders.path",
+                System.getenv("MAPCODE_BORDERS_PATH"));
+        if (path == null || path.isEmpty()) {
+            throw new IllegalStateException(
+                    "mapcode.borders.path system property or MAPCODE_BORDERS_PATH env var must be set");
+        }
         return new BoundaryService(path);
     }
 

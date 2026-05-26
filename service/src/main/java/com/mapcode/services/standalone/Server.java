@@ -77,8 +77,13 @@ public class Server {
         };
         final ResourceProcessor resourceProcessor = new ResourceProcessor(reactor);
         final SystemMetricsImpl metrics = new SystemMetricsImpl();
-        final BoundaryService boundaryService = new BoundaryService(
-                System.getProperty("mapcode.bordersFile", "borders.fgb"));
+        final String bordersFilePath = System.getProperty("mapcode.borders.path",
+                System.getenv("MAPCODE_BORDERS_PATH"));
+        if (bordersFilePath == null || bordersFilePath.isEmpty()) {
+            throw new IllegalStateException(
+                    "mapcode.borders.path system property or MAPCODE_BORDERS_PATH env var must be set");
+        }
+        final BoundaryService boundaryService = new BoundaryService(bordersFilePath);
 
         LOG.debug("Server: add resources...");
         final ResteasyDeployment deployment = server.getDeployment();
