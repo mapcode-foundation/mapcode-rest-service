@@ -112,6 +112,18 @@ public class RootResourceImpl implements RootResource {
             "                       is always present, as well as the translated territory and mapcode codes.\n" +
             "                       This can make processing the records easier in scripts, for example.\n\n" +
 
+            "GET /mapcode/codes/{lat},{lon}/territories\n" +
+            "   Look up the ranked list of mapcode territories containing a lat/lon. Backed by OSM\n" +
+            "   admin-boundary data. Most specific territory first (subdivision before country),\n" +
+            "   with smaller polygons ranked before larger ones at the same admin level.\n\n" +
+
+            "   Path parameters:\n" +
+            "     lat             : Latitude, range [-90, 90] (automatically limited to this range).\n" +
+            "     lon             : Longitude, range [-180, 180] (automatically wrapped to this range).\n\n" +
+
+            "   Returns: an object with a `territories` array of `{alphaCode, parentAlphaCode?}` entries.\n" +
+            "   Empty list when no admin polygon contains the point (e.g., at sea).\n\n" +
+
             "GET /mapcode/coords/{code} [?context={territory} & include={include}]\n" +
             "   Convert a mapcode into a latitude/longitude pair.\n\n" +
 
