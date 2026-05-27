@@ -113,15 +113,6 @@
             <artifactId>guice</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.tomtom.speedtools</groupId>
-            <artifactId>json</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.tomtom.speedtools</groupId>
-            <artifactId>metrics</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.tomtom.speedtools</groupId>
