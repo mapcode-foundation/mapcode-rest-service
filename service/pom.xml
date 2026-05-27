@@ -144,11 +144,6 @@
         </dependency>
 
         <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-jaxrs</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
         </dependency>
@@ -248,75 +243,5 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-
-        <!-- Swagger API documentation. -->
-        <plugins>
-            <plugin>
-                <groupId>com.github.kongchen</groupId>
-                <artifactId>swagger-maven-plugin</artifactId>
-                <version>${swagger-maven-plugin.version}</version>
-                <configuration>
-                    <apiSources>
-                        <apiSource>
-                            <outputFormats>json</outputFormats>
-                            <springmvc>false</springmvc>
-                            <locations>
-                                <location>com.mapcode.services</location>
-                            </locations>
-                            <schemes>
-                                <scheme>http</scheme>
-                                <scheme>https</scheme>
-                            </schemes>
-                            <basePath>/</basePath>
-                            <host>api.mapcode.com</host>
-                            <info>
-                                <title>Mapcode REST API</title>
-                                <version>${project.version}</version>
-                                <description>The Mapcode Foundation provides an implementation of the Mapcode REST API at:
-**https://api.mapcode.com/mapcode**
-
-### Disclaimer
-
-This free online service is provided for demonstration purposes only and the Mapcode Foundation accepts no claims on its availability or reliability, although we'll try hard to provide a stable and decent service. Note that usage or log data may be collected, only to further improve service (never for commercial purposes). If you are interested in using the service for professional purposes, or in high-availability or high-demands contexts, you may wish to consider self-hosting this service. The source code is open-source and available at:
-**https://github.com/mapcode-foundation/mapcode-rest-service**
-
-### Using JSON or XML
-
-All REST services are able to return both JSON and XML. Use the HTTP **Accept:** header to specify the expected format: **application/json** or **application/xml**. If the **Accept:** header is omitted, JSON is assumed.
-
-If you cannot specify an **Accept:** header, simply add **/xml** or **/json** in the URL, directly after **/mapcode**. So instead of using **GET /mapcode/codes/52.5,5.2**, you can use **GET /mapcode/`xml`/codes/52.5,5.2** or **GET /mapcode/`json`/codes/52.5,5.2**. This works for most calls in the API.
-
-### Trying out the REST API
-
-You can try out the REST API below by clicking in the **/mapcode** box and then selecting a method. This expands the definition of the method and shows its documentation. It also reveals a `Try it out` button.
-                                </description>
-                                <termsOfService>
-                                    http://mapcode.com/downloads.html
-                                </termsOfService>
-                                <contact>
-                                    <email>rijn.buve@mapcode.com</email>
-                                    <name>Mapcode Foundation</name>
-                                    <url>http://mapcode.com</url>
-                                </contact>
-                                <license>
-                                    <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-                                    <name>Apache License version 2</name>
-                                </license>
-                            </info>
-                            <swaggerDirectory>deployment/src/main/webapp/</swaggerDirectory>
-                            <attachSwaggerArtifact>true</attachSwaggerArtifact>
-                        </apiSource>
-                    </apiSources>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
     </build>
 </project>
