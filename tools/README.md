@@ -18,8 +18,13 @@ Pipeline:
 6. Compute polygon area; write FlatGeobuf with properties:
    `alphaCode`, `parentAlphaCode`, `adminLevel`, `area`.
 
+The script requires an `iso-to-mapcode.json` mapping file (ISO 3166 codes → mapcode
+`alphaCode` strings). Use `tools/iso-to-mapcode.example.json` as a template; the full
+production version (covering all mapcode territories) must be maintained separately and
+is not committed to this repository.
+
 Run:
-    python3 tools/build-borders.py --osm <osm-pbf-or-source> --out borders.fgb
+    `python3 tools/build-borders.py --osm <osm-pbf-or-source> --out borders.fgb`
 
 Then upload the resulting file to wherever deployments fetch it from
 and point the service at it via `-Dmapcode.borders.path=/path/to/borders.fgb`.
@@ -29,7 +34,7 @@ and point the service at it via `-Dmapcode.borders.path=/path/to/borders.fgb`.
 Regenerates `service/src/test/resources/borders-test.fgb` from a small
 hand-built set of polygons. Re-run only when the fixture needs to change.
 
-Run:
-    python3 tools/build-test-borders.py
+Run: 
+    `python3 tools/build-test-borders.py`
 
 Requirements: see the head of each script. Typically `pip install geopandas shapely` or equivalent.
