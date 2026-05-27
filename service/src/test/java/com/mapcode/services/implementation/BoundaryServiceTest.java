@@ -57,10 +57,11 @@ public class BoundaryServiceTest {
     }
 
     @Test
-    public void subdivisionCollapsedToCountryAppearsInBothEntries() {
+    public void subdivisionPreTaggedWithCountryCodeIsReturnedTwice() {
         // Point (62, 22.5) is inside both NO-MAPCODE-PARENT polygons (admin 2 and 4).
-        // The fixture simulates the build-time fallback: the subdivision is tagged with
-        // the parent country's alphaCode. The runtime returns both entries, smaller first.
+        // build-borders.py pre-tags subdivisions that have no mapcode equivalent with the
+        // parent country's alphaCode at build time; there is no runtime fallback.
+        // This test only verifies that the loader reads the pre-tagged alphaCode correctly.
         final BoundaryService svc = new BoundaryService(FIXTURE.toString());
         final List<TerritoryMatch> matches = svc.lookup(62.0, 22.5);
         assertEquals(2, matches.size());
