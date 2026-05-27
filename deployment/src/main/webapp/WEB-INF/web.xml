@@ -71,17 +71,6 @@
         <url-pattern>/mapcode/*</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>JolokiaAgent</servlet-name>
-        <servlet-class>org.jolokia.http.AgentServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>JolokiaAgent</servlet-name>
-        <url-pattern>/monitor/*</url-pattern>
-    </servlet-mapping>
-
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Root</web-resource-name>
