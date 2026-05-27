@@ -37,9 +37,21 @@
 
     <build>
         <resources>
+            <!-- Text resources: allow ${...} property substitution. -->
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <excludes>
+                    <exclude>**/*.fgb</exclude>
+                </excludes>
+            </resource>
+            <!-- Binary FlatGeobuf files: copy verbatim to avoid corruption. -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*.fgb</include>
+                </includes>
             </resource>
         </resources>
     </build>
