@@ -88,7 +88,7 @@
         <maven-war-plugin.version>3.2.3</maven-war-plugin.version>
 
         <!-- Library versions - these are not re-used from the top-level POM to simulate stand-alone usage. -->
-        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <commons-lang3.version>3.18.0</commons-lang3.version>
         <commons-text.version>1.9</commons-text.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <gson.version>2.9.0</gson.version>
