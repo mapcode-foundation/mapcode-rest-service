@@ -18,11 +18,7 @@ package com.mapcode.services;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
-import com.google.inject.Provides;
 import com.mapcode.services.implementation.*;
-import com.mapcode.services.jmx.SystemMetricsAgent;
-import com.mapcode.services.metrics.SystemMetrics;
-import com.mapcode.services.metrics.SystemMetricsCollector;
 
 import javax.annotation.Nonnull;
 import javax.inject.Singleton;
@@ -51,10 +47,6 @@ public class ResourcesModule implements Module {
         binder.bind(OnlyJsonResource.class).to(OnlyJsonResourceImpl.class).in(Singleton.class);
         binder.bind(OnlyXmlResource.class).to(OnlyXmlResourceImpl.class).in(Singleton.class);
 
-        // JMX interface.
-        binder.bind(SystemMetricsImpl.class).in(Singleton.class);
-        binder.bind(SystemMetricsAgent.class).in(Singleton.class);
-
         // Construct BoundaryService eagerly so startup fails fast if the
         // borders file is missing or unreadable. Using toInstance(...) here
         // (rather than @Provides + asEagerSingleton) avoids duplicate-binding
@@ -72,23 +64,5 @@ public class ResourcesModule implements Module {
                     "mapcode.borders.path system property or MAPCODE_BORDERS_PATH env var must be set");
         }
         return new BoundaryService(path);
-    }
-
-    @Provides
-    @Singleton
-    @Nonnull
-    public SystemMetrics provideSystemMetrics(
-            @Nonnull final SystemMetricsImpl impl) {
-        assert impl != null;
-        return impl;
-    }
-
-    @Provides
-    @Singleton
-    @Nonnull
-    public SystemMetricsCollector provideSystemMetricsCollector(
-            @Nonnull final SystemMetricsImpl impl) {
-        assert impl != null;
-        return impl;
     }
 }
