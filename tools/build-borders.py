@@ -88,12 +88,20 @@ def main() -> int:
     args = parse_args()
     mapping = load_mapping(Path(args.mapping))
 
+    print("Loading OSM data ...", file=sys.stderr)
     gdf = gpd.read_file(args.osm)
     gdf = gdf[gdf["admin_level"].isin([2, 4])]
 
+    total = len(gdf)
+    w = len(str(total))
+    print(f"Processing {total} polygons ...", file=sys.stderr)
+
     rows = []
     written = dropped = 0
-    for _, row in gdf.iterrows():
+    for i, (_, row) in enumerate(gdf.iterrows(), start=1):
+        if total > 0 and (i % 250 == 0 or i == total):
+            pct = 100 * i // total
+            print(f"  Processed {i:{w}}/{total} polygons ({pct:3d}%)", file=sys.stderr)
         level = int(row["admin_level"])
         iso = row.get("ISO3166-1:alpha3") if level == 2 else row.get("ISO3166-2")
         if iso is None:
@@ -117,6 +125,7 @@ def main() -> int:
         })
         written += 1
 
+    print("Writing FlatGeobuf ...", file=sys.stderr)
     out_gdf = gpd.GeoDataFrame(rows, crs=gdf.crs)
     out_gdf.to_file(args.out, driver="FlatGeobuf")
 
