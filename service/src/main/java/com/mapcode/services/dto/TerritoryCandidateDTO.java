@@ -7,32 +7,21 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.mapcode.services.ApiConstants;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.*;
 
 @SuppressWarnings({"NullableProblems", "InstanceVariableMayNotBeInitialized"})
-@ApiModel(
-        value = "territoryCandidate",
-        description = "A single territory candidate returned by territory lookup for a lat/lon.")
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "territoryCandidate")
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class TerritoryCandidateDTO extends ApiDTO {
 
-    @ApiModelProperty(
-            name = "alphaCode",
-            value = "The mapcode alpha-code of the territory (3-character `XXX` or `XX-YY`).")
     @XmlElement(name = "alphaCode")
     @Nonnull
     private String alphaCode;
 
-    @ApiModelProperty(
-            name = "parentAlphaCode",
-            value = "(optional) The mapcode alpha-code of the parent country. Omitted when not applicable.")
     @XmlElement(name = "parentAlphaCode")
     @Nullable
     private String parentAlphaCode;

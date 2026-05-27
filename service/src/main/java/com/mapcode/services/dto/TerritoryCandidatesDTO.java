@@ -5,8 +5,6 @@ package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -15,19 +13,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings({"NullableProblems", "InstanceVariableMayNotBeInitialized"})
-@ApiModel(
-        value = "territoryCandidates",
-        description = "Ranked list of territory candidates for a lat/lon, as returned by " +
-                "`GET /mapcode/codes/{lat},{lon}/territories`.")
 @XmlRootElement(name = "territories")
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class TerritoryCandidatesDTO extends ApiDTO {
 
-    @ApiModelProperty(
-            name = "territories",
-            value = "Ranked list of territory candidates; most specific first.",
-            dataType = "com.mapcode.services.dto.TerritoryCandidateListDTO",
-            reference = "com.mapcode.services.dto.TerritoryCandidateListDTO")
     @JsonProperty("territories")
     @XmlElement(name = "territoryCandidate")
     @Nonnull
