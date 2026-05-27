@@ -166,7 +166,7 @@ New, alongside the existing DTOs in `com.mapcode.services.dto`:
 - `TerritoryCandidateListDTO`
   - `territories: TerritoryCandidateDTO[]`
 
-Validation, JAX-B, and Swagger annotations follow the patterns of
+Validation and JAX-B annotations follow the patterns of
 `TerritoryDTO` / `TerritoryListDTO`.
 
 ### Existing endpoints

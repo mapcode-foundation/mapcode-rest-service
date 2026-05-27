@@ -193,7 +193,7 @@ rather than baking them into the WAR.
 This produces `deployment/target/mapcode-rest-service.war` and installs the
 intermediate artifacts in your local Maven repository (`~/.m2/repository`).
 
-### Running the Service
+### Running the Serviceborders-100m
 
 All run methods require `MAPCODE_BORDERS_PATH` (or `-Dmapcode.borders.path=...`)
 to be set.
@@ -466,16 +466,11 @@ but can be a state as well.)
 
 * Improved `status` call to actually do a mapcode conversion back and forth.
 
-* Improved Swagger documentation.
-
 * Split JSON- and XML-only calls into seperate files.
 
 * Note that 2.4.4.5 was broken, fixed by 2.4.4.6.
 
 ### 2.4.4.2 - 2.4.4.4
-
-* Added Swagger documentation to the API's. Swagger generates online API documentation, with the
-ability to try out the API.
 
 ### 2.4.4.1
 
