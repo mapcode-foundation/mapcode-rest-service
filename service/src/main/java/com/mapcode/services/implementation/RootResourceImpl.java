@@ -72,6 +72,14 @@ public class RootResourceImpl implements RootResource {
             "   Convert latitude/longitude to one or more mapcodes. The response always contains the 'international' mapcode and\n" +
             "   only contains a 'local' mapcode if there are any non-international mapcode AND they are all of the same territory.\n\n" +
 
+            "   When no filter is specified (i.e. the response is the full mapcodes object), the response is also extended with a\n" +
+            "   'territories' field listing the ranked OSM admin-boundary territories containing the lat/lon. This is the same\n" +
+            "   data as returned by '/mapcode/codes/{lat},{lon}/territories' (most specific first; empty when no admin polygon\n" +
+            "   contains the point, e.g. at sea). When 'territories' is non-empty, the 'mapcodes' array is sorted by the position\n" +
+            "   of each mapcode's territory in 'territories' (codes whose territory is not in 'territories' are sorted last,\n" +
+            "   in their original order). The 'local' mapcode is the first one whose territory matches the first entry in\n" +
+            "   'territories'; if no mapcode matches, 'local' falls back to the shortest local code as before.\n\n" +
+
             "   The 'country' parameter always specifies a country, by a 2 or 3 character ISO-3166 code, like 'US' or 'USA'\n" +
             "   (for the USA), and 'NL' or 'NLD' (for the Netherlands). In a web environment, the country code is often available\n" +
             "   as a 2-character code. That code can be used for this parameter.\n\n" +

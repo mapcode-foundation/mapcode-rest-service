@@ -46,29 +46,54 @@ public final class MapcodesDTO extends ApiDTO {
     @Nonnull
     private MapcodeListDTO mapcodes;
 
+    @JsonProperty("territories")
+    @XmlElementWrapper(name = "territories")
+    @XmlElement(name = "territory")
+    @Nullable
+    private TerritoryCandidateListDTO territories;
+
     @Override
     public void validate() {
         validator().start();
         validator().checkNotNullAndValidate(false, "local", local);
         validator().checkNotNullAndValidate(true, "international", international);
         validator().checkNotNullAndValidateAll(true, "mapcodes", mapcodes);
+        validator().checkNotNullAndValidateAll(false, "territories", territories);
         validator().done();
     }
 
     public MapcodesDTO(
             @Nullable final MapcodeDTO local,
             @Nonnull final MapcodeDTO international,
-            @Nonnull final MapcodeListDTO mapcodes) {
+            @Nonnull final MapcodeListDTO mapcodes,
+            @Nullable final TerritoryCandidateListDTO territories) {
         this.local = local;
         this.international = international;
         this.mapcodes = mapcodes;
+        this.territories = territories;
+    }
+
+    public MapcodesDTO(
+            @Nullable final MapcodeDTO local,
+            @Nonnull final MapcodeDTO international,
+            @Nonnull final MapcodeListDTO mapcodes) {
+        this(local, international, mapcodes, null);
     }
 
     public MapcodesDTO(
             @Nullable final MapcodeDTO local,
             @Nonnull final MapcodeDTO international,
             @Nonnull final List<MapcodeDTO> mapcodes) {
-        this(local, international, new MapcodeListDTO(mapcodes));
+        this(local, international, new MapcodeListDTO(mapcodes), null);
+    }
+
+    public MapcodesDTO(
+            @Nullable final MapcodeDTO local,
+            @Nonnull final MapcodeDTO international,
+            @Nonnull final List<MapcodeDTO> mapcodes,
+            @Nullable final List<TerritoryCandidateDTO> territories) {
+        this(local, international, new MapcodeListDTO(mapcodes),
+                (territories == null) ? null : new TerritoryCandidateListDTO(territories));
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -111,5 +136,16 @@ public final class MapcodesDTO extends ApiDTO {
         beforeSet();
         assert mapcodes != null;
         this.mapcodes = mapcodes;
+    }
+
+    @Nullable
+    public List<TerritoryCandidateDTO> getTerritories() {
+        beforeGet();
+        return territories;
+    }
+
+    public void setTerritories(@Nullable final TerritoryCandidateListDTO territories) {
+        beforeSet();
+        this.territories = territories;
     }
 }

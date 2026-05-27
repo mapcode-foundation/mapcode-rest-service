@@ -46,7 +46,10 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -352,17 +355,50 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final ApiDTO result;
             if (type == null) {
 
+                // Look up the ranked territories containing this lat/lon, so the response
+                // mirrors what /mapcode/codes/{lat},{lon}/territories would return.
+                // Pass null (not an empty list) so the JSON field is omitted at sea.
+                final List<TerritoryMatch> territoryMatches = boundaryService.lookup(latDeg, lonDeg);
+                final List<TerritoryCandidateDTO> territoryCandidates = territoryMatches.isEmpty() ? null :
+                        territoryMatches.stream()
+                                .map(m -> new TerritoryCandidateDTO(m.getAlphaCode(), m.getParentAlphaCode()))
+                                .collect(Collectors.toList());
+
+                // Re-rank mapcodes and override local using the boundary-derived territories list.
+                // The territories list is the strongest hint of which codes are relevant for this point,
+                // so it drives both the order of 'mapcodes' and the choice of 'local'. Codes whose
+                // territory does not appear in 'territories' are kept at the end (stable order).
+                // When no territories match (e.g. at sea), the original order and the original
+                // local-selection logic are preserved.
+                Tuple<Mapcode, Rectangle> effectiveLocalAndRectangle = mapcodeLocalAndRectangle;
+                if (territoryCandidates != null) {
+                    final Map<String, Integer> territoryRank = new HashMap<>();
+                    for (int i = 0; i < territoryCandidates.size(); i++) {
+                        territoryRank.putIfAbsent(territoryCandidates.get(i).getAlphaCode(), i);
+                    }
+                    mapcodesAndRectangles.sort(Comparator.comparingInt(
+                            t -> territoryRank.getOrDefault(t.getValue1().getTerritory().toString(), Integer.MAX_VALUE)));
+                    final String topTerritoryAlpha = territoryCandidates.get(0).getAlphaCode();
+                    for (final Tuple<Mapcode, Rectangle> t : mapcodesAndRectangles) {
+                        if (topTerritoryAlpha.equals(t.getValue1().getTerritory().toString())) {
+                            effectiveLocalAndRectangle = t;
+                            break;
+                        }
+                    }
+                }
+
                 // No type was supplied, so we need to return the local, international and all mapcodes.
                 result = new MapcodesDTO(
-                        (mapcodeLocalAndRectangle == null) ? null :
-                                createMapcodeDTO(mapcodeLocalAndRectangle, precision, alphabet, includeOffset, includeTerritory,
+                        (effectiveLocalAndRectangle == null) ? null :
+                                createMapcodeDTO(effectiveLocalAndRectangle, precision, alphabet, includeOffset, includeTerritory,
                                         includeAlphabet, includeRectangle, latDeg, lonDeg),
                         createMapcodeDTO(mapcodeInternationalAndRectangle, precision, alphabet, includeOffset, includeTerritory,
                                 includeAlphabet, includeRectangle, latDeg, lonDeg),
                         mapcodesAndRectangles.stream().
                                 map(mapcode -> createMapcodeDTO(mapcode, precision, alphabet, includeOffset, includeTerritory,
                                         includeAlphabet, includeRectangle, latDeg, lonDeg)).
-                                collect(Collectors.toList()));
+                                collect(Collectors.toList()),
+                        territoryCandidates);
             } else {
 
                 // Return only the local, international or all mapcodes.

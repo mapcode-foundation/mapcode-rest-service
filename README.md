@@ -34,6 +34,16 @@ GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]
    Convert latitude/longitude to one or more mapcodes. The response always contains the 'international' mapcode and
    only contains a 'local' mapcode if there are any non-international mapcode AND they are all of the same territory.
 
+   When no filter is specified (i.e. the response is the full mapcodes object), the response is also extended with a
+   'territories' field listing the ranked OSM admin-boundary territories containing the lat/lon. This is the same
+   data as returned by '/mapcode/codes/{lat},{lon}/territories' (most specific first; empty when no admin polygon
+   contains the point, e.g. at sea). Each entry is '{alphaCode, parentAlphaCode?}'.
+
+   When 'territories' is non-empty, the 'mapcodes' array is sorted by the position of each mapcode's territory in
+   'territories' (codes whose territory is not in 'territories' are sorted last, in their original order). The 'local'
+   mapcode is the first one whose territory matches the first entry in 'territories'; if no mapcode matches, 'local'
+   falls back to the shortest local code as before.
+
    Path parameters:
      lat             : Latitude, range [-90, 90] (automatically limited to this range).
      lon             : Longitude, range [-180, 180] (automatically wrapped to this range).
