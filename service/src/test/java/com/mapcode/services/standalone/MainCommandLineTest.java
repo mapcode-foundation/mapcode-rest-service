@@ -29,6 +29,14 @@ import javax.ws.rs.core.Response;
 
 @SuppressWarnings({"rawtypes", "ProhibitedExceptionDeclared", "unchecked"})
 public class MainCommandLineTest {
+    static {
+        // Always set the borders file path unconditionally so this test class's setup is
+        // deterministic regardless of what other tests in the same JVM may have set first.
+        System.setProperty("mapcode.borders.path",
+                java.nio.file.Paths.get("src", "test", "resources", "borders-test.fgb")
+                        .toAbsolutePath().toString());
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(MainCommandLineTest.class);
 
     private static final int SERVER_PORT = 8081;

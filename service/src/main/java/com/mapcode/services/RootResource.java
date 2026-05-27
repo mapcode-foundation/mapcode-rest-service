@@ -16,11 +16,6 @@
 
 package com.mapcode.services;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-
 import javax.annotation.Nonnull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -30,7 +25,6 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 
 @SuppressWarnings("SimplifiableAnnotation")
-@Api(value = "monitoring", description = "These resources are provided for monitoring purposes.")
 @Path("/mapcode")
 public interface RootResource {
 
@@ -39,9 +33,6 @@ public interface RootResource {
      *
      * @return Returns help text as HTML.
      */
-    @ApiOperation(
-            value = "Provide a simple help page for the REST API.")
-    @ApiResponses(@ApiResponse(code = 200, message = "HTML help page."))
     @GET
     @Produces(MediaType.TEXT_HTML)
     @Nonnull
@@ -53,10 +44,6 @@ public interface RootResource {
      *
      * @param response Returns a version number as JSON.
      */
-    @ApiOperation(
-            value = "Returns the version number of the REST API.")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Version number (no assumption can be made on its format).")})
     @Path("version")
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -67,22 +54,9 @@ public interface RootResource {
      *
      * @param response Returns a version number as JSON.
      */
-    @ApiOperation(
-            value = "Indicates whether the service is active or not.")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Service is working.")})
     @Path("status")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @GET
     void getStatus(@Suspended @Nonnull AsyncResponse response);
 
-    /**
-     * This method returns system metrics.
-     *
-     * @param response Returns a system metrics.
-     */
-    @Path("metrics")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    void getMetrics(@Suspended @Nonnull AsyncResponse response);
 }

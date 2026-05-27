@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,47 +27,30 @@ import javax.xml.bind.annotation.*;
 import java.util.List;
 
 @SuppressWarnings({"NullableProblems", "InstanceVariableMayNotBeInitialized"})
-@ApiModel(
-        value = "mapcodes",
-        description = "A full coordinate to mapcode response object, such as returned by `GET /mapcode/codes/52,5`.")
 @JsonInclude(Include.NON_EMPTY)
 @XmlRootElement(name = "mapcodes")
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class MapcodesDTO extends ApiDTO {
 
-    @ApiModelProperty(
-            name = "local",
-            value = "A local mapcode. This is the shortest local mapcode which seems to best match input coordinate. " +
-                    "Note that coordinates near borders of adjacent territories may be covered by different local " +
-                    "mapcodes (with different territory codes). In such cases, the 'local' mapcode may not always " +
-                    "specify the territory you would expect. The `mapcodes` attribute will contain the 'correct' local " +
-                    "mapcode in those cases. This `local` mapcode is only offered as a convenience.")
     @XmlElement(name = "local")
     @Nullable
     private MapcodeDTO local;
 
-    @ApiModelProperty(
-            name = "international",
-            value = "The international mapcode. This is globally unique mapcode, which does not require a territory " +
-                    "code. The downside of using international mapcodes is their length: they are always 10 characters.")
     @XmlElement(name = "international")
     @Nonnull
     private MapcodeDTO international;
 
-    @ApiModelProperty(
-            name = "mapcodes",
-            value = "The list of all alternative mapcodes for the specified coordinate. Coordinates near borders of " +
-                    "territories may be covered by mapcodes from multiple territories and within a single territory, " +
-                    "mapcodes of different lengths may exist. Normally, the logical thing to do, is select the shortest " +
-                    "mapcode in the correct territory from this list. The attribute `local` tries to achieve this as well " +
-                    "but in some cases it may use a territory you don't wish to use.",
-            dataType = "com.mapcode.services.dto.MapcodeDTO",
-            reference = "com.mapcode.services.dto.MapcodeDTO")
     @JsonProperty("mapcodes")
     @XmlElementWrapper(name = "mapcodes")
     @XmlElement(name = "mapcode")
     @Nonnull
     private MapcodeListDTO mapcodes;
+
+    @JsonProperty("territories")
+    @XmlElementWrapper(name = "territories")
+    @XmlElement(name = "territory")
+    @Nullable
+    private TerritoryCandidateListDTO territories;
 
     @Override
     public void validate() {
@@ -77,23 +58,42 @@ public final class MapcodesDTO extends ApiDTO {
         validator().checkNotNullAndValidate(false, "local", local);
         validator().checkNotNullAndValidate(true, "international", international);
         validator().checkNotNullAndValidateAll(true, "mapcodes", mapcodes);
+        validator().checkNotNullAndValidateAll(false, "territories", territories);
         validator().done();
     }
 
     public MapcodesDTO(
             @Nullable final MapcodeDTO local,
             @Nonnull final MapcodeDTO international,
-            @Nonnull final MapcodeListDTO mapcodes) {
+            @Nonnull final MapcodeListDTO mapcodes,
+            @Nullable final TerritoryCandidateListDTO territories) {
         this.local = local;
         this.international = international;
         this.mapcodes = mapcodes;
+        this.territories = territories;
+    }
+
+    public MapcodesDTO(
+            @Nullable final MapcodeDTO local,
+            @Nonnull final MapcodeDTO international,
+            @Nonnull final MapcodeListDTO mapcodes) {
+        this(local, international, mapcodes, null);
     }
 
     public MapcodesDTO(
             @Nullable final MapcodeDTO local,
             @Nonnull final MapcodeDTO international,
             @Nonnull final List<MapcodeDTO> mapcodes) {
-        this(local, international, new MapcodeListDTO(mapcodes));
+        this(local, international, new MapcodeListDTO(mapcodes), null);
+    }
+
+    public MapcodesDTO(
+            @Nullable final MapcodeDTO local,
+            @Nonnull final MapcodeDTO international,
+            @Nonnull final List<MapcodeDTO> mapcodes,
+            @Nullable final List<TerritoryCandidateDTO> territories) {
+        this(local, international, new MapcodeListDTO(mapcodes),
+                (territories == null) ? null : new TerritoryCandidateListDTO(territories));
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -136,5 +136,16 @@ public final class MapcodesDTO extends ApiDTO {
         beforeSet();
         assert mapcodes != null;
         this.mapcodes = mapcodes;
+    }
+
+    @Nullable
+    public List<TerritoryCandidateDTO> getTerritories() {
+        beforeGet();
+        return territories;
+    }
+
+    public void setTerritories(@Nullable final TerritoryCandidateListDTO territories) {
+        beforeSet();
+        this.territories = territories;
     }
 }

@@ -18,14 +18,13 @@ package com.mapcode.services;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
-import com.google.inject.Provides;
 import com.mapcode.services.implementation.*;
-import com.mapcode.services.jmx.SystemMetricsAgent;
-import com.mapcode.services.metrics.SystemMetrics;
-import com.mapcode.services.metrics.SystemMetricsCollector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.inject.Singleton;
+import java.io.InputStream;
 
 
 /**
@@ -41,6 +40,8 @@ import javax.inject.Singleton;
  */
 public class ResourcesModule implements Module {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ResourcesModule.class);
+
     @Override
     public void configure(@Nonnull final Binder binder) {
         assert binder != null;
@@ -51,26 +52,29 @@ public class ResourcesModule implements Module {
         binder.bind(OnlyJsonResource.class).to(OnlyJsonResourceImpl.class).in(Singleton.class);
         binder.bind(OnlyXmlResource.class).to(OnlyXmlResourceImpl.class).in(Singleton.class);
 
-        // JMX interface.
-        binder.bind(SystemMetricsImpl.class).in(Singleton.class);
-        binder.bind(SystemMetricsAgent.class).in(Singleton.class);
+        // Construct BoundaryService eagerly so startup fails fast if the
+        // borders file is missing or unreadable. Using toInstance(...) here
+        // (rather than @Provides + asEagerSingleton) avoids duplicate-binding
+        // errors and runs the constructor during Guice configuration, which
+        // is exactly when we want to surface a missing borders file.
+        binder.bind(BoundaryService.class).toInstance(createBoundaryService());
     }
 
-    @Provides
-    @Singleton
     @Nonnull
-    public SystemMetrics provideSystemMetrics(
-            @Nonnull final SystemMetricsImpl impl) {
-        assert impl != null;
-        return impl;
-    }
-
-    @Provides
-    @Singleton
-    @Nonnull
-    public SystemMetricsCollector provideSystemMetricsCollector(
-            @Nonnull final SystemMetricsImpl impl) {
-        assert impl != null;
-        return impl;
+    private static BoundaryService createBoundaryService() {
+        final String path = System.getProperty("mapcode.borders.path",
+                System.getenv("MAPCODE_BORDERS_PATH"));
+        if (path != null && !path.isEmpty()) {
+            return new BoundaryService(path);
+        }
+        // No path configured — fall back to the borders file bundled on the classpath.
+        final InputStream stream = ResourcesModule.class.getResourceAsStream("/borders.fgb");
+        if (stream != null) {
+            LOG.info("ResourcesModule: no borders path configured; loading bundled borders.fgb from classpath");
+            return new BoundaryService(stream, "classpath:/borders.fgb");
+        }
+        throw new IllegalStateException(
+                "No borders file configured (set mapcode.borders.path or MAPCODE_BORDERS_PATH) " +
+                "and no bundled borders.fgb found on the classpath.");
     }
 }

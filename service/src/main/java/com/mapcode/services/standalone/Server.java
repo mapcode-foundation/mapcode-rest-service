@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import scala.concurrent.ExecutionContext;
 
 import javax.annotation.Nonnull;
+import java.io.InputStream;
 import java.util.List;
 
 public class Server {
@@ -76,7 +77,22 @@ public class Server {
             }
         };
         final ResourceProcessor resourceProcessor = new ResourceProcessor(reactor);
-        final SystemMetricsImpl metrics = new SystemMetricsImpl();
+        final String bordersFilePath = System.getProperty("mapcode.borders.path",
+                System.getenv("MAPCODE_BORDERS_PATH"));
+        final BoundaryService boundaryService;
+        if (bordersFilePath != null && !bordersFilePath.isEmpty()) {
+            boundaryService = new BoundaryService(bordersFilePath);
+        } else {
+            final InputStream stream = Server.class.getResourceAsStream("/borders.fgb");
+            if (stream != null) {
+                LOG.info("Server: no borders path configured; loading bundled borders.fgb from classpath");
+                boundaryService = new BoundaryService(stream, "classpath:/borders.fgb");
+            } else {
+                throw new IllegalStateException(
+                        "No borders file configured (set mapcode.borders.path or MAPCODE_BORDERS_PATH) " +
+                        "and no bundled borders.fgb found on the classpath.");
+            }
+        }
 
         LOG.debug("Server: add resources...");
         final ResteasyDeployment deployment = server.getDeployment();
@@ -85,15 +101,14 @@ public class Server {
         // Add mapcode resource.
         final MapcodeResourceImpl mapcodeResource = new MapcodeResourceImpl(
                 resourceProcessor,
-                metrics
+                boundaryService
         );
         resources.add(mapcodeResource);
 
         // Add root resource.
         final RootResourceImpl rootResource = new RootResourceImpl(
                 mapcodeResource,
-                mavenProperties,
-                metrics
+                mavenProperties
         );
         resources.add(rootResource);
 

@@ -21,8 +21,6 @@ import com.mapcode.services.RootResource;
 import com.mapcode.services.dto.MapcodeDTO;
 import com.mapcode.services.dto.PointDTO;
 import com.mapcode.services.dto.VersionDTO;
-import com.mapcode.services.metrics.SystemMetrics;
-import com.tomtom.speedtools.json.Json;
 import com.tomtom.speedtools.maven.MavenProperties;
 import com.tomtom.speedtools.time.UTCTime;
 import com.tomtom.speedtools.utils.MathUtils;
@@ -59,13 +57,12 @@ public class RootResourceImpl implements RootResource {
             "The REST API Methods\n" +
             "--------------------\n\n" +
 
-            "All REST services (except 'metrics') are able to return both JSON and XML. Use the HTTP\n" +
+            "All REST services are able to return both JSON and XML. Use the HTTP\n" +
             "'Accept:' header to specify the expected format: application/json or application/xml\n" +
             "If the 'Accept:' header is omitted, JSON is assumed.\n\n" +
 
             "GET /mapcode         Returns this help page.\n" +
             "GET /mapcode/version Returns the software version.\n" +
-            "GET /mapcode/metrics Returns some system metrics (JSON-only, also available from JMX).\n" +
             "GET /mapcode/status  Returns 200 if the service OK.\n\n" +
 
             "GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]\n" +
@@ -74,6 +71,14 @@ public class RootResourceImpl implements RootResource {
 
             "   Convert latitude/longitude to one or more mapcodes. The response always contains the 'international' mapcode and\n" +
             "   only contains a 'local' mapcode if there are any non-international mapcode AND they are all of the same territory.\n\n" +
+
+            "   When no filter is specified (i.e. the response is the full mapcodes object), the response is also extended with a\n" +
+            "   'territories' field listing the ranked OSM admin-boundary territories containing the lat/lon. This is the same\n" +
+            "   data as returned by '/mapcode/codes/{lat},{lon}/territories' (most specific first; empty when no admin polygon\n" +
+            "   contains the point, e.g. at sea). When 'territories' is non-empty, the 'mapcodes' array is sorted by the position\n" +
+            "   of each mapcode's territory in 'territories' (codes whose territory is not in 'territories' are sorted last,\n" +
+            "   in their original order). The 'local' mapcode is the first one whose territory matches the first entry in\n" +
+            "   'territories'; if no mapcode matches, 'local' falls back to the shortest local code as before.\n\n" +
 
             "   The 'country' parameter always specifies a country, by a 2 or 3 character ISO-3166 code, like 'US' or 'USA'\n" +
             "   (for the USA), and 'NL' or 'NLD' (for the Netherlands). In a web environment, the country code is often available\n" +
@@ -111,6 +116,18 @@ public class RootResourceImpl implements RootResource {
             "                       Note that you can use 'include=territory,alphabet' to ensure the territory code\n" +
             "                       is always present, as well as the translated territory and mapcode codes.\n" +
             "                       This can make processing the records easier in scripts, for example.\n\n" +
+
+            "GET /mapcode/codes/{lat},{lon}/territories\n" +
+            "   Look up the ranked list of mapcode territories containing a lat/lon. Backed by OSM\n" +
+            "   admin-boundary data. Most specific territory first (subdivision before country),\n" +
+            "   with smaller polygons ranked before larger ones at the same admin level.\n\n" +
+
+            "   Path parameters:\n" +
+            "     lat             : Latitude, range [-90, 90] (automatically limited to this range).\n" +
+            "     lon             : Longitude, range [-180, 180] (automatically wrapped to this range).\n\n" +
+
+            "   Returns: an object with a `territories` array of `{alphaCode, parentAlphaCode?}` entries.\n" +
+            "   Empty list when no admin polygon contains the point (e.g., at sea).\n\n" +
 
             "GET /mapcode/coords/{code} [?context={territory} & include={include}]\n" +
             "   Convert a mapcode into a latitude/longitude pair.\n\n" +
@@ -179,21 +196,17 @@ public class RootResourceImpl implements RootResource {
 
     private final MapcodeResource mapcodeResource;
     private final MavenProperties mavenProperties;
-    private final SystemMetrics metrics;
 
     @Inject
     public RootResourceImpl(
             @Nonnull final MapcodeResource mapcodeResource,
-            @Nonnull final MavenProperties mavenProperties,
-            @Nonnull final SystemMetrics metrics) {
+            @Nonnull final MavenProperties mavenProperties) {
         assert mapcodeResource != null;
         assert mavenProperties != null;
-        assert metrics != null;
 
         // Store the injected values.
         this.mapcodeResource = mapcodeResource;
         this.mavenProperties = mavenProperties;
-        this.metrics = metrics;
     }
 
     @Override
@@ -285,16 +298,6 @@ public class RootResourceImpl implements RootResource {
 
         // This are not OK.
         response.resume(Response.serverError().build());
-    }
-
-    @Override
-    public void getMetrics(@Suspended @Nonnull final AsyncResponse response) {
-        assert response != null;
-        LOG.info("getMetrics");
-
-        // No input validation required. Just return metrics as a plain JSON string.
-        final String json = Json.toJson(metrics);
-        response.resume(Response.ok(json).build());
     }
 
     private static void waitForResponse(@Nonnull  final TestAsyncResponse asyncResponse) throws InterruptedException {

@@ -23,7 +23,6 @@ import com.mapcode.Territory.AlphaCodeFormat;
 import com.mapcode.services.ApiConstants;
 import com.mapcode.services.MapcodeResource;
 import com.mapcode.services.dto.*;
-import com.mapcode.services.metrics.SystemMetricsCollector;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
 import com.tomtom.speedtools.apivalidation.exceptions.*;
 import com.tomtom.speedtools.geometry.Geo;
@@ -47,7 +46,10 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -58,7 +60,7 @@ public class MapcodeResourceImpl implements MapcodeResource {
     private static final Tracer TRACER = TracerFactory.getTracer(MapcodeResourceImpl.class, Tracer.class);
 
     private final ResourceProcessor processor;
-    private final SystemMetricsCollector metricsCollector;
+    private final BoundaryService boundaryService;
 
     private static final String API_ERROR_VALID_TERRITORY_CODES = Joiner.on('|').join(Arrays.stream(Territory.values()).
             collect(Collectors.toList()));
@@ -82,16 +84,15 @@ public class MapcodeResourceImpl implements MapcodeResource {
      * to executed web requests on.
      *
      * @param processor        Processor to process web requests on.
-     * @param metricsCollector Metric collector.
      */
     @Inject
     public MapcodeResourceImpl(
             @Nonnull final ResourceProcessor processor,
-            @Nonnull final SystemMetricsCollector metricsCollector) {
+            @Nonnull final BoundaryService boundaryService) {
         assert processor != null;
-        assert metricsCollector != null;
+        assert boundaryService != null;
         this.processor = processor;
-        this.metricsCollector = metricsCollector;
+        this.boundaryService = boundaryService;
     }
 
     @Override
@@ -145,8 +146,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
             LOG.info("convertLatLonToMapcode: lat={}, lon={}, precision={}, type={}, context={}, alphabet={}, include={}, client={}, allowLog={}",
                     paramLatDegAsString, paramLonDegAsString, paramPrecisionAsString, paramType, paramTerritory, paramAlphabet, paramInclude, paramClient,
                     paramAllowLog);
-            metricsCollector.addOneLatLonToMapcodeRequest(paramClient);
-
             // Prevent 'context' from inadvertently being specified.
             if (paramContextMustBeNull != null) {
                 throw new ApiInvalidFormatException(PARAM_CONTEXT, paramContextMustBeNull, "null");
@@ -356,17 +355,50 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final ApiDTO result;
             if (type == null) {
 
+                // Look up the ranked territories containing this lat/lon, so the response
+                // mirrors what /mapcode/codes/{lat},{lon}/territories would return.
+                // Pass null (not an empty list) so the JSON field is omitted at sea.
+                final List<TerritoryMatch> territoryMatches = boundaryService.lookup(latDeg, lonDeg);
+                final List<TerritoryCandidateDTO> territoryCandidates = territoryMatches.isEmpty() ? null :
+                        territoryMatches.stream()
+                                .map(m -> new TerritoryCandidateDTO(m.getAlphaCode(), m.getParentAlphaCode()))
+                                .collect(Collectors.toList());
+
+                // Re-rank mapcodes and override local using the boundary-derived territories list.
+                // The territories list is the strongest hint of which codes are relevant for this point,
+                // so it drives both the order of 'mapcodes' and the choice of 'local'. Codes whose
+                // territory does not appear in 'territories' are kept at the end (stable order).
+                // When no territories match (e.g. at sea), the original order and the original
+                // local-selection logic are preserved.
+                Tuple<Mapcode, Rectangle> effectiveLocalAndRectangle = mapcodeLocalAndRectangle;
+                if (territoryCandidates != null) {
+                    final Map<String, Integer> territoryRank = new HashMap<>();
+                    for (int i = 0; i < territoryCandidates.size(); i++) {
+                        territoryRank.putIfAbsent(territoryCandidates.get(i).getAlphaCode(), i);
+                    }
+                    mapcodesAndRectangles.sort(Comparator.comparingInt(
+                            t -> territoryRank.getOrDefault(t.getValue1().getTerritory().toString(), Integer.MAX_VALUE)));
+                    final String topTerritoryAlpha = territoryCandidates.get(0).getAlphaCode();
+                    for (final Tuple<Mapcode, Rectangle> t : mapcodesAndRectangles) {
+                        if (topTerritoryAlpha.equals(t.getValue1().getTerritory().toString())) {
+                            effectiveLocalAndRectangle = t;
+                            break;
+                        }
+                    }
+                }
+
                 // No type was supplied, so we need to return the local, international and all mapcodes.
                 result = new MapcodesDTO(
-                        (mapcodeLocalAndRectangle == null) ? null :
-                                createMapcodeDTO(mapcodeLocalAndRectangle, precision, alphabet, includeOffset, includeTerritory,
+                        (effectiveLocalAndRectangle == null) ? null :
+                                createMapcodeDTO(effectiveLocalAndRectangle, precision, alphabet, includeOffset, includeTerritory,
                                         includeAlphabet, includeRectangle, latDeg, lonDeg),
                         createMapcodeDTO(mapcodeInternationalAndRectangle, precision, alphabet, includeOffset, includeTerritory,
                                 includeAlphabet, includeRectangle, latDeg, lonDeg),
                         mapcodesAndRectangles.stream().
                                 map(mapcode -> createMapcodeDTO(mapcode, precision, alphabet, includeOffset, includeTerritory,
                                         includeAlphabet, includeRectangle, latDeg, lonDeg)).
-                                collect(Collectors.toList()));
+                                collect(Collectors.toList()),
+                        territoryCandidates);
             } else {
 
                 // Return only the local, international or all mapcodes.
@@ -402,10 +434,57 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
             // Validate the DTO before returning it, to make sure it's valid (internal consistency check).
             result.validate();
-            metricsCollector.addOneValidLatLonToMapcodeRequest(paramClient);
             response.resume(Response.ok(result).build());
 
             // The response is already set within this method body.
+            return Futures.successful(null);
+        });
+    }
+
+    @Override
+    public void getTerritoriesForLatLon(
+            @Nullable final String paramLatDegAsString,
+            @Nullable final String paramLonDegAsString,
+            @Nonnull final String paramClient,
+            @Nonnull final String paramAllowLog,
+            @Nonnull final AsyncResponse response) throws ApiInvalidFormatException {
+        assert response != null;
+
+        processor.process("getTerritoriesForLatLon", LOG, response, () -> {
+            // Get debug mode.
+            final boolean allowLog = "true".equalsIgnoreCase(paramAllowLog);
+            if (allowLog) {
+                LOG.info("getTerritoriesForLatLon: lat={}, lon={}, client={}, allowLog={}",
+                        paramLatDegAsString, paramLonDegAsString, paramClient, paramAllowLog);
+            }
+            // Check lat range.
+            final double latDeg;
+            try {
+                latDeg = Double.valueOf(StringUtils.nullToEmpty(paramLatDegAsString));
+                if (!MathUtils.isBetween(latDeg, ApiConstants.API_LAT_MIN, ApiConstants.API_LAT_MAX)) {
+                    throw new NumberFormatException(paramLatDegAsString);
+                }
+            } catch (final NumberFormatException e) {
+                throw new ApiInvalidFormatException(PARAM_LAT_DEG, paramLatDegAsString,
+                        "[" + ApiConstants.API_LAT_MIN + ", " + ApiConstants.API_LAT_MAX + ']');
+            }
+
+            // Check lon range (wrapped to [-180, 180]).
+            final double lonDeg;
+            try {
+                lonDeg = Geo.mapToLon(Double.valueOf(StringUtils.nullToEmpty(paramLonDegAsString)));
+            } catch (final NumberFormatException e) {
+                throw new ApiInvalidFormatException(PARAM_LON_DEG, paramLonDegAsString, "Double");
+            }
+
+            final List<TerritoryMatch> matches = boundaryService.lookup(latDeg, lonDeg);
+            final List<TerritoryCandidateDTO> candidates = matches.stream()
+                    .map(m -> new TerritoryCandidateDTO(m.getAlphaCode(), m.getParentAlphaCode()))
+                    .collect(Collectors.toList());
+            final TerritoryCandidatesDTO result = new TerritoryCandidatesDTO(new TerritoryCandidateListDTO(candidates));
+            result.validate();
+
+            response.resume(Response.ok(result).build());
             return Futures.successful(null);
         });
     }
@@ -438,8 +517,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
             LOG.info("convertMapcodeToLatLon: code={}, territory={}, include={}, client={}, allowLog={}",
                     paramCode, paramContext, paramInclude, paramClient, paramAllowLog);
-            metricsCollector.addOneMapcodeToLatLonRequest(paramClient);
-
             // Prevent 'territory' from inadvertently being specified.
             if (paramTerritoryMustBeNull != null) {
                 throw new ApiInvalidFormatException(PARAM_TERRITORY, paramTerritoryMustBeNull, "null");
@@ -502,7 +579,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
             // Validate the result (internal consistency check).
             result.validate();
-            metricsCollector.addOneValidMapcodeToLatLonRequest(paramClient);
             response.resume(Response.ok(result).build());
 
             // The response is already set within this method body.
@@ -521,7 +597,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
         processor.process("getTerritories", LOG, response, () -> {
             LOG.info("getTerritories: client={}, allowLog={}", paramClient, paramAllowLog);
-            metricsCollector.addOneTerritoryRequest(paramClient);
 
             // Check value of count.
             if (count < 0) {
@@ -557,7 +632,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
         processor.process("getTerritory", LOG, response, () -> {
             LOG.info("getTerritory: territory={}, context={}, client={}, allowLog={}", paramTerritory, paramContext, paramClient, paramAllowLog);
-            metricsCollector.addOneTerritoryRequest(paramClient);
 
             // Get the territory from the URL.
             final Territory territory;
@@ -600,7 +674,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
         processor.process("getAlphabets", LOG, response, () -> {
             LOG.info("getAlphabets: clien={}, allowLog={}", paramClient, paramAllowLog);
-            metricsCollector.addOneAlphabetRequest(paramClient);
 
             // Check value of count.
             if (count < 0) {
@@ -636,7 +709,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
         processor.process("getAlphabet", LOG, response, () -> {
 
             LOG.info("getAlphabet: alphabet={}, client={}, allowLog={}", paramAlphabet, paramClient, paramAllowLog);
-            metricsCollector.addOneAlphabetRequest(paramClient);
 
             // Get the territory from the URL.
             final Alphabet alphabet;

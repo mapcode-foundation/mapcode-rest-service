@@ -8,4 +8,4 @@ services:
     dockerfile_path: Dockerfile
     run_command: java -jar mapcode-rest-service.war --port $PORT
     http_port: 8080
-    instance_size_slug: basic-xxs
+    instance_size_slug: basic-xs

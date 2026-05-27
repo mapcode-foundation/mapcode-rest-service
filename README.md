@@ -1,5 +1,7 @@
 # README for Mapcode REST API Web Services
 
+**Version 2.4.19.0** — Released 2026-05-27. Bumped version from 2.4.18.3 to 2.4.19.0.
+
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/809a3c6b23ed42d28b4b17e0e77b655f)](https://www.codacy.com/app/rijnb/mapcode-rest-service?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mapcode-foundation/mapcode-rest-service&amp;utm_campaign=Badge_Grade)
 [![Build Status](https://img.shields.io/travis/mapcode-foundation/mapcode-rest-service.svg?maxAge=3600&branch=master)](https://travis-ci.org/mapcode-foundation/mapcode-rest-service)
 [![Coverage Status](https://coveralls.io/repos/github/mapcode-foundation/mapcode-rest-service/badge.svg?branch=master&maxAge=3600)](https://coveralls.io/github/mapcode-foundation/mapcode-rest-service?branch=master)
@@ -18,13 +20,12 @@ branch may not be stable during development.*
 The available REST API methods are:
 
 ```
-All REST services (except 'metrics') are able to return both JSON and XML. Use the HTTP
+All REST services are able to return both JSON and XML. Use the HTTP
 'Accept:' header to specify the expected format: application/json or application/xml
 If the 'Accept:' header is omitted, JSON is assumed.
 
 GET /mapcode         Returns this help page.
 GET /mapcode/version Returns the software version.
-GET /mapcode/metrics Returns some system metrics (JSON-only, also available from JMX).
 GET /mapcode/status  Returns 200 if the service OK.
 
 GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]
@@ -32,6 +33,16 @@ GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]
 
    Convert latitude/longitude to one or more mapcodes. The response always contains the 'international' mapcode and
    only contains a 'local' mapcode if there are any non-international mapcode AND they are all of the same territory.
+
+   When no filter is specified (i.e. the response is the full mapcodes object), the response is also extended with a
+   'territories' field listing the ranked OSM admin-boundary territories containing the lat/lon. This is the same
+   data as returned by '/mapcode/codes/{lat},{lon}/territories' (most specific first; empty when no admin polygon
+   contains the point, e.g. at sea). Each entry is '{alphaCode, parentAlphaCode?}'.
+
+   When 'territories' is non-empty, the 'mapcodes' array is sorted by the position of each mapcode's territory in
+   'territories' (codes whose territory is not in 'territories' are sorted last, in their original order). The 'local'
+   mapcode is the first one whose territory matches the first entry in 'territories'; if no mapcode matches, 'local'
+   falls back to the shortest local code as before.
 
    Path parameters:
      lat             : Latitude, range [-90, 90] (automatically limited to this range).
@@ -128,123 +139,139 @@ You can use these URLs, for example, in Google Spreadsheets, using the **=IMPORT
 function, or in Microsoft Excel 2013 or 2016 (for Windows) using the **=FILTERXML(WEBSERVICE(url), xpath)**
 functions. This should make live integration of mapcode conversion with your spreadsheets a breeze.
 
-### Build and Run
+### Prerequisites
 
-First, make sure you have the correct file encoding (UTF8) set for Java on your system.
-Include this environment variable in your `.profile` or `.bashrc`:
+* **Java 17** or newer (the shipped `Dockerfile` builds on Eclipse Temurin 17).
+* **Maven 3.9+** to build from source.
+* **Python 3** with `geopandas` and `shapely` only if you need to (re)build the
+  borders file yourself — see [`tools/README.md`](tools/README.md).
+
+Make sure the JVM uses UTF-8. Add this to your shell profile:
 
     export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
-The service always runs from a WAR file.
-To build the WAR file, type
+### Configuration
 
-    cd <project-root>
+The service is configured via **environment variables** (preferred for container
+and cloud deployments) or equivalent JVM system properties. If both are set, the
+system property wins.
+
+**`MAPCODE_BORDERS_PATH`** (or `-Dmapcode.borders.path=...`) — **required**.
+Absolute path to the `borders.fgb` FlatGeobuf file with the mapcode territory
+polygons. The service refuses to start without it.
+
+#### Obtaining the borders file
+
+The borders file is **not** bundled with the service; it is produced from
+OpenStreetMap data by `tools/build-borders.py`. The full pipeline lives in
+[`tools/README.md`](tools/README.md). In short:
+
+    python3 tools/build-borders.py \
+        --osm <osm-pbf-or-source> \
+        --mapping tools/iso-to-mapcode.json \
+        --out /var/lib/mapcode/borders.fgb
+
+Then point the service at the output:
+
+    export MAPCODE_BORDERS_PATH=/var/lib/mapcode/borders.fgb
+
+#### Optional classpath files: `log4j.xml` and `mapcode-secret.properties`
+
+Two additional files are picked up from the classpath, if present:
+
+* `log4j.xml` — log levels and appenders.
+* `mapcode-secret.properties` — credentials for the optional MongoDB request
+  tracing (see below). An empty file is acceptable; tracing is then disabled.
+
+Neither file is bundled in the WAR by default, so that you can change them
+without rebuilding. Example versions live in
+`resources/src/main/external-resources-test/`. For local development, copy them
+into the (git-ignored) `external-resources/` directory before building — they
+will then be folded into the WAR:
+
+    cp resources/src/main/external-resources-test/* resources/src/main/external-resources/
+
+For production, prefer placing your own copies on the classpath at runtime (via
+`-cp`, a Docker volume mount, or your application server's config directory)
+rather than baking them into the WAR.
+
+### Building the WAR
+
     mvn clean install -Pprod
 
-This will install the required JAR files in your local Maven repository (normally 
-at `~/.m2/repository`). You can run the WAR file in 3 ways:
+This produces `deployment/target/mapcode-rest-service.war` and installs the
+intermediate artifacts in your local Maven repository (`~/.m2/repository`).
 
-1. Directly from **Maven** using:
- 
-```
-cd deployment
-mvn jetty:run
-```
-   
-2. Or directly from the **command-line**, using:
+### Running the Service
 
-```
-java -jar deployment/target/deployment-<version>.war [--port <port>] [--silent] [--debug] [--help]
-```
+All run methods require `MAPCODE_BORDERS_PATH` (or `-Dmapcode.borders.path=...`)
+to be set.
 
-This will start the service at `http://localhost:<port>/mapcode`. If `<port>` is not specified, the
-default value is `8080`. If it is `0`, the server will choose any free port.
-  
-This will start the service at `http://localhost:8080/mapcode`.
+#### Stand-alone JAR (recommended for production)
 
-3. in a **Tomcat server**, deploying the file `deployment/target/deployment-<version>.war` into
-your Tomcat instance.
+    export MAPCODE_BORDERS_PATH=/var/lib/mapcode/borders.fgb
+    java -jar deployment/target/mapcode-rest-service.war \
+        [--port <port>] [--silent] [--debug] [--help]
 
-The first method, running the WAR file from the command-line, using `java` only is particularly
-useful if you wish use the XML services, for example, in a Microsoft Excel spreadsheet.
+If `--port` is omitted, the service listens on `8080`. Pass `--port 0` to bind
+to any free port. The service is then reachable at
+`http://localhost:<port>/mapcode`.
 
-**Important:** If the service does not start, some files may be missing from your `external-resources`
-directory. To fix this, read on.
+#### Maven (development)
 
-### Missing `mapcode-secret.properties` and `log4j.xml` Files
+    cd deployment
+    MAPCODE_BORDERS_PATH=/var/lib/mapcode/borders.fgb mvn jetty:run
 
-The service requires 2 files called `mapcode-secret.properties` and `log4j.xml` to be present on the
-classpath. They are specifically **not** included in the WAR file by default, because that would
-make it impossible to change them without recompiling the service.
+#### Docker
 
-#### `log4j.xml`
+A multi-stage `Dockerfile` is provided at the repository root. Build and run with:
 
-The file `log4j.xml` specifies the log levels during operations. An example of a `log4j.xml` file
-can be found in `resources/src/main/external-resources-test/log4j.xml`. 
+    docker build -t mapcode-rest-service .
 
-Make sure that file can be found on the classpath
-or add it `resources/src/main/external-resources` before building and it will be integrated in the WAR file.
+    docker run --rm -p 8080:8080 \
+        -e MAPCODE_BORDERS_PATH=/data/borders.fgb \
+        -v /host/path/to/borders.fgb:/data/borders.fgb:ro \
+        mapcode-rest-service
 
-#### `mapcode-secret.properties`
- 
-The properties file `mapcode-secret.properties` contains the username and password for
-your MongDB database server for tracing, should you wish to use that.
+Mount the borders file read-only into the container and point at it via the
+environment variable. The container always listens on port `8080`; map it with
+`-p` as needed.
 
-If you get a start-up error complaining about a missing `mapcode-secret.properties` file,
-make sure you add it to the classpath (or add it to `resources/src/main/external-resources`) before building.
+#### Tomcat
 
-By default, you can simply use an empty `mapcode-secret.properties` file. So, you may want to
-use the example file as a starting point:
+Drop `deployment/target/mapcode-rest-service.war` into your Tomcat `webapps/`
+directory. Set `MAPCODE_BORDERS_PATH` in Tomcat's environment (for example in
+`bin/setenv.sh`), or pass `-Dmapcode.borders.path=...` via `CATALINA_OPTS`.
 
-    cd resources/src/main
-    cp external-resources-test/* external-resources/
+#### Heroku / DigitalOcean App Platform
 
-This will copy an example `log4j.xml` and `mapcode-secret.properties` file to your 
-resources.
+The repository ships a `Procfile` and `.do/app.yaml` for these platforms. Set
+`MAPCODE_BORDERS_PATH` as an app-level environment variable; the platforms
+inject `$PORT` automatically and the `Procfile` / app spec forwards it to
+`--port`.
 
-Note that the files in `external-resources` are ignored by Git in `.gitignore`.
+### Optional: MongoDB Request Tracing
 
+The service can write a trace record for every request to MongoDB. Tracing is
+**disabled by default**. To enable it, override these keys in your
+`mapcode-secret.properties` file:
 
-#### Using a Capped Collection for Traces in MongoDB
+    MongoDBTrace.writeEnabled = true
+    MongoDBTrace.servers      = your-server:27017
+    MongoDBTrace.database     = trace
+    MongoDBTrace.userName     = your-username
+    MongoDBTrace.password     = your-password
 
-If you wish to use MongoDB tracing, will need to provide your own local
-`mapcode-secret.properties`, which override the following properties:
+To keep the `traces` collection from growing without bound, create it as a
+capped collection (for example, 2 GB):
 
-```
-MongoDBTrace.writeEnabled = false
-MongoDBTrace.servers = your-server:27017 (eg. localhost:27017)
-MongoDBTrace.database = your-database (eg. trace)
-MongoDBTrace.userName = your-username
-MongoDBTrace.password = your-password
-```
+    use trace
+    db.runCommand({ "convertToCapped": "traces", size: 2 * 1024 * 1024 * 1024 });
 
-The service will work with an empty properties file as well, but will not trace events to the
-database.
+Inspect the collection:
 
-To make sure the `traces` collection in the MongoDB database does not grow forever, you should
-create a "capped collection" for it, or convert an existing traces database to a capped collection.
-This can be done as follows, in the MongoDB shell `mongo`:
-
-```
-use trace
-db.runCommand({"convertToCapped": "traces", size: 2*1024*1024*1024});   // For example, limit to 2Gb of data.
-```
-    
-You can inspect the status of the `trace` database like this:
-
-```
-use trace
-db.traces.stats()
-```
-
-### Using Java 8 on MacOSX
-
-The source uses Java JDK 1.8, so make sure your Java compiler is set to 1.8, for example
-using something like (MacOSX):
-
-```bash
-export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
-```
+    use trace
+    db.traces.stats()
 
 ### Smoke Testing The REST API
 
@@ -264,47 +291,7 @@ curl -X GET http://localhost:8080/mapcode/codes/50.2,4.9
 
 There's also an example HTML page in the `examples/index.html` for HTML/Javascript developers.
 
-### Getting a Session Token in a Debug Session
-
-Some REST APIs, such as `GET mapcode/metrics` require authentication. You can get a session on the
-command-line like this:
-
-```
-$ http post http://localhost:8080/sessions/username userName=info@mapcode.com password=123456   
-
-HTTP/1.1 201 Created
-Content-Length: 84
-Content-Type: application/json
-Date: Sat, 24 Jun 2017 16:40:54 GMT
-Expires: Thu, 01 Jan 1970 00:00:00 GMT
-Server: Jetty(8.1.7.v20120910)
-Set-Cookie: JSESSIONID=15j59gfek2kk9s86b8n321xzu;Path=/
-
-{
-    "id": "15j59gfek2kk9s86b8n321xzu",
-    "personId": "00000001-0002-0003-0004-000000000005"
-}
-```
-   
-Then, you can pass the session token as a cookie in the HTTP request, like this:
     
-```    
-$ http get http://localhost:8080/mapcode/metrics 'Cookie:JSESSIONID=15j59gfek2kk9s86b8n321xzu;Path=/'
-
-HTTP/1.1 200 OK
-Content-Length: 21417
-Content-Type: application/json
-Date: Sat, 24 Jun 2017 16:41:23 GMT
-Server: Jetty(8.1.7.v20120910)
-
-{
-    "all": {
-        "ALL_ALPHABET_REQUESTS": {
-            "calculators": [
-                {
-                    "count": 0,
- ...
-```    
 
 ## Using Git and `.gitignore`
 
@@ -448,16 +435,9 @@ but can be a state as well.)
 
 * Improved `status` call to actually do a mapcode conversion back and forth.
 
-* Improved Swagger documentation.
-
 * Split JSON- and XML-only calls into seperate files.
 
 * Note that 2.4.4.5 was broken, fixed by 2.4.4.6.
-
-### 2.4.4.2 - 2.4.4.4
-
-* Added Swagger documentation to the API's. Swagger generates online API documentation, with the
-ability to try out the API.
 
 ### 2.4.4.1
 
@@ -520,9 +500,6 @@ way some other alphabets work (including Greek and Hebrew).
 
 * Added `client=` parameter, to allow logging per client type.
 
-* Added new metrics: `ALL_CLIENT_[NONE|IOS|ANDROID|WEB]_LATLON_TO_MAPCODE_REQUESTS` and
-`ALL_CLIENT_[NONE|IOS|ANDROID|WEB]_MAPCODE_TO_LATLON_REQUESTS`.
-
 ### 2.2.4.1
 
 * Changed semantics of `/mapcode/codes/{lat,lon}/local` to always get the shortest code, even if the
@@ -548,8 +525,6 @@ territory may be ambiguous.
 
 * Reworked responses for `/alphabets` and `/territories`, returning to older format (also easier for
 client parsing) and including a `total` attribute to indicate total number of items in list (for paging).
-
-* Added metrics for `alphabets` and `territories` methods.
 
 ### 2.2.3.17
 
