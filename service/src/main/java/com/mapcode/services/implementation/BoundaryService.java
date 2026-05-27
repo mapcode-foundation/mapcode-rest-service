@@ -4,9 +4,12 @@
 package com.mapcode.services.implementation;
 
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.prep.PreparedGeometry;
+import org.locationtech.jts.geom.prep.PreparedGeometryFactory;
 import org.locationtech.jts.index.strtree.STRtree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +41,10 @@ public class BoundaryService {
 
     private static final Logger LOG = LoggerFactory.getLogger(BoundaryService.class);
     private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
+    private static final Point PRIMING_POINT = GEOMETRY_FACTORY.createPoint(new Coordinate(0.0, 0.0));
 
     private final STRtree index;
+    private final List<IndexedEntry> entries = new ArrayList<>();
 
     public BoundaryService(@Nonnull final String bordersFilePath) {
         final Path path = Paths.get(bordersFilePath);
@@ -54,6 +59,7 @@ public class BoundaryService {
             throw new IllegalStateException("Failed to load borders file: " + path, e);
         }
         index.build();
+        primePreparedGeometries();
         LOG.info("BoundaryService: loaded {} polygons from {}", loaded, path);
     }
 
@@ -71,7 +77,19 @@ public class BoundaryService {
             throw new IllegalStateException("Failed to load borders from " + sourceDescription, e);
         }
         index.build();
+        primePreparedGeometries();
         LOG.info("BoundaryService: loaded {} polygons from {}", loaded, sourceDescription);
+    }
+
+    /**
+     * Force the lazy segment-tree index inside each PreparedGeometry to be built at startup,
+     * so the first user request does not pay that one-time cost. Result of the contains() call
+     * itself is irrelevant — we only need the side-effect of priming the internal locator.
+     */
+    private void primePreparedGeometries() {
+        for (final IndexedEntry entry : entries) {
+            entry.prepared.contains(PRIMING_POINT);
+        }
     }
 
     private static byte[] toByteArray(@Nonnull final InputStream stream) throws IOException {
@@ -148,9 +166,11 @@ public class BoundaryService {
                 continue;
             }
 
-            final IndexedEntry entry = new IndexedEntry(geometry, alphaCode, parentAlphaCode,
+            final PreparedGeometry prepared = PreparedGeometryFactory.prepare(geometry);
+            final IndexedEntry entry = new IndexedEntry(prepared, alphaCode, parentAlphaCode,
                     adminLevel, area);
             index.insert(geometry.getEnvelopeInternal(), entry);
+            entries.add(entry);
             count++;
         }
         return count;
@@ -272,12 +292,14 @@ public class BoundaryService {
 
     @Nonnull
     public List<TerritoryMatch> lookup(final double latDeg, final double lonDeg) {
-        final Point point = GEOMETRY_FACTORY.createPoint(new Coordinate(lonDeg, latDeg));
+        final Coordinate coord = new Coordinate(lonDeg, latDeg);
+        final Envelope env = new Envelope(coord);
         @SuppressWarnings("unchecked")
-        final List<IndexedEntry> candidates = index.query(point.getEnvelopeInternal());
+        final List<IndexedEntry> candidates = index.query(env);
+        final Point point = GEOMETRY_FACTORY.createPoint(coord);
         final List<TerritoryMatch> hits = new ArrayList<>(candidates.size());
         for (final IndexedEntry e : candidates) {
-            if (e.geometry.contains(point)) {
+            if (e.prepared.contains(point)) {
                 hits.add(new TerritoryMatch(e.alphaCode, e.parentAlphaCode, e.adminLevel, e.area));
             }
         }
@@ -288,19 +310,19 @@ public class BoundaryService {
     }
 
     private static final class IndexedEntry {
-        @Nonnull final Geometry geometry;
+        @Nonnull final PreparedGeometry prepared;
         @Nonnull final String alphaCode;
         @Nullable final String parentAlphaCode;
         final int adminLevel;
         final double area;
 
         IndexedEntry(
-                @Nonnull final Geometry geometry,
+                @Nonnull final PreparedGeometry prepared,
                 @Nonnull final String alphaCode,
                 @Nullable final String parentAlphaCode,
                 final int adminLevel,
                 final double area) {
-            this.geometry = geometry;
+            this.prepared = prepared;
             this.alphaCode = alphaCode;
             this.parentAlphaCode = parentAlphaCode;
             this.adminLevel = adminLevel;
