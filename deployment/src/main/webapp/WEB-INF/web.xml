@@ -40,8 +40,6 @@
     <context-param>
         <param-name>resteasy.providers</param-name>
         <param-value>
-            io.swagger.jaxrs.listing.ApiListingResource,
-            io.swagger.jaxrs.listing.SwaggerSerializers,
             com.tomtom.speedtools.rest.security.CorsFeature
         </param-value>
     </context-param>
@@ -71,21 +69,6 @@
     <servlet-mapping>
         <servlet-name>Mapcode</servlet-name>
         <url-pattern>/mapcode/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>Swagger</servlet-name>
-        <servlet-class>io.swagger.jaxrs.config.DefaultJaxrsConfig</servlet-class>
-        <init-param>
-            <param-name>api.version</param-name>
-            <param-value>${pom.version}</param-value>
-        </init-param>
-        <load-on-startup>2</load-on-startup>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>Swagger</servlet-name>
-        <url-pattern>/swagger/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
