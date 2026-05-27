@@ -63,13 +63,14 @@ public class ApiCodesTerritoriesTest {
     @Test
     public void pointAtSeaReturnsEmptyListJson() {
         // (0, -30) mid-Atlantic — no fixture polygon contains it.
-        // TerritoryCandidatesDTO with NON_EMPTY: the empty territories list is omitted, producing {}.
+        // Without @JsonInclude(NON_EMPTY) on TerritoryCandidatesDTO the empty list is
+        // serialised as an explicit empty array, producing {"territories":[]}.
         final Response response = new ResteasyClientBuilder().build()
                 .target(server.url("/mapcode/codes/0.0,-30.0/territories"))
                 .request()
                 .accept(MediaType.APPLICATION_JSON_TYPE).get();
         Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("{}", response.readEntity(String.class));
+        Assert.assertEquals("{\"territories\":[]}", response.readEntity(String.class));
     }
 
     @Test
