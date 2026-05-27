@@ -193,7 +193,14 @@ public class BoundaryService {
     private static Integer readIntProp(@Nonnull final ByteBuffer props,
                                        @Nonnull final HeaderMeta header,
                                        @Nonnull final String name) {
-        return readProp(props, header, name, Integer.class);
+        // FlatGeobuf ColumnType.Int (int32): readTypedValue returns Integer.
+        final Integer asInt = readProp(props, header, name, Integer.class);
+        if (asInt != null) {
+            return asInt;
+        }
+        // FlatGeobuf ColumnType.Long (int64): GDAL/geopandas uses this for pandas int64 columns.
+        final Long asLong = readProp(props, header, name, Long.class);
+        return (asLong != null) ? asLong.intValue() : null;
     }
 
     @Nullable
