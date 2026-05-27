@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import scala.concurrent.ExecutionContext;
 
 import javax.annotation.Nonnull;
+import java.io.InputStream;
 import java.util.List;
 
 public class Server {
@@ -78,11 +79,20 @@ public class Server {
         final ResourceProcessor resourceProcessor = new ResourceProcessor(reactor);
         final String bordersFilePath = System.getProperty("mapcode.borders.path",
                 System.getenv("MAPCODE_BORDERS_PATH"));
-        if (bordersFilePath == null || bordersFilePath.isEmpty()) {
-            throw new IllegalStateException(
-                    "mapcode.borders.path system property or MAPCODE_BORDERS_PATH env var must be set");
+        final BoundaryService boundaryService;
+        if (bordersFilePath != null && !bordersFilePath.isEmpty()) {
+            boundaryService = new BoundaryService(bordersFilePath);
+        } else {
+            final InputStream stream = Server.class.getResourceAsStream("/borders.fgb");
+            if (stream != null) {
+                LOG.info("Server: no borders path configured; loading bundled borders.fgb from classpath");
+                boundaryService = new BoundaryService(stream, "classpath:/borders.fgb");
+            } else {
+                throw new IllegalStateException(
+                        "No borders file configured (set mapcode.borders.path or MAPCODE_BORDERS_PATH) " +
+                        "and no bundled borders.fgb found on the classpath.");
+            }
         }
-        final BoundaryService boundaryService = new BoundaryService(bordersFilePath);
 
         LOG.debug("Server: add resources...");
         final ResteasyDeployment deployment = server.getDeployment();

@@ -18,7 +18,9 @@ import org.wololo.flatgeobuf.generated.Feature;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -47,7 +49,7 @@ public class BoundaryService {
         this.index = new STRtree();
         final int loaded;
         try {
-            loaded = loadFeatures(path);
+            loaded = loadFeatures(Files.readAllBytes(path));
         } catch (final IOException e) {
             throw new IllegalStateException("Failed to load borders file: " + path, e);
         }
@@ -55,8 +57,34 @@ public class BoundaryService {
         LOG.info("BoundaryService: loaded {} polygons from {}", loaded, path);
     }
 
-    private int loadFeatures(@Nonnull final Path path) throws IOException {
-        final byte[] bytes = Files.readAllBytes(path);
+    /**
+     * Loads the borders data from an {@link InputStream}. The stream is fully consumed and
+     * closed by this constructor. {@code sourceDescription} is used only for log and error messages.
+     */
+    public BoundaryService(@Nonnull final InputStream stream,
+                           @Nonnull final String sourceDescription) {
+        this.index = new STRtree();
+        final int loaded;
+        try {
+            loaded = loadFeatures(toByteArray(stream));
+        } catch (final IOException e) {
+            throw new IllegalStateException("Failed to load borders from " + sourceDescription, e);
+        }
+        index.build();
+        LOG.info("BoundaryService: loaded {} polygons from {}", loaded, sourceDescription);
+    }
+
+    private static byte[] toByteArray(@Nonnull final InputStream stream) throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final byte[] buf = new byte[8192];
+        int n;
+        while ((n = stream.read(buf)) != -1) {
+            baos.write(buf, 0, n);
+        }
+        return baos.toByteArray();
+    }
+
+    private int loadFeatures(@Nonnull final byte[] bytes) throws IOException {
         final ByteBuffer buf = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
 
         // Parse header — HeaderMeta.read(ByteBuffer) advances buf.position() past the header.

@@ -19,9 +19,12 @@ package com.mapcode.services;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.mapcode.services.implementation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.inject.Singleton;
+import java.io.InputStream;
 
 
 /**
@@ -36,6 +39,8 @@ import javax.inject.Singleton;
  * The "speedtools.default.properties" is required, but its values may be overridden in other property files.
  */
 public class ResourcesModule implements Module {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ResourcesModule.class);
 
     @Override
     public void configure(@Nonnull final Binder binder) {
@@ -59,10 +64,17 @@ public class ResourcesModule implements Module {
     private static BoundaryService createBoundaryService() {
         final String path = System.getProperty("mapcode.borders.path",
                 System.getenv("MAPCODE_BORDERS_PATH"));
-        if (path == null || path.isEmpty()) {
-            throw new IllegalStateException(
-                    "mapcode.borders.path system property or MAPCODE_BORDERS_PATH env var must be set");
+        if (path != null && !path.isEmpty()) {
+            return new BoundaryService(path);
         }
-        return new BoundaryService(path);
+        // No path configured — fall back to the borders file bundled on the classpath.
+        final InputStream stream = ResourcesModule.class.getResourceAsStream("/borders.fgb");
+        if (stream != null) {
+            LOG.info("ResourcesModule: no borders path configured; loading bundled borders.fgb from classpath");
+            return new BoundaryService(stream, "classpath:/borders.fgb");
+        }
+        throw new IllegalStateException(
+                "No borders file configured (set mapcode.borders.path or MAPCODE_BORDERS_PATH) " +
+                "and no bundled borders.fgb found on the classpath.");
     }
 }
