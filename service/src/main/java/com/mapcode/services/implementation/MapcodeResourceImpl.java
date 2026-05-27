@@ -23,7 +23,6 @@ import com.mapcode.Territory.AlphaCodeFormat;
 import com.mapcode.services.ApiConstants;
 import com.mapcode.services.MapcodeResource;
 import com.mapcode.services.dto.*;
-import com.mapcode.services.metrics.SystemMetricsCollector;
 import com.tomtom.speedtools.apivalidation.ApiDTO;
 import com.tomtom.speedtools.apivalidation.exceptions.*;
 import com.tomtom.speedtools.geometry.Geo;
@@ -58,7 +57,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
     private static final Tracer TRACER = TracerFactory.getTracer(MapcodeResourceImpl.class, Tracer.class);
 
     private final ResourceProcessor processor;
-    private final SystemMetricsCollector metricsCollector;
     private final BoundaryService boundaryService;
 
     private static final String API_ERROR_VALID_TERRITORY_CODES = Joiner.on('|').join(Arrays.stream(Territory.values()).
@@ -83,18 +81,14 @@ public class MapcodeResourceImpl implements MapcodeResource {
      * to executed web requests on.
      *
      * @param processor        Processor to process web requests on.
-     * @param metricsCollector Metric collector.
      */
     @Inject
     public MapcodeResourceImpl(
             @Nonnull final ResourceProcessor processor,
-            @Nonnull final SystemMetricsCollector metricsCollector,
             @Nonnull final BoundaryService boundaryService) {
         assert processor != null;
-        assert metricsCollector != null;
         assert boundaryService != null;
         this.processor = processor;
-        this.metricsCollector = metricsCollector;
         this.boundaryService = boundaryService;
     }
 
@@ -149,8 +143,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
             LOG.info("convertLatLonToMapcode: lat={}, lon={}, precision={}, type={}, context={}, alphabet={}, include={}, client={}, allowLog={}",
                     paramLatDegAsString, paramLonDegAsString, paramPrecisionAsString, paramType, paramTerritory, paramAlphabet, paramInclude, paramClient,
                     paramAllowLog);
-            metricsCollector.addOneLatLonToMapcodeRequest(paramClient);
-
             // Prevent 'context' from inadvertently being specified.
             if (paramContextMustBeNull != null) {
                 throw new ApiInvalidFormatException(PARAM_CONTEXT, paramContextMustBeNull, "null");
@@ -406,7 +398,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
             // Validate the DTO before returning it, to make sure it's valid (internal consistency check).
             result.validate();
-            metricsCollector.addOneValidLatLonToMapcodeRequest(paramClient);
             response.resume(Response.ok(result).build());
 
             // The response is already set within this method body.
@@ -430,8 +421,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
                 LOG.info("getTerritoriesForLatLon: lat={}, lon={}, client={}, allowLog={}",
                         paramLatDegAsString, paramLonDegAsString, paramClient, paramAllowLog);
             }
-            metricsCollector.addOneLatLonToTerritoriesRequest(paramClient);
-
             // Check lat range.
             final double latDeg;
             try {
@@ -459,7 +448,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
             final TerritoryCandidatesDTO result = new TerritoryCandidatesDTO(new TerritoryCandidateListDTO(candidates));
             result.validate();
 
-            metricsCollector.addOneValidLatLonToTerritoriesRequest(paramClient);
             response.resume(Response.ok(result).build());
             return Futures.successful(null);
         });
@@ -493,8 +481,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
             LOG.info("convertMapcodeToLatLon: code={}, territory={}, include={}, client={}, allowLog={}",
                     paramCode, paramContext, paramInclude, paramClient, paramAllowLog);
-            metricsCollector.addOneMapcodeToLatLonRequest(paramClient);
-
             // Prevent 'territory' from inadvertently being specified.
             if (paramTerritoryMustBeNull != null) {
                 throw new ApiInvalidFormatException(PARAM_TERRITORY, paramTerritoryMustBeNull, "null");
@@ -557,7 +543,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
             // Validate the result (internal consistency check).
             result.validate();
-            metricsCollector.addOneValidMapcodeToLatLonRequest(paramClient);
             response.resume(Response.ok(result).build());
 
             // The response is already set within this method body.
@@ -576,7 +561,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
         processor.process("getTerritories", LOG, response, () -> {
             LOG.info("getTerritories: client={}, allowLog={}", paramClient, paramAllowLog);
-            metricsCollector.addOneTerritoryRequest(paramClient);
 
             // Check value of count.
             if (count < 0) {
@@ -612,7 +596,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
         processor.process("getTerritory", LOG, response, () -> {
             LOG.info("getTerritory: territory={}, context={}, client={}, allowLog={}", paramTerritory, paramContext, paramClient, paramAllowLog);
-            metricsCollector.addOneTerritoryRequest(paramClient);
 
             // Get the territory from the URL.
             final Territory territory;
@@ -655,7 +638,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
 
         processor.process("getAlphabets", LOG, response, () -> {
             LOG.info("getAlphabets: clien={}, allowLog={}", paramClient, paramAllowLog);
-            metricsCollector.addOneAlphabetRequest(paramClient);
 
             // Check value of count.
             if (count < 0) {
@@ -691,7 +673,6 @@ public class MapcodeResourceImpl implements MapcodeResource {
         processor.process("getAlphabet", LOG, response, () -> {
 
             LOG.info("getAlphabet: alphabet={}, client={}, allowLog={}", paramAlphabet, paramClient, paramAllowLog);
-            metricsCollector.addOneAlphabetRequest(paramClient);
 
             // Get the territory from the URL.
             final Alphabet alphabet;

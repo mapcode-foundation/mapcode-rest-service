@@ -92,7 +92,6 @@ public class Server {
         // Add mapcode resource.
         final MapcodeResourceImpl mapcodeResource = new MapcodeResourceImpl(
                 resourceProcessor,
-                metrics,
                 boundaryService
         );
         resources.add(mapcodeResource);

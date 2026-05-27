@@ -81,7 +81,6 @@ public class LocalTestServer {
         // Add mapcode resource.
         final MapcodeResourceImpl mapcodeResource = new MapcodeResourceImpl(
                 resourceProcessor,
-                metrics,
                 boundaryService
         );
         server.getDeployment().getResources().add(mapcodeResource);
