@@ -76,7 +76,6 @@ public class Server {
             }
         };
         final ResourceProcessor resourceProcessor = new ResourceProcessor(reactor);
-        final SystemMetricsImpl metrics = new SystemMetricsImpl();
         final String bordersFilePath = System.getProperty("mapcode.borders.path",
                 System.getenv("MAPCODE_BORDERS_PATH"));
         if (bordersFilePath == null || bordersFilePath.isEmpty()) {
@@ -99,8 +98,7 @@ public class Server {
         // Add root resource.
         final RootResourceImpl rootResource = new RootResourceImpl(
                 mapcodeResource,
-                mavenProperties,
-                metrics
+                mavenProperties
         );
         resources.add(rootResource);
 

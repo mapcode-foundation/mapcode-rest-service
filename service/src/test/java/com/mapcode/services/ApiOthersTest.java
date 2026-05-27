@@ -138,19 +138,4 @@ public class ApiOthersTest {
         Assert.assertEquals(expectedJson, response.readEntity(String.class));
     }
 
-    @Test
-    public void checkMetrics() {
-        LOG.info("checkMetrics");
-        final Response response = new ResteasyClientBuilder().build().
-                target(server.url("/mapcode/metrics")).
-                request().
-                accept(MediaType.APPLICATION_JSON).get();
-        Assert.assertNotNull(response);
-        Assert.assertEquals(200, response.getStatus());
-        final String s = response.readEntity(String.class);
-        Assert.assertEquals("{\"allMapcodeToLatLonRequests\":{\"calculators\":[{\"totalMetricDuration\":2592000000,\"timeSlotDuration\":86400000,\"values\":[],\"sum\":0.0,\"count\":0,\"sumSquares\":0.0},{\"totalMetricDuration\":604800000,\"timeSlotDuration\":3600000,\"values\":[],\"sum\":0.0,\"count\":0,\"sumSquares\":0.0},{\"totalMetricDuration\":86400000,\"timeSlotDuration\":1800000,\"values\":[],\"sum\":0.0,\"count\":0,\"sumSquares\":0.0},{\"totalMetricDuration\":3600000,\"timeSlotDuration\":60000,\"values\":[],\"sum\":0.0,\"count\":0,\"sumSquares\":0.0},{\"totalMetricDura",
-                s.substring(0, 500));
-        Assert.assertEquals("Duration\":86400000,\"values\":[],\"sum\":0.0,\"count\":0,\"sumSquares\":0.0},{\"totalMetricDuration\":604800000,\"timeSlotDuration\":3600000,\"values\":[],\"sum\":0.0,\"count\":0,\"sumSquares\":0.0},{\"totalMetricDuration\":86400000,\"timeSlotDuration\":1800000,\"values\":[],\"sum\":0.0,\"count\":0,\"sumSquares\":0.0},{\"totalMetricDuration\":3600000,\"timeSlotDuration\":60000,\"values\":[],\"sum\":0.0,\"count\":0,\"sumSquares\":0.0},{\"totalMetricDuration\":60000,\"timeSlotDuration\":2000,\"values\":[],\"sum\":0.0,\"count\":0,\"sumSquares\":0.0}]}}}",
-                s.substring(s.length() - 500, s.length()));
-    }
 }

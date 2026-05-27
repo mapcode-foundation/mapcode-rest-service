@@ -21,8 +21,6 @@ import com.mapcode.services.RootResource;
 import com.mapcode.services.dto.MapcodeDTO;
 import com.mapcode.services.dto.PointDTO;
 import com.mapcode.services.dto.VersionDTO;
-import com.mapcode.services.metrics.SystemMetrics;
-import com.tomtom.speedtools.json.Json;
 import com.tomtom.speedtools.maven.MavenProperties;
 import com.tomtom.speedtools.time.UTCTime;
 import com.tomtom.speedtools.utils.MathUtils;
@@ -59,13 +57,12 @@ public class RootResourceImpl implements RootResource {
             "The REST API Methods\n" +
             "--------------------\n\n" +
 
-            "All REST services (except 'metrics') are able to return both JSON and XML. Use the HTTP\n" +
+            "All REST services are able to return both JSON and XML. Use the HTTP\n" +
             "'Accept:' header to specify the expected format: application/json or application/xml\n" +
             "If the 'Accept:' header is omitted, JSON is assumed.\n\n" +
 
             "GET /mapcode         Returns this help page.\n" +
             "GET /mapcode/version Returns the software version.\n" +
-            "GET /mapcode/metrics Returns some system metrics (JSON-only, also available from JMX).\n" +
             "GET /mapcode/status  Returns 200 if the service OK.\n\n" +
 
             "GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]\n" +
@@ -191,21 +188,17 @@ public class RootResourceImpl implements RootResource {
 
     private final MapcodeResource mapcodeResource;
     private final MavenProperties mavenProperties;
-    private final SystemMetrics metrics;
 
     @Inject
     public RootResourceImpl(
             @Nonnull final MapcodeResource mapcodeResource,
-            @Nonnull final MavenProperties mavenProperties,
-            @Nonnull final SystemMetrics metrics) {
+            @Nonnull final MavenProperties mavenProperties) {
         assert mapcodeResource != null;
         assert mavenProperties != null;
-        assert metrics != null;
 
         // Store the injected values.
         this.mapcodeResource = mapcodeResource;
         this.mavenProperties = mavenProperties;
-        this.metrics = metrics;
     }
 
     @Override
@@ -297,16 +290,6 @@ public class RootResourceImpl implements RootResource {
 
         // This are not OK.
         response.resume(Response.serverError().build());
-    }
-
-    @Override
-    public void getMetrics(@Suspended @Nonnull final AsyncResponse response) {
-        assert response != null;
-        LOG.info("getMetrics");
-
-        // No input validation required. Just return metrics as a plain JSON string.
-        final String json = Json.toJson(metrics);
-        response.resume(Response.ok(json).build());
     }
 
     private static void waitForResponse(@Nonnull  final TestAsyncResponse asyncResponse) throws InterruptedException {

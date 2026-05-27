@@ -70,7 +70,6 @@ public class LocalTestServer {
         final ResourceProcessor resourceProcessor = new ResourceProcessor(reactor);
 
         final MavenProperties mavenProperties = new MavenProperties(version);
-        final SystemMetricsImpl metrics = new SystemMetricsImpl();
 
         // Borders fixture for territory-lookup tests.
         final String bordersPath = java.nio.file.Paths.get(
@@ -88,8 +87,7 @@ public class LocalTestServer {
         // Add root resource.
         final RootResourceImpl rootResource = new RootResourceImpl(
                 mapcodeResource,
-                mavenProperties,
-                metrics
+                mavenProperties
         );
         server.getDeployment().getResources().add(rootResource);
 

@@ -59,13 +59,4 @@ public interface RootResource {
     @GET
     void getStatus(@Suspended @Nonnull AsyncResponse response);
 
-    /**
-     * This method returns system metrics.
-     *
-     * @param response Returns a system metrics.
-     */
-    @Path("metrics")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    void getMetrics(@Suspended @Nonnull AsyncResponse response);
 }
