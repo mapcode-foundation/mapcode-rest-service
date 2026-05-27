@@ -16,7 +16,6 @@
 
 package com.mapcode.services;
 
-
 import javax.annotation.Nonnull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
