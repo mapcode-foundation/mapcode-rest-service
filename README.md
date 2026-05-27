@@ -20,13 +20,12 @@ branch may not be stable during development.*
 The available REST API methods are:
 
 ```
-All REST services (except 'metrics') are able to return both JSON and XML. Use the HTTP
+All REST services are able to return both JSON and XML. Use the HTTP
 'Accept:' header to specify the expected format: application/json or application/xml
 If the 'Accept:' header is omitted, JSON is assumed.
 
 GET /mapcode         Returns this help page.
 GET /mapcode/version Returns the software version.
-GET /mapcode/metrics Returns some system metrics (JSON-only, also available from JMX).
 GET /mapcode/status  Returns 200 if the service OK.
 
 GET /mapcode/codes/{lat},{lon}[/[mapcodes|local|international]]
@@ -282,47 +281,7 @@ curl -X GET http://localhost:8080/mapcode/codes/50.2,4.9
 
 There's also an example HTML page in the `examples/index.html` for HTML/Javascript developers.
 
-### Getting a Session Token in a Debug Session
-
-Some REST APIs, such as `GET mapcode/metrics` require authentication. You can get a session on the
-command-line like this:
-
-```
-$ http post http://localhost:8080/sessions/username userName=info@mapcode.com password=123456   
-
-HTTP/1.1 201 Created
-Content-Length: 84
-Content-Type: application/json
-Date: Sat, 24 Jun 2017 16:40:54 GMT
-Expires: Thu, 01 Jan 1970 00:00:00 GMT
-Server: Jetty(8.1.7.v20120910)
-Set-Cookie: JSESSIONID=15j59gfek2kk9s86b8n321xzu;Path=/
-
-{
-    "id": "15j59gfek2kk9s86b8n321xzu",
-    "personId": "00000001-0002-0003-0004-000000000005"
-}
-```
-   
-Then, you can pass the session token as a cookie in the HTTP request, like this:
     
-```    
-$ http get http://localhost:8080/mapcode/metrics 'Cookie:JSESSIONID=15j59gfek2kk9s86b8n321xzu;Path=/'
-
-HTTP/1.1 200 OK
-Content-Length: 21417
-Content-Type: application/json
-Date: Sat, 24 Jun 2017 16:41:23 GMT
-Server: Jetty(8.1.7.v20120910)
-
-{
-    "all": {
-        "ALL_ALPHABET_REQUESTS": {
-            "calculators": [
-                {
-                    "count": 0,
- ...
-```    
 
 ## Using Git and `.gitignore`
 
@@ -531,9 +490,6 @@ way some other alphabets work (including Greek and Hebrew).
 
 * Added `client=` parameter, to allow logging per client type.
 
-* Added new metrics: `ALL_CLIENT_[NONE|IOS|ANDROID|WEB]_LATLON_TO_MAPCODE_REQUESTS` and
-`ALL_CLIENT_[NONE|IOS|ANDROID|WEB]_MAPCODE_TO_LATLON_REQUESTS`.
-
 ### 2.2.4.1
 
 * Changed semantics of `/mapcode/codes/{lat,lon}/local` to always get the shortest code, even if the
@@ -559,8 +515,6 @@ territory may be ambiguous.
 
 * Reworked responses for `/alphabets` and `/territories`, returning to older format (also easier for
 client parsing) and including a `total` attribute to indicate total number of items in list (for paging).
-
-* Added metrics for `alphabets` and `territories` methods.
 
 ### 2.2.3.17
 
