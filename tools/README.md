@@ -19,12 +19,22 @@ Pipeline:
    `alphaCode`, `parentAlphaCode`, `adminLevel`, `area`.
 
 The script requires an `iso-to-mapcode.json` mapping file (ISO 3166 codes → mapcode
-`alphaCode` strings). Use `tools/iso-to-mapcode.example.json` as a template; the full
-production version (covering all mapcode territories) must be maintained separately and
-is not committed to this repository.
+`alphaCode` strings). The full mapping is committed at `tools/iso-to-mapcode.json` and
+covers every territory in the mapcode library declared in `pom.xml`.
 
 Run:
-    `python3 tools/build-borders.py --osm <osm-pbf-or-source> --out borders.fgb`
+    `python3 tools/build-borders.py --osm <osm-pbf-or-source> --out borders.fgb --mapping tools/iso-to-mapcode.json`
+
+### Regenerating iso-to-mapcode.json
+
+After bumping `mapcode.version` in `pom.xml`, regenerate the mapping from the new
+library's `Territory` enum:
+
+    `mvn -pl service dependency:resolve-sources -DincludeArtifactIds=mapcode -q`
+    `python3 tools/generate-iso-to-mapcode.py`
+
+The generator parses `Territory.java` from the mapcode sources jar in `~/.m2` and
+emits canonical alphaCodes plus ISO-3166-shaped aliases (e.g. `CN-HK` → `HKG`).
 
 Then upload the resulting file to wherever deployments fetch it from
 and point the service at it via `-Dmapcode.borders.path=/path/to/borders.fgb`.

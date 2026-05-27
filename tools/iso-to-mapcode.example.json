@@ -1,9 +1,0 @@
-{
-  "_comment": "Example mapping file consumed by tools/build-borders.py. Maintain a full version (covering all mapcode territories) alongside production deployments. The keys are ISO 3166-1 alpha-3 codes for countries and ISO 3166-2 codes for subdivisions; values are mapcode alphaCode strings.",
-  "USA": {"alphaCode": "USA"},
-  "NLD": {"alphaCode": "NLD"},
-  "DEU": {"alphaCode": "DEU"},
-  "US-CA": {"alphaCode": "USA-CA", "parentAlphaCode": "USA"},
-  "US-TX": {"alphaCode": "USA-TX", "parentAlphaCode": "USA"},
-  "DE-BY": {"alphaCode": "DEU-BY", "parentAlphaCode": "DEU"}
-}
