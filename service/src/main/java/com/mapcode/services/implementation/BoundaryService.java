@@ -64,7 +64,13 @@ public class BoundaryService {
 
         // Skip the spatial index, if present (indexNodeSize == 0 means no index).
         if (header.indexNodeSize > 0 && header.featuresCount > 0) {
+            if (header.featuresCount > Integer.MAX_VALUE) {
+                throw new IllegalStateException("FlatGeobuf feature count too large: " + header.featuresCount);
+            }
             final long indexSize = PackedRTree.calcSize((int) header.featuresCount, header.indexNodeSize);
+            if (indexSize > Integer.MAX_VALUE) {
+                throw new IllegalStateException("FlatGeobuf spatial index too large: " + indexSize + " bytes");
+            }
             buf.position(buf.position() + (int) indexSize);
         }
 
@@ -123,14 +129,15 @@ public class BoundaryService {
     }
 
     /**
-     * Reads a String property from the FlatGeobuf properties binary blob.
+     * Reads a named property from the FlatGeobuf properties binary blob and returns it cast to
+     * {@code type}, or {@code null} if the column is absent or has an incompatible type.
      * Properties encoding: repeated [ uint16 column-index | type-specific bytes ].
-     * String: 4-byte little-endian length followed by UTF-8 bytes.
      */
     @Nullable
-    private static String readStringProp(@Nonnull final ByteBuffer props,
-                                         @Nonnull final HeaderMeta header,
-                                         @Nonnull final String name) {
+    private static <T> T readProp(@Nonnull final ByteBuffer props,
+                                  @Nonnull final HeaderMeta header,
+                                  @Nonnull final String name,
+                                  @Nonnull final Class<T> type) {
         final ByteBuffer p = props.duplicate().order(ByteOrder.LITTLE_ENDIAN);
         while (p.remaining() >= 2) {
             final int colIdx = p.getShort() & 0xFFFF;
@@ -140,51 +147,32 @@ public class BoundaryService {
             final byte colType = header.columns.get(colIdx).type;
             final String colName = header.columns.get(colIdx).name;
             final Object value = readTypedValue(p, colType);
-            if (name.equals(colName) && value instanceof String) {
-                return (String) value;
+            if (name.equals(colName) && type.isInstance(value)) {
+                return type.cast(value);
             }
         }
         return null;
+    }
+
+    @Nullable
+    private static String readStringProp(@Nonnull final ByteBuffer props,
+                                         @Nonnull final HeaderMeta header,
+                                         @Nonnull final String name) {
+        return readProp(props, header, name, String.class);
     }
 
     @Nullable
     private static Integer readIntProp(@Nonnull final ByteBuffer props,
                                        @Nonnull final HeaderMeta header,
                                        @Nonnull final String name) {
-        final ByteBuffer p = props.duplicate().order(ByteOrder.LITTLE_ENDIAN);
-        while (p.remaining() >= 2) {
-            final int colIdx = p.getShort() & 0xFFFF;
-            if (colIdx >= header.columns.size()) {
-                break;
-            }
-            final byte colType = header.columns.get(colIdx).type;
-            final String colName = header.columns.get(colIdx).name;
-            final Object value = readTypedValue(p, colType);
-            if (name.equals(colName) && value instanceof Integer) {
-                return (Integer) value;
-            }
-        }
-        return null;
+        return readProp(props, header, name, Integer.class);
     }
 
     @Nullable
     private static Double readDoubleProp(@Nonnull final ByteBuffer props,
                                          @Nonnull final HeaderMeta header,
                                          @Nonnull final String name) {
-        final ByteBuffer p = props.duplicate().order(ByteOrder.LITTLE_ENDIAN);
-        while (p.remaining() >= 2) {
-            final int colIdx = p.getShort() & 0xFFFF;
-            if (colIdx >= header.columns.size()) {
-                break;
-            }
-            final byte colType = header.columns.get(colIdx).type;
-            final String colName = header.columns.get(colIdx).name;
-            final Object value = readTypedValue(p, colType);
-            if (name.equals(colName) && value instanceof Double) {
-                return (Double) value;
-            }
-        }
-        return null;
+        return readProp(props, header, name, Double.class);
     }
 
     /**

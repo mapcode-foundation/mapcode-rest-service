@@ -424,8 +424,12 @@ public class MapcodeResourceImpl implements MapcodeResource {
         assert response != null;
 
         processor.process("getTerritoriesForLatLon", LOG, response, () -> {
-            LOG.info("getTerritoriesForLatLon: lat={}, lon={}, client={}, allowLog={}",
-                    paramLatDegAsString, paramLonDegAsString, paramClient, paramAllowLog);
+            // Get debug mode.
+            final boolean allowLog = "true".equalsIgnoreCase(paramAllowLog);
+            if (allowLog) {
+                LOG.info("getTerritoriesForLatLon: lat={}, lon={}, client={}, allowLog={}",
+                        paramLatDegAsString, paramLonDegAsString, paramClient, paramAllowLog);
+            }
             metricsCollector.addOneLatLonToTerritoriesRequest(paramClient);
 
             // Check lat range.
