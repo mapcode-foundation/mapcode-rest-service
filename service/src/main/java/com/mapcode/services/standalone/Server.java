@@ -122,10 +122,6 @@ public class Server {
         final Dispatcher dispatcher = deployment.getDispatcher();
         final ResteasyProviderFactory providerFactory = dispatcher.getProviderFactory();
 
-        /**
-         * Register providers for JSON and XML. This list was obtained by looking at which providers
-         * were registered when the application would be running its unit tests, which works as well.
-         */
         // Slim provider set: JSON (Jackson), XML (JAXB), plain text.
         // The mapcode service has no multipart, form, file, image, or XOP endpoints.
         providerFactory.registerProvider(JAXBXmlSeeAlsoProvider.class, true);

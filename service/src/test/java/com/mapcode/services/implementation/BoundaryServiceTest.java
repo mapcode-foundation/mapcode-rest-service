@@ -97,4 +97,18 @@ public class BoundaryServiceTest {
             System.clearProperty("mapcode.boundary.prepared-cache-size");
         }
     }
+
+    @Test
+    public void invalidPreparedCacheSizeFallsBackInsteadOfCrashing() {
+        // Non-numeric and non-positive values must not break construction.
+        for (final String bad : new String[] {"not-a-number", "0", "-5"}) {
+            System.setProperty("mapcode.boundary.prepared-cache-size", bad);
+            try {
+                final BoundaryService svc = new BoundaryService(FIXTURE.toString());
+                assertEquals("NLD", svc.lookup(52.0, 5.0).get(0).getAlphaCode());
+            } finally {
+                System.clearProperty("mapcode.boundary.prepared-cache-size");
+            }
+        }
+    }
 }

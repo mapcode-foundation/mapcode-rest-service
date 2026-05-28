@@ -50,9 +50,28 @@ public class BoundaryService {
 
     private final STRtree index;
     private static final int DEFAULT_PREPARED_CACHE_SIZE = 200;
-    private final int preparedCacheSize = Integer.parseInt(
-            System.getProperty("mapcode.boundary.prepared-cache-size",
-                    String.valueOf(DEFAULT_PREPARED_CACHE_SIZE)));
+    private final int preparedCacheSize = resolvePreparedCacheSize();
+
+    private static int resolvePreparedCacheSize() {
+        final String raw = System.getProperty("mapcode.boundary.prepared-cache-size");
+        if (raw == null) {
+            return DEFAULT_PREPARED_CACHE_SIZE;
+        }
+        final int parsed;
+        try {
+            parsed = Integer.parseInt(raw);
+        } catch (final NumberFormatException e) {
+            LOG.warn("BoundaryService: ignoring non-numeric mapcode.boundary.prepared-cache-size='{}', " +
+                    "using default {}", raw, DEFAULT_PREPARED_CACHE_SIZE);
+            return DEFAULT_PREPARED_CACHE_SIZE;
+        }
+        if (parsed < 1) {
+            LOG.warn("BoundaryService: clamping mapcode.boundary.prepared-cache-size={} to 1 " +
+                    "(values below 1 disable caching entirely)", parsed);
+            return 1;
+        }
+        return parsed;
+    }
 
     /** Access-ordered LRU. Keys are identity of IndexedEntry (geometry is unique per entry). */
     @SuppressWarnings("serial")
