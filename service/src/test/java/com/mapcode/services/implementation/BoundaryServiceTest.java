@@ -75,4 +75,26 @@ public class BoundaryServiceTest {
     public void missingFileFailsConstruction() {
         new BoundaryService("/does/not/exist.fgb");
     }
+
+    @Test
+    public void preparedCacheEvictionDoesNotChangeResults() {
+        // Force the prepared cache down to size 1 so every other call evicts.
+        // The test fixture has at least 3 distinct polygons (NLD, USA, USA-CA),
+        // so alternating lookups must repeatedly evict and rebuild the prepared
+        // geometry. Behaviour must remain identical regardless.
+        System.setProperty("mapcode.boundary.prepared-cache-size", "1");
+        try {
+            final BoundaryService svc = new BoundaryService(FIXTURE.toString());
+            for (int i = 0; i < 5; i++) {
+                assertEquals("NLD", svc.lookup(52.0, 5.0).get(0).getAlphaCode());
+                assertEquals("USA-CA", svc.lookup(36.0, -120.0).get(0).getAlphaCode());
+                assertTrue(svc.lookup(0.0, -30.0).isEmpty());
+            }
+            // After repeated lookups across many polygons, only one prepared
+            // geometry should remain cached.
+            assertEquals(1, svc.preparedCacheSize());
+        } finally {
+            System.clearProperty("mapcode.boundary.prepared-cache-size");
+        }
+    }
 }
