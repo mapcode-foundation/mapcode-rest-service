@@ -21,15 +21,18 @@ import org.wololo.flatgeobuf.generated.Feature;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -54,12 +57,11 @@ public class BoundaryService {
         this.index = new STRtree();
         final int loaded;
         try {
-            loaded = loadFeatures(Files.readAllBytes(path));
+            loaded = loadFeatures(mapReadOnly(path));
         } catch (final IOException e) {
             throw new IllegalStateException("Failed to load borders file: " + path, e);
         }
         index.build();
-        primePreparedGeometries();
         LOG.info("BoundaryService: loaded {} polygons from {}", loaded, path);
     }
 
@@ -71,13 +73,18 @@ public class BoundaryService {
                            @Nonnull final String sourceDescription) {
         this.index = new STRtree();
         final int loaded;
+        final Path tmp;
         try {
-            loaded = loadFeatures(toByteArray(stream));
+            tmp = Files.createTempFile("mapcode-borders-", ".fgb");
+            tmp.toFile().deleteOnExit();
+            try (final OutputStream out = Files.newOutputStream(tmp, StandardOpenOption.TRUNCATE_EXISTING)) {
+                stream.transferTo(out);
+            }
+            loaded = loadFeatures(mapReadOnly(tmp));
         } catch (final IOException e) {
             throw new IllegalStateException("Failed to load borders from " + sourceDescription, e);
         }
         index.build();
-        primePreparedGeometries();
         LOG.info("BoundaryService: loaded {} polygons from {}", loaded, sourceDescription);
     }
 
@@ -92,18 +99,17 @@ public class BoundaryService {
         }
     }
 
-    private static byte[] toByteArray(@Nonnull final InputStream stream) throws IOException {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final byte[] buf = new byte[8192];
-        int n;
-        while ((n = stream.read(buf)) != -1) {
-            baos.write(buf, 0, n);
+    @Nonnull
+    private static MappedByteBuffer mapReadOnly(@Nonnull final Path path) throws IOException {
+        try (final FileChannel ch = FileChannel.open(path, StandardOpenOption.READ)) {
+            final MappedByteBuffer mapped = ch.map(FileChannel.MapMode.READ_ONLY, 0L, ch.size());
+            mapped.order(ByteOrder.LITTLE_ENDIAN);
+            return mapped;
         }
-        return baos.toByteArray();
     }
 
-    private int loadFeatures(@Nonnull final byte[] bytes) throws IOException {
-        final ByteBuffer buf = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
+    private int loadFeatures(@Nonnull final ByteBuffer bytes) throws IOException {
+        final ByteBuffer buf = bytes.order(ByteOrder.LITTLE_ENDIAN);
 
         // Parse header — HeaderMeta.read(ByteBuffer) advances buf.position() past the header.
         final HeaderMeta header = HeaderMeta.read(buf);
