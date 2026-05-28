@@ -1,1 +1,1 @@
-web: java -jar deployment/target/mapcode-rest-service.war --port $PORT
+web: java -XX:MaxRAMPercentage=70 -XX:InitialRAMPercentage=30 -XX:+UseSerialGC -XX:MaxMetaspaceSize=128m -XX:ReservedCodeCacheSize=64m -Xss256k -XX:+ExitOnOutOfMemoryError -jar deployment/target/mapcode-rest-service.war --port $PORT

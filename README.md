@@ -289,7 +289,81 @@ curl -X GET http://localhost:8080/mapcode/codes/50.2,4.9
 
 There's also an example HTML page in the `examples/index.html` for HTML/Javascript developers.
 
-    
+### Stress Testing The REST API
+
+The repository ships a stand-alone stress-testing TUI at
+[`tools/mapcode-stresstest.py`](tools/mapcode-stresstest.py). It fires a mix
+of random `encode` (lat/lon → mapcode) and `decode` (mapcode → lat/lon)
+requests at the service and reports rolling stats, live latency, and errors
+in a two-pane curses dashboard.
+
+It uses **Python 3 standard library only** — no `pip install` required.
+
+#### Quick start
+
+```bash
+# Stress a local service at the default target of 10 req/s
+python3 tools/mapcode-stresstest.py
+
+# Hit a specific URL at 5 req/s, stop after 5000 requests
+python3 tools/mapcode-stresstest.py --url http://localhost:8080 \
+                                    --rate 5 \
+                                    --total-requests 5000
+```
+
+> **Warning:** point this at a service you control. The default URL is
+> `http://localhost:8080`; passing a public host will hammer real users.
+> The production public API URL is: `https://api/mapcode.com`
+
+#### How requests are generated
+
+* **Encode** requests use uniformly random latitudes (−85°..+85°) and
+  longitudes (−180°..+180°). Every successful encode response feeds a
+  rolling FIFO bucket (`--bucket-size`, default 10 000) of
+  `(mapcode, territory)` pairs.
+* **Decode** requests sample randomly from that bucket, so once warmed up
+  you're decoding only mapcodes the server has actually returned. Until the
+  bucket fills, the tool prefers encode requests; the encode-vs-decode mix
+  smoothly interpolates from 90/10 to 50/50 as the bucket grows.
+* Traffic is intentionally **bursty**, not uniformly spaced. Each iteration
+  draws a random burst size and a jittered inter-burst delay so the long-run
+  average converges to `--rate` req/s but you see realistic clumps — e.g. at
+  `--rate 2` you may see 4 requests in parallel and then no traffic for two
+  seconds.
+* A background thread polls `/mapcode/version` every 10 seconds and shows
+  the server version in the header.
+
+#### TUI controls
+
+| Key            | Action                                  |
+|----------------|-----------------------------------------|
+| `Esc`          | Pause / resume (in-flight requests still complete) |
+| any key        | Resume when paused                      |
+| `+` or `=`     | Increase target rate by 1 req/s         |
+| `-`            | Decrease target rate by 1 req/s (min 1) |
+| `Ctrl-C`       | Abort (no summary printed)              |
+
+The header dashboard shows the target rate, current rate, all-time average,
+mean burst size, success-rate bar, per-status counters (Sent / OK / Error /
+In-flight / Cancelled) and the server version. The top scrolling pane logs
+every completed request with its status code and a colour-coded response
+time in ms; the bottom pane shows only failures with the error detail
+(including the configured timeout threshold for timed-out calls). Both
+panes wrap long lines.
+
+#### Options
+
+| Flag                       | Default                  | Description |
+|----------------------------|--------------------------|-------------|
+| `--url URL`                | `http://localhost:8080`  | Base URL of the service to stress. |
+| `--rate REQ_PER_SEC`       | `10`                     | Target long-run average request rate; range `[0.01, 10000]`. Adjustable live with `+`/`-`. |
+| `--total-requests N`       | unlimited                | Stop after this many requests. |
+| `--bucket-size N`          | `10000`                  | Capacity of the rolling FIFO of harvested mapcodes used by decode requests. |
+
+When the run terminates normally (e.g. `--total-requests` reached) the tool
+prints a one-line summary to stdout. After `Ctrl-C` no summary is printed.
+
+
 
 ## Using Git and `.gitignore`
 
