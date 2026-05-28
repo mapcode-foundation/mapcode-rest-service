@@ -24,7 +24,7 @@
     <artifactId>mapcode-rest-service</artifactId>
 
     <packaging>pom</packaging>
-    <version>2.4.19.1</version>
+    <version>2.4.19.2</version>
 
     <name>Mapcode REST API Web Service</name>
     <description>
@@ -88,14 +88,15 @@
         <maven-war-plugin.version>3.2.3</maven-war-plugin.version>
 
         <!-- Library versions - these are not re-used from the top-level POM to simulate stand-alone usage. -->
-        <commons-lang3.version>3.12.0</commons-lang3.version>
-        <commons-text.version>1.9</commons-text.version>
+        <commons-lang3.version>3.20.0</commons-lang3.version>
+        <commons-text.version>1.10.0</commons-text.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <gson.version>2.9.0</gson.version>
-        <guava.version>31.1-jre</guava.version>
+        <guava.version>33.6.0-jre</guava.version>
         <guice.version>5.1.0</guice.version>
-        <jackson.version>2.13.2</jackson.version>
-        <jackson-databind.version>2.13.2.2</jackson-databind.version>
+        <jackson.version>2.21.3</jackson.version>
+        <jackson-annotations.version>2.21</jackson-annotations.version>
+        <jackson-databind.version>2.21.3</jackson-databind.version>
         <javax.inject.version>1</javax.inject.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
@@ -103,11 +104,11 @@
         <joda-time.version>2.10.14</joda-time.version>
         <jsr305.version>3.0.2</jsr305.version>
         <junit.version>4.13.2</junit.version>
-        <log4j.version>2.17.2</log4j.version>
+        <log4j.version>2.26.0</log4j.version>
         <mapcode.version>2.4.19</mapcode.version>
         <mockito-core.version>4.2.0</mockito-core.version>
-        <resteasy.version>3.15.3.Final</resteasy.version>
-        <scala.version>2.13.8</scala.version>
+        <resteasy.version>3.15.6.Final</resteasy.version>
+        <scala.version>2.13.18</scala.version>
         <slf4j.version>1.7.36</slf4j.version>
         <speedtools.version>3.4.3</speedtools.version>
     </properties>
@@ -140,7 +141,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jackson-annotations.version}</version>
             </dependency>
 
             <dependency>
