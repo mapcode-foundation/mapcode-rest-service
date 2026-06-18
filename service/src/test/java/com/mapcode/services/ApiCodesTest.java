@@ -47,6 +47,8 @@ public class ApiCodesTest {
     private static final Double TEST_LON_INTL = 4.504394531250001;
     private static final String TEST_LATLON_INTL = TEST_LAT_INTL + "," + TEST_LON_INTL;
 
+    private static final String TEST_LATLON_MUMBAI = "19.075984,72.877656";
+
     private LocalTestServer server;
 
     @Before
@@ -408,6 +410,38 @@ public class ApiCodesTest {
         x = response.readEntity(String.class);
         Assert.assertEquals("[{\"mapcode\":\"WHWZG.5Q6Q\"}]",
                 x);
+    }
+
+    @Test
+    public void checkCodesMapcodesXmlAliasMatchesJsonAlias() {
+        LOG.info("checkCodesMapcodesXmlAliasMatchesJsonAlias");
+        Response response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/json/codes/" + TEST_LATLON_MUMBAI + "/mapcodes")).
+                request().
+                get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        final String json = response.readEntity(String.class);
+        final MapcodeDTO[] mapcodes = new Gson().fromJson(json, MapcodeDTO[].class);
+
+        final StringBuilder expectedXml = new StringBuilder(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><mapcodes>");
+        for (final MapcodeDTO mapcode : mapcodes) {
+            expectedXml.append("<mapcode><mapcode>").append(mapcode.getMapcode()).append("</mapcode>");
+            if (mapcode.getTerritory() != null) {
+                expectedXml.append("<territory>").append(mapcode.getTerritory()).append("</territory>");
+            }
+            expectedXml.append("</mapcode>");
+        }
+        expectedXml.append("</mapcodes>");
+
+        response = new ResteasyClientBuilder().build().
+                target(server.url("/mapcode/xml/codes/" + TEST_LATLON_MUMBAI + "/mapcodes")).
+                request().
+                get();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(200, response.getStatus());
+        Assert.assertEquals(expectedXml.toString(), response.readEntity(String.class));
     }
 
     @Test
