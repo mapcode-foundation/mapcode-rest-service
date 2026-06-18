@@ -18,11 +18,13 @@ package com.mapcode.services.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tomtom.speedtools.apivalidation.ApiListDTO;
 
 import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
@@ -38,6 +40,14 @@ public final class MapcodeListDTO extends ApiListDTO<MapcodeDTO> {
 
     public MapcodeListDTO(@Nonnull final List<MapcodeDTO> mapcodes) {
         super(mapcodes);
+    }
+
+    @JsonIgnore
+    @XmlElement(name = "mapcode")
+    @Nonnull
+    public List<MapcodeDTO> getMapcodesForXml() {
+        beforeGet();
+        return this;
     }
 
     @SuppressWarnings("UnusedDeclaration")
