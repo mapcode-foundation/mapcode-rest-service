@@ -1,22 +1,24 @@
 # README for Mapcode REST API Web Services
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/809a3c6b23ed42d28b4b17e0e77b655f)](https://www.codacy.com/app/rijnb/mapcode-rest-service?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mapcode-foundation/mapcode-rest-service&amp;utm_campaign=Badge_Grade)
-[![Build Status](https://img.shields.io/travis/mapcode-foundation/mapcode-rest-service.svg?maxAge=3600&branch=master)](https://travis-ci.org/mapcode-foundation/mapcode-rest-service)
 [![Coverage Status](https://coveralls.io/repos/github/mapcode-foundation/mapcode-rest-service/badge.svg?branch=master&maxAge=3600)](https://coveralls.io/github/mapcode-foundation/mapcode-rest-service?branch=master)
 [![License](http://img.shields.io/badge/license-APACHE2-blue.svg)]()
 [![Release](https://img.shields.io/github/release/mapcode-foundation/mapcode-rest-service.svg?maxAge=3600)](https://github.com/mapcode-foundation/mapcode-rest-service/releases)
 
-**Copyright (C) 2014-2026 Stichting Mapcode Foundation (http://www.mapcode.com)**
+## Deprecation Notice
 
-This application provides a REST API for mapcodes. It uses the Java Library for Mapcodes
-extensively. The API supports both XML and JSON (default) responses.
-
-**Note:** This Java implementation has been superseded by the more optimized
+This Java implementation has been superseded by the more optimized
 TypeScript/Node implementation at
 [mapcode-foundation/mapcode-rest-service-ts](https://github.com/mapcode-foundation/mapcode-rest-service-ts).
 It uses less memory, sustains higher throughput, and is easier to deploy. You
 are recommended to have a look at that implementation, as this Java
 implementation will no longer be supported.
+
+## Original Information
+
+**Copyright (C) 2014-2026 Stichting Mapcode Foundation (http://www.mapcode.com)**
+
+This application provides a REST API for mapcodes. It uses the Java Library for Mapcodes
+extensively. The API supports both XML and JSON (default) responses.
 
 **Warning:** *If you want to use this source to run a production service, always use the source
 version from the **latest release tag**. Release names are tagged "vX.Y.Z". The head of the master
