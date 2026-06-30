@@ -96,7 +96,7 @@
         <guice.version>5.1.0</guice.version>
         <jackson.version>2.21.3</jackson.version>
         <jackson-annotations.version>2.21</jackson-annotations.version>
-        <jackson-databind.version>2.21.3</jackson-databind.version>
+        <jackson-databind.version>2.22.0</jackson-databind.version>
         <javax.inject.version>1</javax.inject.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
